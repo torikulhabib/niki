@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Copyright 2018 torikul habib <torik.habib@gmail.com> -->
+<component type="desktop">
+  <id>com.github.torikulhabib.niki</id>
+  <metadata_license>CC0</metadata_license>
+  <project_license>GPL-3.0+</project_license>
+  <name>Niki</name>
+  <summary>DLNA, Music, Video and streaming</summary>
+  <description>
+    <p>Simple, Beauty Multimedia Player</p>
+    <p>Features:</p>
+    <ul>
+      <li>Movie player.</li>
+      <li>Music player.</li>
+      <li>Font subtitle lyric.</li>
+      <li>Equalizer.</li>
+      <li>Video Balance.</li>
+      <li>Apply album art as background.</li>
+      <li>Blur bacground.</li>
+      <li>DLNA Explorer.</li>
+      <li>Camera.</li>
+      <li>Disk Drive.</li>
+      <li>MPRIS.</li>
+      <li>Streaming.</li>
+    </ul>
+    <p></p>
+  </description>
+  <provides>
+    <binary>com.github.torikulhabib.niki</binary>
+  </provides>
+​  <releases>
+    <release version="0.7" date="2012-2-4">
+      <description>
+        <p>Fix and add feature</p>
+        <ul>
+          <li>Release.</li>
+        </ul>
+      </description>
+    </release>
+  </releases>
+  <screenshots>
+    <screenshot type="default">
+      <image>https://raw.githubusercontent.com/torikulhabib/niki/master/Screenshot.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/torikulhabib/niki/master/Screenshot1.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/torikulhabib/niki/master/Screenshot2.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/torikulhabib/niki/master/Screenshot3.png</image>
+    </screenshot>
+    <screenshot>
+      <image>https://raw.githubusercontent.com/torikulhabib/niki/master/Screenshot4.png</image>
+    </screenshot>
+  </screenshots>
+  <content_rating type="oars-1.1">
+    <content_attribute id="violence-cartoon">none</content_attribute>
+    <content_attribute id="violence-fantasy">none</content_attribute>
+    <content_attribute id="violence-realistic">none</content_attribute>
+    <content_attribute id="violence-bloodshed">none</content_attribute>
+    <content_attribute id="violence-sexual">none</content_attribute>
+    <content_attribute id="violence-desecration">none</content_attribute>
+    <content_attribute id="violence-slavery">none</content_attribute>
+    <content_attribute id="violence-worship">none</content_attribute>
+    <content_attribute id="drugs-alcohol">none</content_attribute>
+    <content_attribute id="drugs-narcotics">none</content_attribute>
+    <content_attribute id="drugs-tobacco">none</content_attribute>
+    <content_attribute id="sex-nudity">none</content_attribute>
+    <content_attribute id="sex-themes">none</content_attribute>
+    <content_attribute id="sex-homosexuality">none</content_attribute>
+    <content_attribute id="sex-prostitution">none</content_attribute>
+    <content_attribute id="sex-adultery">none</content_attribute>
+    <content_attribute id="sex-appearance">none</content_attribute>
+    <content_attribute id="language-profanity">none</content_attribute>
+    <content_attribute id="language-humor">none</content_attribute>
+    <content_attribute id="language-discrimination">none</content_attribute>
+    <content_attribute id="social-chat">none</content_attribute>
+    <content_attribute id="social-info">none</content_attribute>
+    <content_attribute id="social-audio">none</content_attribute>
+    <content_attribute id="social-location">none</content_attribute>
+    <content_attribute id="social-contacts">none</content_attribute>
+    <content_attribute id="money-purchasing">none</content_attribute>
+    <content_attribute id="money-gambling">none</content_attribute>
+  </content_rating>
+  <developer_name>Torikul Habib</developer_name>
+  <url type="homepage">https://github.com/torikulhabib/niki</url>
+  <url type="bugtracker">https://github.com/torikulhabib/niki/issues</url>
+  <url type="translate">https://github.com/torikulhabib/niki/tree/master/po</url>
+  <custom>
+    <value key="x-appcenter-color-primary">#525</value>
+    <value key="x-appcenter-color-primary-text">#d1ff82</value>
+    <value key="x-appcenter-suggested-price">6</value>
+  </custom>
+</component>

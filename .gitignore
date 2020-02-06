@@ -1,0 +1,8 @@
+*~
+build/*
+*.log
+parts/*
+snap/*
+prime/*
+*.snap
+stage/*

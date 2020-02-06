@@ -1,0 +1,13 @@
+Package: com.github.torikulhabib.niki-dbgsym
+Package-Type: ddeb
+Source: com.github.torikulhabib.niki
+Version: 0.5.4
+Auto-Built-Package: debug-symbols
+Architecture: amd64
+Maintainer: torikhabib <torik.habib@gmail.com>
+Installed-Size: 839
+Depends: com.github.torikulhabib.niki (= 0.5.4)
+Section: debug
+Priority: optional
+Description: debug symbols for com.github.torikulhabib.niki
+Build-Ids: 243a1abfda81d6e0b86d0b72a9aebbb5add8c85a

@@ -1,0 +1,84 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the extra package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: extra\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-02-04 13:35+0700\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2\n"
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:7
+#: data/com.github.torikulhabib.niki.desktop.in:3
+msgid "Niki"
+msgstr ""
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:8
+#: data/com.github.torikulhabib.niki.desktop.in:4
+msgid "DLNA, Music, Video and streaming"
+msgstr ""
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:10
+msgid "Simple, Beauty Multimedia Player"
+msgstr ""
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:11
+msgid "Features:"
+msgstr ""
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:13
+msgid "Movie player."
+msgstr ""
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:14
+msgid "Music player."
+msgstr ""
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:15
+msgid "Font subtitle lyric."
+msgstr ""
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:16
+msgid "Equalizer."
+msgstr ""
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:17
+msgid "Video Balance."
+msgstr ""
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:18
+msgid "Apply album art as background."
+msgstr ""
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:19
+msgid "Blur bacground."
+msgstr ""
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:20
+msgid "DLNA Explorer."
+msgstr ""
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:21
+msgid "Camera."
+msgstr ""
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:22
+msgid "Disk Drive."
+msgstr ""
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:23
+msgid "MPRIS"
+msgstr ""
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:24
+msgid "Streaming."
+msgstr ""

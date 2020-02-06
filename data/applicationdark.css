@@ -1,0 +1,225 @@
+/*
+* Copyright (C) 2018  Torikul habib <torik.habib@gmail.com>
+* 
+* This program is free software: you can redistribute it and/or modify
+* it under the terms of the GNU Affero General Public License as published
+* by the Free Software Foundation, either version 3 of the License, or
+* (at your option) any later version.
+* 
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+* GNU Affero General Public License for more details.
+* 
+* You should have received a copy of the GNU Affero General Public License
+* along with this program.  If not, see <http://www.gnu.org/licenses/>.
+* 
+*/
+
+@define-color myColorPrimary rgba (0, 0, 0, 0.6);
+@define-color SolidBlack rgba (0, 0, 0, 1); 
+@define-color SemiBlack rgba (26, 26, 26, 1); 
+@define-color DarkMode rgba (56, 56, 56, 1); 
+@define-color SolidWhite rgba (255, 255, 255, 1);
+@define-color transparancyColor rgba (0, 0, 0, 0);
+@define-color colorAccent rgba (54, 137, 230, 1);
+@define-color colorAccentTransparent rgba(0, 0, 0, 0.1);
+@define-color bg_highlight_color shade (rgba(0, 0, 0, 0), 1.4);
+
+.niki,
+.niki, .widget_background {
+    color: @SolidWhite;
+    transition: 300ms ease;
+    background: @DarkMode;
+    border-bottom-left-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+.titlebar, .widget_background {
+    color: @SolidWhite;
+    background: @DarkMode;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+.button {
+    color: @SemiBlack;
+    background: @SolidWhite;
+}
+
+.button_action {
+    color: @SolidWhite;
+    background: @transparancyColor;
+}
+.dlnaplaylist:selected {
+    color: @SolidWhite;
+    background: @colorAccent;
+}
+.playlist:selected {
+    color: @SolidWhite;
+    background: @colorAccent;
+}
+
+.playlist {
+    color: @SolidWhite;
+    background: rgba (0,0,0,0.2);
+    border-color: @transparancyColor;
+}
+
+.label_popover {
+    font-weight : bold;
+    font-size: 15px;
+    border-color: @SolidBlack;
+    background: @SolidBlack;
+    color: @SolidWhite
+}
+
+.popover {
+    border-color: @SolidWhite;
+    background: @SolidWhite;
+    color: @SemiBlack;
+}
+
+.ground_action_button {
+    border-color: @transparancyColor;
+    background: @transparancyColor;
+}
+
+.seek_bar {
+    color: @SolidWhite;
+    border-color: @SolidWhite;
+}
+
+.progress_bar progress {
+    background: rgba (255, 0, 0, 1);
+    border: none;
+    box-shadow: none;
+}
+
+.seek_bar trough highlight {
+    background: rgba (255, 0, 0, 1);
+    border-color: rgba (255, 0, 0, 1);
+}
+
+.seek_bar trough {
+    border-color: rgba (0, 0, 0, 0.5);
+    background-color: @SolidWhite;
+}
+.seek_bar trough fill {
+    border-color: @transparancyColor;
+    background-color: @transparancyColor;
+}
+
+.seek_bar scale slider {
+    background: @transparancyColor;
+    border: @transparancyColor;
+    box-shadow: none;
+    min-width: 0;
+    min-height: 0;
+}
+.dlna_volume {
+    color: @transparancyColor;
+    border-color: @transparancyColor;
+}
+
+.dlna_volume slider {
+    background-color: @transparancyColor;
+    border-color: @transparancyColor;
+}
+
+.dlna_volume trough highlight {
+    background-color: @SolidWhite;
+    border-color: @SolidWhite;
+}
+
+.dlna_volume trough fill {
+    background-color: @transparancyColor;
+    border-color: @transparancyColor;
+}
+
+.dlna_volume trough {
+    border-color: rgba (255, 255, 255, 0.5);
+    background-color: rgba (255, 255, 255, 0.5);
+}
+.volume {
+    color: @SolidWhite;
+    border-color: @SolidWhite;
+}
+
+.volume slider {
+    background-color: @transparancyColor;
+    border-color: @transparancyColor;
+}
+
+.volume trough highlight {
+    background-color: @SolidWhite;
+    border-color: @SolidWhite;
+}
+
+.volume trough fill {
+    background-color: @transparancyColor;
+    border-color: @transparancyColor;
+}
+
+.volume trough {
+    border-color: rgba (255, 255, 255, 0.5);
+    background-color: rgba (255, 255, 255, 0.5);
+}
+
+.scrollbar {
+    background-color: @transparancyColor;
+    border-color: @myColorPrimary;
+}
+
+.scrollbar trough slider {
+    background-color: @SolidWhite;
+    border-color: @SolidWhite;
+}
+
+.dlna_scrollbar {
+    background-color: @transparancyColor;
+    border-color: @myColorPrimary;
+}
+
+.dlna_scrollbar trough slider {
+    background-color: @SolidWhite;
+    border-color: @SemiBlack;
+}
+.spinbut {
+    background: @SemiBlack;
+    border-color: @transparancyColor;
+}
+
+.combox button.combo {
+    background-color: @SemiBlack;
+    border-color: @transparancyColor;
+    color: @SolidWhite;
+}
+.transparantbg {
+    background: @transparancyColor;
+}
+.ground_dlna {
+    color: @SemiBlack;
+    background: @DarkMode;
+    border-color: @DarkMode;
+}
+
+.label {
+    color: @SolidWhite;
+    border-color: @SolidWhite;
+}
+
+.bottombar {
+    background: linear-gradient(to bottom, rgba (0, 0, 0, 0.05), rgba (0, 0, 0, 0.5));
+    color: @SolidWhite;
+    border-color: @colorAccentTransparent;
+}
+
+.topbar {
+    background: linear-gradient(to top, rgba (0, 0, 0, 0.05), rgba (0, 0, 0, 0.5));
+    color: @SolidWhite;
+    border-color: @colorAccentTransparent;
+}
+.info_topbar {
+    background: linear-gradient(to top, rgba (0, 0, 0, 0.05), rgba (0, 0, 0, 0.5));
+    color: @SolidWhite;
+    border-top-color: rgba (0, 0, 0, 0.5);
+}

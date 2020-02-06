@@ -1,0 +1,825 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the com.github.torikulhabib.mindi package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: com.github.torikulhabib.niki\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-02-04 12:58+0700\n"
+"PO-Revision-Date: 2020-02-04 13:35+0700\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+"Language: id\n"
+
+#: src/StringPot.vala:24
+msgid "Home"
+msgstr "Rumah"
+
+#: src/StringPot.vala:25
+msgid "Niki"
+msgstr "Niki"
+
+#: src/StringPot.vala:26
+msgid "Niki - DLNA Browser"
+msgstr "Niki - DLNA Jelajah"
+
+#: src/StringPot.vala:27
+msgid "Open"
+msgstr "Buka"
+
+#: src/StringPot.vala:28
+msgid "Cancel"
+msgstr "Batal"
+
+#: src/StringPot.vala:29
+msgid "All Files"
+msgstr "Semua Berkas"
+
+#: src/StringPot.vala:30
+msgid "Select Menu"
+msgstr "Pilih Menu"
+
+#: src/StringPot.vala:31
+msgid "Drag Url, files or Select a source to playing."
+msgstr "Tarik URL, Berkas atau pilih file untuk dimainkan."
+
+#: src/StringPot.vala:32
+msgid "Open File"
+msgstr "Buka Berkas"
+
+#: src/StringPot.vala:33
+msgid "Paste URL"
+msgstr "Tempel URL"
+
+#: src/StringPot.vala:34
+msgid "Play Straming"
+msgstr "Mainkan Aliran"
+
+#: src/StringPot.vala:35
+msgid "Open Folder"
+msgstr "Buka Folder"
+
+#: src/StringPot.vala:36
+msgid "Camera Device"
+msgstr "Peralatan Kamera"
+
+#: src/StringPot.vala:37
+msgid "Open Camera"
+msgstr "Buka Kamera"
+
+#: src/StringPot.vala:38
+msgid "Browse Library"
+msgstr "Jelajah Pustaka"
+
+#: src/StringPot.vala:39
+msgid "Movie Library"
+msgstr "Pustaka Film"
+
+#: src/StringPot.vala:40
+msgid "Music Library"
+msgstr "Pustaka Musik"
+
+#: src/StringPot.vala:41
+msgid "DLNA Library"
+msgstr "Pustaka DLNA"
+
+#: src/StringPot.vala:42
+msgid "Optical Library"
+msgstr "Pustaka Optik"
+
+#: src/StringPot.vala:43
+msgid "Disk Drive Is Empty\n"
+msgstr "Diska Piring Kosong\n"
+
+#: src/StringPot.vala:44
+msgid "Muted"
+msgstr "Bisu"
+
+#: src/StringPot.vala:45
+msgid "Volume"
+msgstr "Volume"
+
+#: src/StringPot.vala:46
+msgid "Normal"
+msgstr "Normal"
+
+#: src/StringPot.vala:47
+msgid "Vivid"
+msgstr "Hidup"
+
+#: src/StringPot.vala:48
+msgid "Bright"
+msgstr "Terang"
+
+#: src/StringPot.vala:49
+msgid "Full Color"
+msgstr "Penuh Warna"
+
+#: src/StringPot.vala:50
+msgid "No Color"
+msgstr "Tidak Berwarna"
+
+#: src/StringPot.vala:51
+msgid "Soft"
+msgstr "Lembut"
+
+#: src/StringPot.vala:52
+msgid "Save Preset"
+msgstr "Simpan Setelan"
+
+#: src/StringPot.vala:53 src/StringPot.vala:167
+msgid "None"
+msgstr "Tidak ada"
+
+#: src/StringPot.vala:54
+msgid "Custom Preset"
+msgstr "Ubah Setelan"
+
+#: src/StringPot.vala:55
+msgid "Custom"
+msgstr "Ubah"
+
+#: src/StringPot.vala:56
+msgid "Unknow"
+msgstr "Tidak Diketahui"
+
+#: src/StringPot.vala:57
+msgid "Size"
+msgstr "Ukuran"
+
+#: src/StringPot.vala:58
+msgid "Maximize"
+msgstr "Maksimal"
+
+#: src/StringPot.vala:59
+msgid "Unmaximize"
+msgstr "Tidak Memaksimalkan"
+
+#: src/StringPot.vala:60
+msgid "Niki - Video"
+msgstr "Niki - Video"
+
+#: src/StringPot.vala:61
+msgid "Show"
+msgstr "Tampilkan"
+
+#: src/StringPot.vala:62
+msgid "Hide"
+msgstr "Sembunyi"
+
+#: src/StringPot.vala:63
+msgid "Close"
+msgstr "Tutup"
+
+#: src/StringPot.vala:64
+msgid "Album"
+msgstr "Album"
+
+#: src/StringPot.vala:65
+msgid "Artist"
+msgstr "Artis"
+
+#: src/StringPot.vala:66
+msgid "Timer: "
+msgstr "TImer: "
+
+#: src/StringPot.vala:67
+msgid "Timer Disabled"
+msgstr "Timer Mati"
+
+#: src/StringPot.vala:68
+msgid "Input"
+msgstr "Masukan"
+
+#: src/StringPot.vala:69
+msgid "Audio: "
+msgstr "Suara: "
+
+#: src/StringPot.vala:70
+msgid "Internal Subtitles: "
+msgstr "Teks Internal: "
+
+#: src/StringPot.vala:71
+msgid "Font options: "
+msgstr "Pilihan Font: "
+
+#: src/StringPot.vala:72
+msgid "Default Font"
+msgstr "Defauly Font"
+
+#: src/StringPot.vala:73
+msgid "Custom Font"
+msgstr "Ubah Font"
+
+#: src/StringPot.vala:74
+msgid "Play Speed: "
+msgstr "Kecepatan Putaran: "
+
+#: src/StringPot.vala:75
+msgid "External Subtitle: "
+msgstr "Teks Luar: "
+
+#: src/StringPot.vala:76
+msgid "Pick a File"
+msgstr "Mengambil Berkas"
+
+#: src/StringPot.vala:77
+msgid "All File"
+msgstr "Semua Berkas"
+
+#: src/StringPot.vala:78
+msgid "Subtitle File"
+msgstr "Berkas Teks"
+
+#: src/StringPot.vala:79
+msgid "Track"
+msgstr "Trak"
+
+#: src/StringPot.vala:80
+msgid "Nothing Video in Library\n"
+msgstr "TIdak ada video dalam pustaka\n"
+
+#: src/StringPot.vala:81
+msgid "Nothing Music in Library\n"
+msgstr "TIdak ada Musik dalam pustaka\n"
+
+#: src/StringPot.vala:82
+msgid "Playlist"
+msgstr "Playlis"
+
+#: src/StringPot.vala:83
+msgid "Select to Remove"
+msgstr "Pilih Menghapus"
+
+#: src/StringPot.vala:84
+msgid "Back to Playlist"
+msgstr "Kembali ke Playlis"
+
+#: src/StringPot.vala:85
+#, c-format
+msgid "Remove Multiple List"
+msgstr "Hapus beberapa berkas"
+
+#: src/StringPot.vala:86
+#, c-format
+msgid "Repeat ALL"
+msgstr "Ulang semua"
+
+#: src/StringPot.vala:87
+msgid "Repeat One"
+msgstr "Ulang Satu"
+
+#: src/StringPot.vala:88
+msgid "Disable Repeat"
+msgstr "Matikan Ulang"
+
+#: src/StringPot.vala:89
+msgid "Play"
+msgstr "Mainkan"
+
+#: src/StringPot.vala:90
+msgid "Pause"
+msgstr "Jeda"
+
+#: src/StringPot.vala:91
+msgid "Stop"
+msgstr "Berhenti"
+
+#: src/StringPot.vala:92
+msgid "Next"
+msgstr "Selanjutnya"
+
+#: src/StringPot.vala:93
+msgid "Previous"
+msgstr "Sebelumnya"
+
+#: src/StringPot.vala:94
+msgid "Remove from Playlist"
+msgstr "Hapus dari playlis"
+
+#: src/StringPot.vala:95
+msgid "Remove from Device"
+msgstr "Hapus dari Peralatan"
+
+#: src/StringPot.vala:96
+msgid "Details"
+msgstr "Detail"
+
+#: src/StringPot.vala:97
+msgid "Save to MyComputer"
+msgstr "Simpan ke Komputerku"
+
+#: src/StringPot.vala:98
+msgid "Short by"
+msgstr "Urutkan Berdasarkan"
+
+#: src/StringPot.vala:99
+msgid "Titile"
+msgstr "Judul"
+
+#: src/StringPot.vala:100
+msgid "Ascending"
+msgstr "Urutan Menaik"
+
+#: src/StringPot.vala:101
+msgid "Descending"
+msgstr "Urutan Menurun"
+
+#: src/StringPot.vala:102
+msgid "Are you sure for remove from device"
+msgstr "Apakah kamu yakin untuk menghapus dari peralatan"
+
+#: src/StringPot.vala:103
+msgid "This will remove the file from your playlist and from any device."
+msgstr "Ini akan menghapus dari berkas dan peralatan."
+
+#: src/StringPot.vala:104
+msgid "Move to Trash"
+msgstr "Pindahkan ke Sampah"
+
+#: src/StringPot.vala:105
+msgid "Delete Permanent"
+msgstr "Hapus Permanen"
+
+#: src/StringPot.vala:106
+msgid "Replay"
+msgstr "Ulang"
+
+#: src/StringPot.vala:107
+msgid "Press ESC to exit full screen"
+msgstr "Tekan ESC Untuk keluar dari layar penuh"
+
+#: src/StringPot.vala:108
+msgid "Delete Current"
+msgstr "Hapus saat ini"
+
+#: src/StringPot.vala:109
+msgid "Flat"
+msgstr "Rata"
+
+#: src/StringPot.vala:110
+msgid "Classical"
+msgstr "Kalisk"
+
+#: src/StringPot.vala:111
+msgid "Club"
+msgstr "Klub"
+
+#: src/StringPot.vala:112
+msgid "Dance"
+msgstr "Dansa"
+
+#: src/StringPot.vala:113
+msgid "Full Bass"
+msgstr "Penh Bas"
+
+#: src/StringPot.vala:114
+msgid "Full Treble"
+msgstr "Penuh tribel"
+
+#: src/StringPot.vala:115
+msgid "Full Bass + Treble"
+msgstr "Penuh Bass + Trible"
+
+#: src/StringPot.vala:116
+msgid "Headphones"
+msgstr "Phone kepala"
+
+#: src/StringPot.vala:117
+msgid "Large Hall"
+msgstr "Lapangan Luas"
+
+#: src/StringPot.vala:118
+msgid "Live"
+msgstr "Langsung"
+
+#: src/StringPot.vala:119
+msgid "Party"
+msgstr "Pesta"
+
+#: src/StringPot.vala:120
+msgid "Pop"
+msgstr "Pop"
+
+#: src/StringPot.vala:121
+msgid "Reggae"
+msgstr "Rege"
+
+#: src/StringPot.vala:122
+msgid "Rock"
+msgstr "Rok"
+
+#: src/StringPot.vala:123
+msgid "Ska"
+msgstr "Ska"
+
+#: src/StringPot.vala:124
+msgid "Soft Rock"
+msgstr "Rok Lembut"
+
+#: src/StringPot.vala:125
+msgid "Techno"
+msgstr "Tekno"
+
+#: src/StringPot.vala:126
+msgid "Settings"
+msgstr "Setting"
+
+#: src/StringPot.vala:127
+msgid "Fullscreen"
+msgstr "Layar Penuh"
+
+#: src/StringPot.vala:128
+msgid "Other Preferences"
+msgstr "Pengaturan Lain"
+
+#: src/StringPot.vala:129
+msgid "Exit Fullscreen"
+msgstr "Keluar Layar Penuh"
+
+#: src/StringPot.vala:130
+msgid "Lyric On"
+msgstr "Hidupkan Lirik"
+
+#: src/StringPot.vala:131
+msgid "Lyric Off"
+msgstr "Matikan Lirik"
+
+#: src/StringPot.vala:132
+msgid "Equalizer"
+msgstr "Equalizer"
+
+#: src/StringPot.vala:133
+msgid "Video Balance"
+msgstr "Keseimbangan Video"
+
+#: src/StringPot.vala:134
+msgid "Preferences"
+msgstr "Pengaturan"
+
+#: src/StringPot.vala:135
+msgid "Subtitle On"
+msgstr "Teks Hidup"
+
+#: src/StringPot.vala:136
+msgid "Subtitle Off"
+msgstr "Teks Mati"
+
+#: src/StringPot.vala:137
+msgid "Record"
+msgstr "Rekam"
+
+#: src/StringPot.vala:138
+msgid "Setting Filter"
+msgstr "Stting saringan"
+
+#: src/StringPot.vala:139
+msgid "Camera"
+msgstr "Kamera"
+
+#: src/StringPot.vala:140
+msgid "Video"
+msgstr "Video"
+
+#: src/StringPot.vala:141
+msgid "Capture"
+msgstr "Tangkap"
+
+#: src/StringPot.vala:142
+msgid "Zoom In"
+msgstr "Besarkan Masuk"
+
+#: src/StringPot.vala:143
+msgid "Zoom Out"
+msgstr "Besar Keluar"
+
+#: src/StringPot.vala:144
+msgid "Zoom X"
+msgstr "Besarkan X"
+
+#: src/StringPot.vala:145
+msgid "Camera Mode"
+msgstr "Mode Kamera"
+
+#: src/StringPot.vala:146
+msgid "Video Mode"
+msgstr "Mode Video"
+
+#: src/StringPot.vala:147
+msgid "Photo Saved"
+msgstr "Poto Tersimpan"
+
+#: src/StringPot.vala:148
+msgid "Video Saved"
+msgstr "Video Tersimpan"
+
+#: src/StringPot.vala:149
+msgid "Flip Off"
+msgstr "Cermin Mati"
+
+#: src/StringPot.vala:150
+msgid "Flip On"
+msgstr "Cermin Hidup"
+
+#: src/StringPot.vala:151
+msgid "Flash Off"
+msgstr "Flash Hidup"
+
+#: src/StringPot.vala:152
+msgid "Flash On"
+msgstr "Flash Hidup"
+
+#: src/StringPot.vala:153
+msgid "Niki - Camera"
+msgstr "Niki - Kamera"
+
+#: src/StringPot.vala:154
+msgid "Reload"
+msgstr "Memuat Ulang"
+
+#: src/StringPot.vala:155
+msgid "Niki Player"
+msgstr "Niki Player"
+
+#: src/StringPot.vala:156
+msgid "Add to Niki Playlist"
+msgstr "Tambahkan Ke Niki"
+
+#: src/StringPot.vala:157
+msgid "Default"
+msgstr "Umum"
+
+#: src/StringPot.vala:158
+msgid "Audio Video"
+msgstr "Audio Video"
+
+#: src/StringPot.vala:159
+msgid "Video Flip"
+msgstr "Video Cermin"
+
+#: src/StringPot.vala:160
+msgid "Video Render"
+msgstr "Video Render"
+
+#: src/StringPot.vala:161
+msgid "Color Effects"
+msgstr "Video Effek"
+
+#: src/StringPot.vala:162
+msgid "Audio Render"
+msgstr "Render Suara"
+
+#: src/StringPot.vala:163
+msgid "Audio Visualisation"
+msgstr "Visualisasi Suara"
+
+#: src/StringPot.vala:164
+msgid "Visualisation Shader"
+msgstr "Visualisasi Sisi"
+
+#: src/StringPot.vala:165
+msgid "Visualisation Mode"
+msgstr "Visualisasi mode"
+
+#: src/StringPot.vala:166
+msgid "Visualisation Shader Amount"
+msgstr "Visualisasi Sisi"
+
+#: src/StringPot.vala:168
+msgid "Rotate 90 Right"
+msgstr "Rotasi 90 Kanan"
+
+#: src/StringPot.vala:169
+msgid "Rotate 180"
+msgstr "Rotasi 180"
+
+#: src/StringPot.vala:170
+msgid "Rotate 90 Left"
+msgstr "Rotasi 90 Kiri"
+
+#: src/StringPot.vala:171
+msgid "Flip Horizontal"
+msgstr "Cermin Horisontal"
+
+#: src/StringPot.vala:172
+msgid "Flip Vertical"
+msgstr "Cermin Vertikal"
+
+#: src/StringPot.vala:173
+msgid "Across Upper Left"
+msgstr "Di Kiri Atas"
+
+#: src/StringPot.vala:174
+msgid "Across Upper Right"
+msgstr "Di Kanan Atas"
+
+#: src/StringPot.vala:175
+msgid "Automatic"
+msgstr "Otomatis"
+
+#: src/StringPot.vala:176
+msgid "OFF"
+msgstr "MATI"
+
+#: src/StringPot.vala:177
+msgid "ON"
+msgstr "HIDUP"
+
+#: src/StringPot.vala:178
+msgid "Goom"
+msgstr "Goom"
+
+#: src/StringPot.vala:179
+msgid "Goom2k1"
+msgstr "Goom"
+
+#: src/StringPot.vala:180
+msgid "Spacescope"
+msgstr "Spacescope"
+
+#: src/StringPot.vala:181
+msgid "Spectrascope"
+msgstr "Spectrascope"
+
+#: src/StringPot.vala:182
+msgid "Synaescope"
+msgstr "Synaescope"
+
+#: src/StringPot.vala:183
+msgid "Wavescope"
+msgstr "Wavescope"
+
+#: src/StringPot.vala:184
+msgid "Monoscope"
+msgstr "Monoscope"
+
+#: src/StringPot.vala:185
+msgid "Fade"
+msgstr "Pudar"
+
+#: src/StringPot.vala:186
+msgid "Fade Move Up"
+msgstr "Pudar Keatas"
+
+#: src/StringPot.vala:187
+msgid "Fade Move Down"
+msgstr "Pudar ke bawah"
+
+#: src/StringPot.vala:188
+msgid "Fade Move Left"
+msgstr "Pudar ke kiri"
+
+#: src/StringPot.vala:189
+msgid "Fade Move Right"
+msgstr "Pudar ke kanan"
+
+#: src/StringPot.vala:190
+msgid "Fade Vertical Out"
+msgstr "Pudar vertikal keluar"
+
+#: src/StringPot.vala:191
+msgid "Fade Vertical In"
+msgstr "Pudar vertikal masuk"
+
+#: src/StringPot.vala:192
+msgid "Auto Audiosink"
+msgstr "Oto Audiosink"
+
+#: src/StringPot.vala:193
+msgid "Alsasink"
+msgstr "Alsasink"
+
+#: src/StringPot.vala:194
+msgid "Pulsesink"
+msgstr "Pulsesink"
+
+#: src/StringPot.vala:195
+msgid "Heat"
+msgstr "Panas"
+
+#: src/StringPot.vala:196
+msgid "Sepia"
+msgstr "Sepia"
+
+#: src/StringPot.vala:197
+msgid "Xray"
+msgstr "Xpro"
+
+#: src/StringPot.vala:198
+msgid "Xpro"
+msgstr "Xpro"
+
+#: src/StringPot.vala:199
+msgid "Yellow Blue"
+msgstr "Kuning Biru"
+
+#: src/StringPot.vala:200
+msgid "Gamma"
+msgstr "Gama"
+
+#: src/StringPot.vala:201
+msgid "Brightness"
+msgstr "Terang"
+
+#: src/StringPot.vala:202
+msgid "Contrast"
+msgstr "Kontras"
+
+#: src/StringPot.vala:203
+msgid "Saturation"
+msgstr "Saturasi"
+
+#: src/StringPot.vala:204
+msgid "Hue"
+msgstr "Corak Warna"
+
+#: src/StringPot.vala:205
+msgid "Blur"
+msgstr "Buyar"
+
+#: src/StringPot.vala:206
+msgid "Buffering: "
+msgstr "Buffer: "
+
+#: src/StringPot.vala:207
+msgid "Save"
+msgstr "Simpan"
+
+#: src/StringPot.vala:208
+msgid "Crop & Position"
+msgstr "Pangkas & Posisi"
+
+#: src/StringPot.vala:209
+msgid "Choose the part of the image to use as an cover."
+msgstr "Pilih bagian dari gambar untuk digunakan sebagai kover."
+
+#: src/StringPot.vala:210
+msgid "Set cover"
+msgstr "Atur kover"
+
+#: src/StringPot.vala:211
+msgid "Cover:"
+msgstr "Kover:"
+
+#: src/StringPot.vala:212
+msgid "Comment:"
+msgstr "Komen:"
+
+#: src/StringPot.vala:213
+msgid "Title:"
+msgstr "Judul:"
+
+#: src/StringPot.vala:214
+msgid "Artist:"
+msgstr "Artis:"
+
+#: src/StringPot.vala:215
+msgid "Album:"
+msgstr "Album:"
+
+#: src/StringPot.vala:216
+msgid "Genre:"
+msgstr "Jenre:"
+
+#: src/StringPot.vala:217
+msgid "Composer:"
+msgstr "Komposer:"
+
+#: src/StringPot.vala:218
+msgid "Group:"
+msgstr "Grup:"
+
+#: src/StringPot.vala:219
+msgid "Track:"
+msgstr "Trek:"
+
+#: src/StringPot.vala:220
+msgid "Date:"
+msgstr "Tanggal:"
+
+#: src/StringPot.vala:221
+msgid "Image"
+msgstr "Gamabar"
+
+#: src/StringPot.vala:222
+msgid "Folder is Empty\n"
+msgstr "Folder Kosong\n"
+
+#: src/StringPot.vala:223
+msgid "Nothing Video And Music in Folder\n"
+msgstr "Tidak ada vidio dan musik dalam folder\n"
+
+#: src/StringPot.vala:224
+msgid "Library Music is Empty\n"
+msgstr "Pustaka musi kosong\n"
+
+#: src/StringPot.vala:225
+msgid "Library Video is Empty\n"
+msgstr "Pustaka video kosong\n"

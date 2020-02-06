@@ -1,0 +1,406 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist>
+	<enum id="com.github.torikulhabib.niki.repeat-mode">
+		<value nick="off" value="0" />
+		<value nick="all" value="1" />
+		<value nick="one" value="2" />
+	</enum>
+	<enum id="com.github.torikulhabib.niki.settings-mode">
+		<value nick="equalizer" value="0" />
+		<value nick="video" value="1" />
+		<value nick="other" value="2" />
+	</enum>
+	<enum id="com.github.torikulhabib.niki.player-mode">
+		<value nick="video" value="0" />
+		<value nick="audio" value="1" />
+		<value nick="streamaud" value="2" />
+		<value nick="streamvid" value="3" />
+	</enum>
+	<enum id="com.github.torikulhabib.niki.camera-profile">
+		<value nick="mp4" value="0" />
+		<value nick="ogg" value="1" />
+		<value nick="webm" value="2" />
+		<value nick="mkv" value="3" />
+	</enum>
+	<enum id="com.github.torikulhabib.niki.camera-delay">
+		<value nick="disabled" value="0" />
+		<value nick="3sec" value="3" />
+		<value nick="5sec" value="5" />
+		<value nick="10sec" value="10" />
+	</enum>
+	<enum id="com.github.torikulhabib.niki.dlna-state">
+		<value nick="unknown" value="0" />
+		<value nick="transitioning" value="1" />
+		<value nick="stopped" value="2" />
+		<value nick="paused" value="3" />
+		<value nick="playing" value="4" />
+	</enum>
+	<schema id="com.github.torikulhabib.niki" path="/com/github/torikulhabib/niki/">
+		<key name="repeat-mode" enum="com.github.torikulhabib.niki.repeat-mode">
+			<default>"off"</default>
+			<summary>Repeat mode.</summary>
+			<description>Repeat mode.</description>
+		</key>
+		<key name="settings-mode" enum="com.github.torikulhabib.niki.settings-mode">
+			<default>"equalizer"</default>
+			<summary>settings mode.</summary>
+			<description>settings mode.</description>
+		</key>
+		<key name="player-mode" enum="com.github.torikulhabib.niki.player-mode">
+			<default>"video"</default>
+			<summary>player mode.</summary>
+			<description>player mode.</description>
+		</key>
+		<key name="camera-profile" enum="com.github.torikulhabib.niki.camera-profile">
+			<default>"mp4"</default>
+			<summary>Camera profile.</summary>
+			<description>Camera profile.</description>
+		</key>
+		<key name="camera-delay" enum="com.github.torikulhabib.niki.camera-delay">
+			<default>"disabled"</default>
+			<summary>Camera delay.</summary>
+			<description>Camera delay.</description>
+		</key>
+		<key name="dlna-state" enum="com.github.torikulhabib.niki.dlna-state">
+			<default>"unknown"</default>
+			<summary>DLNA State.</summary>
+			<description>DLNA State.</description>
+		</key>
+	  <key name="dark-style" type="b">
+	  	<default>false</default>
+	  	<summary>Mode switch</summary>
+	  	<description>Mode switch</description>
+  	</key>
+	  <key name="dlna-muted" type="b">
+	  	<default>false</default>
+	  	<summary>DLNA muted</summary>
+	  	<description>DLNA muted</description>
+  	</key>
+	  <key name="stream-mode" type="b">
+	  	<default>false</default>
+	  	<summary>Streaming condition</summary>
+	  	<description>Streaming condition</description>
+  	</key>
+	  <key name="fullscreen" type="b">
+	  	<default>false</default>
+	  	<summary>Fullscreen condition</summary>
+	  	<description>Fullscreen condition</description>
+  	</key>
+	  <key name="maximize" type="b">
+	  	<default>false</default>
+	  	<summary>Maximize condition</summary>
+	  	<description>Maximize condition</description>
+	  </key>
+    <key name="subtitle-available" type="b">
+        <default>false</default>
+        <summary>Subtitle signal</summary>
+        <description>Subtittle signal</description>
+    </key>
+    <key name="activate-subtittle" type="b">
+        <default>false</default>
+        <summary>Active subtittle signal</summary>
+        <description>Active subtittle signal</description>
+    </key>
+    <key name="edit-playlist" type="b">
+        <default>false</default>
+        <summary>Edit playlist</summary>
+        <description>Edit playlist</description>
+    </key>
+    <key name="status-muted" type="b">
+        <default>false</default>
+        <summary>Mute or no</summary>
+        <description>Mute or no</description>
+    </key>
+	  <key name="previous-status" type="b">
+	  	<default>false</default>
+	  	<summary>Previous list</summary>
+	  	<description>Previous list</description>
+  	</key>
+	  <key name="next-status" type="b">
+	  	<default>false</default>
+	  	<summary>Next list</summary>
+	  	<description>Next list</description>
+  	</key>
+	  <key name="lyric-available" type="b">
+	  	<default>false</default>
+	  	<summary>Lyric availabe</summary>
+	  	<description>Lyric availabe</description>
+  	</key>
+	  <key name="home-signal" type="b">
+	  	<default>true</default>
+	  	<summary>Home signal</summary>
+	  	<description>Home signal</description>
+  	</key>
+	  <key name="audio-video" type="b">
+	  	<default>false</default>
+	  	<summary>Audio or video signal</summary>
+	  	<description>Audio or video signal</description>
+  	</key>
+	  <key name="shuffle-button" type="b">
+	  	<default>false</default>
+	  	<summary>Shuffle signal</summary>
+	  	<description>Shuffle signal</description>
+  	</key>
+    <key name="settings-button" type="b">
+      <default>false</default>
+      <summary>settings signal</summary>
+      <description>settings signal</description>
+    </key>
+    <key name="information-button" type="b">
+      <default>false</default>
+      <summary>Information button</summary>
+      <description>Information button</description>
+    </key>
+    <key name="liric-button" type="b">
+      <default>false</default>
+      <summary>Liric button</summary>
+      <description>Liric button</description>
+    </key>
+    <key name="spinner-wait" type="b">
+      <default>false</default>
+      <summary>spinner wait</summary>
+      <description>spinner wait</description>
+    </key>
+    <key name="camera-video" type="b">
+      <default>false</default>
+      <summary>Camera or Video</summary>
+      <description>Camera or Video</description>
+    </key>
+    <key name="mode-flip" type="b">
+      <default>false</default>
+      <summary>Mode Flip</summary>
+      <description>Mode Flip</description>
+    </key>
+    <key name="flash-camera" type="b">
+      <default>false</default>
+      <summary>flash camera</summary>
+      <description>flash camera</description>
+    </key>
+    <key name="setting-camera" type="b">
+      <default>false</default>
+      <summary>flash camera</summary>
+      <description>flash camera</description>
+    </key>
+    <key name="ascen-descen" type="b">
+      <default>false</default>
+      <summary>Ascending</summary>
+      <description>Acendinf</description>
+    </key>
+    <key name="last-stopped" type="d">
+        <default>0</default>
+        <summary>Last stopped time of last played video</summary>
+        <description>Last stopped time of last played video</description>
+    </key>
+    <key name="volume-adjust" type="d">
+        <default>0</default>
+        <summary>Volume</summary>
+        <description>Volume</description>
+    </key>
+	  <key name="sort-by" type="i">
+	  	<default>0</default>
+	  	<summary>Sort By</summary>
+	  	<description>Sort By</description>
+  	</key>
+	  <key name="coloreffect-mode" type="i">
+	  	<default>0</default>
+	  	<summary>Color Effect</summary>
+	  	<description>Color Effect</description>
+  	</key>
+	  <key name="dlna-volume" type="i">
+	  	<default>0</default>
+	  	<summary>DLNA volume</summary>
+	  	<description>DLNA volume</description>
+  	</key>
+	  <key name="amount-entry" type="i">
+	  	<default>300</default>
+	  	<summary>Amount entry</summary>
+	  	<description>Amount entry</description>
+	  </key>
+	  <key name="window-height" type="i">
+	  	<default>300</default>
+	  	<summary>Window height</summary>
+	  	<description>Window height</description>
+	  </key>
+	  <key name="window-width" type="i">
+	  	<default>550</default>
+	  	<summary>Window width</summary>
+	  	<description>Window width</description>
+	  </key>
+	  <key name="window-y" type="i">
+	  	<default>0</default>
+	  	<summary>Window Y</summary>
+	  	<description>Window Y</description>
+	  </key>
+	  <key name="window-x" type="i">
+	  	<default>0</default>
+	  	<summary>Window X</summary>
+	  	<description>Window X</description>
+	  </key>
+    <key name="flip-options" type="i">
+      <default>0</default>
+      <summary>Video Flip</summary>
+	  	<description>Flip change</description>
+    </key>
+    <key name="videorender-options" type="i">
+      <default>0</default>
+      <summary>Video Render</summary>
+	  	<description>Video Render</description>
+    </key>
+    <key name="videoresolution-options" type="i">
+      <default>0</default>
+      <summary>Video Resolution</summary>
+	  	<description>Video Resolution</description>
+    </key>
+    <key name="coloreffects-options" type="i">
+      <default>0</default>
+      <summary>Video Resolution</summary>
+	  	<description>Video Resolution</description>
+    </key>
+    <key name="audiorender-options" type="i">
+      <default>0</default>
+      <summary>Audio Render</summary>
+	  	<description>Audio Render</description>
+    </key>
+    <key name="visualisation-options" type="i">
+      <default>0</default>
+      <summary>Audio Visualisation</summary>
+	  	<description>Audio Visualisation</description>
+    </key>
+    <key name="visualmode-options" type="i">
+      <default>0</default>
+      <summary>Visualisation Mode</summary>
+	  	<description>Visualisation Mode</description>
+    </key>
+    <key name="shader-options" type="i">
+      <default>1</default>
+      <summary>Shader Mode</summary>
+	  	<description>Shader Mode</description>
+    </key>
+    <key name="font-options" type="i">
+      <default>0</default>
+      <summary>Font custom or default</summary>
+	  	<description>Font custom or default</description>
+    </key>
+    <key name="speed-playing" type="i">
+      <default>4</default>
+      <summary>Speed Playing</summary>
+	  	<description>Speed Playing</description>
+    </key>
+    <key name="path-css" type="s">
+        <default>"/com/github/torikulhabib/niki/css/applicationlight.css"</default>
+        <summary>Path Css</summary>
+        <description>Path Css</description>
+    </key>
+    <key name="uri-video" type="s">
+        <default>""</default>
+        <summary>Uri video</summary>
+        <description>Uri video</description>
+    </key>
+    <key name="tittle-playing" type="s">
+        <default>""</default>
+        <summary>tittle playing</summary>
+        <description>tittle playing</description>
+    </key>
+    <key name="artist-music" type="s">
+        <default>""</default>
+        <summary>artist music</summary>
+        <description>artist music</description>
+    </key>
+    <key name="album-music" type="s">
+        <default>""</default>
+        <summary>album music</summary>
+        <description>album music</description>
+    </key>
+    <key name="subtitle-choose" type="s">
+      <default>''</default>
+      <summary>Subtittle file</summary>
+      <description>subtittle file</description>
+    </key>
+    <key name="last-played" type="s">
+      <default>''</default>
+      <default>'Default font'</default>
+      <summary>Font custom or default</summary>
+    </key>
+    <key name="folder-location" type="s">
+      <default>''</default>
+      <default>'Folder location'</default>
+      <summary>Folder location</summary>
+    </key>
+    <key name="tooltip-equalizer" type="s">
+      <default>''</default>
+      <default>'Tooltips equalizer presets'</default>
+      <summary>Tooltips equalizer presets</summary>
+    </key>
+    <key name="tooltip-videos" type="s">
+      <default>''</default>
+      <default>'Tooltips Videos presets'</default>
+      <summary>Tooltips Videos presets</summary>
+    </key>
+    <key name="font" type="s">
+      <default>''</default>
+      <summary>Default font</summary>
+      <description>Select font</description>
+    </key>
+    <key name="uri-image" type="s">
+      <default>''</default>
+      <summary>Uri image</summary>
+      <description>Uri image</description>
+    </key>
+    <key name="last-played-videos" type="as">
+        <default>[]</default>
+        <summary>List of last played videos</summary>
+        <description>A list of the last played</description>
+    </key>
+	</schema>
+  <schema path="/com/github/torikulhabib/equalizer/" id="com.github.torikulhabib.equalizer">
+    <key type="b" name="equalizer-enabled">
+      <default>false</default>
+      <summary>equalizer is enabled or disabled</summary>
+      <description>equalizer is enabled or disabled</description>
+    </key>
+    <key type="s" name="selected-preset">
+      <default>''</default>
+      <summary>Contains the name of the user-selected preset</summary>
+      <description>Contains information regarding the user-selected preset</description>
+    </key>
+    <key type="as" name="custom-presets">
+      <default>[]</default>
+      <summary>Custom Equalizer Presets</summary>
+      <description>Scale value -85 and 85</description>
+    </key>
+  </schema>
+  <schema path="/com/github/torikulhabib/videofilter/" id="com.github.torikulhabib.videofilter">
+    <key type="b" name="videofilter-enabled">
+      <default>false</default>
+      <summary>Videofilter is enabled or disabled</summary>
+      <description>Videofilter is enabled or disabled</description>
+    </key>
+    <key type="s" name="selected-preset">
+      <default>''</default>
+      <summary>Contains the name of the user-selected preset</summary>
+      <description>Contains information regarding the user-selected preset</description>
+    </key>
+    <key type="as" name="custom-presets">
+      <default>[]</default>
+      <summary>Custom videofilter Presets</summary>
+      <description>Scale value -100 and 100</description>
+    </key>
+  </schema>
+  <schema path="/com/github/torikulhabib/videocamera/" id="com.github.torikulhabib.videocamera">
+    <key type="b" name="videocamera-enabled">
+      <default>false</default>
+      <summary>videocamera is enabled or disabled</summary>
+      <description>videocamera is enabled or disabled</description>
+    </key>
+    <key type="s" name="selected-preset">
+      <default>''</default>
+      <summary>Contains the name of the user-selected preset</summary>
+      <description>Contains information regarding the user-selected preset</description>
+    </key>
+    <key type="as" name="custom-presets">
+      <default>[]</default>
+      <summary>Custom videocamera Presets</summary>
+      <description>Scale value -100 and 100</description>
+    </key>
+  </schema>
+</schemalist>
