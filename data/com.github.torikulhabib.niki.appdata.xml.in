@@ -31,10 +31,6 @@
 ​  <releases>
     <release version="0.7.10" date="2020-2-6">
       <description>
-        <p>Fix and add feature</p>
-        <ul>
-          <li>Release.</li>
-        </ul>
       </description>
     </release>
   </releases>
