@@ -6,18 +6,18 @@ summary: niki
 description: |
     Multimedia Player
     Features:
-      Movie player.
-      Music player.
-      Font subtitle lyric.
-      Equalizer.
-      Video Balance.
-      Apply album art as background.
-      Blur bacground.
-      DLNA Explorer.
-      Camera.
-      Disk Drive.
-      MPRIS.
-      Streaming.
+    Movie player.
+    Music player.
+    Font subtitle lyric.
+    Equalizer.
+    Video Balance.
+    Apply album art as background.
+    Blur bacground.
+    DLNA Explorer.
+    Camera.
+    Disk Drive.
+    MPRIS.
+    Streaming.
 confinement: strict
 parts:
   niki:
