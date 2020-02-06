@@ -29,8 +29,9 @@
     <binary>com.github.torikulhabib.niki</binary>
   </provides>
 ​  <releases>
-    <release version="0.7.10" date="2020-2-6">
+    <release version="0.7.11" date="2020-2-6">
       <description>
+        <p>Hello Hera!</p>
       </description>
     </release>
   </releases>
@@ -89,7 +90,7 @@
   <url type="translate">https://github.com/torikulhabib/niki/tree/master/po</url>
   <custom>
     <value key="x-appcenter-color-primary">#525</value>
-    <value key="x-appcenter-color-primary-text">#d1ff82</value>
+    <value key="x-appcenter-color-primary-text">#ffa154</value>
     <value key="x-appcenter-suggested-price">6</value>
   </custom>
 </component>
