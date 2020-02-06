@@ -91,4 +91,3 @@ i18n.merge_file(
     install: true,
     install_dir: join_paths(get_option('datadir'), 'metainfo')
 )
-desktop_file_validate = find_program('desktop-file-validate', required:false)
