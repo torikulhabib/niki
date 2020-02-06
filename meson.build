@@ -1,5 +1,5 @@
 # project name and programming language
-project('com.github.torikulhabib.niki', 'vala', 'c', version: '0.10.0')
+project('com.github.torikulhabib.niki', 'vala', 'c', version: '0.7.10')
 
 gnome = import('gnome')
 i18n = import('i18n')
