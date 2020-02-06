@@ -54,13 +54,11 @@ namespace niki {
                 cropview.handles_visible = false;
 
                 var frame = new Gtk.Grid ();
+                frame.get_style_context ().add_class ("card");
+                frame.get_style_context ().add_class ("checkerboard");
                 frame.valign = Gtk.Align.CENTER;
                 frame.halign = Gtk.Align.CENTER;
                 frame.add (cropview);
-
-                var frame_context = frame.get_style_context ();
-                frame_context.add_class (Granite.STYLE_CLASS_CARD);
-                frame_context.add_class (Granite.STYLE_CLASS_CHECKERBOARD);
                 custom_bin.add (frame);
             } catch (Error e) {
                 critical (e.message);
