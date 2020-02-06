@@ -35,6 +35,18 @@ parts:
         - gobject-introspection
         - gettext
         - libgranite-dev
+        - libsoup2.4-dev
+        - libgstreamer-plugins-base1.0-dev
+        - libclutter-gtk-1.0-dev
+        - libclutter-gst-3.0-dev
+        - libtag1-dev
+        - libtagc0-dev
+        - libcanberra-dev
+        - libgstreamer-plugins-good1.0-dev
+        - libgstreamer-plugins-bad1.0-dev
+        - libgupnp-1.0-dev
+        - libgupnp-av-1.0-dev
+        - libgssdp-1.0-dev
         - ffmpeg
         - youtube-dl
     stage-packages:
@@ -78,18 +90,6 @@ parts:
         - libxcb-shm0-dev
         - libxcb1-dev
         - libxkbcommon-dev
-        - libsoup2.4-dev
-        - libgstreamer-plugins-base1.0-dev
-        - libclutter-gtk-1.0-dev
-        - libclutter-gst-3.0-dev
-        - libtag1-dev
-        - libtagc0-dev
-        - libcanberra-dev
-        - libgstreamer-plugins-good1.0-dev
-        - libgstreamer-plugins-bad1.0-dev
-        - libgupnp-1.0-dev
-        - libgupnp-av-1.0-dev
-        - libgssdp-1.0-dev
   granite:
     plugin: meson
     meson-parameters:
