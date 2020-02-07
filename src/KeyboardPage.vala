@@ -49,6 +49,12 @@ namespace niki {
                 }
             } else if (match_keycode (Gdk.Key.p, keycode)) {
                 window.player_page.right_bar.reveal_control ();
+            } else if (match_keycode (Gdk.Key.l, keycode)) {
+                NikiApp.settings.set_boolean ("liric-button", !NikiApp.settings.get_boolean ("liric-button"));
+            } else if (match_keycode (Gdk.Key.i, keycode)) {
+                NikiApp.settings.set_boolean ("information-button", !NikiApp.settings.get_boolean ("information-button"));
+            } else if (match_keycode (Gdk.Key.s, keycode)) {
+                NikiApp.settings.set_boolean ("settings-button", !NikiApp.settings.get_boolean ("settings-button"));
             }
 
             switch (e.keyval) {
