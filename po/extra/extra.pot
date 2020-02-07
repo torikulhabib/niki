@@ -24,7 +24,7 @@ msgstr ""
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:8
 #: data/com.github.torikulhabib.niki.desktop.in:4
-msgid "Multimedia Player"
+msgid "Media Player"
 msgstr ""
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:10

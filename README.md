@@ -1,7 +1,7 @@
-# Multi Media Player DLNA, Music, Video and streaming.
-[![Get it on AppCenter](https://appcenter.elementary.io/badge.svg)](https://appcenter.elementary.io/com.github.torikulhabib.niki)
-
+# Media Player DLNA, Music, Video and streaming.
+[![Get it on AppCenter](https://appcenter.elementary.io/badge.svg)](https://appcenter.elementary.io/com.github.torikulhabib.niki) 
 [![Get it from the Snap Store](https://snapcraft.io/static/images/badges/en/snap-store-black.svg)](https://snapcraft.io/niki)
+
 ## Niki player.
 
 ![screenshot](0.png)
@@ -67,6 +67,9 @@ If you like Niki and you want to support its development,consider supporting via
 * Keyboard N = Next
 * Keyboard B = Previous
 * Keyboard P = Playlist
+* Keyboard i = Info
+* Keyboard L = Lyric
+* Keyboard S = Settings
 
 ### Roadmap
 #### v0.5
