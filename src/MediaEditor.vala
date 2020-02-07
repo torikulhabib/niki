@@ -89,6 +89,7 @@ namespace niki {
             imagege_box.get_style_context ().add_class ("ground_action_button");
             imagege_box.orientation = Gtk.Orientation.HORIZONTAL;
             imagege_box.valign = Gtk.Align.CENTER;
+            imagege_box.halign = Gtk.Align.CENTER;
             imagege_box.hexpand = true;
             imagege_box.add (openimage);
             imagege_box.add (grid_label);
