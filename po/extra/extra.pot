@@ -24,11 +24,11 @@ msgstr ""
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:8
 #: data/com.github.torikulhabib.niki.desktop.in:4
-msgid "DLNA, Music, Video and streaming"
+msgid "Multimedia Player"
 msgstr ""
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:10
-msgid "Simple, Beauty Multimedia Player"
+msgid "DLNA Video Music and streaming."
 msgstr ""
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:11

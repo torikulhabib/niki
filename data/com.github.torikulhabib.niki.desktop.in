@@ -1,7 +1,7 @@
 [Desktop Entry]
 Type=Application
 Name= Niki
-Comment= BDLNA, Music, Video and streaming
+Comment=Multimedia Player
 GenericName= Niki Player;
 Exec=com.github.torikulhabib.niki %U
 Icon=com.github.torikulhabib.niki

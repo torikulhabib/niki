@@ -5,9 +5,9 @@
   <metadata_license>CC0</metadata_license>
   <project_license>GPL-3.0+</project_license>
   <name>Niki</name>
-  <summary>DLNA Music Video and streaming</summary>
+  <summary>Multimedia Player</summary>
   <description>
-    <p>Simple, Beauty Multimedia Player</p>
+    <p>DLNA Video Music and streaming.</p>
     <p>Features:</p>
     <ul>
       <li>Movie player.</li>
@@ -29,7 +29,7 @@
     <binary>com.github.torikulhabib.niki</binary>
   </provides>
 ​  <releases>
-    <release version="0.7.16" date="2020-2-7">
+    <release version="0.7.17" date="2020-2-07">
       <description>
         <p>Hello Hera!</p>
       </description>
@@ -90,7 +90,7 @@
   <url type="translate">https://github.com/torikulhabib/niki/tree/master/po</url>
   <custom>
     <value key="x-appcenter-color-primary">#525</value>
-    <value key="x-appcenter-color-primary-text">#ffa154</value>
+    <value key="x-appcenter-color-primary-text">#d1ff82</value>
     <value key="x-appcenter-suggested-price">6</value>
   </custom>
 </component>

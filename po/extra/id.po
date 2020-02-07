@@ -25,12 +25,12 @@ msgstr "Niki"
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:8
 #: data/com.github.torikulhabib.niki.desktop.in:4
-msgid "DLNA, Music, Video and streaming"
+msgid "Multimedia Player"
 msgstr "DLNA, Music, Video dan Aliran"
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:10
-msgid "Simple, Beauty Multimedia Player"
-msgstr "Sederhana, Player Serbaguna Cantik"
+msgid "DLNA Video Music and streaming."
+msgstr "DLNA video musik dan streaming."
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:11
 msgid "Features:"
