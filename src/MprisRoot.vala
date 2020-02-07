@@ -73,6 +73,7 @@ namespace niki {
         }
 
         public void raise () throws GLib.Error {
+            new NikiApp ().instance.active ();
             window.show ();
         }
     }

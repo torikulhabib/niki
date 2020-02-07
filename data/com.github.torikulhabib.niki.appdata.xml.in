@@ -29,7 +29,7 @@
     <binary>com.github.torikulhabib.niki</binary>
   </provides>
 ​  <releases>
-    <release version="0.7.14" date="2020-2-6">
+    <release version="0.7.15" date="2020-2-7">
       <description>
         <p>Hello Hera!</p>
       </description>

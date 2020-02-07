@@ -1,5 +1,6 @@
 executable(
     meson.project_name(),
+    asresources,
     'Application.vala',
     'Window.vala',
     'ClutterGstreamer.vala',
@@ -87,8 +88,6 @@ executable(
     'CropDialog.vala',
     'CropView.vala',
     'MediaEntry.vala',
-
-    asresources,
     c_args: c_args,
     dependencies: [
         dependency('gobject-introspection-1.0'),
