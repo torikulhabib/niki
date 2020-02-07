@@ -1,4 +1,7 @@
 # Multi Media Player DLNA, Music, Video and streaming.
+[![Get it on AppCenter](https://appcenter.elementary.io/badge.svg)](https://appcenter.elementary.io/com.github.torikulhabib.niki)
+
+[![mindi](https://snapcraft.io/mindi/badge.svg)](https://snapcraft.io/niki)
 ## Niki player.
 
 ![screenshot](0.png)
