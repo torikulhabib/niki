@@ -315,7 +315,6 @@ namespace niki {
                         videos += file.get_uri ();
                     };
                     if (videos.length > 0) {
-                        string videofile = videos [0];
                         if (!player_page.playback.playing) {
                             player_page.play_first_in_playlist ();
                         }

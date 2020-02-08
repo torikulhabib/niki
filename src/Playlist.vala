@@ -302,18 +302,14 @@ namespace niki {
                 return;
             }
             Gdk.Pixbuf preview = null;
-            preview = align_and_scale_pixbuf (objectpixbuf.get_pixbuf_from_url (inputstream [1], inputstream [2]), 48, 48);
+            preview = align_and_scale_pixbuf (objectpixbuf.get_pixbuf_from_url (inputstream [1], inputstream [2]), 48);
             if (preview != null) {
                 preview = objectpixbuf.icon_from_mediatype (mediatype);
             }
             liststore.append (out iter);
             liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, inputstream [2], PlaylistColumns.ARTISTTITLE, Markup.escape_text (inputstream [2]), PlaylistColumns.FILENAME, inputstream [0], PlaylistColumns.MEDIATYPE, mediatype, PlaylistColumns.FILESIZE, "", PlaylistColumns.ALBUMMUSIC, "", PlaylistColumns.ARTISTMUSIC, "", PlaylistColumns.PLAYNOW, true, PlaylistColumns.INPUTMODE, 1);
         }
-        private Gdk.Pixbuf? align_and_scale_pixbuf (Gdk.Pixbuf input_pixbuf, int size, int height) {
-            Gdk.Pixbuf pixbuf_scale = input_pixbuf;
-            pixbuf_scale = pixbuf_scale.scale_simple (size, height, Gdk.InterpType.BILINEAR);
-            return pixbuf_scale;
-        }
+
         public void add_dlna (string input_url, string input_tittle, string input_album, string input_artist, int mediatype, bool playnow, string upnp_class, string size_file) {
             bool exist = false;
             if (mediatype == 4) {
