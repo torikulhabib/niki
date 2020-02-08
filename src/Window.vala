@@ -288,9 +288,7 @@ namespace niki {
                 videos += file.get_uri ();
             }
             if (force_play && videos.length > 0) {
-                string videofile = videos [0];
-                var file = File.new_for_uri (videofile);
-                play_file (videofile, get_info_size (videofile), file_type (file));
+                player_page.play_first_in_playlist ();
             }
         }
 
@@ -319,21 +317,11 @@ namespace niki {
                     if (videos.length > 0) {
                         string videofile = videos [0];
                         if (!player_page.playback.playing) {
-                            var file = File.new_for_uri (videofile);
-                            play_file (videofile, get_info_size (videofile), file_type (file));
+                            player_page.play_first_in_playlist ();
                         }
                     }
 			        break;
 		    }
-        }
-
-        public void play_file (string uri, string filesize, int mediatype, bool from_beginning = true) {
-            NikiApp.settings.set_string ("tittle-playing", Markup.escape_text (get_song_info (File.new_for_uri (uri))));
-            if (get_mime_type (File.new_for_uri (uri)).has_prefix ("audio/")) {
-                NikiApp.settings.set_string ("artist-music", get_artist_music (uri));
-                NikiApp.settings.set_string ("album-music", get_album_music (uri));
-            }
-            player_page.play_file (uri, filesize, mediatype, from_beginning);
         }
 
         public bool is_privacy_mode_enabled () {

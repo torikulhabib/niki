@@ -265,7 +265,7 @@ namespace niki {
 
             var root = volume.get_mount ().get_default_location ();
             string uri_file = root.get_uri ().replace ("file:///", "dvd:///");
-            window.play_file (uri_file, get_info_size (uri_file), 0);
+            window.player_page.playlist_widget ().add_item (File.new_for_uri (uri_file));
         }
     }
 }
