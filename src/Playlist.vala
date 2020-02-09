@@ -182,6 +182,8 @@ namespace niki {
             show_all ();
             ((Gtk.TreeSortable)liststore).sort_column_changed.connect (update_playlist);
             model.row_inserted.connect (update_playlist);
+            model.row_changed.connect (get_status_list);
+            NikiApp.settings.changed["repeat-mode"].connect (get_status_list);
             NikiApp.settings.changed["sort-by"].connect (get_random);
             NikiApp.settings.changed["shuffle-button"].connect (get_random);
             NikiApp.settings.changed["ascen-descen"].connect (get_random);
@@ -450,6 +452,49 @@ namespace niki {
             return false;
         }
 
+        public string? end_filename () {
+            Gtk.TreeIter iter;
+            if (liststore.get_iter_from_string (out iter, (total - 1).to_string ())){
+                string filename, titlename, album, artist;
+                liststore.get (iter, PlaylistColumns.FILENAME, out filename, PlaylistColumns.TITLE, out titlename, PlaylistColumns.ALBUMMUSIC, out album, PlaylistColumns.ARTISTMUSIC, out artist);
+                NikiApp.settings.set_string ("tittle-playing", titlename);
+                NikiApp.settings.set_string ("album-music", album);
+                NikiApp.settings.set_string ("artist-music", artist);
+                return filename;
+            }
+            return null;
+        }
+
+        public string? end_filesize () {
+            Gtk.TreeIter iter;
+            if (liststore.get_iter_from_string (out iter, (total - 1).to_string ())){
+                string filesize;
+                liststore.get (iter, PlaylistColumns.FILESIZE, out filesize);
+                return filesize;
+            }
+            return null;
+        }
+
+        public int? end_mediatype () {
+            Gtk.TreeIter iter;
+            if (liststore.get_iter_from_string (out iter, (total - 1).to_string ())){
+                int mediatype;
+                liststore.get (iter, PlaylistColumns.MEDIATYPE, out mediatype);
+                return mediatype;
+            }
+            return 0;
+        }
+
+        public bool? end_playnow () {
+            Gtk.TreeIter iter;
+            if (liststore.get_iter_from_string (out iter, (total - 1).to_string ())){
+                bool playnow;
+                liststore.get (iter, PlaylistColumns.PLAYNOW, out playnow);
+                return playnow;
+            }
+            return false;
+        }
+
         public void set_current (string current_file) {
             total = 0;
             int current_played = 0;
@@ -470,9 +515,14 @@ namespace niki {
             current = current_played;
             get_status_list ();
         }
-
+        public bool get_has_previous () {
+            return current > 0;
+        }
+        public bool get_has_next () {
+            return total - 1 > current && total > 0;
+        }
         public void get_status_list () {
-            if (current > 0) {
+            if (get_has_previous () || NikiApp.settings.get_enum ("repeat-mode") == 1) {
                 if (!NikiApp.settings.get_boolean("previous-status")) {
                     NikiApp.settings.set_boolean("previous-status", true);
                 }
@@ -481,7 +531,7 @@ namespace niki {
                     NikiApp.settings.set_boolean("previous-status", false);
                 }
             }
-            if (total - 1 > current && total > 0) {
+            if (get_has_next () || NikiApp.settings.get_enum ("repeat-mode") == 1) {
                 if (!NikiApp.settings.get_boolean("next-status")) {
                     NikiApp.settings.set_boolean("next-status",  true);
                 }

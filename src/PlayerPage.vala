@@ -531,7 +531,9 @@ namespace niki {
         public void play_first_in_playlist (bool playnow = true) {
             play_file (playlist_widget ().first_filename (), playlist_widget ().first_filesize (), playlist_widget ().first_mediatype (), playnow);
         }
-
+        public void play_end_in_playlist (bool playnow = true) {
+            play_file (playlist_widget ().end_filename (), playlist_widget ().end_filesize (), playlist_widget ().end_mediatype (), playlist_widget ().end_playnow ());
+        }
         public void play_file (string uri, string filesize, int mediatype, bool from_beginning = true) {
             firstplay = true;
             NikiApp.settings.set_enum ("player-mode", mediatype);
@@ -631,11 +633,21 @@ namespace niki {
         }
 
         public void next () {
-            playlist_widget ().next ();
+            if (!playlist_widget ().get_has_next () && NikiApp.settings.get_enum ("repeat-mode") == 1) {
+                play_first_in_playlist (playlist_widget ().first_playnow ());
+                load_current_list ();
+            } else {
+                playlist_widget ().next ();
+            }
         }
 
         public void previous () {
-            playlist_widget ().previous ();
+            if (!playlist_widget ().get_has_previous () && NikiApp.settings.get_enum ("repeat-mode") == 1) {
+                play_end_in_playlist ();
+                load_current_list ();
+            } else {
+                playlist_widget ().previous ();
+            }
         }
 
         public void seek_jump_seconds (int seconds) {
