@@ -26,8 +26,8 @@ namespace niki {
         private ObjectPixbuf? objectpixbuf;
         public Gtk.ListStore liststore;
         public Gtk.TreeIter select_iter;
-        private int current = 0;
-        private int total = 0;
+        public int current = 0;
+        public int total = 0;
         private uint finish_timer = 0;
         public bool visible_menu = false;
         public signal void visible_menus ();
@@ -38,8 +38,7 @@ namespace niki {
             liststore = new Gtk.ListStore (PlaylistColumns.N_COLUMNS, typeof (Icon), typeof (Gdk.Pixbuf), typeof (string), typeof (string), typeof (string), typeof (string), typeof (string), typeof (string), typeof (bool), typeof (int), typeof (int));
             model = liststore;
             expand = true;
-            headers_visible = false;
-            activate_on_single_click = false;
+            headers_visible = activate_on_single_click = false;
 
             var text_render = new Gtk.CellRendererText ();
             text_render.ellipsize = Pango.EllipsizeMode.END;

@@ -27,6 +27,7 @@ namespace niki {
         private RepeatButton repeat_button;
         private Gtk.ScrolledWindow playlist_scrolled;
         private Gtk.Grid content_box;
+        private Gtk.Adjustment adjustment;
         private uint hiding_timer = 0;
 
         private bool _hovered = false;
@@ -121,11 +122,17 @@ namespace niki {
             NikiApp.settings.changed["lyric-available"].connect (() => {
                 font_button_revealer.set_reveal_child (NikiApp.settings.get_boolean ("audio-video") && NikiApp.settings.get_boolean ("lyric-available"));
             });
+
             playlist = new Playlist();
             playlist_scrolled = new Gtk.ScrolledWindow (null, null);
             playlist_scrolled.get_style_context ().add_class ("scrollbar");
+            adjustment = playlist_scrolled.vadjustment;
+            playlist_scrolled.vscrollbar_policy = Gtk.PolicyType.AUTOMATIC;
             playlist_scrolled.add (playlist);
             notify["child-revealed"].connect (() => {
+                if (!child_revealed) {
+                    hovered = child_revealed;
+                }
                 size_flexible ();
             });
             playlist.enter_notify_event.connect (() => {
@@ -145,11 +152,18 @@ namespace niki {
             header_label = new Gtk.Label ("");
             header_label.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
             header_label.ellipsize = Pango.EllipsizeMode.END;
+            var focus_button = new Gtk.Button.from_icon_name ("mail-read-symbolic", Gtk.IconSize.BUTTON);
+            focus_button.get_style_context ().add_class ("button_action");
+            focus_button.set_tooltip_text (StringPot.Track);
+            focus_button.clicked.connect ( () => {
+
+            });
 
             var header = new Gtk.ActionBar ();
             header.get_style_context ().add_class ("playlist");
             header.hexpand = true;
             header.set_center_widget (header_label);
+            header.pack_start (focus_button);
             playlist_edit ();
 		    var box_action = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
     		box_action.spacing = 0;
