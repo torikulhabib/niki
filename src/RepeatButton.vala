@@ -8,7 +8,6 @@ namespace niki {
             repeat_image.valign = Gtk.Align.CENTER;
             clicked.connect (() => {
                 repeatmode.switch_repeat_mode ();
-                repeat_icon ();
             });
             add (repeat_image);
             repeat_icon ();
