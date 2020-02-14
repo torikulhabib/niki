@@ -55,6 +55,8 @@ namespace niki {
                 NikiApp.settings.set_boolean ("information-button", !NikiApp.settings.get_boolean ("information-button"));
             } else if (match_keycode (Gdk.Key.s, keycode)) {
                 NikiApp.settings.set_boolean ("settings-button", !NikiApp.settings.get_boolean ("settings-button"));
+            } else if (match_keycode (Gdk.Key.r, keycode)) {
+                repeatmode.switch_repeat_mode ();
             }
 
             switch (e.keyval) {

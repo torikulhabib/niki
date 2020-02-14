@@ -17,7 +17,6 @@ namespace niki {
 
             clicked.connect (() => {
                 cameradelay.switch_delay ();
-                load_label ();
             });
             load_label ();
             var main_grid = new Gtk.Grid ();
@@ -26,6 +25,7 @@ namespace niki {
             main_grid.add (timer_image);
             main_grid.add (label_revealer);
             add (main_grid);
+            NikiApp.settings.changed["camera-delay"].connect (load_label);
         }
         private void load_label () {
             string text_in = ngettext ("%d Sec", "%d Sec", NikiApp.settings.get_enum ("camera-delay")).printf (NikiApp.settings.get_enum ("camera-delay"));
