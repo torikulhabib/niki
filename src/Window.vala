@@ -282,14 +282,10 @@ namespace niki {
             if (clear_playlist) {
                 player_page.playlist_widget ().clear_items ();
             }
-            string [] videos = {};
             foreach (var file in files) {
                 player_page.playlist_widget ().add_item (file);
-                videos += file.get_uri ();
             }
-            if (force_play && videos.length > 0) {
-                player_page.play_first_in_playlist ();
-            }
+            player_page.play_first_in_playlist ();
         }
 
         private void on_drag_data_received (Gtk.Widget widget, Gdk.DragContext drag_context, int x, int y, Gtk.SelectionData selection_data, uint target_type, uint time) {
@@ -308,16 +304,11 @@ namespace niki {
 		            if (main_stack.visible_child_name == "welcome") {
                         player_page.playlist_widget ().clear_items ();
                     }
-                    string [] videos = {};
                     foreach (var uri in selection_data.get_uris ()) {
-                        var file = File.new_for_uri (uri);
-                        player_page.playlist_widget ().add_item (file);
-                        videos += file.get_uri ();
+                        player_page.playlist_widget ().add_item (File.new_for_uri (uri));
                     };
-                    if (videos.length > 0) {
-                        if (!player_page.playback.playing) {
-                            player_page.play_first_in_playlist ();
-                        }
+		            if (main_stack.visible_child_name == "welcome") {
+                        player_page.play_first_in_playlist ();
                     }
 			        break;
 		    }

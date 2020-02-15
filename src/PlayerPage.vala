@@ -184,7 +184,7 @@ namespace niki {
             });
             playlist_widget ().play.connect ((file, size_path, mediatype, playnow) => {
                 play_file (file, size_path, mediatype, playnow);
-                load_current_list ();
+                playback.notify["idle"].connect (load_current_list);
             });
 
             bottom_bar.notify["child-revealed"].connect (mouse_blank);
@@ -192,13 +192,7 @@ namespace niki {
             right_bar.notify["child-revealed"].connect (mouse_blank);
             bool startup = false;
             playlist_widget ().item_added.connect (() => {
-                if (window.welcome_page.scaning_folder) {
-                    play_first_in_playlist (playlist_widget ().first_playnow ());
-                    window.welcome_page.scaning_folder = false;
-                    load_current_list ();
-                } else {
-                    load_current_list ();
-                }
+                load_current_list ();
                 if (!startup) {
                     if (!firstplay) {
                         if (!NikiApp.settings.get_string("last-played").has_prefix ("http")) {
@@ -216,9 +210,6 @@ namespace niki {
                             signal_playing ();
                             bottom_bar.stop_revealer.set_reveal_child (false);
                             startup = true;
-                        } else {
-                            play_first_in_playlist (playlist_widget ().first_playnow ());
-                            load_current_list ();
                         }
                     }
                 }
@@ -230,12 +221,10 @@ namespace niki {
                     case RepeatMode.ALL :
                         if (!playlist_widget ().next ()) {
                             play_first_in_playlist (playlist_widget ().first_playnow ());
-                            load_current_list ();
                         }
                         break;
                     case RepeatMode.ONE :
                         playback.playing = true;
-                        load_current_list ();
                         break;
                     case RepeatMode.OFF :
                         if (!playlist_widget ().next ()) {
@@ -246,7 +235,6 @@ namespace niki {
                             bottom_bar.stop_revealer.set_reveal_child (false);
                             bottom_bar.previous_revealer.set_reveal_child (false);
                             bottom_bar.next_revealer.set_reveal_child (false);
-                            load_current_list ();
                             Inhibitor.instance.uninhibit ();
                         } else {
                             playback.playing = true;
@@ -270,12 +258,8 @@ namespace niki {
             NikiApp.settings.changed["font"].connect (font_option);
             font_option ();
             update_volume ();
-            NikiApp.settings.changed["volume-adjust"].connect (() => {
-                update_volume ();
-            });
-            NikiApp.settings.changed["status-muted"].connect (() => {
-                update_volume ();
-            });
+            NikiApp.settings.changed["volume-adjust"].connect (update_volume);
+            NikiApp.settings.changed["status-muted"].connect (update_volume);
 
             NikiApp.settings.changed["fullscreen"].connect (() => {
                 if (!NikiApp.settings.get_boolean("fullscreen")) {
@@ -310,10 +294,9 @@ namespace niki {
                 NikiApp.settings.set_string("uri-video", " ");
             });
 
-            playback.ready.connect (() => {
-                signal_window ();
-            });
+            playback.ready.connect (signal_window); 
             size_allocate.connect (signal_window);
+
             NikiApp.settings.changed["home-signal"].connect (() => {
                 if (!NikiApp.settings.get_boolean("home-signal")) {
                     if (NikiApp.settings.get_boolean("audio-video")) {
@@ -330,19 +313,13 @@ namespace niki {
             NikiApp.settings.changed["visualisation-options"].connect (audiovisualisation);
             NikiApp.settings.set_string("subtitle-choose", " ");
             audiovisualisation ();
-            Idle.add (() => {
-                starting ();
-                return false;
-            });
-            window.welcome_page.getlink.errormsg.connect ((links) => {
-                string_notify (links);
-                links = null;
-            });
+            Idle.add (starting);
+            window.welcome_page.getlink.errormsg.connect (string_notify);
         }
         public Playlist? playlist_widget () {
             return right_bar.playlist;
         }
-        private void load_current_list () {
+        public void load_current_list () {
             if (window.main_stack.visible_child_name == "player" && !NikiApp.settings.get_boolean("home-signal") && playback.uri != null) {
                 playlist_widget ().set_current (playback.uri);
             }
@@ -350,7 +327,7 @@ namespace niki {
         private void buffer_fill () {
             string_notify (StringPot.Buffering + ((int)(playback.get_buffer_fill () * 100)).to_string () + "%" );
         }
-        public void starting () {
+        public bool starting () {
             if (!playback.playing) {
                 if (window.is_privacy_mode_enabled () && !NikiApp.settings.get_boolean("home-signal")) {
                     if (file_exists (NikiApp.settings.get_string("last-played"))) {
@@ -371,6 +348,7 @@ namespace niki {
             } else {
                 resize_player_page (570, 430);
             }
+            return false;
         }
         private void gohome () {
             if (!NikiApp.settings.get_boolean("home-signal")) {
@@ -586,48 +564,27 @@ namespace niki {
 
         public void signal_playing () {
             bottom_bar.stop_revealer.set_reveal_child (true);
-            switch (NikiApp.settings.get_enum ("player-mode")) {
-                case PlayerMode.VIDEO :
-                    if (NikiApp.settings.get_boolean("audio-video")) {
-                        NikiApp.settings.set_boolean("audio-video", false);
-                    }
-                    if (playback.playing) {
-                        Inhibitor.instance.inhibit ();
-                    } else {
-                        Inhibitor.instance.uninhibit ();
-                    }
-                    break;
-                case PlayerMode.AUDIO :
-                    if (!NikiApp.settings.get_boolean("audio-video")) {
-                        NikiApp.settings.set_boolean("audio-video", true);
-                    }
-                    if (NikiApp.settings.get_boolean ("liric-button") && playback.playing) {
-                        Inhibitor.instance.inhibit ();
-                    } else {
-                        Inhibitor.instance.uninhibit ();
-                    }
-                    audio_banner ();
-                    title_music.text = " " + NikiApp.settings.get_string ("tittle-playing") + " ";
-                    artist_music.text = " " + NikiApp.settings.get_string ("artist-music") + " ";
-                    break;
-                case PlayerMode.STREAMAUD :
-                    if (!NikiApp.settings.get_boolean("audio-video")) {
-                        NikiApp.settings.set_boolean("audio-video", true);
-                    }
-                    audio_banner ();
-                    title_music.text = " " + NikiApp.settings.get_string ("tittle-playing") + " ";
-                    artist_music.text = " " + NikiApp.settings.get_string ("artist-music") + " ";
-                    break;
-                case PlayerMode.STREAMVID :
-                    if (NikiApp.settings.get_boolean("audio-video")) {
-                        NikiApp.settings.set_boolean("audio-video", false);
-                    }
-                    if (playback.playing) {
-                        Inhibitor.instance.inhibit ();
-                    } else {
-                        Inhibitor.instance.uninhibit ();
-                    }
-                    break;
+            if (NikiApp.settings.get_enum ("player-mode") == PlayerMode.VIDEO || NikiApp.settings.get_enum ("player-mode") == PlayerMode.STREAMVID) {
+                if (NikiApp.settings.get_boolean("audio-video")) {
+                    NikiApp.settings.set_boolean("audio-video", false);
+                }
+                if (playback.playing) {
+                    Inhibitor.instance.inhibit ();
+                } else {
+                    Inhibitor.instance.uninhibit ();
+                }
+            } else {
+                if (!NikiApp.settings.get_boolean("audio-video")) {
+                    NikiApp.settings.set_boolean("audio-video", true);
+                }
+                if (NikiApp.settings.get_boolean ("liric-button") && NikiApp.settings.get_boolean ("lyric-available") && playback.playing) {
+                    Inhibitor.instance.inhibit ();
+                } else {
+                    Inhibitor.instance.uninhibit ();
+                }
+                audio_banner ();
+                title_music.text = " " + NikiApp.settings.get_string ("tittle-playing") + " ";
+                artist_music.text = " " + NikiApp.settings.get_string ("artist-music") + " ";
             }
             update_position_cover ();
         }
@@ -635,7 +592,6 @@ namespace niki {
         public void next () {
             if (!playlist_widget ().get_has_next () && NikiApp.settings.get_enum ("repeat-mode") == 1) {
                 play_first_in_playlist (playlist_widget ().first_playnow ());
-                load_current_list ();
             } else {
                 playlist_widget ().next ();
             }
@@ -644,7 +600,6 @@ namespace niki {
         public void previous () {
             if (!playlist_widget ().get_has_previous () && NikiApp.settings.get_enum ("repeat-mode") == 1) {
                 play_end_in_playlist ();
-                load_current_list ();
             } else {
                 playlist_widget ().previous ();
             }

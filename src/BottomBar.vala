@@ -187,7 +187,6 @@ namespace niki {
             playlist_revealer.tooltip_text = StringPot.Playlist;
             playlist_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             playlist_revealer.transition_duration = 500;
-            playlist_revealer.set_reveal_child (false);
             playlist_revealer.clicked.connect (() => {
                 playerpage.right_bar.reveal_control ();
             });

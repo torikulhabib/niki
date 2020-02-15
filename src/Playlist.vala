@@ -181,7 +181,6 @@ namespace niki {
             show_all ();
             ((Gtk.TreeSortable)liststore).sort_column_changed.connect (update_playlist);
             model.row_inserted.connect (update_playlist);
-            model.row_changed.connect (get_status_list);
             NikiApp.settings.changed["repeat-mode"].connect (get_status_list);
             NikiApp.settings.changed["sort-by"].connect (get_random);
             NikiApp.settings.changed["shuffle-button"].connect (get_random);
@@ -395,7 +394,7 @@ namespace niki {
             if (finish_timer != 0) {
                 Source.remove (finish_timer);
             }
-            finish_timer = GLib.Timeout.add (50, () => {
+            finish_timer = GLib.Timeout.add (500, () => {
                 item_added ();
                 finish_timer = 0;
                 return Source.REMOVE;

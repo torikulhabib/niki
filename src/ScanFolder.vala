@@ -80,6 +80,9 @@ namespace niki {
                             signal_notify (StringPot.Nothing_AV);
                         }
                         mimetype_contents = {};
+                        if (content_video || content_Audio) {
+                            window.player_page.play_first_in_playlist ();
+                        }
                         content_count = 0;
                         return Source.REMOVE;
                     });

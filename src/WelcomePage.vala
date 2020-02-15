@@ -33,7 +33,6 @@ namespace niki {
         public DLNATreeView? treview;
         public DLNARenderControl? dlnarendercontrol;
         public DLNAAction? dlnaaction;
-        public bool scaning_folder = false;
 
         construct {
             dlnamain = new DLNAMain (this);
@@ -159,12 +158,12 @@ namespace niki {
             });
 
             getlink.process_all.connect ((links) => {
-		        if (window.main_stack.visible_child_name == "welcome") {
-                    scaning_folder = true;
-                }
                 window.player_page.playlist_widget ().add_stream (links);
                 welcome_left.sensitive = true;
                 welcome_rigth.sensitive = true;
+		        if (window.main_stack.visible_child_name == "welcome") {
+                    window.player_page.play_first_in_playlist ();
+                }
                 links = null;
             });
             scanfolder.signal_notify.connect((notif)=> {
@@ -195,9 +194,6 @@ namespace niki {
                         welcome_rigth.sensitive = false;
                         break;
                     case 2:
-		                if (window.main_stack.visible_child_name == "welcome") {
-                            scaning_folder = true;
-                        }
                         window.player_page.playlist_widget ().clear_items ();
                         window.run_open_folder ();
                         if (NikiApp.settings.get_boolean ("stream-mode")) {
@@ -213,9 +209,6 @@ namespace niki {
             welcome_left.activated.connect ((index) => {
                 switch (index) {
                     case 0:
-		                if (window.main_stack.visible_child_name == "welcome") {
-                            scaning_folder = true;
-                        }
                         window.player_page.playlist_widget ().clear_items ();
                         scanfolder.scanning (GLib.Environment.get_user_special_dir (UserDirectory.VIDEOS), 1);
                         if (NikiApp.settings.get_boolean ("stream-mode")) {
@@ -223,9 +216,6 @@ namespace niki {
                         }
                         break;
                     case 1:
-		                if (window.main_stack.visible_child_name == "welcome") {
-                            scaning_folder = true;
-                        }
                         window.player_page.playlist_widget ().clear_items ();
                         scanfolder.scanning (GLib.Environment.get_user_special_dir (UserDirectory.MUSIC), 2);
                         if (NikiApp.settings.get_boolean ("stream-mode")) {
@@ -266,6 +256,9 @@ namespace niki {
             var root = volume.get_mount ().get_default_location ();
             string uri_file = root.get_uri ().replace ("file:///", "dvd:///");
             window.player_page.playlist_widget ().add_item (File.new_for_uri (uri_file));
+		    if (window.main_stack.visible_child_name == "welcome") {
+                window.player_page.play_first_in_playlist ();
+            }
         }
     }
 }

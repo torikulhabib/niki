@@ -306,9 +306,7 @@ namespace niki {
                 if (!NikiApp.settings.get_boolean ("stream-mode")) {
                     NikiApp.settings.set_boolean ("stream-mode", true);
                 }
-		        if (window.main_stack.visible_child_name == "welcome") {
-                    welcompage.scaning_folder = true;
-                }
+
                 if (downloaded) {
                     var download_dialog = new DownloadDialog (uri, title, mediatype);
                     download_dialog.show_all ();
@@ -324,6 +322,9 @@ namespace niki {
                         return false;
                     });
                     window.player_page.playlist_widget ().add_dlna (uri, title, get_album, artist, mediatype, playnow, upnp_class, size_file);
+		            if (window.main_stack.visible_child_name == "welcome" && welcompage.dlnarendercontrol.get_selected_device ()) {
+                        window.player_page.play_first_in_playlist ();
+                    }
                 }
             }
         }
