@@ -48,7 +48,6 @@ parts:
         - libgupnp-av-1.0-dev
         - libgssdp-1.0-dev
         - libcairo2-dev
-        - ffmpeg
         - youtube-dl
     stage-packages:
         - libx11-dev
