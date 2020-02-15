@@ -124,6 +124,8 @@ parts:
         - libglu1-mesa
         - freeglut3
         - libgpm2
+        - libx264-152
+        - libde265-0
   granite:
     plugin: meson
     meson-parameters:
