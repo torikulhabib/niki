@@ -122,6 +122,9 @@ parts:
         - gstreamer1.0-plugins-good
         - gstreamer1.0-plugins-base
         - libslang2
+        - libglu1-mesa
+        - freeglut3
+        - libgpm2
   granite:
     plugin: meson
     meson-parameters:
