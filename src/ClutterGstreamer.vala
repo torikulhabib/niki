@@ -49,10 +49,7 @@ namespace niki {
             bus.add_signal_watch ();
             bus.message.connect (handle_message);
             do_step ();
-            notify["idle"].connect (()=> {
-                do_step ();
-            });
-
+            notify["idle"].connect (do_step);
             NikiApp.settings.changed["speed-playing"].connect (() => {
                 pipeline.set_state (Gst.State.PAUSED);
                 var new_progress = ((duration * progress) + (double)0)/duration;

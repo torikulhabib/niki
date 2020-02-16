@@ -168,19 +168,19 @@ namespace niki {
                         state += 1;
                         return false;
                     case 1:
-                        text = NikiApp.settings.get_string ("tittle-playing");
+                        text = NikiApp.settings.get_boolean("audio-video") == true? NikiApp.settings.get_string ("tittle-playing") : "";
                         state += 1;
                       break;
                     case 2:
-                        text = NikiApp.settings.get_string ("artist-music");
+                        text = NikiApp.settings.get_boolean("audio-video") == true? NikiApp.settings.get_string ("artist-music") : "";
                         state += 1;
                         break;
                     case 3:
-                        text = NikiApp.settings.get_string ("album-music");
+                        text = NikiApp.settings.get_boolean("audio-video") == true? NikiApp.settings.get_string ("album-music") : "";
                         state += 1;
                         break;
                     case 4:
-                        text = NikiApp.settings.get_string ("tooltip-equalizer");
+                        text = NikiApp.settings.get_boolean("audio-video") == true? NikiApp.settings.get_string ("tooltip-equalizer") : "";
                         state = 0;
                         break;
                 }
