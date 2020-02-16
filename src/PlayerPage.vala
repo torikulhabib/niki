@@ -221,6 +221,7 @@ namespace niki {
                     case RepeatMode.ALL :
                         if (!playlist_widget ().next ()) {
                             play_first_in_playlist (playlist_widget ().first_playnow ());
+                            load_current_list ();
                         }
                         break;
                     case RepeatMode.ONE :
@@ -592,6 +593,7 @@ namespace niki {
         public void next () {
             if (!playlist_widget ().get_has_next () && NikiApp.settings.get_enum ("repeat-mode") == 1) {
                 play_first_in_playlist (playlist_widget ().first_playnow ());
+                load_current_list ();
             } else {
                 playlist_widget ().next ();
             }
@@ -600,6 +602,7 @@ namespace niki {
         public void previous () {
             if (!playlist_widget ().get_has_previous () && NikiApp.settings.get_enum ("repeat-mode") == 1) {
                 play_end_in_playlist ();
+                load_current_list ();
             } else {
                 playlist_widget ().previous ();
             }

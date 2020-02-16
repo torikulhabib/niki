@@ -54,8 +54,7 @@ namespace niki {
                         continue;
                     }
                     content_check = true;
-                    string mime_type_content = file_info.get_content_type ();
-                    mimetype_contents += mime_type_content;
+                    mimetype_contents += file_info.get_content_type ();
                     if (content_count != 0) {
                         Source.remove (content_count);
                     }
