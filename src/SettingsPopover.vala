@@ -113,12 +113,13 @@ namespace niki {
                 file_chooser_subtittle.select_uri (NikiApp.settings.get_string("subtitle-choose"));
             });
             file_chooser_subtittle.file_set.connect (() => {
-                NikiApp.settings.set_string("subtitle-choose", file_chooser_subtittle.get_uri());
-                string? sub_uri = get_subtitle_for_uri (NikiApp.settings.get_string("subtitle-choose"));
-                if (sub_uri != null) {
+                if (is_subtitle (file_chooser_subtittle.get_uri())) {
+                    NikiApp.settings.set_string("subtitle-choose", file_chooser_subtittle.get_uri());
                     if (!NikiApp.settings.get_boolean("subtitle-available")) {
                         NikiApp.settings.set_boolean ("subtitle-available", true);
                     }
+                } else {
+                    file_chooser_subtittle.select_uri (NikiApp.settings.get_string("subtitle-choose"));
                 }
             });
 

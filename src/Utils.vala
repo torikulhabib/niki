@@ -332,6 +332,17 @@ namespace niki {
         return null;
     }
 
+    private bool? is_subtitle (string uri) {
+        bool find_sub = false;
+        int last_dot = uri.last_index_of (".", 0);
+
+        foreach (string ext in SUBTITLE_EXTENSIONS){
+            if (uri.substring (last_dot + 1) == ext) {
+                find_sub = true;
+            }
+        }
+        return find_sub;
+    }
     private string? get_playing_liric (string uri) {
         string without_ext;
         int last_dot = uri.last_index_of (".", 0);

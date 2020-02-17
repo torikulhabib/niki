@@ -304,10 +304,21 @@ namespace niki {
 		            if (main_stack.visible_child_name == "welcome") {
                         player_page.playlist_widget ().clear_items ();
                     }
+                    bool audio_video_media = false;
                     foreach (var uri in selection_data.get_uris ()) {
-                        player_page.playlist_widget ().add_item (File.new_for_uri (uri));
+                        File file = File.new_for_uri (uri);
+                        if (get_mime_type (file).has_prefix ("video/") || get_mime_type (file).has_prefix ("audio/")) {
+                            audio_video_media = true;
+                            player_page.playlist_widget ().add_item (file);
+                        }
+                        if (player_page.playback.playing && main_stack.visible_child_name == "player" && is_subtitle (uri) == true && !NikiApp.settings.get_boolean("audio-video")) {
+                            NikiApp.settings.set_string("subtitle-choose", uri);
+                            if (!NikiApp.settings.get_boolean("subtitle-available")) {
+                                NikiApp.settings.set_boolean ("subtitle-available", true);
+                            }
+                        }
                     };
-		            if (main_stack.visible_child_name == "welcome") {
+		            if (main_stack.visible_child_name == "welcome" && audio_video_media) {
                         player_page.play_first_in_playlist ();
                     }
 			        break;
