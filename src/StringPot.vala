@@ -61,7 +61,7 @@ namespace niki {
         public abstract const string Show                       = _("Show");
         public abstract const string Hide                       = _("Hide");
         public abstract const string Close                      = _("Close");
-        public abstract const string Album                      = _("Album:");
+        public abstract const string Album                      = _("Album");
         public abstract const string Artist                     = _("Artist");
         public abstract const string Timer                      = _("Timer: ");
         public abstract const string Timer_Disabled             = _("Timer Disabled");

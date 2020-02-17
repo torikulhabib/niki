@@ -127,7 +127,6 @@ namespace niki {
             return false;
         }
         private void decorate_text (int anim_type, double time) {
-            int letter_count = 0;
             Pango.Attribute attr;
             Pango.Rectangle irect = {0, 0, 0, 0};
             Pango.Rectangle lrect = {0, 0, 0, 0};
@@ -141,18 +140,23 @@ namespace niki {
                 case 0:
                     break;
                 case 1:
-                    lrect.width = (int) ((1.0 - time) * 15.0 * Pango.SCALE + 0.5);
-                    attr = Pango.attr_shape_new (irect, lrect);
-                    attr.start_index = 0;
-                    attr.end_index = text.char_count () / 2;
-                    attrlist.change ((owned) attr);
+                    for (int i = 0; i < text.char_count (); i++) {
+                        lrect.width = (int) ((1.0 - time) * 15.0 * Pango.SCALE + 0.5);
+                        attr = Pango.attr_shape_new (irect, lrect);
+                        attr.start_index = text.char_count () / 2;
+                        attr.end_index = (text.char_count () / 2) + 1;
+                        attrlist.change ((owned) attr);
+                    }
                     break;
                 case 2:
-                    attr = Pango.attr_rise_new ((int)((1.0 -time) * 18000 * GLib.Math.sin (4.0 * time + letter_count * 0.7)));
-                    attr.start_index = 0;
-                    attr.end_index = text.char_count () / 2;
-                    attrlist.change ((owned) attr);
-                    letter_count++;
+                    int letter_count = 0;
+                    for (int i = 0; i < text.char_count (); i++) {
+                        attr = Pango.attr_rise_new ((int)((1.0 -time) * 18000 * GLib.Math.sin (6.0 * time + letter_count * 0.7)));
+                        attr.start_index = i;
+                        attr.end_index = text.char_count ();
+                        attrlist.change ((owned) attr);
+                        letter_count++;
+                    }
                     break;
             }
             layout.set_attributes (attrlist);
@@ -168,18 +172,34 @@ namespace niki {
                         state += 1;
                         return false;
                     case 1:
+                        text = NikiApp.settings.get_boolean("audio-video") == true? StringPot.Titile : "";
+                        state += 1;
+                        break;
+                    case 2:
                         text = NikiApp.settings.get_boolean("audio-video") == true? NikiApp.settings.get_string ("tittle-playing") : "";
                         state += 1;
                       break;
-                    case 2:
-                        text = NikiApp.settings.get_boolean("audio-video") == true? NikiApp.settings.get_string ("artist-music") : "";
-                        state += 1;
-                        break;
                     case 3:
-                        text = NikiApp.settings.get_boolean("audio-video") == true? NikiApp.settings.get_string ("album-music") : "";
+                        text = NikiApp.settings.get_boolean("audio-video") == true? StringPot.Artist : "";
                         state += 1;
                         break;
                     case 4:
+                        text = NikiApp.settings.get_boolean("audio-video") == true? NikiApp.settings.get_string ("artist-music") : "";
+                        state += 1;
+                        break;
+                    case 5:
+                        text = NikiApp.settings.get_boolean("audio-video") == true? StringPot.Album : "";
+                        state += 1;
+                        break;
+                    case 6:
+                        text = NikiApp.settings.get_boolean("audio-video") == true? NikiApp.settings.get_string ("album-music") : "";
+                        state += 1;
+                        break;
+                    case 7:
+                        text = NikiApp.settings.get_boolean("audio-video") == true? StringPot.Equalizer : "";
+                        state += 1;
+                        break;
+                    case 8:
                         text = NikiApp.settings.get_boolean("audio-video") == true? NikiApp.settings.get_string ("tooltip-equalizer") : "";
                         state = 0;
                         break;
@@ -191,7 +211,7 @@ namespace niki {
             if (animstep < 16) {
                 decorate_text (2, ((double) animstep) / 15.0);
             } else if (animstep == 16) {
-                timeout = 800;
+                timeout = 900;
             } else if (animstep == 17) {
                 timeout = 30;
             } else if (animstep < 33) {

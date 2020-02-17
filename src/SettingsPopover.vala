@@ -208,8 +208,7 @@ namespace niki {
             }
 
             int count = subtitles.model.iter_n_children (null);
-            sub_label_revealer.reveal_child = count > 0;
-            subtitles_revealer.reveal_child = count > 0;
+            sub_label_revealer.reveal_child = subtitles_revealer.reveal_child = count > 0;
             if (subtitles_revealer.reveal_child && (playerpage.playback.subtitle_track >= 0)) {
                 subtitles.active = playerpage.playback.subtitle_track;
             }
@@ -258,8 +257,7 @@ namespace niki {
             }
 
             int count = languages.model.iter_n_children (null);
-            audio_track_revealer.reveal_child = count > 1;
-            label_audio_revealer.reveal_child = count > 1;
+            label_audio_revealer.reveal_child = audio_track_revealer.reveal_child = count > 1;
             if (audio_track_revealer.reveal_child) {
                 languages.active = playerpage.playback.audio_stream;
             } else {
@@ -287,13 +285,8 @@ namespace niki {
         }
 
         private void get_discoverer_info (string uri_video) {
-            Gst.PbUtils.Discoverer discoverer = null;
             try {
-                discoverer = new Gst.PbUtils.Discoverer ((Gst.ClockTime) (5 * Gst.SECOND));
-            } catch (Error e) {
-                warning (e.message);
-            }
-            try {
+                Gst.PbUtils.Discoverer discoverer = new Gst.PbUtils.Discoverer ((Gst.ClockTime) (5 * Gst.SECOND));
                 discoverer_info = discoverer.discover_uri (uri_video);
             } catch (Error e) {
                 warning (e.message);
