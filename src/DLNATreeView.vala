@@ -142,7 +142,12 @@ namespace niki {
             });
 
             show_all ();
-
+            NikiApp.settings.changed["home-signal"].connect (() => {
+                if (time_outs > 0) {
+                    Source.remove (time_outs);
+                    time_outs = 0;
+                }
+            });
             serverdlna.browse_metadata_finish.connect (browse_metadata_cb);
             serverdlna.browse_finish.connect ((didl_xml) => {
                 NikiApp.settings.set_boolean ("spinner-wait", sensitive = true);
@@ -313,7 +318,11 @@ namespace niki {
                     downloaded = false;
                     return;
                 } else {
-                    time_outs = GLib.Timeout.add (150, () => {
+                    window.player_page.playlist_widget ().add_dlna (uri, title, get_album, artist, mediatype, playnow, upnp_class, size_file);
+		            if (window.main_stack.visible_child_name == "welcome" && welcompage.dlnarendercontrol.get_selected_device ()) {
+                        window.player_page.play_first_in_playlist ();
+                    }
+                    time_outs = GLib.Timeout.add (100, () => {
                         if (NikiApp.settings.get_boolean("home-signal")) {
                             return false;
                         }
@@ -321,10 +330,6 @@ namespace niki {
                         time_outs = 0;
                         return false;
                     });
-                    window.player_page.playlist_widget ().add_dlna (uri, title, get_album, artist, mediatype, playnow, upnp_class, size_file);
-		            if (window.main_stack.visible_child_name == "welcome" && welcompage.dlnarendercontrol.get_selected_device ()) {
-                        window.player_page.play_first_in_playlist ();
-                    }
                 }
             }
         }

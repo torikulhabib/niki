@@ -70,7 +70,7 @@ namespace niki {
                                 return false;
                             }
                             liststore.remove (ref select_iter);
-                            update_playlist ();
+                            update_playlist (50);
                             return Gdk.EVENT_PROPAGATE;
                         });
                     }
@@ -152,7 +152,7 @@ namespace niki {
                         menu.popup_at_pointer (event);
                         from_list.activate.connect (() => {
                             liststore.remove (ref select_iter);
-                            update_playlist ();
+                            update_playlist (50);
                             menu.hide ();
                         });
                         save_to.activate.connect (() => {
@@ -179,8 +179,12 @@ namespace niki {
                 return Gdk.EVENT_PROPAGATE;
             });
             show_all ();
-            ((Gtk.TreeSortable)liststore).sort_column_changed.connect (update_playlist);
-            model.row_inserted.connect (update_playlist);
+            ((Gtk.TreeSortable)liststore).sort_column_changed.connect (()=> {
+                update_playlist (50);
+            });
+            model.row_inserted.connect (()=>{
+                update_playlist (500);
+            });
             NikiApp.settings.changed["repeat-mode"].connect (get_status_list);
             NikiApp.settings.changed["sort-by"].connect (get_random);
             NikiApp.settings.changed["shuffle-button"].connect (get_random);
@@ -269,7 +273,7 @@ namespace niki {
             message_dialog.run ();
             message_dialog.show_all ();
             message_dialog.destroy ();
-            update_playlist ();
+            update_playlist (50);
         }
 
         private void save_to_computer (Gtk.TreeIter iter_select) {
@@ -332,6 +336,7 @@ namespace niki {
             Gdk.Pixbuf preview = objectpixbuf.icon_from_type (upnp_class, 48);
             liststore.append (out iter);
             liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, input_tittle, PlaylistColumns.ARTISTTITLE, mediatype == 2? "<b>" + Markup.escape_text (input_tittle) + "</b>" + "\n" + Markup.escape_text (input_artist) + " - " + Markup.escape_text (input_album) : Markup.escape_text (input_tittle), PlaylistColumns.FILENAME, input_url, PlaylistColumns.FILESIZE, size_file, PlaylistColumns.MEDIATYPE, mediatype, PlaylistColumns.ALBUMMUSIC, input_album, PlaylistColumns.ARTISTMUSIC, input_artist, PlaylistColumns.PLAYNOW, playnow, PlaylistColumns.INPUTMODE, 2);
+            update_playlist (50);
         }
 
         public void add_item (File path) {
@@ -390,11 +395,11 @@ namespace niki {
             liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE,  info_songs, PlaylistColumns.ARTISTTITLE, type_file == 0? Markup.escape_text (info_songs) : "<b>" + Markup.escape_text  (info_songs) + "</b>" + "\n" + Markup.escape_text (artist_music) + " - " + Markup.escape_text (album_music), PlaylistColumns.FILENAME, path.get_uri (), PlaylistColumns.FILESIZE, get_info_size (path.get_uri ()), PlaylistColumns.MEDIATYPE, file_type (path), PlaylistColumns.ALBUMMUSIC, album_music, PlaylistColumns.ARTISTMUSIC, artist_music, PlaylistColumns.PLAYNOW, true, PlaylistColumns.INPUTMODE, 0);
         }
 
-        private void update_playlist () {
+        private void update_playlist (uint timeout) {
             if (finish_timer != 0) {
                 Source.remove (finish_timer);
             }
-            finish_timer = GLib.Timeout.add (500, () => {
+            finish_timer = GLib.Timeout.add (timeout, () => {
                 item_added ();
                 finish_timer = 0;
                 return Source.REMOVE;

@@ -52,7 +52,7 @@ namespace niki {
         public abstract const string Save_Preset                = _("Save Preset");
         public abstract const string None                       = _("None");
         public abstract const string Custom_Preset              = _("Custom Preset");
-        public abstract const string Custom                     = _("Custom");
+        public abstract const string Customs                    = _("Custom: ");
         public abstract const string Unknow                     = _("Unknow");
         public abstract const string Size                       = _("Size");
         public abstract const string Maximize                   = _("Maximize");
@@ -223,5 +223,6 @@ namespace niki {
         public abstract const string Nothing_AV                 = _("Nothing Video And Music in Folder\n");
         public abstract const string Empty_Audio                = _("Library Music is Empty\n");
         public abstract const string Empty_Video                = _("Library Video is Empty\n");
+        public abstract const string Custom                     = _("Custom");
     }
 }

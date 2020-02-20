@@ -61,7 +61,7 @@ namespace niki {
             combox_font_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN;
             combox_font_revealer.transition_duration = 500;
 
-            var font_selection_label = new Gtk.Label (StringPot.Custom);
+            var font_selection_label = new Gtk.Label (StringPot.Customs);
             font_selection_label.halign = Gtk.Align.END;
             font_selection_label_revealer = new Gtk.Revealer ();
             font_selection_label_revealer.add (font_selection_label);

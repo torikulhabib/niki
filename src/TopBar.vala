@@ -190,11 +190,8 @@ namespace niki {
             show_all ();
             label_my_app ();
             info_button ();
-            Idle.add (() => {
-                stack_fulscreen ();
-                revealer_menu ();
-                return false;
-            });
+            stack_fulscreen ();
+            revealer_menu ();
         }
         private void info_button () {
             ((Gtk.Image) info_option.image).icon_name = !NikiApp.settings.get_boolean ("information-button")? "dialog-information-symbolic" : "com.github.torikulhabib.niki.info-hide-symbolic";

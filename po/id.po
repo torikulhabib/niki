@@ -143,8 +143,8 @@ msgid "Custom Preset"
 msgstr "Ubah Setelan"
 
 #: src/StringPot.vala:55
-msgid "Custom"
-msgstr "Ubah"
+msgid "Custom: "
+msgstr "Ubah: "
 
 #: src/StringPot.vala:56
 msgid "Unknow"
@@ -823,3 +823,7 @@ msgstr "Pustaka musi kosong\n"
 #: src/StringPot.vala:225
 msgid "Library Video is Empty\n"
 msgstr "Pustaka video kosong\n"
+
+#: src/StringPot.vala:226
+msgid "Custom"
+msgstr "Custom"

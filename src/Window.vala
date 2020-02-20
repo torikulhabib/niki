@@ -91,7 +91,6 @@ namespace niki {
 
             home_button.clicked.connect (() => {
                 welcome_page.stack.visible_child_name = "home";
-                player_page.top_bar.button_home ();
             });
 
             Gtk.drag_dest_set (this, Gtk.DestDefaults.ALL, target_list, Gdk.DragAction.COPY);
@@ -212,42 +211,39 @@ namespace niki {
             file.set_preview_widget_active (false);
             file.set_use_preview_label (false);
             file.update_preview.connect (() => {
-                Idle.add (() => {
-                    string uri = file.get_preview_uri ();
-                    if (uri != null && uri.has_prefix ("file://")) {
-                        var preview_file = File.new_for_uri (uri);
-                        try {
-                            Gdk.Pixbuf pixbuf = null;
-                            switch (file_type (preview_file)) {
-                                case 0 :
-                                    var videopreview = new VideoPreview (preview_file.get_path (), preview_file.get_uri(), get_mime_type (preview_file));
-                                    videopreview.run_preview ();
-                                    if (get_mime_type (preview_file).has_prefix ("video/")) {
-                                        pixbuf = new Gdk.Pixbuf.from_file_at_scale (videopreview.set_preview_large (), 256, 256, true);
-                                    }
-                                    break;
-                                case 1 :
-                                    var audiocover = new AudioCover();
-                                    audiocover.import (preview_file.get_uri ());
-                                    pixbuf = audiocover.pixbuf_albumart;
-                                    break;
-                            }
-                            if (pixbuf != null) {
-                                label.label = get_info_file (preview_file);
-                                preview_area.set_from_pixbuf (pixbuf);
-                                preview_area.show ();
-                                file.set_preview_widget_active (true);
-                            }
-                        } catch (Error e) {
-                            GLib.warning (e.message);
-                            return true;
+                string uri = file.get_preview_uri ();
+                if (uri != null && uri.has_prefix ("file://")) {
+                    var preview_file = File.new_for_uri (uri);
+                    try {
+                        Gdk.Pixbuf pixbuf = null;
+                        switch (file_type (preview_file)) {
+                            case 0 :
+                                var videopreview = new VideoPreview (preview_file.get_path (), preview_file.get_uri(), get_mime_type (preview_file));
+                                videopreview.run_preview ();
+                                if (get_mime_type (preview_file).has_prefix ("video/")) {
+                                    pixbuf = new Gdk.Pixbuf.from_file_at_scale (videopreview.set_preview_large (), 256, 256, true);
+                                }
+                                break;
+                            case 1 :
+                                var audiocover = new AudioCover();
+                                audiocover.import (preview_file.get_uri ());
+                                pixbuf = audiocover.pixbuf_albumart;
+                                break;
                         }
-                    } else {
-                        preview_area.hide ();
-                        file.set_preview_widget_active (false);
+                        if (pixbuf != null) {
+                            label.label = get_info_file (preview_file);
+                            preview_area.set_from_pixbuf (pixbuf);
+                            preview_area.show ();
+                            file.set_preview_widget_active (true);
+                        }
+                    } catch (Error e) {
+                        GLib.warning (e.message);
+                        file.update_preview ();
                     }
-                    return Source.REMOVE;
-                });
+                } else {
+                    preview_area.hide ();
+                    file.set_preview_widget_active (false);
+                }
             });
 
             if (file.run () == Gtk.ResponseType.ACCEPT) {
@@ -262,9 +258,9 @@ namespace niki {
 
        public void run_open_folder () {
             var folder_location = new Gtk.FileChooserDialog (
-                StringPot.Open, this, Gtk.FileChooserAction.SELECT_FOLDER,
-                StringPot.Cancel, Gtk.ResponseType.CANCEL,
-                StringPot.Open, Gtk.ResponseType.ACCEPT);
+            StringPot.Open, this, Gtk.FileChooserAction.SELECT_FOLDER,
+            StringPot.Cancel, Gtk.ResponseType.CANCEL,
+            StringPot.Open, Gtk.ResponseType.ACCEPT);
             folder_location.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
 
             var filter_folder = new Gtk.FileFilter ();
@@ -285,7 +281,9 @@ namespace niki {
             foreach (var file in files) {
                 player_page.playlist_widget ().add_item (file);
             }
-            player_page.play_first_in_playlist ();
+            if (force_play) {
+                player_page.play_first_in_playlist ();
+            }
         }
 
         private void on_drag_data_received (Gtk.Widget widget, Gdk.DragContext drag_context, int x, int y, Gtk.SelectionData selection_data, uint target_type, uint time) {

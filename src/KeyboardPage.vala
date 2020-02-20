@@ -57,6 +57,15 @@ namespace niki {
                 NikiApp.settings.set_boolean ("settings-button", !NikiApp.settings.get_boolean ("settings-button"));
             } else if (match_keycode (Gdk.Key.r, keycode)) {
                 repeatmode.switch_repeat_mode ();
+            } else if (match_keycode (Gdk.Key.h, keycode)) {
+		        if (window.main_stack.visible_child_name == "player") {
+                    window.player_page.top_bar.button_home ();
+                } else if (window.welcome_page.stack.visible_child_name == "dlna" && window.main_stack.visible_child_name != "player") {
+                    window.welcome_page.stack.visible_child_name = "home";
+                } else if (window.main_stack.visible_child_name == "camera") {
+                    window.main_stack.visible_child_name = "welcome";
+		            window.camera_page.cameraplayer.set_null ();
+                }
             }
 
             switch (e.keyval) {

@@ -142,7 +142,7 @@ msgid "Custom Preset"
 msgstr ""
 
 #: src/StringPot.vala:55
-msgid "Custom"
+msgid "Custom: "
 msgstr ""
 
 #: src/StringPot.vala:56
@@ -821,4 +821,8 @@ msgstr ""
 
 #: src/StringPot.vala:225
 msgid "Library Video is Empty\n"
+msgstr ""
+
+#: src/StringPot.vala:226
+msgid "Custom"
 msgstr ""

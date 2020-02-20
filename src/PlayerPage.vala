@@ -293,6 +293,7 @@ namespace niki {
                 }
                 NikiApp.settings.set_string("last-played", " ");
                 NikiApp.settings.set_string("uri-video", " ");
+                mouse_blank ();
             });
 
             playback.ready.connect (signal_window); 
