@@ -7,7 +7,6 @@ namespace niki {
         private MediaEntry album_entry;
         private MediaEntry genre_entry;
         private Gtk.TextView comment_textview;
-        private Gtk.ScrolledWindow comment_scrolledwindow;
         private Gtk.SpinButton date_spinbutton;
         private Gtk.SpinButton track_spinbutton;
         private AsyncImage asyncimage;
@@ -17,6 +16,15 @@ namespace niki {
         private Gtk.Label label_sample;
         private Gtk.Label label_name;
         private Gst.TagList tag_list;
+        private Gst.Pipeline pipeline;
+        private dynamic Gst.Element id3v2mux;
+        private dynamic Gst.Element id3demux;
+        private dynamic Gst.Element filesrc;
+        private dynamic Gst.Element fakesrc;
+        private dynamic Gst.Element fakesink;
+        private dynamic Gst.Element identity;
+        private dynamic Gst.Element apev2mux;
+        private dynamic Gst.Element id3mux;
         private Playlist? playlist;
 
         public MediaEditor (Playlist playlist) {
@@ -40,7 +48,7 @@ namespace niki {
             comment_textview = new Gtk.TextView ();
             comment_textview.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             comment_textview.set_wrap_mode (Gtk.WrapMode.WORD_CHAR);
-            comment_scrolledwindow = new Gtk.ScrolledWindow (null, null);
+            var comment_scrolledwindow = new Gtk.ScrolledWindow (null, null);
             comment_scrolledwindow.set_policy (Gtk.PolicyType.EXTERNAL, Gtk.PolicyType.AUTOMATIC);
             comment_scrolledwindow.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             comment_scrolledwindow.add (comment_textview);
@@ -162,7 +170,7 @@ namespace niki {
 
             response.connect ((response_id) => {
                 if (response_id == Gtk.ResponseType.APPLY) {
-                    save_to_file (playlist.select_iter);
+                    save_to_file ();
                 }
                 if (response_id == Gtk.ResponseType.CLOSE) {
                     destroy ();
@@ -190,7 +198,9 @@ namespace niki {
                 }
                 return false;
             });
-            set_media (playlist.select_iter);
+            string file_name;
+            playlist.liststore.get (playlist.select_iter, PlaylistColumns.FILENAME, out file_name);
+            set_media (file_name);
         }
 
         private void previous_track () {
@@ -205,7 +215,9 @@ namespace niki {
             if (!playlist.liststore.iter_is_valid (playlist.select_iter)) {
                 return;
             }
-            set_media (playlist.select_iter);
+            string file_name;
+            playlist.liststore.get (playlist.select_iter, PlaylistColumns.FILENAME, out file_name);
+            set_media (file_name);
         }
 
         private void next_track () {
@@ -220,39 +232,214 @@ namespace niki {
             if (!playlist.liststore.iter_is_valid (playlist.select_iter)) {
                 return;
             }
-            set_media (playlist.select_iter);
+            string file_name;
+            playlist.liststore.get (playlist.select_iter, PlaylistColumns.FILENAME, out file_name);
+            set_media (file_name);
         }
 
-        private void save_to_file (Gtk.TreeIter itercure) {
-            string file_name;
-            playlist.liststore.get (itercure, PlaylistColumns.FILENAME, out file_name);
-            try {
-                Gst.PbUtils.Discoverer discoverer = new Gst.PbUtils.Discoverer ((Gst.ClockTime) (5 * Gst.SECOND));
-                var info = discoverer.discover_uri (file_name);
-                var id3demux = Gst.ElementFactory.make ("id3demux", "id3demux");
-                var result = info.get_tags ();
-                Gst.Sample sample;
-                tag_list.get_sample (Gst.Tags.IMAGE, out sample);
-                var buffer = sample.get_buffer ();
-                Gst.MapInfo map_info;
-                if (!buffer.map (out map_info, Gst.MapFlags.READ)) {
-                    return;
-                }
-                Gst.TagMergeMode merge_mode;
-                Gst.TagList application_tags;
-                Gst.TagSetter tagsetteradd = (Gst.TagSetter) id3demux;
-                merge_mode = tagsetteradd.get_tag_merge_mode ();
-                application_tags = tagsetteradd.get_tag_list ();
-                Gst.TagList list2 = (Gst.TagList) buffer;
-                result = application_tags.merge (list2, merge_mode);
-            } catch (Error err) {
-                critical ("%s", err.message);
+        private bool bus_message_cb (Gst.Bus bus, Gst.Message message) {
+            print ("%s\n", message.src.name);
+            switch (message.type) {
+                case Gst.MessageType.ERROR :
+                    GLib.Error err;
+                    string debug;
+                    message.parse_error (out err, out debug);
+                    print (":\n%s\n\n[%s]".printf (err.message, debug));
+                    stderr.printf ("Error: %s\n", debug);
+                    pipeline.set_state (Gst.State.NULL);
+                    break;
+                case Gst.MessageType.EOS :
+                    pipeline.set_state (Gst.State.PAUSED);
+                    break;
+                case Gst.MessageType.ELEMENT:
+                        unowned Gst.Structure structure = message.get_structure ();
+                        print ("%s\n", structure.get_name ());
+                    break;
+                default :
+                    break;
             }
+            return true;
         }
 
-        private void set_media (Gtk.TreeIter itercure) {
+        private Gst.TagList create_tags (int mask) {
+            Gst.TagList tags = new Gst.TagList.empty ();
+
+            if (mask == 0) {
+                tags.add (Gst.TagMergeMode.REPLACE_ALL, Gst.Tags.ARTIST, artist_entry.text);
+            }
+            if (mask == 1) {
+                tags.add (Gst.TagMergeMode.REPLACE_ALL, Gst.Tags.TITLE, title_entry.text);
+            }
+            if (mask == 2) {
+                tags.add (Gst.TagMergeMode.REPLACE_ALL, Gst.Tags.ALBUM, album_entry.text);
+            }
+  /*          if (mask == (1 << 3)) {
+                if (date_spinbutton.value > 0) {
+                    Gst.DateTime date_time = new Gst.DateTime.y ((int)date_spinbutton.value);
+                    tags.add (Gst.TagMergeMode.REPLACE, Gst.Tags.DATE_TIME, date_time);
+                }
+            }
+            if (mask == (1 << 4)) {
+                tags.add (Gst.TagMergeMode.KEEP, Gst.Tags.TRACK_NUMBER, track_spinbutton.value);
+            }
+            if (mask == (1 << 5)) {
+                tags.add (Gst.TagMergeMode.REPLACE, Gst.Tags.COMPOSER, composer_entry.text);
+            }
+            if (mask == (1 << 6)) {
+                tags.add (Gst.TagMergeMode.REPLACE, Gst.Tags.GENRE, genre_entry.text);
+            }
+            if (mask == (1 << 7)) {
+                tags.add (Gst.TagMergeMode.REPLACE, Gst.Tags.COMMENT, comment_textview.buffer.text);
+            }
+            if (mask == (1 << 8)) {
+                tags.add (Gst.TagMergeMode.REPLACE, Gst.Tags.GROUPING, group_entry.text);
+            }
+            if (mask & (1 << 9)) {
+                tags.add (Gst.TagMergeMode.REPLACE, Gst.Tags.ALBUM_GAIN, TEST_ALBUM_GAIN, NULL);
+            }
+            if (mask & (1 << 10)) {
+                tags.add (Gst.TagMergeMode.REPLACE, Gst.Tags.TRACK_PEAK, TEST_TRACK_PEAK, NULL);
+            }
+            if (mask & (1 << 11)) {
+                tags.add (Gst.TagMergeMode.REPLACE, Gst.Tags.ALBUM_PEAK, TEST_ALBUM_PEAK, NULL);
+            }
+            if (mask & (1 << 12)) {
+                tags.add (Gst.TagMergeMode.REPLACE, Gst.Tags.BEATS_PER_MINUTE, TEST_BPM, NULL);
+            } */
+       //     if (mask == (1 << 13)) {
+       //     }
+            return tags;
+        }
+        private void save_to_file () {
+            if (!playlist.get_selection().get_selected(null, out playlist.select_iter)) {
+                return;
+            }
             string file_name;
-            playlist.liststore.get (itercure, PlaylistColumns.FILENAME, out file_name);
+            playlist.liststore.get (playlist.select_iter, PlaylistColumns.FILENAME, out file_name);
+            for (int i = 0; i < 3; ++i) {
+                int mask = (int)Random.next_int ();
+     //           print ("tag mask = %i (i=%d)\n", mask, i);
+  //              if (mask == 0) {
+    //                continue;
+   //             }
+                Gst.TagList tags = create_tags (mask);
+      //          GST_LOG ("tags for mask %08x = %" GST_PTR_FORMAT, mask, tags);
+
+                /* double-check for internal consistency */
+       //         test_taglib_id3mux_check_tags (tags, mask);
+
+                /* test with pipeline */
+                taglib_gst_tags (tags, mask, file_name);
+              }
+        }
+
+        private void taglib_gst_tags (Gst.TagList tags, int mask, string file_name) {
+            pipeline = new Gst.Pipeline ("pipeline");
+            filesrc = Gst.ElementFactory.make ("filesrc", "filesrc");
+            fakesrc =  Gst.ElementFactory.make ("fakesrc", "fakesrc");
+            apev2mux =  Gst.ElementFactory.make ("apev2mux", "apev2mux");
+            id3v2mux =  Gst.ElementFactory.make ("id3v2mux", "id3v2mux");
+            identity =  Gst.ElementFactory.make ("identity", "identity");
+            id3demux =  Gst.ElementFactory.make ("id3demux", "id3demux");
+            id3mux =  Gst.ElementFactory.make ("id3mux", "id3mux");
+            fakesink =  Gst.ElementFactory.make ("fakesink", "fakesink");
+     //       fakesink["signal-handoffs"] = true;
+      //      Signal.connect (fakesink, "handoff", (GLib.Callback) got_buffer, outbuf);
+
+            fakesink["silent"] = true;
+            filesrc["location"] = File.new_for_uri (file_name).get_path ();
+            ((Gst.Bin)pipeline).add_many (filesrc, id3v2mux, identity, id3mux, fakesink);
+            Gst.TagSetter tagsetteradd = (Gst.TagSetter) id3v2mux;
+            Gst.TagMergeMode merge_mode = tagsetteradd.get_tag_merge_mode ();
+           Gst.TagList application_tags = tagsetteradd.get_tag_list ();
+            Gst.TagList result = application_tags.merge (tags, merge_mode);
+            ((Gst.TagSetter)id3v2mux).merge_tags (result, merge_mode);
+            filesrc.link_many (id3v2mux, identity, id3mux, fakesink);
+            pipeline.get_bus ().add_watch (Priority.DEFAULT, bus_message_cb);
+     //       id3v2mux.link (id3mux);
+        //    pipeline.set_state (Gst.State.PAUSED);
+            /* set up source */
+     //       fakesrc.set ("signal-handoffs", true, "can-activate-pull", false, "filltype", 2, "sizetype", 2, "sizemax", 626, "num-buffers", 16);
+        //    pipeline.set_state (Gst.State.NULL);
+/*
+          offset = 0;
+          g_signal_connect (fakesrc, "handoff", G_CALLBACK (fill_mp3_buffer), &offset);
+
+
+          g_signal_connect (identity, "handoff", G_CALLBACK (identity_cb), &tagbuf);
+
+          GST_LOG ("setting and getting state ...");
+          gst_element_set_state (pipeline, GST_STATE_PLAYING);
+          Gst.StateChangeReturn state_result = pipeline.get_state (pipeline, NULL, NULL, -1);
+          fail_unless (state_result == GST_STATE_CHANGE_SUCCESS,
+              "Unexpected result from get_state(). Expected success, got %d",
+              state_result);
+
+          bus = gst_pipeline_get_bus (GST_PIPELINE (pipeline));
+
+          GST_LOG ("Waiting for tag ...");
+          msg =
+              gst_bus_poll (bus, GST_MESSAGE_TAG | GST_MESSAGE_EOS | GST_MESSAGE_ERROR,
+              -1);
+          if (GST_MESSAGE_TYPE (msg) == GST_MESSAGE_ERROR) {
+            GError *err;
+            gchar *dbg;
+
+            gst_message_parse_error (msg, &err, &dbg);
+            g_printerr ("ERROR from element %s: %s\n%s\n",
+                GST_OBJECT_NAME (msg->src), err->message, GST_STR_NULL (dbg));
+            g_error_free (err);
+            g_free (dbg);
+          } else if (GST_MESSAGE_TYPE (msg) == GST_MESSAGE_EOS) {
+            g_printerr ("EOS message, but were waiting for TAGS!\n");
+          }
+          fail_unless (msg->type == GST_MESSAGE_TAG);
+
+          gst_message_parse_tag (msg, &tags_read);
+          gst_message_unref (msg);
+
+          GST_LOG ("Got tags: %" GST_PTR_FORMAT, tags_read);
+          test_taglib_id3mux_check_tags (tags_read, mask);
+          gst_tag_list_unref (tags_read);
+
+          fail_unless (tagbuf != NULL);
+          test_taglib_id3mux_check_tag_buffer (tagbuf, mask);
+          gst_buffer_unref (tagbuf);
+
+          GST_LOG ("Waiting for EOS ...");
+          msg = gst_bus_poll (bus, GST_MESSAGE_EOS | GST_MESSAGE_ERROR, -1);
+          if (GST_MESSAGE_TYPE (msg) == GST_MESSAGE_ERROR) {
+            GError *err;
+            gchar *dbg;
+
+            gst_message_parse_error (msg, &err, &dbg);
+            g_printerr ("ERROR from element %s: %s\n%s\n",
+                GST_OBJECT_NAME (msg->src), err->message, GST_STR_NULL (dbg));
+            g_error_free (err);
+            g_free (dbg);
+          }
+          fail_unless (msg->type == GST_MESSAGE_EOS);
+          gst_message_unref (msg);
+
+          gst_object_unref (bus);
+
+          GST_LOG ("Got EOS, shutting down ...");
+          gst_element_set_state (pipeline, GST_STATE_NULL);
+          gst_object_unref (pipeline);
+
+          test_taglib_id3mux_check_output_buffer (outbuf); */
+            uint move_stoped = 0;
+                if (move_stoped != 0) {
+                    Source.remove (move_stoped);
+                }
+                move_stoped = GLib.Timeout.add (100,() => {
+                pipeline.set_state (Gst.State.PLAYING);
+                    move_stoped = 0;
+                    return Source.REMOVE;
+                });
+        }
+
+        private void set_media (string file_name) {
             try {
                 Gst.PbUtils.Discoverer discoverer = new Gst.PbUtils.Discoverer ((Gst.ClockTime) (5 * Gst.SECOND));
                 var info = discoverer.discover_uri (file_name);
@@ -371,9 +558,7 @@ namespace niki {
             return pixbuf_loader;
         }
         private void apply_cover_pixbuf (Gdk.Pixbuf save_pixbuf) {
-            Gdk.Pixbuf pixbuf = null;
-            pixbuf = align_and_scale_pixbuf (save_pixbuf, 85);
-            asyncimage.set_from_pixbuf (pixbuf);
+            asyncimage.set_from_pixbuf (align_and_scale_pixbuf (save_pixbuf, 85));
             asyncimage.show ();
         }
 
@@ -400,24 +585,24 @@ namespace niki {
             file.set_preview_widget_active (false);
             file.set_use_preview_label (false);
             file.update_preview.connect (() => {
-                    string uri = file.get_preview_uri ();
-                    if (uri != null && uri.has_prefix ("file://")) {
-                        var preview_file = File.new_for_uri (uri);
-                        try {
-                            Gdk.Pixbuf pixbuf = null;
-                            if (get_mime_type (preview_file).has_prefix ("image/")) {
-                                pixbuf = new Gdk.Pixbuf.from_file_at_scale (preview_file.get_path (), 256, 256, true);
-                                preview_area.set_from_pixbuf (pixbuf);
-                                preview_area.show ();
-                                file.set_preview_widget_active (true);
-                            }
-                        } catch (Error e) {
-                            GLib.warning (e.message);
+                string uri = file.get_preview_uri ();
+                if (uri != null && uri.has_prefix ("file://")) {
+                    var preview_file = File.new_for_uri (uri);
+                    try {
+                        Gdk.Pixbuf pixbuf = null;
+                        if (get_mime_type (preview_file).has_prefix ("image/")) {
+                            pixbuf = new Gdk.Pixbuf.from_file_at_scale (preview_file.get_path (), 256, 256, true);
+                            preview_area.set_from_pixbuf (pixbuf);
+                            preview_area.show ();
+                            file.set_preview_widget_active (true);
                         }
-                    } else {
-                        preview_area.hide ();
-                        file.set_preview_widget_active (false);
+                    } catch (Error e) {
+                        GLib.warning (e.message);
                     }
+                } else {
+                    preview_area.hide ();
+                    file.set_preview_widget_active (false);
+                }
             });
 
             if (file.run () == Gtk.ResponseType.ACCEPT) {
