@@ -70,7 +70,7 @@ namespace niki {
             motion_notify_event.connect (() => {
                 if (window.is_active) {
                     reveal_control ();
-                    this.hovered = true;
+                    hovered = true;
                 }
                 return false;
             });
@@ -89,10 +89,6 @@ namespace niki {
                 maximize_button.sensitive = NikiApp.settings.get_boolean ("fullscreen")? true : false;
                 stack_fulscreen ();
             });
-            var main_actionbar = new Gtk.ActionBar ();
-            main_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            main_actionbar.get_style_context ().add_class ("ground_action_button");
-            main_actionbar.expand = true;
 
             maximize_button = new Gtk.Button.from_icon_name ("view-fullscreen-symbolic", Gtk.IconSize.BUTTON);
             maximize_button.get_style_context ().add_class ("button_action");
@@ -126,45 +122,35 @@ namespace niki {
             my_app.ellipsize = Pango.EllipsizeMode.END;
             my_app.use_markup = true;
 
+            var main_actionbar = new Gtk.ActionBar ();
+            main_actionbar.hexpand = true;
+            main_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            main_actionbar.get_style_context ().add_class ("ground_action_button");
             main_actionbar.pack_start (close_botton);
             main_actionbar.pack_start (info_option);
             main_actionbar.pack_start (home_button);
             main_actionbar.set_center_widget (my_app);
             main_actionbar.pack_end (maximize_button);
+            main_actionbar.show_all ();
 
             label_info = new Gtk.Label (null);
             label_info.get_style_context ().add_class ("button_action");
             label_info.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
             label_info.ellipsize = Pango.EllipsizeMode.END;
+            label_info.halign = Gtk.Align.START;
             label_info.selectable = true;
 
-            var second_actionbar = new Gtk.ActionBar ();
-            second_actionbar.hexpand = true;
-            second_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            second_actionbar.get_style_context ().add_class ("ground_action_button");
-            second_actionbar.pack_start (label_info);
-
             menu_revealer = new Gtk.Revealer ();
-            menu_revealer.add (second_actionbar);
+            menu_revealer.add (label_info);
             menu_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN;
             menu_revealer.transition_duration = 500;
             menu_revealer.hexpand = true;
             menu_revealer.reveal_child = false;
 
-            NikiApp.settings.changed["information-button"].connect (revealer_menu);
-            NikiApp.settings.changed["tittle-playing"].connect (label_my_app);
-            NikiApp.settings.changed["album-music"].connect (label_my_app);
-            NikiApp.settings.changed["maximize"].connect (maximized_button);
-            NikiApp.settings.changed["audio-video"].connect (() => {
-                revealer_menu ();
-                label_my_app ();
-            });
 		    var grid = new Gtk.Grid ();
             grid.orientation = Gtk.Orientation.VERTICAL;
             grid.get_style_context ().add_class ("topbar");
             grid.margin = grid.row_spacing = grid.column_spacing = grid.margin_top = 0;
-            grid.column_homogeneous = true;
-            grid.valign = Gtk.Align.CENTER;
             grid.add (main_actionbar);
             grid.add (menu_revealer);
             grid.show_all ();
@@ -188,6 +174,14 @@ namespace niki {
             stack.homogeneous = false;
             add (stack);
             show_all ();
+            NikiApp.settings.changed["information-button"].connect (revealer_menu);
+            NikiApp.settings.changed["tittle-playing"].connect (label_my_app);
+            NikiApp.settings.changed["album-music"].connect (label_my_app);
+            NikiApp.settings.changed["maximize"].connect (maximized_button);
+            NikiApp.settings.changed["audio-video"].connect (() => {
+                revealer_menu ();
+                label_my_app ();
+            });
             label_my_app ();
             info_button ();
             stack_fulscreen ();
@@ -220,7 +214,7 @@ namespace niki {
             if (!child_revealed) {
                 set_reveal_child (true);
             }
-
+            label_info.margin_start = 5;
             if (hiding_timer != 0) {
                 Source.remove (hiding_timer);
             }
