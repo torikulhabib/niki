@@ -18,7 +18,7 @@
 
 * meson
 * libgranite-dev
-* libgtk3-dev
+* libgtk-3-dev
 * valac
 * libsoup2.4-dev 
 * libgstreamer-plugins-base1.0-dev 
