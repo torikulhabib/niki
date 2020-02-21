@@ -26,6 +26,6 @@ Standards-Version: 4.14
 
 Package: com.github.torikulhabib.niki
 Architecture: any
-Depends: youtube-dl, ${misc:Depends}, ${shlibs:Depends} 
+Depends: youtube-dl, gstreamer1.0-plugins-bad, gstreamer1.0-plugins-good, gstreamer1.0-plugins-base, gstreamer1.0-clutter-3.0, gstreamer1.0-libav, ${misc:Depends}, ${shlibs:Depends} 
 Description: DLNA, Music, Video and streaming
     Watching movie, listening music and streaming
