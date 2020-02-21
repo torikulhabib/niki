@@ -98,10 +98,10 @@ namespace niki {
             var file_chooser_subtittle = new Gtk.FileChooserButton (StringPot.Pick_File, Gtk.FileChooserAction.OPEN);
 
             var all_files_filter = new Gtk.FileFilter ();
-            all_files_filter.set_filter_name (StringPot.All_File);
+            all_files_filter.set_filter_name (StringPot.All_Files);
             all_files_filter.add_pattern ("*");
             var subtitle_files_filter = new Gtk.FileFilter ();
-            subtitle_files_filter.set_filter_name (StringPot.Subtitle_File);
+            subtitle_files_filter.set_filter_name (StringPot.Subtitle_Files);
             subtitle_files_filter.add_mime_type ("application/smil");
             subtitle_files_filter.add_mime_type ("application/x-subrip");
             subtitle_files_filter.add_mime_type ("text/x-microdvd");

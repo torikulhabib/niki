@@ -221,13 +221,13 @@ namespace niki {
     private string get_artist_music (string inputfile) {
         string inputstring = File.new_for_uri (inputfile).get_path ();
 		var info =  new TagLib.File(inputstring);
-		string artist_music = info.tag.artist.char_count () < 1? StringPot.Unknow : info.tag.artist;
+		string artist_music = info.tag.artist.char_count () < 1? StringPot.Unknown : info.tag.artist;
         return artist_music;
     }
     private string get_album_music (string inputfile) {
         string inputstring = File.new_for_uri (inputfile).get_path ();
 		var info =  new TagLib.File(inputstring);
-		string album_music = info.tag.album.char_count () < 1? StringPot.Unknow : info.tag.album;
+		string album_music = info.tag.album.char_count () < 1? StringPot.Unknown : info.tag.album;
         return album_music;
     }
 
@@ -495,7 +495,7 @@ namespace niki {
         return pixbuf_scale;
     }
 
-    private Gdk.Pixbuf? unknow_cover () {
+    private Gdk.Pixbuf? unknown_cover () {
 	    Cairo.ImageSurface surface = new Cairo.ImageSurface (Cairo.Format.RGB30, 256, 256);
 	    Cairo.Context context = new Cairo.Context (surface);
 	    Cairo.Pattern bacground = new Cairo.Pattern.linear (0.0, 0.0, 0.0, 256.0);
@@ -529,8 +529,8 @@ namespace niki {
 	    context.set_source (arc4);
 	    context.arc (128.0, 128.0, 10.8, 0, 2 * Math.PI);
 	    context.fill ();
-        Gdk.Pixbuf pixbuf_unknow = Gdk.pixbuf_get_from_surface (surface, 0, 0, 256, 256);
-        return pixbuf_unknow;
+        Gdk.Pixbuf pixbuf_unknown = Gdk.pixbuf_get_from_surface (surface, 0, 0, 256, 256);
+        return pixbuf_unknown;
     }
 
     private string protocol_Info (){

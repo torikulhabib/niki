@@ -75,8 +75,8 @@ namespace niki {
                     metadata.insert ("mpris:length", playback.duration * 1000000);
                     metadata.insert ("mpris:artUrl", "file://" + preview_path);
                     metadata.insert ("xesam:title", NikiApp.settings.get_string("tittle-playing"));
-                    metadata.insert ("xesam:album", "Unknow");
-                    metadata.insert ("xesam:artist", get_simple_string_array ("Unknow"));
+                    metadata.insert ("xesam:album", "Unknown");
+                    metadata.insert ("xesam:artist", get_simple_string_array ("Unknown"));
                     metadata.insert ("xesam:url", NikiApp.settings.get_string ("uri-video"));
                     break;
                 case PlayerMode.AUDIO :

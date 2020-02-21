@@ -441,7 +441,7 @@ namespace niki {
         }
         private void liric_icon () {
             liric_revealer.change_icon (NikiApp.settings.get_boolean ("liric-button")? "com.github.torikulhabib.niki.liric-on-symbolic" : "com.github.torikulhabib.niki.liric-off-symbolic");
-            liric_revealer.tooltip_text = NikiApp.settings.get_boolean ("liric-button")? StringPot.Lyric_On : StringPot.Lyric_Off;
+            liric_revealer.tooltip_text = NikiApp.settings.get_boolean ("liric-button")? StringPot.Lyrics_On : StringPot.Lyrics_Off;
         }
 
         private void shuffle_icon () {
@@ -515,7 +515,7 @@ namespace niki {
         }
         private void subtittle_button () {
             subtitle_revealer.change_icon (NikiApp.settings.get_boolean ("activate-subtittle")? "com.github.torikulhabib.niki.subtittle-on-symbolic" : "com.github.torikulhabib.niki.subtittle-off-symbolic");
-            subtitle_revealer.tooltip_text = NikiApp.settings.get_boolean ("activate-subtittle")? StringPot.Subtitle_On : StringPot.Subtitle_Off;
+            subtitle_revealer.tooltip_text = NikiApp.settings.get_boolean ("activate-subtittle")? StringPot.Subtitles_On : StringPot.Subtitles_Off;
         }
 
         public void schedule_show () {

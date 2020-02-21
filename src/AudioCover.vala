@@ -28,7 +28,7 @@ namespace niki {
                         }
                     }
                 }  else {
-                    pixbuf_sample = unknow_cover ();
+                    pixbuf_sample = unknown_cover ();
                     if (pixbuf_sample != null) {
                         apply_cover_pixbuf (pixbuf_sample, path);
                         create_background (pixbuf_sample);

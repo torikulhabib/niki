@@ -90,10 +90,10 @@ namespace niki {
                         save_to.add (new MenuLabel ("drive-harddisk-symbolic", StringPot.Save_MyComputer));
                         menu.append (playing);
                         var menu_sub = new Gtk.MenuItem ();
-                        menu_sub.add (new MenuLabel ("go-jump-symbolic", StringPot.Short_by));
+                        menu_sub.add (new MenuLabel ("go-jump-symbolic", StringPot.Sort_by));
                         var submenu_menu2 = new Gtk.Menu ();
                         var tittle_short = new Gtk.MenuItem ();
-                        tittle_short.add (new MenuLabelRadio ("com.github.torikulhabib.niki.title-symbolic", StringPot.Titile, NikiApp.settings.get_int ("sort-by") == 0));
+                        tittle_short.add (new MenuLabelRadio ("com.github.torikulhabib.niki.title-symbolic", StringPot.Title, NikiApp.settings.get_int ("sort-by") == 0));
                         submenu_menu2.add (tittle_short);
                         var artist_short = new Gtk.MenuItem ();
                         artist_short.add (new MenuLabelRadio ("avatar-default-symbolic", StringPot.Artist, NikiApp.settings.get_int ("sort-by") == 1));

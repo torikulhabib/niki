@@ -390,7 +390,7 @@ namespace niki {
                     preview_blur = audiocover.pixbuf_blur;
                     break;
                 case PlayerMode.STREAMAUD :
-                    audiocover.create_background (unknow_cover ());
+                    audiocover.create_background (unknown_cover ());
                     preview = audiocover.pixbuf_albumart;
                     preview_blur = audiocover.pixbuf_blur;
                     break;

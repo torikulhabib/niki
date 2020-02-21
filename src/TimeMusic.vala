@@ -172,7 +172,7 @@ namespace niki {
                         state += 1;
                         return false;
                     case 1:
-                        text = NikiApp.settings.get_boolean("audio-video") == true? StringPot.Titile : "";
+                        text = NikiApp.settings.get_boolean("audio-video") == true? StringPot.Title : "";
                         state += 1;
                         break;
                     case 2:

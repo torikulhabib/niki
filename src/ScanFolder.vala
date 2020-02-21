@@ -43,7 +43,7 @@ namespace niki {
                         signal_notify (StringPot.Empty_Audio);
                     }
                     if (mode_scan == 0 && !content_check) {
-                        signal_notify (StringPot.Folder_Empty);
+                        signal_notify (StringPot.Empty_Folder);
                     }
                     content_check = false;
                     check_count = 0;
@@ -70,13 +70,13 @@ namespace niki {
                             }
                         }
                         if (mode_scan == 1 && !content_video) {
-                            signal_notify (StringPot.Nothing_Video);
+                            signal_notify (StringPot.Empty_Video);
                         }
                         if (mode_scan == 2 && !content_Audio) {
-                            signal_notify (StringPot.Nothing_Audio);
+                            signal_notify (StringPot.Empty_Audio);
                         }
                         if (mode_scan == 0 && !content_Audio && !content_video) {
-                            signal_notify (StringPot.Nothing_AV);
+                            signal_notify (StringPot.Empty_Folder);
                         }
                         mimetype_contents = {};
                         if (content_video || content_Audio) {
