@@ -297,6 +297,9 @@ namespace niki {
                     }
 			        string data = (string) selection_data.get_data ();
                     welcome_page.getlink.get_link_stream (data);
+                    welcome_page.welcome_left.sensitive = false;
+                    welcome_page.welcome_rigth.sensitive = false;
+                    NikiApp.settings.set_boolean ("spinner-wait", false);
 			        break;
 		        case Target.URILIST:
 		            if (main_stack.visible_child_name == "welcome") {

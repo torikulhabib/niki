@@ -21,8 +21,8 @@
 
 namespace niki {
     public class WelcomePage : Gtk.Grid {
-        private WelcomeSource? welcome_rigth;
-        private WelcomeSource? welcome_left;
+        public WelcomeSource? welcome_rigth;
+        public WelcomeSource? welcome_left;
         private InfoBar? infobar;
         private Gtk.Label title_label;
         private Gtk.Label subtitle_label;
@@ -154,6 +154,7 @@ namespace niki {
                 infobar.send_notification ();
                 welcome_left.sensitive = true;
                 welcome_rigth.sensitive = true;
+                NikiApp.settings.set_boolean ("spinner-wait", true);
                 links = null;
             });
 
@@ -161,6 +162,7 @@ namespace niki {
                 window.player_page.playlist_widget ().add_stream (links);
                 welcome_left.sensitive = true;
                 welcome_rigth.sensitive = true;
+                NikiApp.settings.set_boolean ("spinner-wait", true);
 		        if (window.main_stack.visible_child_name == "welcome") {
                     window.player_page.play_first_in_playlist ();
                 }
@@ -192,6 +194,7 @@ namespace niki {
                         getlink.get_link_stream (text);
                         welcome_left.sensitive = false;
                         welcome_rigth.sensitive = false;
+                        NikiApp.settings.set_boolean ("spinner-wait", false);
                         break;
                     case 2:
                         window.player_page.playlist_widget ().clear_items ();

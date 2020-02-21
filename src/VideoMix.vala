@@ -25,7 +25,7 @@ namespace niki {
             Gst.Util.set_object_arg ((GLib.Object) capsfilter, "caps", "video/x-raw, format={ RGBA, RGB, I420, YV12, YUY2, UYVY, AYUV, Y41B, Y42B, YVYU, Y444, v210, v216, NV12, NV21, UYVP, A420, YUV9, YVU9, IYU1 }");
             videosink = Gst.ElementFactory.make (VIDEORENDER [NikiApp.settings.get_int ("videorender-options")], VIDEORENDER [NikiApp.settings.get_int ("videorender-options")]);
             videosink = playback.get_video_sink ();
-            add_many(videotee, videoqueue, capsfilter, videoscale, coloreffects, flip_filter, gamma, color_balance, videosink);
+            add_many(videoqueue, videotee, capsfilter, videoscale, coloreffects, flip_filter, gamma, color_balance, videosink);
             add_pad (new Gst.GhostPad ("sink", videotee.get_static_pad ("sink")));
             videoqueue.link_many (capsfilter, videoscale, coloreffects, flip_filter, gamma, color_balance, videosink);
             Gst.Pad sinkpad = videoqueue.get_static_pad ("sink");

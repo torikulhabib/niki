@@ -220,16 +220,14 @@ namespace niki {
 
     private string get_artist_music (string inputfile) {
         string inputstring = File.new_for_uri (inputfile).get_path ();
-        string artist_music = null;
 		var info =  new TagLib.File(inputstring);
-		artist_music = info.tag.artist.char_count () < 1? StringPot.Unknow : info.tag.artist;
+		string artist_music = info.tag.artist.char_count () < 1? StringPot.Unknow : info.tag.artist;
         return artist_music;
     }
     private string get_album_music (string inputfile) {
         string inputstring = File.new_for_uri (inputfile).get_path ();
-        string album_music = null;
 		var info =  new TagLib.File(inputstring);
-		album_music = info.tag.album.char_count () < 1? StringPot.Unknow : info.tag.album;
+		string album_music = info.tag.album.char_count () < 1? StringPot.Unknow : info.tag.album;
         return album_music;
     }
 
@@ -436,8 +434,7 @@ namespace niki {
     }
 
     private static string cache_image (string name) {
-        string cache_icon = null;
-        cache_icon = GLib.Path.build_filename (cache_folder (), name + ".jpg");
+        string cache_icon = GLib.Path.build_filename (cache_folder (), name + ".jpg");
         return cache_icon;
     }
     private static string cache_folder () {
@@ -494,13 +491,11 @@ namespace niki {
         context.play_full (0, props, null);
     }
     public Gdk.Pixbuf? align_and_scale_pixbuf (Gdk.Pixbuf input_pixbuf, int size) {
-        Gdk.Pixbuf pixbuf_scale = input_pixbuf;
-        pixbuf_scale = pixbuf_scale.scale_simple (size, size, Gdk.InterpType.BILINEAR);
+        Gdk.Pixbuf pixbuf_scale = input_pixbuf.scale_simple (size, size, Gdk.InterpType.BILINEAR);
         return pixbuf_scale;
     }
 
     private Gdk.Pixbuf? unknow_cover () {
-        Gdk.Pixbuf pixbuf_unknow;
 	    Cairo.ImageSurface surface = new Cairo.ImageSurface (Cairo.Format.RGB30, 256, 256);
 	    Cairo.Context context = new Cairo.Context (surface);
 	    Cairo.Pattern bacground = new Cairo.Pattern.linear (0.0, 0.0, 0.0, 256.0);
@@ -534,7 +529,7 @@ namespace niki {
 	    context.set_source (arc4);
 	    context.arc (128.0, 128.0, 10.8, 0, 2 * Math.PI);
 	    context.fill ();
-        pixbuf_unknow = Gdk.pixbuf_get_from_surface (surface, 0, 0, 256, 256);
+        Gdk.Pixbuf pixbuf_unknow = Gdk.pixbuf_get_from_surface (surface, 0, 0, 256, 256);
         return pixbuf_unknow;
     }
 

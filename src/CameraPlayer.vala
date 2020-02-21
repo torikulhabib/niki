@@ -83,9 +83,9 @@ namespace niki {
             Gst.Util.set_object_arg ((GLib.Object) filter, "caps", "video/x-raw, format={ RGBA, RGB, I420, YV12, YUY2, UYVY, AYUV, Y41B, Y42B, YVYU, Y444, v210, v216, NV12, NV21, UYVP, A420, YUV9, YVU9, IYU1 }");
             Gst.Element bin = new Gst.Bin ("video_filter");
             ((Gst.Bin) bin).add_many (queue, filter, coloreffects, flip_filter, gamma,  videobalance, gaussianblur, videoconvert);
-            queue.link_many (filter, coloreffects, flip_filter, gamma,  videobalance, gaussianblur, videoconvert);
             bin.add_pad (new Gst.GhostPad ("sink", queue.get_static_pad ("sink")));
             bin.add_pad (new Gst.GhostPad ("src", videoconvert.get_static_pad ("src")));
+            queue.link_many (filter, coloreffects, flip_filter, gamma,  videobalance, gaussianblur, videoconvert);
             return bin;
         }
         private void coloreffect () {

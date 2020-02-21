@@ -28,7 +28,7 @@ namespace niki {
             audioamplify = Gst.ElementFactory.make("audioamplify", "audioamplify");
             audioamplify["amplification"] = 1.15;
             audiosink = Gst.ElementFactory.make(AUDIORENDER [NikiApp.settings.get_int ("audiorender-options")], AUDIORENDER [NikiApp.settings.get_int ("audiorender-options")]);
-            add_many (audiotee, audioqueue, capsfilter, equalizer, audioamplify, audiosink);
+            add_many (audioqueue, audiotee, capsfilter, equalizer, audioamplify, audiosink);
             add_pad (new Gst.GhostPad ("sink", audiotee.get_static_pad ("sink")));
             audioqueue.link_many(capsfilter, equalizer, audioamplify, audiosink);
             Gst.Pad sinkpad = audioqueue.get_static_pad ("sink");
