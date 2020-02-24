@@ -23,7 +23,6 @@ namespace niki {
     public class PreviewClutterGst : ClutterGst.Playback {
         public dynamic Gst.Element pipeline;
         private dynamic Gst.Element playsink;
-        private Value value;
         public PreviewVideo? previewvideo;
 
         construct {
@@ -31,10 +30,10 @@ namespace niki {
             pipeline = this.get_pipeline ();
             pipeline["video-sink"] = previewvideo;
             var iter = ((Gst.Bin)pipeline).iterate_sinks ();
-            string sink_name = null;
+            Value value;
             while (iter.next (out value) == Gst.Iterator.OK) {
                 playsink = (Gst.Element)value;
-                sink_name = playsink.get_name ();
+                string sink_name = playsink.get_name ();
                 if (strcmp (sink_name, "playsink") != 0) {
                     break;
                 }

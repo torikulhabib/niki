@@ -398,18 +398,10 @@ namespace niki {
             if (preview_blur != null && preview != null) {
                 try {
                     oriimage = new Clutter.Image ();
-                    oriimage.set_data (preview.get_pixels (),
-                                    Cogl.PixelFormat.RGB_888,
-                                    preview.width,
-                                    preview.height,
-                                    preview.rowstride);
+                    oriimage.set_data (preview.get_pixels (), Cogl.PixelFormat.RGB_888, preview.width, preview.height, preview.rowstride);
                     cover_center.content = oriimage;
                     blur_image = new Clutter.Image ();
-                    blur_image.set_data (preview_blur.get_pixels (),
-                                    Cogl.PixelFormat.RGBA_8888_PRE,
-                                    preview_blur.width,
-                                    preview_blur.height,
-                                    preview_blur.rowstride);
+                    blur_image.set_data (preview_blur.get_pixels (), Cogl.PixelFormat.RGBA_8888_PRE, preview_blur.width, preview_blur.height, preview_blur.rowstride);
                     audiovisualisation ();
 	            } catch (Error e) {
                     GLib.warning (e.message);

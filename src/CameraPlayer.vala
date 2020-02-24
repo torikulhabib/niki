@@ -39,9 +39,9 @@ namespace niki {
         private Gst.PbUtils.EncodingProfile create_mkv_profile () {
             Gst.Caps caps = new Gst.Caps.empty_simple ("video/x-matroska");
             Gst.PbUtils.EncodingContainerProfile container = new Gst.PbUtils.EncodingContainerProfile ("mkv", null, caps, null);
-            caps = new Gst.Caps.empty_simple ("video/x-h263");
+            caps = new Gst.Caps.empty_simple ("video/x-h264");
             container.add_profile ((Gst.PbUtils.EncodingProfile) new Gst.PbUtils.EncodingVideoProfile (caps, null, null, 1));
-            caps = new Gst.Caps.empty_simple ("audio/x-vorbis");
+            caps = new Gst.Caps.empty_simple ("audio/x-opus");
             container.add_profile ((Gst.PbUtils.EncodingProfile) new Gst.PbUtils.EncodingAudioProfile (caps, null, null, 1));
             return (Gst.PbUtils.EncodingProfile) container;
         }

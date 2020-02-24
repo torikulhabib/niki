@@ -84,8 +84,8 @@ namespace niki {
                         from_list.add (new MenuLabel ("list-remove-symbolic", StringPot.Remove_Playlist));
                         var from_device = new Gtk.MenuItem ();
                         from_device.add (new MenuLabel ("edit-delete-symbolic", StringPot.Remove_Device));
-                        var edit_tag = new Gtk.MenuItem ();
-                        edit_tag.add (new MenuLabel ("dialog-information-symbolic", StringPot.Details));
+                        var info_details = new Gtk.MenuItem ();
+                        info_details.add (new MenuLabel ("dialog-information-symbolic", StringPot.Details));
                         var save_to = new Gtk.MenuItem ();
                         save_to.add (new MenuLabel ("drive-harddisk-symbolic", StringPot.Save_MyComputer));
                         menu.append (playing);
@@ -144,7 +144,9 @@ namespace niki {
                             menu.append (from_device);
                         }
                         if (input_mode == 0 && mediatype == 1) {
-                            menu.append (edit_tag);
+                            menu.append (info_details);
+                        } else if (input_mode == 0 && mediatype == 0) {
+                            menu.append (info_details);
                         }
                         if (input_mode == 2) {
                             menu.append (save_to);
@@ -163,7 +165,7 @@ namespace niki {
                             create_dialog (select_iter);
                             menu.hide ();
                         });
-                        edit_tag.activate.connect (() => {
+                        info_details.activate.connect (() => {
                             edit_info ();
                             menu.hide ();
                         });

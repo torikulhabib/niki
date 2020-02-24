@@ -33,21 +33,11 @@ namespace niki {
             this.connection = connection;
             this.playback = playback;
             metadata = new HashTable<string, Variant> (str_hash, str_equal);
-
             playback.notify["playing"].connect (playing_changed);
             playback.eos.connect (update_metadata);
-            playback.notify["idle"].connect (() => {
-                playing_changed ();
-                update_metadata ();
-            });
-            NikiApp.settings.changed["next-status"].connect (() => {
-                playing_changed ();
-                update_metadata ();
-            });
-            NikiApp.settings.changed["previous-status"].connect (() => {
-                playing_changed ();
-                update_metadata ();
-            });
+            playback.notify["idle"].connect (update_metadata);
+            NikiApp.settings.changed["next-status"].connect (update_metadata);
+            NikiApp.settings.changed["previous-status"].connect (update_metadata);
         }
 
         private uint update_metadata_source = 0;
@@ -66,6 +56,7 @@ namespace niki {
         }
 
         private void update_metadata () {
+            playing_changed ();
             string album_path = cache_image (NikiApp.settings.get_string("tittle-playing"));
             switch (NikiApp.settings.get_enum ("player-mode")) {
                 case PlayerMode.VIDEO :
