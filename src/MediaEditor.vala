@@ -224,6 +224,7 @@ namespace niki {
             topology_box.valign = Gtk.Align.CENTER;
             topology_box.margin = 5;
             topology_box.hexpand = true;
+            topology_box.vexpand = true;
             topology_box.add (container);
             topology_box.add (container_audio);
             topology_box.add (container_video);
@@ -240,9 +241,9 @@ namespace niki {
             video_grid.attach (duration_video, 0, 3, 1, 1);
             video_grid.attach (new HeaderLabel ("Seekable:", 200), 1, 2, 1, 1);
             video_grid.attach (sekable_video, 1, 3, 1, 1);
-            video_grid.attach (new HeaderLabel ("container format:", 200), 0, 4, 1, 1);
+            video_grid.attach (new HeaderLabel ("Container format:", 200), 0, 4, 1, 1);
             video_grid.attach (container_format, 0, 5, 1, 1);
-            video_grid.attach (new HeaderLabel ("datetime:", 200), 1, 4, 1, 1);
+            video_grid.attach (new HeaderLabel ("Date time:", 200), 1, 4, 1, 1);
             video_grid.attach (date_time_video, 1, 5, 1, 1);
             video_grid.attach (new HeaderLabel ("Audio codec", 200), 0, 6, 1, 1);
             video_grid.attach (audio_codec, 0, 7, 1, 1);
