@@ -218,7 +218,7 @@ namespace niki {
                         Gdk.Pixbuf pixbuf = null;
                         switch (file_type (preview_file)) {
                             case 0 :
-                                var videopreview = new VideoPreview (preview_file.get_path (), preview_file.get_uri(), get_mime_type (preview_file));
+                                var videopreview = new VideoPreview (preview_file.get_path ());
                                 videopreview.run_preview ();
                                 if (get_mime_type (preview_file).has_prefix ("video/")) {
                                     pixbuf = new Gdk.Pixbuf.from_file_at_scale (videopreview.set_preview_large (), 256, 256, true);

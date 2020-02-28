@@ -41,7 +41,7 @@ executable(
     'WelcomeButton.vala',
     'ScanFolder.vala',
     'Thumbnailer.vala',
-    'VideoThumbnailer.vala',
+    'VideoPreview.vala',
     'AudioCover.vala',
     'EqualizerPreset.vala',
     'AudioMix.vala',

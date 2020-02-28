@@ -11,6 +11,7 @@ namespace niki {
         construct {
             audiotee = Gst.ElementFactory.make("tee", "tee");
             audioqueue = Gst.ElementFactory.make("queue", "queue");
+            audioqueue["flush-on-eos"] = true;
             capsfilter = Gst.ElementFactory.make("capsfilter", "capsfilter");
             Gst.Util.set_object_arg ((GLib.Object) capsfilter, "caps", "audio/x-raw, format={ S16LE, F32LE, F64LE }");
             equalizer = Gst.ElementFactory.make("equalizer-10bands", "equalizer-10bands");

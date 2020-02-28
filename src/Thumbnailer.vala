@@ -1,7 +1,6 @@
 [DBus (name = "org.freedesktop.thumbnails.Thumbnailer1")]
 private interface Tumbler : GLib.Object {
     public abstract async uint Queue (string [] uris, string [] mime_types, string flavor, string sheduler, uint handle_to_dequeue) throws GLib.IOError, GLib.DBusError;
-    public signal void Finished (uint handle);
 }
 
 namespace niki {

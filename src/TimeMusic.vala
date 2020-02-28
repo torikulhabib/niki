@@ -23,6 +23,7 @@ namespace niki {
     public class TimeMusic : Gtk.Revealer {
         public Gtk.Label progression_label { get; construct set; }
         public Gtk.Label duration_label { get; construct set; }
+        private uint remove_time = 0;
         private int animstep = 0;
         private int state = 0;
         private bool visible_text = false;
@@ -88,7 +89,7 @@ namespace niki {
             anim_area.height_request = height;
             anim_area.draw.connect (anim_draw);
             anim_area.show ();
-            Timeout.add (500, animation_timer);
+
             var actionbar = new Gtk.ActionBar ();
             actionbar.get_style_context ().add_class ("ground_action_button");
             actionbar.pack_start (progression_label);
@@ -97,6 +98,13 @@ namespace niki {
             actionbar.hexpand = true;
             add (actionbar);
             show_all ();
+            Timeout.add (35, animation_timer);
+            NikiApp.settings.changed["player-mode"].connect (() => {
+                if (remove_time != 0 && NikiApp.settings.get_boolean("audio-video") && window.main_stack.visible_child_name == "player") {
+                    Source.remove (remove_time);
+                }
+                remove_time = Timeout.add (35, animation_timer);
+            });
         }
         private bool anim_draw (Cairo.Context cr) {
             if (!visible_text) {
@@ -168,39 +176,39 @@ namespace niki {
                 visible_text = true;
                 switch (state) {
                     case 0:
-                        Timeout.add (30, animation_timer);
+                        remove_time = Timeout.add (35, animation_timer);
                         state += 1;
                         return false;
                     case 1:
-                        text = NikiApp.settings.get_boolean("audio-video") == true? StringPot.Titile : "";
+                        text = StringPot.Titile;
                         state += 1;
                         break;
                     case 2:
-                        text = NikiApp.settings.get_boolean("audio-video") == true? NikiApp.settings.get_string ("tittle-playing") : "";
+                        text = NikiApp.settings.get_string ("tittle-playing");
                         state += 1;
                       break;
                     case 3:
-                        text = NikiApp.settings.get_boolean("audio-video") == true? StringPot.Artist : "";
+                        text = StringPot.Artist;
                         state += 1;
                         break;
                     case 4:
-                        text = NikiApp.settings.get_boolean("audio-video") == true? NikiApp.settings.get_string ("artist-music") : "";
+                        text = NikiApp.settings.get_string ("artist-music");
                         state += 1;
                         break;
                     case 5:
-                        text = NikiApp.settings.get_boolean("audio-video") == true? StringPot.Album : "";
+                        text = StringPot.Album;
                         state += 1;
                         break;
                     case 6:
-                        text = NikiApp.settings.get_boolean("audio-video") == true? NikiApp.settings.get_string ("album-music") : "";
+                        text = NikiApp.settings.get_string ("album-music");
                         state += 1;
                         break;
                     case 7:
-                        text = NikiApp.settings.get_boolean("audio-video") == true? StringPot.Equalizer : "";
+                        text = StringPot.Equalizer;
                         state += 1;
                         break;
                     case 8:
-                        text = NikiApp.settings.get_boolean("audio-video") == true? NikiApp.settings.get_string ("tooltip-equalizer") : "";
+                        text = NikiApp.settings.get_string ("tooltip-equalizer");
                         state = 0;
                         break;
                 }
@@ -213,7 +221,7 @@ namespace niki {
             } else if (animstep == 16) {
                 timeout = 900;
             } else if (animstep == 17) {
-                timeout = 30;
+                timeout = 35;
             } else if (animstep < 33) {
                 decorate_text (1, 1.0 - ((double) (animstep - 17)) / 15.0);
             } else if (animstep == 33) {
@@ -222,15 +230,15 @@ namespace niki {
             } else {
                 visible_text  = false;
                 animstep = -1;
-                timeout = 30;
+                timeout = 35;
             }
             animstep++;
             anim_area.queue_draw ();
             if (timeout > 0) { 
-                Timeout.add (timeout, animation_timer);
+                remove_time = Timeout.add (timeout, animation_timer);
                 return false;
             }
-            return true;
+            return NikiApp.settings.get_boolean("audio-video") && window.main_stack.visible_child_name == "player";
         }
     }
 }

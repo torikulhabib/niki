@@ -335,15 +335,27 @@ namespace niki {
         }
         private void browse (string container_id) {
             serverdlna.get_content_directory (device_all);
-            serverdlna.browse_async (container_id);
+            serverdlna.browse (container_id);
         }
 
         private void browse_metadata (string id) {
             serverdlna.get_content_directory (device_all);
-            serverdlna.browse_metadata_async (id);
+            serverdlna.browse_metadata (id);
         }
 
-        private void append_media_server (GUPnP.DeviceProxy proxy) {
+        public void add_media_server (GUPnP.DeviceProxy proxy) {
+            bool exist = false;
+            treestore.foreach ((model, path, iter) => {
+                GUPnP.DeviceInfo proxys;
+                model.get (iter, DlnaTreeColumns.DEVICEINFO, out proxys);
+                if (proxy.get_udn () == proxys.get_udn ()) {
+                    exist = true;
+                }
+                return false;
+            });
+            if (exist) {
+                return;
+            }
             GUPnP.DeviceInfo info = (GUPnP.DeviceInfo)proxy;
             string friendly_name = info.get_friendly_name ();
             GUPnP.ServiceProxy content_dir = serverdlna.get_content_directory (info);
@@ -365,22 +377,6 @@ namespace niki {
                 treestore.set (root_device, DlnaTreeColumns.ICON, icon, DlnaTreeColumns.TITLE, friendly_name, DlnaTreeColumns.DEVICEINFO, info, DlnaTreeColumns.SERVICEPROXY, content_dir, DlnaTreeColumns.ID, "0");
                 browse ("0");
             }
-        }
-
-        public void add_media_server (GUPnP.DeviceProxy proxy) {
-            bool exist = false;
-            treestore.foreach ((model, path, iter) => {
-                GUPnP.DeviceInfo proxys;
-                model.get (iter, DlnaTreeColumns.DEVICEINFO, out proxys);
-                if (proxy.get_udn () == proxys.get_udn ()) {
-                    exist = true;
-                }
-                return false;
-            });
-            if (exist) {
-                return;
-            }
-            append_media_server (proxy);
         }
 
         public void remove_media_server (GUPnP.DeviceProxy proxy) {

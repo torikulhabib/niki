@@ -20,7 +20,7 @@
 */
 
 namespace niki {
-    public class CameraBottomBar : Gtk.Revealer {
+    public class CameraBottomBar : Gtk.EventBox {
         private Gtk.Revealer timer_revealer;
         private Gtk.Revealer setting_revealer;
         private Gtk.Label timer_label;
@@ -29,7 +29,11 @@ namespace niki {
         public CameraGrid? cameragrid;
         public Gtk.Button setting_button;
         public Gtk.Button option_button;
+        private Gtk.ListStore img_store;
+        private Gtk.ListStore vid_store;
         private AsyncImage asyncimage;
+        private uint video_timer = 0;
+        private uint image_timer = 0;
         private bool _hovered = false;
         public bool hovered {
             get {
@@ -53,13 +57,14 @@ namespace niki {
         }
 
         public CameraBottomBar (CameraPage camerapage) {
-            transition_type = Gtk.RevealerTransitionType.CROSSFADE;
-            set_reveal_child (true);
             events |= Gdk.EventMask.POINTER_MOTION_MASK;
             events |= Gdk.EventMask.LEAVE_NOTIFY_MASK;
             events |= Gdk.EventMask.ENTER_NOTIFY_MASK;
             get_style_context ().add_class ("ground_action_button");
-
+            img_store = new Gtk.ListStore (2, typeof (string), typeof (string));
+            vid_store = new Gtk.ListStore (2, typeof (string), typeof (string));
+            ((Gtk.TreeSortable)img_store).set_sort_column_id (1, Gtk.SortType.DESCENDING);
+            ((Gtk.TreeSortable)vid_store).set_sort_column_id (1, Gtk.SortType.DESCENDING);
             enter_notify_event.connect ((event) => {
                 if (window.is_active) {
                     if (event.window == get_window ()) {
@@ -75,7 +80,15 @@ namespace niki {
                 }
                 return false;
             });
+            button_press_event.connect (() => {
+                hovered = true;
+                return Gdk.EVENT_PROPAGATE;
+            });
 
+            button_release_event.connect (() => {
+                hovered = true;
+                return false;
+            });
             leave_notify_event.connect ((event) => {
                 if (window.is_active) {
                     if (event.window == get_window ()) {
@@ -140,18 +153,21 @@ namespace niki {
                 setting_revealer.set_reveal_child (NikiApp.settings.get_boolean ("setting-camera"));
             });
             asyncimage = new AsyncImage (true);
-            asyncimage.pixel_size = 60;
-            asyncimage.margin_end = 12;
+            asyncimage.get_style_context ().add_class ("button_action");
+            asyncimage.pixel_size = 48;
             asyncimage.valign = Gtk.Align.CENTER;
-            var image_grid = new Gtk.Grid ();
-            image_grid.set_size_request (32, 32);
-            image_grid.valign = Gtk.Align.CENTER;
-            image_grid.add (asyncimage);
-            asyncimage.set_from_pixbuf (new ObjectPixbuf().from_theme_icon ("image-x-generic-symbolic", 128, 48));
+            asyncimage.valign = Gtk.Align.CENTER;
+            var openimage = new Gtk.Button ();
+            openimage.tooltip_text = "Photos";
+            openimage.valign = Gtk.Align.CENTER;
+            openimage.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            openimage.get_style_context ().add_class ("transparantbg");
+            openimage.add (asyncimage);
+
             main_actionbar.set_center_widget (capture_button);
             main_actionbar.pack_start (option_button);
             main_actionbar.pack_start (timer_button);
-            main_actionbar.pack_end (image_grid);
+            main_actionbar.pack_end (openimage);
             main_actionbar.pack_end (setting_button);
             main_actionbar.hexpand = true;
             main_actionbar.margin_bottom = 15;
@@ -171,18 +187,169 @@ namespace niki {
             show_all ();
             NikiApp.settings.changed["camera-video"].connect (camera_video);
             bind_property ("playing", option_button, "sensitive", BindingFlags.INVERT_BOOLEAN);
-            bind_property ("playing", option_button, "sensitive", BindingFlags.INVERT_BOOLEAN);
             camera_video ();
+            img_store.row_inserted.connect (open_image);
+            vid_store.row_inserted.connect (open_video);
+            camerapage.cameraplayer.was_capture.connect (load_all);
+            Timeout.add (100, load_all);
         }
-        public void select_image (string inpu_data) {
+        private bool load_all () {
+            load_image ();
+            open_video ();
+            open_image ();
+            return false;
+        }
+        public void load_image () {
+            int vid_s = vid_store.iter_n_children (null);
+            for (int i = 0; i < vid_s; i++) {
+                Gtk.TreeIter iter;
+                if (vid_store.get_iter_first (out iter)){
+                    vid_store.remove (ref iter);
+                }
+            }
+            int img_s = img_store.iter_n_children (null);
+            for (int i = 0; i < img_s; i++) {
+                Gtk.TreeIter iter;
+                if (img_store.get_iter_first (out iter)){
+                    img_store.remove (ref iter);
+                }
+            }
+	        File file = File.new_for_path (get_media_directory ());
+	        file.enumerate_children_async.begin ("standard::*", FileQueryInfoFlags.NOFOLLOW_SYMLINKS, Priority.DEFAULT, null, (obj, res) => {
+		        try {
+			        FileEnumerator enumerator = file.enumerate_children_async.end (res);
+			        FileInfo info;
+			        while ((info = enumerator.next_file (null)) != null) {
+                        if (info.get_content_type ().has_prefix ("video/")) {
+                            var found_path = GLib.File.new_build_filename (file.get_path (), info.get_name ());
+                            video_liststore (found_path.get_uri (), found_path.get_basename ());
+                        }
+                        if (info.get_content_type ().has_prefix ("image/")) {
+                            var found_path = GLib.File.new_build_filename (file.get_path (), info.get_name ());
+                            image_liststore (found_path.get_uri (), found_path.get_basename ());
+                        }
+			        }
+		        } catch (Error e) {
+			        print ("Error: %s\n", e.message);
+		        }
+        	});
+        }
+        private void image_liststore (string file_name, string title_name) {
+            bool exist = false;
+            img_store.foreach ((model, path, iter) => {
+                string filename;
+                model.get (iter, 0, out filename);
+                if (filename == file_name) {
+                    exist = true;
+                }
+                return false;
+            });
+            if (exist) {
+                return;
+            }
+            Gtk.TreeIter iter;
+            img_store.append (out iter);
+            img_store.set (iter, 0, file_name, 1, title_name);
+        }
+        private void open_image () {
+            if (NikiApp.settings.get_boolean ("camera-video")) {
+                return;
+            }
+            if (image_timer != 0) {
+                Source.remove (image_timer);
+            }
+            image_timer = GLib.Timeout.add (50, () => {
+                if (image_latest () != null) {
+                    pixbuf_loader (File.new_for_uri (image_latest ()).get_path ());
+                } else {
+                    asyncimage.set_from_pixbuf (new ObjectPixbuf().from_theme_icon ("avatar-default-symbolic", 128, 48));
+                    asyncimage.show ();
+                }
+                image_timer = 0;
+                return Source.REMOVE;
+            });
+        }
+        private void video_liststore (string file_name, string title_name) {
+            bool exist = false;
+            vid_store.foreach ((model, path, iter) => {
+                string filename;
+                model.get (iter, 0, out filename);
+                if (filename == file_name) {
+                    exist = true;
+                }
+                return false;
+            });
+            if (exist) {
+                return;
+            }
+            Gtk.TreeIter iter;
+            vid_store.append (out iter);
+            vid_store.set (iter, 0, file_name, 1, title_name);
+        }
+
+        private void open_video () {
+            if (!NikiApp.settings.get_boolean ("camera-video")) {
+                return;
+            }
+            if (video_timer != 0) {
+                Source.remove (video_timer);
+            }
+            video_timer = GLib.Timeout.add (50, () => {
+                if (video_latest () != null) {
+                    var preview_file = File.new_for_uri (video_latest ());
+                    var videopreview = new VideoPreview (preview_file.get_path ());
+                    videopreview.run_preview ();
+                    pixbuf_loader (videopreview.set_preview ());
+                } else {
+                    asyncimage.set_from_pixbuf (new ObjectPixbuf().from_theme_icon ("avatar-default-symbolic", 128, 48));
+                    asyncimage.show ();
+                }
+                video_timer = 0;
+                return Source.REMOVE;
+            });
+        }
+        private void pixbuf_loader (string file_name) {
             try {
-                Gdk.Pixbuf pixbuf = null;
-                pixbuf = new Gdk.Pixbuf.from_file_at_scale (inpu_data, 32, 32, true);
-                asyncimage.set_from_pixbuf (pixbuf);
+                Gdk.Pixbuf pixbuf = new Gdk.Pixbuf.from_file (file_name);
+	            int min_size = int.min (pixbuf.get_width (), pixbuf.get_height ());
+	            Gdk.Pixbuf new_pix = new Gdk.Pixbuf.subpixbuf (pixbuf, min_size == pixbuf.get_width ()? 0 : min_size / 2, pixbuf.get_height () == min_size? 0 : min_size / 2, min_size, min_size);
+                var draw_surface = new Granite.Drawing.BufferSurface ((int)min_size, (int)min_size);
+                Gdk.cairo_set_source_pixbuf (draw_surface.context, new_pix, 0, 0);
+                draw_surface.context.paint ();
+	            Cairo.ImageSurface surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, min_size, min_size);
+	            Cairo.Context context = new Cairo.Context (surface);
+	            context.arc (min_size / 2, min_size / 2, min_size / 2, 0, 2 * Math.PI);
+	            context.clip ();
+	            context.new_path ();
+	            int w = new_pix.get_width ();
+	            int h = new_pix.get_height ();
+                context.scale (min_size / w, min_size / h);
+	            context.set_source_surface (draw_surface.surface, 0, 0);
+	            context.paint ();
+                asyncimage.set_from_pixbuf (align_and_scale_pixbuf (Gdk.pixbuf_get_from_surface (surface, 0, 0, min_size, min_size), 48));
                 asyncimage.show ();
             } catch (Error e) {
                 GLib.warning (e.message);
+                pixbuf_loader (file_name);
             }
+        }
+        public string? image_latest () {
+            Gtk.TreeIter iter;
+            if (img_store.get_iter_first (out iter)){
+                string filename;
+                img_store.get (iter, 0, out filename);
+                return filename;
+            }
+            return null;
+        }
+        public string? video_latest () {
+            Gtk.TreeIter iter;
+            if (vid_store.get_iter_first (out iter)){
+                string filename;
+                vid_store.get (iter, 0, out filename);
+                return filename;
+            }
+            return null;
         }
         private void camera_video () {
             ((Gtk.Image) option_button.image).icon_name = (NikiApp.settings.get_boolean ("camera-video")? "com.github.torikulhabib.niki.capture-symbolic" : "com.github.torikulhabib.niki.record-symbolic");
@@ -190,6 +357,7 @@ namespace niki {
             ((Gtk.Image) capture_button.image).icon_name = (NikiApp.settings.get_boolean ("camera-video")? "com.github.torikulhabib.niki.record-symbolic" : "com.github.torikulhabib.niki.capture-symbolic");
             capture_button.tooltip_text = NikiApp.settings.get_boolean ("camera-video")? StringPot.Record : StringPot.Capture;
             timer_button.sensitive = NikiApp.settings.get_boolean ("camera-video")? false : true;
+            load_all ();
         }
 
         private uint recording_timeout = 0U;

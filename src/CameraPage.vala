@@ -117,11 +117,7 @@ namespace niki {
         }
 
         private void camera_record () {
-            if (!NikiApp.settings.get_boolean ("camera-video")) {
-                string_notify (StringPot.Camera_Mode);
-            } else {
-                string_notify (StringPot.Video_Mode);
-            }
+            string_notify (!NikiApp.settings.get_boolean ("camera-video")? StringPot.Camera_Mode : StringPot.Video_Mode);
         }
         private uint notify_timer = 0;
         private void notify_control () {

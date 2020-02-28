@@ -44,6 +44,7 @@ namespace niki {
                     text = clipboard.wait_for_text ().strip ();
                 }
             });
+            margin_end = 10;
             activates_default = true;
         }
     }

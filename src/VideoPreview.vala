@@ -22,14 +22,12 @@
 namespace niki {
     public class VideoPreview : GLib.Object {
         private File video_file;
-        private string mime_type;
         private string preview_path;
         private string preview_large_path;
 
-        public VideoPreview (string directory, string file, string mime_type) {
-            this.mime_type = mime_type;
+        public VideoPreview (string directory) {
             video_file = File.new_for_path (directory);
-            string hash_file_poster = GLib.Checksum.compute_for_string (ChecksumType.MD5, file, file.length);
+            string hash_file_poster = GLib.Checksum.compute_for_string (ChecksumType.MD5, video_file.get_uri (), video_file.get_uri ().length);
             preview_path = Path.build_filename (GLib.Environment.get_user_cache_dir (), "thumbnails", "normal", hash_file_poster + ".png");
             preview_large_path = Path.build_filename (GLib.Environment.get_user_cache_dir (),"thumbnails", "large", hash_file_poster + ".png");
         }
@@ -46,7 +44,7 @@ namespace niki {
                 Gee.ArrayList<string> uris = new Gee.ArrayList<string> ();
                 Gee.ArrayList<string> mimes = new Gee.ArrayList<string> ();
                 uris.add (video_file.get_uri ());
-                mimes.add (mime_type);
+                mimes.add (get_mime_type (video_file));
                 var thumbler = new DbusThumbnailer ();
                 thumbler.Instand (uris, mimes, "normal");
                 thumbler.Instand (uris, mimes, "large");

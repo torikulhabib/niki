@@ -78,10 +78,10 @@ namespace niki {
                         if (mode_scan == 0 && !content_Audio && !content_video) {
                             signal_notify (StringPot.Nothing_AV);
                         }
-                        mimetype_contents = {};
                         if (content_video || content_Audio) {
                             window.player_page.play_first_in_playlist ();
                         }
+                        mimetype_contents = {};
                         content_count = 0;
                         return Source.REMOVE;
                     });

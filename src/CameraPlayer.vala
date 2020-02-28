@@ -14,7 +14,7 @@ namespace niki {
         private dynamic Gst.Element filter;
         private CameraPage camerapage;
         private CameraFlash cameraflash;
-
+        public signal bool was_capture ();
 
         private Gst.PbUtils.EncodingProfile create_ogg_profile () {
             Gst.Caps caps = new Gst.Caps.empty_simple ("application/ogg");
@@ -60,7 +60,6 @@ namespace niki {
             this.camerapage = camerapage;
             cameraflash = new CameraFlash ();
             camerabin = Gst.ElementFactory.make ("camerabin", "camerabin");
-            camerabin.set_state (Gst.State.NULL);
             videosink = ClutterGst.create_video_sink ();
             camerabin["viewfinder-sink"] = videosink;
             camera_source = Gst.ElementFactory.make ("wrappercamerabinsrc", "wrappercamerabinsrc");
@@ -69,9 +68,11 @@ namespace niki {
             Gst.Bus bus = camerabin.get_bus ();
             bus.add_signal_watch ();
             bus.message.connect (bus_message_cb);
+            camerabin.set_state (Gst.State.NULL);
         }
         private Gst.Element setup_video_filter_bin () {
             queue = Gst.ElementFactory.make ("queue", "queue");
+            queue["flush-on-eos"] = true;
             valve = Gst.ElementFactory.make ("valve", "valve");
             gamma = Gst.ElementFactory.make ("gamma", "gamma");
             videobalance = Gst.ElementFactory.make ("videobalance", "videobalance");
@@ -119,11 +120,7 @@ namespace niki {
             }
         }
         private void flip_mode () {
-            if (NikiApp.settings.get_boolean ("mode-flip")) {
-                flip_filter["method"] = 0;
-            } else {
-                flip_filter["method"] = 4;
-            }
+            flip_filter["method"] = NikiApp.settings.get_boolean ("mode-flip")? 0 : 4;
         }
         private void profile_change () {
             Gst.State state = Gst.State.NULL;
@@ -186,8 +183,10 @@ namespace niki {
                         unowned Gst.Structure structure = message.get_structure ();
                         if (structure.get_name () == "image-done") {
                             camerapage.string_notify (StringPot.Photo_Saved);
+                            was_capture ();
                         } else if (structure.get_name () == "video-done") {
                             camerapage.string_notify (StringPot.Video_Saved);
+                            was_capture ();
                         }
                     }
                     break;

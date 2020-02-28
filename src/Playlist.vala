@@ -67,7 +67,7 @@ namespace niki {
                     if (NikiApp.settings.get_boolean ("edit-playlist")) {
                         Idle.add (() => {
                             if (!liststore.iter_is_valid (select_iter)) {
-                                return false;
+                                return Gdk.EVENT_PROPAGATE;
                             }
                             liststore.remove (ref select_iter);
                             update_playlist (50);
@@ -175,7 +175,7 @@ namespace niki {
                             visible_menus ();
                         });
                         menu.show_all ();
-                        return false;
+                        return Gdk.EVENT_PROPAGATE;
                     });
                 }
                 return Gdk.EVENT_PROPAGATE;
@@ -367,7 +367,7 @@ namespace niki {
             int type_file = file_type (path);
             switch (type_file) {
                 case 0 :
-                    var videopreview = new VideoPreview (path.get_path (), path.get_uri(), get_mime_type (path));
+                    var videopreview = new VideoPreview (path.get_path ());
                     videopreview.run_preview ();
                     try {
                         preview = new Gdk.Pixbuf.from_file_at_scale (videopreview.set_preview (), 48, 48, true);

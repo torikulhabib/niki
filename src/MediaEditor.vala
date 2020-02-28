@@ -29,6 +29,16 @@ namespace niki {
         private MediaEntry container_format;
         private MediaEntry video_height;
         private MediaEntry video_width;
+        private MediaEntry video_bitrate;
+        private MediaEntry video_bitrate_max;
+        private MediaEntry frame_rate;
+        private MediaEntry video_depth;
+        private MediaEntry audio_bitrate;
+        private MediaEntry audio_bitrate_max;
+        private MediaEntry audio_language;
+        private MediaEntry audio_chanel;
+        private MediaEntry audio_samplerate;
+        private MediaEntry audio_depth;
         private Gtk.Stack stack;
 
         private Gst.Pipeline pipeline;
@@ -69,12 +79,15 @@ namespace niki {
             comment_scrolledwindow.add (comment_textview);
             var local_time = new DateTime.now_local ();
             date_spinbutton = new Gtk.SpinButton.with_range (0, local_time.get_year (), 1);
+            date_spinbutton.margin_end = 10;
             date_spinbutton.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            track_spinbutton = new Gtk.SpinButton.with_range (0, local_time.get_year (), 1);
+            track_spinbutton = new Gtk.SpinButton.with_range (0, 500, 1);
+            track_spinbutton.margin_end = 10;
             track_spinbutton.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
 
             var comment_frame = new Gtk.Frame (null);
             comment_frame.expand = true;
+            comment_frame.margin_end = 10;
             comment_frame.add (comment_scrolledwindow);
 
             asyncimage = new AsyncImage (true);
@@ -120,7 +133,7 @@ namespace niki {
             var grid = new Gtk.Grid ();
             grid.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             grid.expand = true;
-            grid.margin_start = grid.column_spacing = grid.margin_end = 10;
+            grid.margin_start = 10;
             grid.attach (new HeaderLabel (StringPot.Cover, 200), 0, 0, 1, 1);
             grid.attach (imagege_box, 0, 1, 1, 1);
             grid.attach (new HeaderLabel (StringPot.NComment, 200), 1, 0, 1, 1);
@@ -183,25 +196,25 @@ namespace niki {
             container_video.margin_end = 10;
 
             duration_video = new MediaEntry ("tools-timer-symbolic", "", false);
-            duration_video.margin_end = 10;
             pixel_ratio = new MediaEntry ("view-fullscreen-symbolic", "", false);
-            pixel_ratio.margin_end = 10;
             sekable_video = new MediaEntry ("media-seek-forward-symbolic", "", false);
-            sekable_video.margin_end = 10;
             audio_codec = new MediaEntry ("audio-x-generic-symbolic", "", false);
-            audio_codec.margin_end = 10;
             video_codec = new MediaEntry ("video-x-generic-symbolic", "", false);
-            video_codec.margin_end = 10;
             date_time_video = new MediaEntry ("x-office-calendar-symbolic", "", false);
-            date_time_video.margin_end = 10;
             interlaced = new MediaEntry ("insert-link-symbolic", "", false);
-            interlaced.margin_end = 10;
             video_width = new MediaEntry ("video-display-symbolic", "", false);
-            video_width.margin_end = 10;
             video_height = new MediaEntry ("video-display-symbolic", "", false);
-            video_height.margin_end = 10;
-            container_format = new MediaEntry ("applications-multimedia-symbolic", "", false);
-            container_format.margin_end = 10;
+            container_format = new MediaEntry ("video-x-generic-symbolic", "", false);
+            video_bitrate = new MediaEntry ("video-x-generic-symbolic", "", false);
+            video_bitrate_max = new MediaEntry ("video-x-generic-symbolic", "", false);
+            frame_rate = new MediaEntry ("video-x-generic-symbolic", "", false);
+            video_depth = new MediaEntry ("video-x-generic-symbolic", "", false);
+            audio_bitrate = new MediaEntry ("audio-x-generic-symbolic", "", false);
+            audio_bitrate_max = new MediaEntry ("audio-x-generic-symbolic", "", false);
+            audio_language = new MediaEntry ("audio-x-generic-symbolic", "", false);
+            audio_chanel = new MediaEntry ("audio-x-generic-symbolic", "", false);
+            audio_samplerate = new MediaEntry ("audio-x-generic-symbolic", "", false);
+            audio_depth = new MediaEntry ("audio-x-generic-symbolic", "", false);
 
             video_asyncimage = new AsyncImage (true);
             video_asyncimage.pixel_size = 85;
@@ -232,7 +245,7 @@ namespace niki {
             var video_grid = new Gtk.Grid ();
             video_grid.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             video_grid.expand = true;
-            video_grid.margin_start = grid.column_spacing = grid.margin_end = 10;
+            video_grid.margin_start = 10;
             video_grid.attach (new HeaderLabel ("Thumbnail:", 200), 0, 0, 1, 1);
             video_grid.attach (thumbnail, 0, 1, 1, 1);
             video_grid.attach (new HeaderLabel ("Topology:", 200), 1, 0, 1, 1);
@@ -253,15 +266,39 @@ namespace niki {
             video_grid.attach (pixel_ratio, 0, 9, 1, 1);
             video_grid.attach (new HeaderLabel ("Interlaced:", 200), 1, 8, 1, 1);
             video_grid.attach (interlaced, 1, 9, 1, 1);
-            video_grid.attach (new HeaderLabel ("Video Width:", 200), 0, 10, 1, 1);
-            video_grid.attach (video_width, 0, 11, 1, 1);
-            video_grid.attach (new HeaderLabel ("Video height", 200), 1, 10, 1, 1);
-            video_grid.attach (video_height, 1, 11, 1, 1);
+            video_grid.attach (new HeaderLabel ("Video bitrate:", 200), 0, 10, 1, 1);
+            video_grid.attach (video_bitrate, 0, 11, 1, 1);
+            video_grid.attach (new HeaderLabel ("Video bitrate max", 200), 1, 10, 1, 1);
+            video_grid.attach (video_bitrate_max, 1, 11, 1, 1);
+            video_grid.attach (new HeaderLabel ("Frame rate:", 200), 0, 12, 1, 1);
+            video_grid.attach (frame_rate, 0, 13, 1, 1);
+            video_grid.attach (new HeaderLabel ("Video depth", 200), 1, 12, 1, 1);
+            video_grid.attach (video_depth, 1, 13, 1, 1);
+            video_grid.attach (new HeaderLabel ("Video Width:", 200), 0, 14, 1, 1);
+            video_grid.attach (video_width, 0, 15, 1, 1);
+            video_grid.attach (new HeaderLabel ("Video height", 200), 1, 14, 1, 1);
+            video_grid.attach (video_height, 1, 15, 1, 1);
+            video_grid.attach (new HeaderLabel ("audio bitrate:", 200), 0, 16, 1, 1);
+            video_grid.attach (audio_bitrate, 0, 17, 1, 1);
+            video_grid.attach (new HeaderLabel ("audio bitrate max", 200), 1, 16, 1, 1);
+            video_grid.attach (audio_bitrate_max, 1, 17, 1, 1);
+            video_grid.attach (new HeaderLabel ("Audio language:", 200), 0, 18, 1, 1);
+            video_grid.attach (audio_language, 0, 19, 1, 1);
+            video_grid.attach (new HeaderLabel ("Audio chanels", 200), 1, 18, 1, 1);
+            video_grid.attach (audio_chanel, 1, 19, 1, 1);
+            video_grid.attach (new HeaderLabel ("Audio Sample rate:", 200), 0, 20, 1, 1);
+            video_grid.attach (audio_samplerate, 0, 21, 1, 1);
+            video_grid.attach (new HeaderLabel ("Audio depth", 200), 1, 20, 1, 1);
+            video_grid.attach (audio_depth, 1, 21, 1, 1);
 
+            var viscrolledwindow = new Gtk.ScrolledWindow (null, null);
+            viscrolledwindow.set_policy (Gtk.PolicyType.EXTERNAL, Gtk.PolicyType.AUTOMATIC);
+            viscrolledwindow.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            viscrolledwindow.add (video_grid);
             stack = new Gtk.Stack ();
             stack.transition_duration = 500;
             stack.add_named (grid, "audio_info");
-            stack.add_named (video_grid, "video_info");
+            stack.add_named (viscrolledwindow, "video_info");
             stack.vhomogeneous = false;
             stack.hhomogeneous = false;
             stack.show_all ();
@@ -369,7 +406,6 @@ namespace niki {
                     break;
                 case Gst.MessageType.TAG:
 //                    unowned Gst.Structure structure = message.get_structure ();
-         //           print ("%s\n", structure.get_name ());
                     break;
                 default :
                     break;
@@ -483,7 +519,7 @@ namespace niki {
         private void video_info (string file_name) {
             File path = File.new_for_uri (file_name);
             label_name.label = path.get_path ();
-            var videopreview = new VideoPreview (path.get_path (), path.get_uri(), get_mime_type (path));
+            var videopreview = new VideoPreview (path.get_path ());
             videopreview.run_preview ();
             try {
                 video_asyncimage.set_from_pixbuf (new Gdk.Pixbuf.from_file_at_scale (videopreview.set_preview (), 128, 128, true));
@@ -524,8 +560,22 @@ namespace niki {
                     video_width.text = "%u".printf (stream_video.get_width ());
                     interlaced.text = "%s".printf (stream_video.is_interlaced ()? "Yes" : "No");
                     pixel_ratio.text = "%u/%u".printf (stream_video.get_par_num (), stream_video.get_par_denom ());
+                    video_bitrate.text = "%u".printf (stream_video.get_bitrate ());
+                    video_bitrate_max.text = "%u".printf (stream_video.get_max_bitrate ());
+                    video_depth.text = "%u".printf (stream_video.get_depth ());
+                    frame_rate.text = "%u/%u".printf (stream_video.get_framerate_num (), stream_video.get_framerate_denom ());
                 }
-
+                var list_astream =  new GLib.List<Gst.PbUtils.DiscovererStreamInfo> ();
+                list_astream = info.get_audio_streams ();
+                foreach (var list in list_astream) {
+                    var stream_audio = (Gst.PbUtils.DiscovererAudioInfo)list;
+                    audio_language.text = "%s".printf (stream_audio.get_language ());
+                    audio_samplerate.text = "%u".printf (stream_audio.get_sample_rate ());
+                    audio_bitrate.text = "%u".printf (stream_audio.get_bitrate ());
+                    audio_bitrate_max.text = "%u".printf (stream_audio.get_max_bitrate ());
+                    audio_depth.text = "%u".printf (stream_audio.get_depth ());
+                    audio_chanel.text = "%u (%s )".printf (stream_audio.get_channels (), format_channel_mask (stream_audio));
+                }
                 var tag_list = info.get_tags ();
                 string container_fmt;
                 if (tag_list.get_string (Gst.Tags.CONTAINER_FORMAT, out container_fmt)) {
@@ -558,6 +608,25 @@ namespace niki {
                 critical ("%s", err.message);
             }
         }
+
+        private string? format_channel_mask (Gst.PbUtils.DiscovererAudioInfo ainfo) {
+            var astring = new StringBuilder (" ");
+            Gst.Audio.ChannelPosition position [64];
+            uint channels = ainfo.get_channels ();
+            EnumClass enum_class = (EnumClass) typeof (Gst.Audio.ChannelPosition).class_ref ();
+            uint64 channel_mask = ainfo.get_channel_mask ();
+            if (channel_mask != 0) {
+                Gst.Audio.audio_channel_positions_from_mask (channel_mask, position);
+                for (uint i = 0; i < channels; i++) {
+                    EnumValue value = enum_class.get_value (position[i]);
+                    astring.append_printf ("%s%s", value.value_nick, i + 1 == channels ? "" : ", ");
+                }
+            } else {
+                astring.append ("unknown layout");
+            }
+            return astring.str;
+        }
+
         private void audio_info (string file_name) {
             label_name.label = File.new_for_uri (file_name).get_path ();
             var file = new TagLib.File (File.new_for_uri (file_name).get_path ());

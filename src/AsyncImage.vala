@@ -24,16 +24,6 @@ namespace niki {
             Object (load_on_realize: load_on_realize, auto_size_request: auto_size_request);
         }
 
-        public AsyncImage.from_gicon_async (Icon icon, int size, bool load_on_realize = true, bool auto_size_request = true) {
-            Object (load_on_realize: load_on_realize, auto_size_request: auto_size_request);
-            set_from_gicon_async.begin (icon, size);
-        }
-
-        public AsyncImage.from_icon_name_async (string icon_name, Gtk.IconSize icon_size, bool load_on_realize = true, bool auto_size_request = true) {
-            Object (load_on_realize: load_on_realize, auto_size_request: auto_size_request);
-            set_from_icon_name_async.begin (icon_name, icon_size);
-        }
-
         static construct {
             cache = new Gee.ArrayList<CacheEntry> ();
         }
