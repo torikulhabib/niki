@@ -519,15 +519,17 @@ namespace niki {
         private void video_info (string file_name) {
             File path = File.new_for_uri (file_name);
             label_name.label = path.get_path ();
-            var videopreview = new VideoPreview (path.get_path ());
-            videopreview.run_preview ();
-            try {
-                video_asyncimage.set_from_pixbuf (new Gdk.Pixbuf.from_file_at_scale (videopreview.set_preview (), 128, 128, true));
+            if (!FileUtils.test (large_thumb (path), FileTest.EXISTS)) {
+                var dbus_Thum = new DbusThumbnailer ().instance;
+                dbus_Thum.instand_thumbler (path, "large");
+                dbus_Thum.load_finished.connect (()=>{
+                    video_asyncimage.set_from_pixbuf (pix_scale (large_thumb (path), 128));
+                    video_asyncimage.show ();
+                });
+            } else {
+                video_asyncimage.set_from_pixbuf (pix_scale (large_thumb (path), 128));
                 video_asyncimage.show ();
-	        } catch (Error e) {
-                video_info (file_name);
-                GLib.warning (e.message);
-	        }
+            }
 
             try {
                 Gst.PbUtils.Discoverer discoverer = new Gst.PbUtils.Discoverer ((Gst.ClockTime) (5 * Gst.SECOND));

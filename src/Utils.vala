@@ -448,7 +448,40 @@ namespace niki {
         }
         return cache_dir.get_path ();
     }
-
+    private static string? normal_thumb (File thum_file) {
+        string hash_file = GLib.Checksum.compute_for_string (ChecksumType.MD5, thum_file.get_uri (), thum_file.get_uri ().length);
+        string thum_path = Path.build_filename (GLib.Environment.get_user_cache_dir (),"thumbnails", "normal", hash_file + ".png");
+        return thum_path;
+    }
+    private static string? large_thumb (File thum_file) {
+        string hash_file = GLib.Checksum.compute_for_string (ChecksumType.MD5, thum_file.get_uri (), thum_file.get_uri ().length);
+        string thum_path = Path.build_filename (GLib.Environment.get_user_cache_dir (), "thumbnails", "large", hash_file + ".png");
+        return thum_path;
+    }
+    private Gdk.Pixbuf pix_scale (string input, int size) {
+        Gdk.Pixbuf pixbuf = null;
+        if (!FileUtils.test (input, FileTest.EXISTS)) {
+            return pixbuf;
+        }
+        try {
+            pixbuf = new Gdk.Pixbuf.from_file_at_scale (input, size, size, true);
+        } catch (Error e) {
+            GLib.warning (e.message);
+        }
+        return pixbuf;
+    }
+    private Gdk.Pixbuf pix_file (string input) {
+        Gdk.Pixbuf pixbuf = null;
+        if (!FileUtils.test (input, FileTest.EXISTS)) {
+            return pixbuf;
+        }
+        try {
+            pixbuf = new Gdk.Pixbuf.from_file (input);
+        } catch (Error e) {
+            GLib.warning (e.message);
+        }
+        return pixbuf;
+    }
     private string set_filename_media () {
         string time = new GLib.DateTime.now_local ().format ("%F%H:%M:%S");
         int file_id = 0;

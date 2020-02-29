@@ -213,32 +213,31 @@ namespace niki {
             file.update_preview.connect (() => {
                 string uri = file.get_preview_uri ();
                 if (uri != null && uri.has_prefix ("file://")) {
-                    var preview_file = File.new_for_uri (uri);
-                    try {
-                        Gdk.Pixbuf pixbuf = null;
-                        switch (file_type (preview_file)) {
-                            case 0 :
-                                var videopreview = new VideoPreview (preview_file.get_path ());
-                                videopreview.run_preview ();
-                                if (get_mime_type (preview_file).has_prefix ("video/")) {
-                                    pixbuf = new Gdk.Pixbuf.from_file_at_scale (videopreview.set_preview_large (), 256, 256, true);
-                                }
-                                break;
-                            case 1 :
-                                var audiocover = new AudioCover();
-                                audiocover.import (preview_file.get_uri ());
-                                pixbuf = audiocover.pixbuf_albumart;
-                                break;
+                    var file_pre = File.new_for_uri (uri);
+                    Gdk.Pixbuf pixbuf = null;
+                    if (get_mime_type (file_pre).has_prefix ("video/")) {
+                        if (!FileUtils.test (large_thumb (file_pre), FileTest.EXISTS)) {
+                            var dbus_Thum = new DbusThumbnailer ().instance;
+                            dbus_Thum.instand_thumbler (file_pre, "large");
+                            dbus_Thum.load_finished.connect (()=>{
+                                preview_area.set_from_pixbuf (pix_scale (large_thumb (file_pre), 256));
+                                label.label = get_info_file (file_pre);
+                                preview_area.show ();
+                                file.set_preview_widget_active (true);
+                            });
+                        } else {
+                            pixbuf = pix_scale (large_thumb (file_pre), 256);
                         }
-                        if (pixbuf != null) {
-                            label.label = get_info_file (preview_file);
-                            preview_area.set_from_pixbuf (pixbuf);
-                            preview_area.show ();
-                            file.set_preview_widget_active (true);
-                        }
-                    } catch (Error e) {
-                        GLib.warning (e.message);
-                        file.update_preview ();
+                    } else if (get_mime_type (file_pre).has_prefix ("audio/")) {
+                        var audiocover = new AudioCover();
+                        audiocover.import (file_pre.get_uri ());
+                        pixbuf = audiocover.pixbuf_albumart;
+                    }
+                    if (pixbuf != null) {
+                        label.label = get_info_file (file_pre);
+                        preview_area.set_from_pixbuf (pixbuf);
+                        preview_area.show ();
+                        file.set_preview_widget_active (true);
                     }
                 } else {
                     preview_area.hide ();

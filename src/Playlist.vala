@@ -307,8 +307,7 @@ namespace niki {
             if (exist) {
                 return;
             }
-            Gdk.Pixbuf preview = null;
-            preview = align_and_scale_pixbuf (objectpixbuf.get_pixbuf_from_url (inputstream [1], inputstream [2]), 48);
+            Gdk.Pixbuf preview = align_and_scale_pixbuf (objectpixbuf.get_pixbuf_from_url (inputstream [1], inputstream [2]), 48);
             if (preview != null) {
                 preview = objectpixbuf.icon_from_mediatype (mediatype);
             }
@@ -364,37 +363,29 @@ namespace niki {
             }
 
             Gdk.Pixbuf preview = null;
-            int type_file = file_type (path);
-            switch (type_file) {
-                case 0 :
-                    var videopreview = new VideoPreview (path.get_path ());
-                    videopreview.run_preview ();
-                    try {
-                        preview = new Gdk.Pixbuf.from_file_at_scale (videopreview.set_preview (), 48, 48, true);
-	                } catch (Error e) {
-                        preview = objectpixbuf.icon_from_mediatype (0);
-                        GLib.warning (e.message);
-	                }
-                    break;
-                case 1 :
-                    album_music = get_album_music (file_name);
-                    artist_music = get_artist_music (file_name);
-                    string nameimage = cache_image (info_songs + " " + artist_music);
-                    if (!FileUtils.test (nameimage, FileTest.EXISTS)) {
-                        var audiocover = new AudioCover();
-                        audiocover.import (path.get_uri ());
-                        preview = audiocover.pixbuf_playlist;
-                    } else {
-                        try {
-                            preview = new Gdk.Pixbuf.from_file_at_scale (nameimage, 48, 48, true);
-	                    } catch (Error e) {
-                            GLib.warning (e.message);
-	                    }
-	                }
-                    break;
-            }
+            if (get_mime_type (path).has_prefix ("video/")) {
+                if (!FileUtils.test (normal_thumb (path), FileTest.EXISTS)) {
+                    var dbus_Thum = new DbusThumbnailer ().instance;
+                    dbus_Thum.instand_thumbler (path, "normal");
+                }
+                preview = pix_scale (normal_thumb (path), 48);
+                if (preview == null) {
+                    preview = objectpixbuf.icon_from_mediatype (0);
+                }
+            } else if (get_mime_type (path).has_prefix ("audio/")) {
+                album_music = get_album_music (file_name);
+                artist_music = get_artist_music (file_name);
+                string nameimage = cache_image (info_songs + " " + artist_music);
+                if (!FileUtils.test (nameimage, FileTest.EXISTS)) {
+                    var audiocover = new AudioCover();
+                    audiocover.import (path.get_uri ());
+                    preview = audiocover.pixbuf_playlist;
+                } else {
+                    preview = pix_scale (nameimage, 48);
+	            }
+	        }
             liststore.append (out iter);
-            liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE,  info_songs, PlaylistColumns.ARTISTTITLE, type_file == 0? Markup.escape_text (info_songs) : "<b>" + Markup.escape_text  (info_songs) + "</b>" + "\n" + Markup.escape_text (artist_music) + " - " + Markup.escape_text (album_music), PlaylistColumns.FILENAME, path.get_uri (), PlaylistColumns.FILESIZE, get_info_size (path.get_uri ()), PlaylistColumns.MEDIATYPE, file_type (path), PlaylistColumns.ALBUMMUSIC, album_music, PlaylistColumns.ARTISTMUSIC, artist_music, PlaylistColumns.PLAYNOW, true, PlaylistColumns.INPUTMODE, 0);
+            liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE,  info_songs, PlaylistColumns.ARTISTTITLE, file_type (path) == 0? Markup.escape_text (info_songs) : "<b>" + Markup.escape_text  (info_songs) + "</b>" + "\n" + Markup.escape_text (artist_music) + " - " + Markup.escape_text (album_music), PlaylistColumns.FILENAME, path.get_uri (), PlaylistColumns.FILESIZE, get_info_size (path.get_uri ()), PlaylistColumns.MEDIATYPE, file_type (path), PlaylistColumns.ALBUMMUSIC, album_music, PlaylistColumns.ARTISTMUSIC, artist_music, PlaylistColumns.PLAYNOW, true, PlaylistColumns.INPUTMODE, 0);
         }
 
         private void update_playlist (uint timeout) {

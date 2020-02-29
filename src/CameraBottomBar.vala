@@ -260,7 +260,7 @@ namespace niki {
             }
             image_timer = GLib.Timeout.add (50, () => {
                 if (image_latest () != null) {
-                    pixbuf_loader (File.new_for_uri (image_latest ()).get_path ());
+                    pix_loader (pix_file (File.new_for_uri (image_latest ()).get_path ()));
                 } else {
                     asyncimage.set_from_pixbuf (new ObjectPixbuf().from_theme_icon ("avatar-default-symbolic", 128, 48));
                     asyncimage.show ();
@@ -296,10 +296,20 @@ namespace niki {
             }
             video_timer = GLib.Timeout.add (50, () => {
                 if (video_latest () != null) {
-                    var preview_file = File.new_for_uri (video_latest ());
-                    var videopreview = new VideoPreview (preview_file.get_path ());
-                    videopreview.run_preview ();
-                    pixbuf_loader (videopreview.set_preview ());
+                    var video_file = File.new_for_uri (video_latest ());
+                    if (!FileUtils.test (normal_thumb (video_file), FileTest.EXISTS)) {
+                        var dbus_Thum = new DbusThumbnailer ().instance;
+                        dbus_Thum.instand_thumbler (video_file, "normal");
+                        dbus_Thum.load_finished.connect (()=>{
+                            if (pix_file (normal_thumb (video_file)) != null) {
+                                pix_loader (pix_file (normal_thumb (video_file)));
+                            }
+                        });
+                    } else {
+                        if (pix_file (normal_thumb (video_file)) != null) {
+                            pix_loader (pix_file (normal_thumb (video_file)));
+                        }
+                    }
                 } else {
                     asyncimage.set_from_pixbuf (new ObjectPixbuf().from_theme_icon ("avatar-default-symbolic", 128, 48));
                     asyncimage.show ();
@@ -308,30 +318,25 @@ namespace niki {
                 return Source.REMOVE;
             });
         }
-        private void pixbuf_loader (string file_name) {
-            try {
-                Gdk.Pixbuf pixbuf = new Gdk.Pixbuf.from_file (file_name);
-	            int min_size = int.min (pixbuf.get_width (), pixbuf.get_height ());
-	            Gdk.Pixbuf new_pix = new Gdk.Pixbuf.subpixbuf (pixbuf, min_size == pixbuf.get_width ()? 0 : min_size / 2, pixbuf.get_height () == min_size? 0 : min_size / 2, min_size, min_size);
-                var draw_surface = new Granite.Drawing.BufferSurface ((int)min_size, (int)min_size);
-                Gdk.cairo_set_source_pixbuf (draw_surface.context, new_pix, 0, 0);
-                draw_surface.context.paint ();
-	            Cairo.ImageSurface surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, min_size, min_size);
-	            Cairo.Context context = new Cairo.Context (surface);
-	            context.arc (min_size / 2, min_size / 2, min_size / 2, 0, 2 * Math.PI);
-	            context.clip ();
-	            context.new_path ();
-	            int w = new_pix.get_width ();
-	            int h = new_pix.get_height ();
-                context.scale (min_size / w, min_size / h);
-	            context.set_source_surface (draw_surface.surface, 0, 0);
-	            context.paint ();
-                asyncimage.set_from_pixbuf (align_and_scale_pixbuf (Gdk.pixbuf_get_from_surface (surface, 0, 0, min_size, min_size), 48));
-                asyncimage.show ();
-            } catch (Error e) {
-                GLib.warning (e.message);
-                pixbuf_loader (file_name);
-            }
+
+        private void pix_loader (Gdk.Pixbuf pixbuf) {
+	        int min_size = int.min (pixbuf.get_width (), pixbuf.get_height ());
+	        Gdk.Pixbuf new_pix = new Gdk.Pixbuf.subpixbuf (pixbuf, min_size == pixbuf.get_width ()? 0 : (int) (min_size / 2.2), pixbuf.get_height () == min_size? 0 : min_size / 2, min_size, min_size);
+            var draw_surface = new Granite.Drawing.BufferSurface ((int)min_size, (int)min_size);
+            Gdk.cairo_set_source_pixbuf (draw_surface.context, new_pix, 0, 0);
+            draw_surface.context.paint ();
+	        Cairo.ImageSurface surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, min_size, min_size);
+	        Cairo.Context context = new Cairo.Context (surface);
+	        context.arc (min_size / 2, min_size / 2, min_size / 2, 0, 2 * Math.PI);
+	        context.clip ();
+	        context.new_path ();
+	        int w = new_pix.get_width ();
+	        int h = new_pix.get_height ();
+            context.scale (min_size / w, min_size / h);
+	        context.set_source_surface (draw_surface.surface, 0, 0);
+	        context.paint ();
+            asyncimage.set_from_pixbuf (align_and_scale_pixbuf (Gdk.pixbuf_get_from_surface (surface, 0, 0, min_size, min_size), 48));
+            asyncimage.show ();
         }
         public string? image_latest () {
             Gtk.TreeIter iter;
