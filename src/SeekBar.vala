@@ -101,7 +101,7 @@ namespace niki {
                 cursor_hand_mode (0);
                 preview_popover.update_pointing ((int) event.x);
                 preview_popover.set_preview_progress (event.x / ((double) event.window.get_width ()), !playerpage.playback.playing);
-                preview_popover.label_progress.label = " " + seconds_to_time ((int) (event.x / ((double) event.window.get_width ()) * playerpage.playback.duration)) + " ";
+                preview_popover.label_progress.label = @" $(seconds_to_time ((int) (event.x / ((double) event.window.get_width ()) * playerpage.playback.duration))) ";
                 return false;
             });
 
@@ -147,7 +147,7 @@ namespace niki {
                 return true;
             });
             foreach (string liric_sc in list_lyric) {
-                playerpage.menu_actor.add_child (playerpage.text_clutter (" " + liric_sc + " "));
+                playerpage.menu_actor.add_child (playerpage.text_clutter (@" $(liric_sc) "));
             }
         }
         public string get_liric_now () {
@@ -161,9 +161,9 @@ namespace niki {
             if (playerpage.playback.playing) {
                 if (NikiApp.settings.get_boolean("lyric-available") && NikiApp.settings.get_boolean("audio-video")) {
                     var seconds_time = ((int64)(playerpage.playback.get_position () * 1000000));
-                    current_lyric = " " + string_lyric[lyric.get_lyric_timestamp (seconds_time).to_string ()] + " ";
+                    current_lyric = @" $(string_lyric[lyric.get_lyric_timestamp (seconds_time).to_string ()]) ";
                     playerpage.scroll_actor (sc_lyric[lyric.get_lyric_timestamp (seconds_time).to_string ()]);
-                    string next_lyric = " " + string_lyric[lyric.get_lyric_timestamp (seconds_time, false).to_string ()] + " ";
+                    string next_lyric = @" $(string_lyric[lyric.get_lyric_timestamp (seconds_time, false).to_string ()]) ";
                     next_lyric_end = next_lyric.contains (current_lyric)? "" : next_lyric;
                 }
             }

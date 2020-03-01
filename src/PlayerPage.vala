@@ -72,7 +72,7 @@ namespace niki {
             ((Clutter.BoxLayout)layout_manager).set_orientation (Clutter.Orientation.VERTICAL);
             ((Clutter.BoxLayout)layout_manager).set_spacing (0);
             menu_actor = new Clutter.Actor ();
-            menu_actor.height = 300;
+            menu_actor.height = 324;
             menu_actor.set_layout_manager (layout_manager);
             scroll = new Clutter.ScrollActor ();
             scroll.set_scroll_mode (Clutter.ScrollMode.VERTICALLY);
@@ -95,7 +95,7 @@ namespace niki {
 
             first_liric = new Clutter.Text ();
             first_liric.ellipsize = Pango.EllipsizeMode.END;
-            first_liric.color = Clutter.Color.from_string ("white");
+            first_liric.color = Clutter.Color.from_string ("orange");
             first_liric.background_color = Clutter.Color.from_string ("black") { alpha = 100 };
             first_liric.line_alignment = Pango.Alignment.CENTER;
             first_liric.single_line_mode = true;
@@ -386,11 +386,11 @@ namespace niki {
             item = menu.get_child_at_index (index_in);
             Clutter.Point point = Clutter.Point ();
             item.get_position (out point.x, out point.y);
-            point.y = point.y - 130;
+            point.y = point.y - 150;
             scroll.save_easing_state ();
             scroll.scroll_to_point (point);
             scroll.restore_easing_state ();
-            ((Clutter.Text)item).color = Clutter.Color.from_string ("yellow");
+            ((Clutter.Text)item).color = Clutter.Color.from_string ("orange");
             ((GLib.Object)scroll).set_data ("selected-item", (pointer) index_in);
         }
 
@@ -482,6 +482,9 @@ namespace niki {
                         stage.content = aspect_ratio;
                     } else {
                         stage.content = NikiApp.settings.get_boolean ("blur-mode")? blur_image : oriimage;
+                        if (NikiApp.settings.get_boolean("audio-video") && !NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean ("liric-button") && NikiApp.settings.get_boolean("lyric-available")) {
+                            seek_music ();
+                        }
                     }
                     break;
                 case 1 :
@@ -647,8 +650,8 @@ namespace niki {
                     Inhibitor.instance.uninhibit ();
                 }
                 audio_banner ();
-                title_music.text = " " + NikiApp.settings.get_string ("tittle-playing") + " ";
-                artist_music.text = " " + NikiApp.settings.get_string ("artist-music") + " ";
+                title_music.text = @" $(NikiApp.settings.get_string ("tittle-playing")) ";
+                artist_music.text = @" $(NikiApp.settings.get_string ("artist-music")) ";
             }
             update_position_cover ();
         }
@@ -703,7 +706,7 @@ namespace niki {
         }
 
         public void string_notify (string notify_string) {
-            notify_text.text = "\n     " + notify_string + "     \n";
+            notify_text.text = @"\n      $(notify_string)     \n";
             notify_control ();
         }
 
