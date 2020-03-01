@@ -126,7 +126,15 @@ namespace niki {
                 }
                 return false;
             });
+            button_press_event.connect (() => {
+                hovered = true;
+                return Gdk.EVENT_PROPAGATE;
+            });
 
+            button_release_event.connect (() => {
+                hovered = true;
+                return false;
+            });
             motion_notify_event.connect (() => {
                 if (window.is_active) {
                     reveal_control ();

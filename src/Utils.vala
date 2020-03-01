@@ -202,7 +202,6 @@ namespace niki {
         "sub", "srt", "smi", "ssa", "ass", "asc"
     };
 
-
 	private string get_song_info (File path) {
 	    string output = null;
         switch (file_type (path)) {

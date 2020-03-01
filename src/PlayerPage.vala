@@ -410,8 +410,8 @@ namespace niki {
         }
         public Clutter.Actor text_clutter (string name) {
             liric_sc = new Clutter.Text ();
-            ((Clutter.Text)liric_sc).set_text (name);
-            ((Clutter.Text)liric_sc).font_name = NikiApp.settings.get_string("font");
+            liric_sc.set_text (name);
+            liric_sc.font_name = NikiApp.settings.get_string("font");
             liric_sc.color = Clutter.Color.from_string ("white");
             liric_sc.background_color = Clutter.Color.from_string ("black") { alpha = 100 };
             liric_sc.set_margin_left (12);
@@ -706,7 +706,7 @@ namespace niki {
         }
 
         public void string_notify (string notify_string) {
-            notify_text.text = @"\n      $(notify_string)     \n";
+            notify_text.text = @"\n     $(notify_string)     \n";
             notify_control ();
         }
 
