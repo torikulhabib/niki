@@ -1,7 +1,7 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# Turkish translations for extra package.
+# Copyright (C) 2020 THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the com.github.torikulhabib.mindi package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Safak Genisol <Bjksafak45@gmail.com>, 2020.
 #
 #, fuzzy
 msgid ""
@@ -9,9 +9,9 @@ msgstr ""
 "Project-Id-Version: com.github.torikulhabib.niki\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-04 12:58+0700\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2020-03-01 20:50+0300\n"
+"Last-Translator: Safak Genisol <Bjksafak45@gmail.com>\n"
+"Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -19,293 +19,293 @@ msgstr ""
 
 #: src/StringPot.vala:24
 msgid "Home"
-msgstr ""
+msgstr "Ana Sayfa"
 
 #: src/StringPot.vala:25
 msgid "Niki"
-msgstr ""
+msgstr "Niki"
 
 #: src/StringPot.vala:26
 msgid "Niki - DLNA Browser"
-msgstr ""
+msgstr ""Niki - DLNA Tarayıcı"
 
 #: src/StringPot.vala:27
 msgid "Open"
-msgstr ""
+msgstr "Aç"
 
 #: src/StringPot.vala:28
 msgid "Cancel"
-msgstr ""
+msgstr "İptal"
 
 #: src/StringPot.vala:29
 msgid "All Files"
-msgstr ""
+msgstr "Tüm Dosyalar"
 
 #: src/StringPot.vala:30
 msgid "Select Menu"
-msgstr ""
+msgstr "Seçim Menüsü"
 
 #: src/StringPot.vala:31
 msgid "Drag Url, files or Select a source to playing."
-msgstr ""
+msgstr "Oynatmak için bir URL, dosya veya kaynak seçin."
 
 #: src/StringPot.vala:32
 msgid "Open File"
-msgstr ""
+msgstr "Dosya Aç"
 
 #: src/StringPot.vala:33
 msgid "Paste URL"
-msgstr ""
+msgstr "URL Yapıştır"
 
 #: src/StringPot.vala:34
 msgid "Play Straming"
-msgstr ""
+msgstr "Akış Oynatma"
 
 #: src/StringPot.vala:35
 msgid "Open Folder"
-msgstr ""
+msgstr "Klasör Aç"
 
 #: src/StringPot.vala:36
 msgid "Camera Device"
-msgstr ""
+msgstr "Kamera Cihazı"
 
 #: src/StringPot.vala:37
 msgid "Open Camera"
-msgstr ""
+msgstr "Kamerayı Aç"
 
 #: src/StringPot.vala:38
 msgid "Browse Library"
-msgstr ""
+msgstr "Kütüphaneye Göz At"
 
 #: src/StringPot.vala:39
 msgid "Movie Library"
-msgstr ""
+msgstr "Film Kütüphanesi"
 
 #: src/StringPot.vala:40
 msgid "Music Library"
-msgstr ""
+msgstr "Müzik Kütüphanesi"
 
 #: src/StringPot.vala:41
 msgid "DLNA Library"
-msgstr ""
+msgstr "DLNA Kütüphanesi"
 
 #: src/StringPot.vala:42
 msgid "Optical Library"
-msgstr ""
+msgstr "Optik Kütüphanesi"
 
 #: src/StringPot.vala:43
 msgid "Disk Drive Is Empty\n"
-msgstr ""
+msgstr "Disk Sürücüsü Boş\n"
 
 #: src/StringPot.vala:44
 msgid "Muted"
-msgstr ""
+msgstr "Sessiz"
 
 #: src/StringPot.vala:45
 msgid "Volume"
-msgstr ""
+msgstr "Ses"
 
 #: src/StringPot.vala:46
 msgid "Normal"
-msgstr ""
+msgstr "Normal"
 
 #: src/StringPot.vala:47
 msgid "Vivid"
-msgstr ""
+msgstr "Canlı"
 
 #: src/StringPot.vala:48
 msgid "Bright"
-msgstr ""
+msgstr "Parlak"
 
 #: src/StringPot.vala:49
 msgid "Full Color"
-msgstr ""
+msgstr "Tüm Renkler"
 
 #: src/StringPot.vala:50
 msgid "No Color"
-msgstr ""
+msgstr "Renk Yok"
 
 #: src/StringPot.vala:51
 msgid "Soft"
-msgstr ""
+msgstr "Yumuşak"
 
 #: src/StringPot.vala:52
 msgid "Save Preset"
-msgstr ""
+msgstr "Hazır Ayarı Kaydet"
 
 #: src/StringPot.vala:53 src/StringPot.vala:167
 msgid "None"
-msgstr ""
+msgstr "Yok"
 
 #: src/StringPot.vala:54
 msgid "Custom Preset"
-msgstr ""
+msgstr "Özel Önayar"
 
 #: src/StringPot.vala:55
 msgid "Custom: "
-msgstr ""
+msgstr "Özel: "
 
 #: src/StringPot.vala:56
 msgid "Unknow"
-msgstr ""
+msgstr "Bilinmeyen"
 
 #: src/StringPot.vala:57
 msgid "Size"
-msgstr ""
+msgstr "Boyut"
 
 #: src/StringPot.vala:58
 msgid "Maximize"
-msgstr ""
+msgstr "Büyüt"
 
 #: src/StringPot.vala:59
 msgid "Unmaximize"
-msgstr ""
+msgstr "Azalt"
 
 #: src/StringPot.vala:60
 msgid "Niki - Video"
-msgstr ""
+msgstr "Niki - Video"
 
 #: src/StringPot.vala:61
 msgid "Show"
-msgstr ""
+msgstr "Göster"
 
 #: src/StringPot.vala:62
 msgid "Hide"
-msgstr ""
+msgstr "Gizle"
 
 #: src/StringPot.vala:63
 msgid "Close"
-msgstr ""
+msgstr "Kapat"
 
 #: src/StringPot.vala:64
 msgid "Album:"
-msgstr ""
+msgstr "Albüm:"
 
 #: src/StringPot.vala:65
 msgid "Artist"
-msgstr ""
+msgstr "Sanatçı"
 
 #: src/StringPot.vala:66
 msgid "Timer: "
-msgstr ""
+msgstr "Zamanlayıcı: "
 
 #: src/StringPot.vala:67
 msgid "Timer Disabled"
-msgstr ""
+msgstr "Zamanlayıcı Devre Dışı"
 
 #: src/StringPot.vala:68
 msgid "Input"
-msgstr ""
+msgstr "Giriş"
 
 #: src/StringPot.vala:69
 msgid "Audio: "
-msgstr ""
+msgstr "Ses: "
 
 #: src/StringPot.vala:70
 msgid "Internal Subtitles: "
-msgstr ""
+msgstr "Dahili Altyazılar: "
 
 #: src/StringPot.vala:71
 msgid "Font options: "
-msgstr ""
+msgstr "Yazı Tipi Ayarları: "
 
 #: src/StringPot.vala:72
 msgid "Default Font"
-msgstr ""
+msgstr "Varsayılan Yazı Tipi"
 
 #: src/StringPot.vala:73
 msgid "Custom Font"
-msgstr ""
+msgstr "Özel Yazı Tipi"
 
 #: src/StringPot.vala:74
 msgid "Play Speed: "
-msgstr ""
+msgstr "Oynatma Hızı: "
 
 #: src/StringPot.vala:75
 msgid "External Subtitle: "
-msgstr ""
+msgstr "Harici Altyazı: "
 
 #: src/StringPot.vala:76
 msgid "Pick a File"
-msgstr ""
+msgstr "Bir Dosya Seçin"
 
 #: src/StringPot.vala:77
 msgid "All File"
-msgstr ""
+msgstr "Tüm Dosyayı"
 
 #: src/StringPot.vala:78
 msgid "Subtitle File"
-msgstr ""
+msgstr "Altyazı Dosyası"
 
 #: src/StringPot.vala:79
 msgid "Track"
-msgstr ""
+msgstr "Parça"
 
 #: src/StringPot.vala:80
 msgid "Nothing Video in Library\n"
-msgstr ""
+msgstr "Kütüphanede Video Yok\n"
 
 #: src/StringPot.vala:81
 msgid "Nothing Music in Library\n"
-msgstr ""
+msgstr "Kütüphanede Müzik Yok\n"
 
 #: src/StringPot.vala:82
 msgid "Playlist"
-msgstr ""
+msgstr "Oynatma Listesi"
 
 #: src/StringPot.vala:83
 msgid "Select to Remove"
-msgstr ""
+msgstr "Kaldırmayı Seç"
 
 #: src/StringPot.vala:84
 msgid "Back to Playlist"
-msgstr ""
+msgstr "Oynatma Listesine Geri Dön"
 
 #: src/StringPot.vala:85
 #, c-format
 msgid "Remove Multiple List"
-msgstr ""
+msgstr "Birden Çok Listeyi Kaldır"
 
 #: src/StringPot.vala:86
 #, c-format
 msgid "Repeat ALL"
-msgstr ""
+msgstr "Tümünü Tekrarla"
 
 #: src/StringPot.vala:87
 msgid "Repeat One"
-msgstr ""
+msgstr "Birini Tekrarla"
 
 #: src/StringPot.vala:88
 msgid "Disable Repeat"
-msgstr ""
+msgstr "Tekrarlama Kapalı"
 
 #: src/StringPot.vala:89
 msgid "Play"
-msgstr ""
+msgstr "Oynat"
 
 #: src/StringPot.vala:90
 msgid "Pause"
-msgstr ""
+msgstr "Duraklat"
 
 #: src/StringPot.vala:91
 msgid "Stop"
-msgstr ""
+msgstr "Durdur"
 
 #: src/StringPot.vala:92
 msgid "Next"
-msgstr ""
+msgstr "Sonraki"
 
 #: src/StringPot.vala:93
 msgid "Previous"
-msgstr ""
+msgstr "Önceki"
 
 #: src/StringPot.vala:94
 msgid "Remove from Playlist"
-msgstr ""
+msgstr "Oynatma listesinden kaldır"
 
 #: src/StringPot.vala:95
 msgid "Remove from Device"
-msgstr ""
+msgstr "Cihazdan Kaldır"
 
 #: src/StringPot.vala:96
 msgid "Details"
@@ -425,127 +425,127 @@ msgstr ""
 
 #: src/StringPot.vala:125
 msgid "Techno"
-msgstr ""
+msgstr "Tekno"
 
 #: src/StringPot.vala:126
 msgid "Settings"
-msgstr ""
+msgstr "Ayarlar"
 
 #: src/StringPot.vala:127
 msgid "Fullscreen"
-msgstr ""
+msgstr "Tam Ekran"
 
 #: src/StringPot.vala:128
 msgid "Other Preferences"
-msgstr ""
+msgstr "Diğer Tercihler"
 
 #: src/StringPot.vala:129
 msgid "Exit Fullscreen"
-msgstr ""
+msgstr "Tam Ekrandan Çık"
 
 #: src/StringPot.vala:130
 msgid "Lyric On"
-msgstr ""
+msgstr "Sözler Açık"
 
 #: src/StringPot.vala:131
 msgid "Lyric Off"
-msgstr ""
+msgstr "Sözler Kapalı"
 
 #: src/StringPot.vala:132
 msgid "Equalizer"
-msgstr ""
+msgstr "Ekolayzer"
 
 #: src/StringPot.vala:133
 msgid "Video Balance"
-msgstr ""
+msgstr "Kalan Video"
 
 #: src/StringPot.vala:134
 msgid "Preferences"
-msgstr ""
+msgstr "Tercihler"
 
 #: src/StringPot.vala:135
 msgid "Subtitle On"
-msgstr ""
+msgstr "Altyazı Açık"
 
 #: src/StringPot.vala:136
 msgid "Subtitle Off"
-msgstr ""
+msgstr "Altyazı Kapalı"
 
 #: src/StringPot.vala:137
 msgid "Record"
-msgstr ""
+msgstr "Kayıt"
 
 #: src/StringPot.vala:138
 msgid "Setting Filter"
-msgstr ""
+msgstr "Filtre Ayarı"
 
 #: src/StringPot.vala:139
 msgid "Camera"
-msgstr ""
+msgstr "Kamera"
 
 #: src/StringPot.vala:140
 msgid "Video"
-msgstr ""
+msgstr "Video"
 
 #: src/StringPot.vala:141
 msgid "Capture"
-msgstr ""
+msgstr "Yakala"
 
 #: src/StringPot.vala:142
 msgid "Zoom In"
-msgstr ""
+msgstr "Yakınlaştır"
 
 #: src/StringPot.vala:143
 msgid "Zoom Out"
-msgstr ""
+msgstr "Uzaklaştır"
 
 #: src/StringPot.vala:144
 msgid "Zoom X"
-msgstr ""
+msgstr "Zoom X"
 
 #: src/StringPot.vala:145
 msgid "Camera Mode"
-msgstr ""
+msgstr "Kamera Modu"
 
 #: src/StringPot.vala:146
 msgid "Video Mode"
-msgstr ""
+msgstr "Video Modu"
 
 #: src/StringPot.vala:147
 msgid "Photo Saved"
-msgstr ""
+msgstr "Fotoğraf Kaydedildi"
 
 #: src/StringPot.vala:148
 msgid "Video Saved"
-msgstr ""
+msgstr "Video Kaydedildi"
 
 #: src/StringPot.vala:149
 msgid "Flip Off"
-msgstr ""
+msgstr "Döndürme Kapalı"
 
 #: src/StringPot.vala:150
 msgid "Flip On"
-msgstr ""
+msgstr "Döndürme Açık"
 
 #: src/StringPot.vala:151
 msgid "Flash Off"
-msgstr ""
+msgstr "Flaş Kapalı"
 
 #: src/StringPot.vala:152
 msgid "Flash On"
-msgstr ""
+msgstr "Flaş Açık"
 
 #: src/StringPot.vala:153
 msgid "Niki - Camera"
-msgstr ""
+msgstr "Niki - Kamera"
 
 #: src/StringPot.vala:154
 msgid "Reload"
-msgstr ""
+msgstr "Tekrar Yükle"
 
 #: src/StringPot.vala:155
 msgid "Niki Player"
-msgstr ""
+msgstr "Niki Oynatıcı"
 
 #: src/StringPot.vala:156
 msgid "Add to Niki Playlist"
@@ -553,27 +553,27 @@ msgstr ""
 
 #: src/StringPot.vala:157
 msgid "Default"
-msgstr ""
+msgstr "Varsayılan"
 
 #: src/StringPot.vala:158
 msgid "Audio Video"
-msgstr ""
+msgstr "Ses ve Video"
 
 #: src/StringPot.vala:159
 msgid "Video Flip"
-msgstr ""
+msgstr "Video Çevirme"
 
 #: src/StringPot.vala:160
 msgid "Video Render"
-msgstr ""
+msgstr "Video İşleme"
 
 #: src/StringPot.vala:161
 msgid "Color Effects"
-msgstr ""
+msgstr "Renk Efekt"
 
 #: src/StringPot.vala:162
 msgid "Audio Render"
-msgstr ""
+msgstr "Ses İşleme"
 
 #: src/StringPot.vala:163
 msgid "Audio Visualisation"
@@ -625,11 +625,11 @@ msgstr ""
 
 #: src/StringPot.vala:176
 msgid "OFF"
-msgstr ""
+msgstr "KAPALI"
 
 #: src/StringPot.vala:177
 msgid "ON"
-msgstr ""
+msgstr "AÇIK"
 
 #: src/StringPot.vala:178
 msgid "Goom"
@@ -717,112 +717,112 @@ msgstr ""
 
 #: src/StringPot.vala:199
 msgid "Yellow Blue"
-msgstr ""
+msgstr "Sarı Mavi"
 
 #: src/StringPot.vala:200
 msgid "Gamma"
-msgstr ""
+msgstr "Gamma"
 
 #: src/StringPot.vala:201
 msgid "Brightness"
-msgstr ""
+msgstr "Parlaklık"
 
 #: src/StringPot.vala:202
 msgid "Contrast"
-msgstr ""
+msgstr "Kontras"
 
 #: src/StringPot.vala:203
 msgid "Saturation"
-msgstr ""
+msgstr "Yoğunluk"
 
 #: src/StringPot.vala:204
 msgid "Hue"
-msgstr ""
+msgstr "Renk"
 
 #: src/StringPot.vala:205
 msgid "Blur"
-msgstr ""
+msgstr "Bulanıklık"
 
 #: src/StringPot.vala:206
 msgid "Buffering: "
-msgstr ""
+msgstr "Arabelleğe: "
 
 #: src/StringPot.vala:207
 msgid "Save"
-msgstr ""
+msgstr "Kaydet"
 
 #: src/StringPot.vala:208
 msgid "Crop & Position"
-msgstr ""
+msgstr "Kırp ve Konumlandır"
 
 #: src/StringPot.vala:209
 msgid "Choose the part of the image to use as an cover."
-msgstr ""
+msgstr "Görüntünün kapak olarak kullanılacak bölümünü seçin."
 
 #: src/StringPot.vala:210
 msgid "Set cover"
-msgstr ""
+msgstr "Kapağı ayarla"
 
 #: src/StringPot.vala:211
 msgid "Cover:"
-msgstr ""
+msgstr "Kapak:"
 
 #: src/StringPot.vala:212
 msgid "Comment:"
-msgstr ""
+msgstr "Açıklama:"
 
 #: src/StringPot.vala:213
 msgid "Title:"
-msgstr ""
+msgstr "Başlık:"
 
 #: src/StringPot.vala:214
 msgid "Artist:"
-msgstr ""
+msgstr "Sanatçı:"
 
 #: src/StringPot.vala:215
 msgid "Album:"
-msgstr ""
+msgstr "Albüm"
 
 #: src/StringPot.vala:216
 msgid "Genre:"
-msgstr ""
+msgstr "Tür:"
 
 #: src/StringPot.vala:217
 msgid "Composer:"
-msgstr ""
+msgstr "Besteci:"
 
 #: src/StringPot.vala:218
 msgid "Group:"
-msgstr ""
+msgstr "Grup:"
 
 #: src/StringPot.vala:219
 msgid "Track:"
-msgstr ""
+msgstr "Parça:"
 
 #: src/StringPot.vala:220
 msgid "Date:"
-msgstr ""
+msgstr "Tarih:"
 
 #: src/StringPot.vala:221
 msgid "Image"
-msgstr ""
+msgstr "Resim"
 
 #: src/StringPot.vala:222
 msgid "Folder is Empty\n"
-msgstr ""
+msgstr "Klasör Boş\n"
 
 #: src/StringPot.vala:223
 msgid "Nothing Video And Music in Folder\n"
-msgstr ""
+msgstr "Klasörde Video ve Müzik Yok\n"
 
 #: src/StringPot.vala:224
 msgid "Library Music is Empty\n"
-msgstr ""
+msgstr "Kütüphanede Müzik Yok\n"
 
 #: src/StringPot.vala:225
 msgid "Library Video is Empty\n"
-msgstr ""
+msgstr "Kütüphanede Video Yok\n"
 
 #: src/StringPot.vala:226
 msgid "Custom"
-msgstr ""
+msgstr "Özel"
