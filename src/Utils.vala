@@ -361,7 +361,7 @@ namespace niki {
     }
 
     private static bool file_exists (string uri) {
-        if (!NikiApp.settings.get_boolean ("stream-mode")) {
+        if (!uri.has_prefix ("http")) {
             return File.new_for_uri (uri).query_exists ();
         } else {
             return false;
@@ -523,8 +523,11 @@ namespace niki {
         props.sets (Canberra.PROP_MEDIA_ROLE, "event");
         context.play_full (0, props, null);
     }
-    public Gdk.Pixbuf? align_and_scale_pixbuf (Gdk.Pixbuf input_pixbuf, int size) {
-        Gdk.Pixbuf pixbuf_scale = input_pixbuf.scale_simple (size, size, Gdk.InterpType.BILINEAR);
+    public Gdk.Pixbuf? align_and_scale_pixbuf (Gdk.Pixbuf input_pixbuf, int sizew, int sizeh = 0) {
+        if (sizeh == 0) {
+            sizeh = sizew;
+        }
+        Gdk.Pixbuf pixbuf_scale = input_pixbuf.scale_simple (sizew, sizeh, Gdk.InterpType.BILINEAR);
         return pixbuf_scale;
     }
 

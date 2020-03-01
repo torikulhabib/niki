@@ -52,11 +52,6 @@ namespace niki {
             label_progress = new Gtk.Label (null);
             label_progress.get_style_context ().add_class ("label_popover");
             label_progress.halign = Gtk.Align.CENTER;
-            label_progress.size_allocate.connect ((alocat)=> {
-                if (NikiApp.settings.get_boolean ("audio-video")) {
-                    clutter.set_size_request (alocat.width, alocat.height);
-                }
-            });
             var label_progress_actor = new GtkClutter.Actor.with_contents (label_progress);
             label_progress_actor.add_constraint (new Clutter.AlignConstraint (stage, Clutter.AlignAxis.Y_AXIS, 1));
             label_progress_actor.add_constraint (new Clutter.BindConstraint (stage, Clutter.BindCoordinate.WIDTH, 1));
@@ -131,6 +126,9 @@ namespace niki {
         }
 
         public void schedule_show () {
+            if (NikiApp.settings.get_boolean ("audio-video")) {
+                return;
+            }
             if (show_timer_id > 0) {
                 return;
             }
@@ -147,6 +145,9 @@ namespace niki {
         }
 
         public void schedule_hide () {
+            if (NikiApp.settings.get_boolean ("audio-video")) {
+                return;
+            }
             if (hide_timer_id > 0) {
                 return;
             }

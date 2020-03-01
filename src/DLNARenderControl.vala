@@ -170,11 +170,7 @@ namespace niki {
             if (!FileUtils.test (nameimage, FileTest.EXISTS)) {
                 icon = align_and_scale_pixbuf (new ObjectPixbuf ().get_pixbuf_device_info (info), 16);
             } else {
-                try {
-                    icon = new Gdk.Pixbuf.from_file_at_scale (nameimage, 16, 16, true);
-	            } catch (Error e) {
-                    GLib.warning (e.message);
-	            }
+                icon = pix_scale (nameimage, 16);
 	        }
             if (name == null) {
                 return;

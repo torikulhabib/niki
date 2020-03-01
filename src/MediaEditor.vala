@@ -483,9 +483,9 @@ namespace niki {
             id3mux =  Gst.ElementFactory.make ("id3mux", "id3mux");
             fakesink =  Gst.ElementFactory.make ("fakesink", "fakesink");
             filesrc["location"] = File.new_for_uri (file_name).get_path ();
-            ((Gst.Bin)pipeline).add_many (filesrc, id3mux, fakesink);
-            ((Gst.Tag.Mux)id3mux).merge_tags (tags, Gst.TagMergeMode.APPEND);
-            filesrc.link_many (id3mux, fakesink);
+            ((Gst.Bin)pipeline).add_many (filesrc, apev2mux, fakesink);
+            ((Gst.TagSetter)apev2mux).merge_tags (tags, Gst.TagMergeMode.APPEND);
+            filesrc.link_many (apev2mux, fakesink);
             Gst.Bus bus = pipeline.get_bus ();
             bus.add_signal_watch ();
             bus.message.connect (bus_message_cb);
@@ -495,12 +495,16 @@ namespace niki {
             }
             move_stoped = GLib.Timeout.add (100,() => {
                 pipeline.set_state (Gst.State.PLAYING);
+                pipeline.set_state (Gst.State.PAUSED);
                 move_stoped = 0;
                 return Source.REMOVE;
             });
         }
 
         private void set_media (string file_name) {
+            if (file_name.has_prefix ("http")) {
+                return;
+            }
 	        try {
 		        FileInfo infos = File.new_for_uri (file_name).query_info ("standard::*",0);
                 string mime_types = infos.get_content_type ();
@@ -779,16 +783,11 @@ namespace niki {
                 string uri = file.get_preview_uri ();
                 if (uri != null && uri.has_prefix ("file://")) {
                     var preview_file = File.new_for_uri (uri);
-                    try {
-                        Gdk.Pixbuf pixbuf = null;
-                        if (get_mime_type (preview_file).has_prefix ("image/")) {
-                            pixbuf = new Gdk.Pixbuf.from_file_at_scale (preview_file.get_path (), 256, 256, true);
-                            preview_area.set_from_pixbuf (pixbuf);
-                            preview_area.show ();
-                            file.set_preview_widget_active (true);
-                        }
-                    } catch (Error e) {
-                        GLib.warning (e.message);
+                    if (get_mime_type (preview_file).has_prefix ("image/")) {
+                        Gdk.Pixbuf pixbuf = pix_scale (preview_file.get_path (), 256);
+                        preview_area.set_from_pixbuf (pixbuf);
+                        preview_area.show ();
+                        file.set_preview_widget_active (true);
                     }
                 } else {
                     preview_area.hide ();

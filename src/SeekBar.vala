@@ -21,10 +21,11 @@
 
 namespace niki {
     public class SeekBar : Gtk.Grid {
-        public PreviewPopover? preview_popover {get; set;}
+        public PreviewPopover? preview_popover;
         private Gtk.Scale scale;
         private Gee.HashMap<string, string> string_lyric;
-        private Lyric? lyric;
+        private Gee.HashMap<string, int> sc_lyric;
+        public Lyric? lyric;
         private string current_lyric;
         private string next_lyric_end;
         private string duration_string;
@@ -115,6 +116,9 @@ namespace niki {
                     } else {
                         playerpage.playback.progress = new_value;
                     }
+                    if (NikiApp.settings.get_boolean("audio-video") && !NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean ("liric-button") && NikiApp.settings.get_boolean("lyric-available")) {
+                        playerpage.seek_music ();
+                    }
                 }
                 return false;
             });
@@ -129,13 +133,22 @@ namespace niki {
             return new LyricParser ().parse (File.new_for_uri (liric_file));
         }
 
-        public void on_lyric_update (Lyric lyric) {
+        public void on_lyric_update (Lyric lyric, PlayerPage playerpage) {
             this.lyric = lyric;
+            int count = 0;
+		    List<string>  list_lyric = new List<string> ();
             string_lyric = new Gee.HashMap<string, string> ();
+            sc_lyric = new Gee.HashMap<string, int> ();
             lyric.foreach ((item) => {
+                list_lyric.append (item.value);
+                sc_lyric[item.key.to_string ()] = count;
                 string_lyric[item.key.to_string ()] = item.value;
+                count++;
                 return true;
             });
+            foreach (string liric_sc in list_lyric) {
+                playerpage.menu_actor.add_child (playerpage.text_clutter (" " + liric_sc + " "));
+            }
         }
         public string get_liric_now () {
             return current_lyric;
@@ -149,6 +162,7 @@ namespace niki {
                 if (NikiApp.settings.get_boolean("lyric-available") && NikiApp.settings.get_boolean("audio-video")) {
                     var seconds_time = ((int64)(playerpage.playback.get_position () * 1000000));
                     current_lyric = " " + string_lyric[lyric.get_lyric_timestamp (seconds_time).to_string ()] + " ";
+                    playerpage.scroll_actor (sc_lyric[lyric.get_lyric_timestamp (seconds_time).to_string ()]);
                     string next_lyric = " " + string_lyric[lyric.get_lyric_timestamp (seconds_time, false).to_string ()] + " ";
                     next_lyric_end = next_lyric.contains (current_lyric)? "" : next_lyric;
                 }

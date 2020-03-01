@@ -207,6 +207,7 @@ namespace niki {
         }
         public void ready_play () {
 		    cameraplayer.init_open ();
+		    camerabottombar.load_all ();
         }
         public void zoom_in_out (double zoom) {
             string_notify ("%s %2.1f".printf (StringPot.Zoom_X, zoom));

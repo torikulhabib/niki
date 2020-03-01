@@ -121,5 +121,5 @@ If you like Niki and you want to support its development,consider supporting via
 - [ ] Video Library View. (Inprogress)
 - [ ] Audio Tag. (Inprogress)
 - [ ] DLNA Player. (Inprogress)
-- [ ] Scrowled lyric mode. (Inprogress).
+- [x] Scrowled lyric mode.
 - [ ] Download lyric.(Inprogress).

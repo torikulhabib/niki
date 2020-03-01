@@ -79,7 +79,9 @@ namespace niki {
                             signal_notify (StringPot.Nothing_AV);
                         }
                         if (content_video || content_Audio) {
-                            window.player_page.play_first_in_playlist ();
+                            if (window.main_stack.visible_child_name == "welcome") {
+                                window.player_page.play_first_in_playlist ();
+                            }
                         }
                         mimetype_contents = {};
                         content_count = 0;

@@ -191,9 +191,8 @@ namespace niki {
             img_store.row_inserted.connect (open_image);
             vid_store.row_inserted.connect (open_video);
             camerapage.cameraplayer.was_capture.connect (load_all);
-            Timeout.add (100, load_all);
         }
-        private bool load_all () {
+        public bool load_all () {
             load_image ();
             open_video ();
             open_image ();

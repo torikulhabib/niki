@@ -308,10 +308,6 @@ namespace niki {
                     playnow = true;
                 }
 
-                if (!NikiApp.settings.get_boolean ("stream-mode")) {
-                    NikiApp.settings.set_boolean ("stream-mode", true);
-                }
-
                 if (downloaded) {
                     var download_dialog = new DownloadDialog (uri, title, mediatype);
                     download_dialog.show_all ();
@@ -364,11 +360,7 @@ namespace niki {
             if (!FileUtils.test (nameimage, FileTest.EXISTS)) {
                 icon = align_and_scale_pixbuf (objectpixbuf.get_pixbuf_device_info (info), 30);
             } else {
-                try {
-                    icon = new Gdk.Pixbuf.from_file_at_scale (nameimage, 30, 30, true);
-	            } catch (Error e) {
-                    GLib.warning (e.message);
-	            }
+                icon = pix_scale (nameimage, 30);
 	        }
             if (friendly_name != null && content_dir != null) {
                 inseted = true;

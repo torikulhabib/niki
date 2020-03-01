@@ -76,10 +76,10 @@
 	  	<summary>DLNA muted</summary>
 	  	<description>DLNA muted</description>
   	</key>
-	  <key name="stream-mode" type="b">
+	  <key name="blur-mode" type="b">
 	  	<default>false</default>
-	  	<summary>Streaming condition</summary>
-	  	<description>Streaming condition</description>
+	  	<summary>Blur condition</summary>
+	  	<description>Blur condition</description>
   	</key>
 	  <key name="fullscreen" type="b">
 	  	<default>false</default>
