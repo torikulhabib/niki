@@ -12,17 +12,15 @@ namespace niki {
             lirycchain.add_parser_to_chain (parser);
         }
 
-        public void parse (Lyric lyric, string ln) {
+        public void parse (Gtk.ListStore lrc_store, string ln) {
             if (can_parse (ln)) {
-                process (lyric, ln);
+                process (lrc_store, ln);
             } else if (lirycchain != null) {
-                lirycchain.parse (lyric, ln);
-            } else {
-                warning (@" $ln");
+                lirycchain.parse (lrc_store, ln);
             }
         }
 
         public abstract bool can_parse (string item);
-        public abstract void process (Lyric lyric, string ln);
+        public abstract void process (Gtk.ListStore lrc_store, string ln);
     }
 }

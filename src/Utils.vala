@@ -523,10 +523,7 @@ namespace niki {
         context.play_full (0, props, null);
     }
     public Gdk.Pixbuf? align_and_scale_pixbuf (Gdk.Pixbuf input_pixbuf, int sizew, int sizeh = 0) {
-        if (sizeh == 0) {
-            sizeh = sizew;
-        }
-        Gdk.Pixbuf pixbuf_scale = input_pixbuf.scale_simple (sizew, sizeh, Gdk.InterpType.BILINEAR);
+        Gdk.Pixbuf pixbuf_scale = input_pixbuf.scale_simple (sizew, sizeh == 0? sizew : sizeh, Gdk.InterpType.BILINEAR);
         return pixbuf_scale;
     }
 

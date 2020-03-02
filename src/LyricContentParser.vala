@@ -10,19 +10,18 @@ namespace niki {
             return lyric_formatter.is_simplified_lrc (item) || lyric_formatter.is_lrc (item);
         }
 
-        public override void process (Lyric lyric, string ln) {
+        public override void process (Gtk.ListStore lrc_store, string ln) {
             var lns = lyric_formatter.split (ln);
-
             int minutes, seconds, milli;
             parse_time (lns[0], out minutes, out seconds, out milli);
-
             if (lns[1] == null) {
                 return;
             }
-
             var text = lyric_formatter.remove_word_timing (lns[1]);
             if (text.length > 0) {
-                lyric.add_line (time_to_us (minutes, seconds, milli), text);
+                Gtk.TreeIter iter;
+                lrc_store.append (out iter);
+                lrc_store.set (iter, 0, time_to_us (minutes, seconds, milli), 1, text, 2, "", 3, "");
             }
         }
 

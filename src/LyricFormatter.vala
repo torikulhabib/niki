@@ -22,7 +22,6 @@ namespace niki {
             } catch (Error e) {
                 warning (e.message);
             }
-
             return text;
         }
 
@@ -30,7 +29,6 @@ namespace niki {
             if (split_simple_lrc (ln).length > 1) {
                 return split_simple_lrc (ln);
             }
-
             return split_lrc (ln);
         }
 
@@ -49,7 +47,6 @@ namespace niki {
                     clean_lns += item;
                 }
             }
-
             return clean_lns;
         }
     }

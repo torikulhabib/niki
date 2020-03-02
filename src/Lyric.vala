@@ -9,17 +9,6 @@ namespace niki {
         private Gee.BidirMapIterator<int64?, string> lrc_iterator;
         private int offset = 0;
 
-        public Lyric () {
-            GLib.CompareDataFunc<int64?> compare_fn = ((a, b) => {
-                if (a - b == 0) {
-                    return 0;
-                } else {
-                    return (a - b > 0) ? 1 : -1;
-                }
-            });
-            base (compare_fn, Gee.Functions.get_equal_func_for (GLib.Type.STRING));
-        }
-
         public void add_metadata (string _tag, string _info) {
             metadata += Metadata () {
                 tag = _tag,
@@ -42,19 +31,19 @@ namespace niki {
             return lrc_iterator;
         }
 
-        public int64 get_lyric_timestamp (int64 time_in_us, bool current_poxition = true) {
+        public int64 get_lyric_timestamp (int64 time_in_us, bool cur_pos = true) {
             var time_with_offset = time_in_us + offset;
-            return iterator_lyric_timestamp (time_with_offset, current_poxition).get_key ();
+            return iterator_lyric (time_with_offset, cur_pos).get_key ();
         }
 
-        private Gee.BidirMapIterator<int64?, string> iterator_lyric_timestamp (int64 time_in_us, bool current_poxition = true) {
+        private Gee.BidirMapIterator<int64?, string> iterator_lyric (int64 time_in_us, bool cur_pos = true) {
             if (iterator_get ().get_key () > time_in_us) {
                 iterator_get ().first ();
             }
             while (iterator_get ().get_key () < time_in_us && iterator_get ().has_next ()) {
                 iterator_get ().next ();
             }
-            if (current_poxition) {
+            if (cur_pos) {
                 iterator_get ().previous ();
             }
             return iterator_get ();

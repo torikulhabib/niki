@@ -28,7 +28,6 @@ namespace niki {
         public Gtk.TreeIter select_iter;
         public int current = 0;
         public int total = 0;
-        private uint finish_timer = 0;
         public bool visible_menu = false;
         public signal void visible_menus ();
 
@@ -387,7 +386,7 @@ namespace niki {
             liststore.append (out iter);
             liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE,  info_songs, PlaylistColumns.ARTISTTITLE, file_type (path) == 0? Markup.escape_text (info_songs) : "<b>" + Markup.escape_text  (info_songs) + "</b>" + "\n" + Markup.escape_text (artist_music) + " - " + Markup.escape_text (album_music), PlaylistColumns.FILENAME, path.get_uri (), PlaylistColumns.FILESIZE, get_info_size (path.get_uri ()), PlaylistColumns.MEDIATYPE, file_type (path), PlaylistColumns.ALBUMMUSIC, album_music, PlaylistColumns.ARTISTMUSIC, artist_music, PlaylistColumns.PLAYNOW, true, PlaylistColumns.INPUTMODE, 0);
         }
-
+        private uint finish_timer = 0;
         private void update_playlist (uint timeout) {
             if (finish_timer != 0) {
                 Source.remove (finish_timer);

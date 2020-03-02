@@ -4,11 +4,13 @@ namespace niki {
             return Regex.match_simple ("\\[\\D", item);
         }
 
-        public override void process (Lyric lyric, string ln) {
+        public override void process (Gtk.ListStore lrc_store, string ln) {
             if (ln.has_prefix ("[") && ln.has_suffix ("]")) {
                 var md = ln[1:-1];
                 var tag = md.split (":", 2);
-                lyric.add_metadata (tag[0], tag[1]);
+                Gtk.TreeIter iter;
+                lrc_store.append (out iter);
+                lrc_store.set (iter, 0, -1, 1, "-1", 2, tag[0], 3, tag[1]);
             } else {
                 critical (@"Couldn't parse $ln");
             }

@@ -13,8 +13,6 @@ namespace niki {
         private Gtk.Revealer font_selection_label_revealer;
         private Gtk.Revealer font_selection_btn_revealer;
         private Gst.PbUtils.DiscovererInfo discoverer_info;
-        private GLib.List<string> languages_names;
-        private GLib.List<string> subtitles_names;
         private Gtk.Grid grid;
         public signal void font_button ();
 
@@ -188,7 +186,7 @@ namespace niki {
             if (subtitles.model.iter_n_children (null) >= 0) {
                 subtitles.remove_all ();
             }
-            subtitles_names = get_subtittle_track_names ();
+            GLib.List<string> subtitles_names = get_subtittle_track_names ();
             uint track = 1;
             foreach (string? subtitle in playerpage.playback.subtitle_tracks) {
                 if (subtitle == null) {
@@ -243,7 +241,7 @@ namespace niki {
             if (languages.model.iter_n_children (null) >= 0) {
                 languages.remove_all ();
             }
-            languages_names = get_audio_track_names ();
+            GLib.List<string> languages_names = get_audio_track_names ();
             uint track = 1;
             foreach (var stream in playerpage.playback.audio_streams) {
                 if (stream == null) {

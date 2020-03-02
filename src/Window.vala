@@ -143,8 +143,10 @@ namespace niki {
                     NikiApp.settings.set_int ("window-height", height);
                     int root_x, root_y;
                     get_position (out root_x, out root_y);
-                    NikiApp.settings.set_int ("window-x", root_x);
-                    NikiApp.settings.set_int ("window-y", root_y);
+                    if (NikiApp.settings.get_boolean ("audio-video") && main_stack.visible_child_name == "player") {
+                        NikiApp.settings.set_int ("window-x", root_x);
+                        NikiApp.settings.set_int ("window-y", root_y);
+                    }
                     move_stoped = 0;
                     return Source.REMOVE;
                 });

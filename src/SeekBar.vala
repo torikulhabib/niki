@@ -136,7 +136,7 @@ namespace niki {
         public void on_lyric_update (Lyric lyric, PlayerPage playerpage) {
             this.lyric = lyric;
             int count = 0;
-		    List<string>  list_lyric = new List<string> ();
+		    List<string> list_lyric = new List<string> ();
             string_lyric = new Gee.HashMap<string, string> ();
             sc_lyric = new Gee.HashMap<string, int> ();
             lyric.foreach ((item) => {
