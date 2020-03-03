@@ -71,6 +71,11 @@
 	  	<summary>Mode switch</summary>
 	  	<description>Mode switch</description>
   	</key>
+	  <key name="make-lrc" type="b">
+	  	<default>false</default>
+	  	<summary>Make Lyric</summary>
+	  	<description>Make Lyric</description>
+  	</key>
 	  <key name="dlna-muted" type="b">
 	  	<default>false</default>
 	  	<summary>DLNA muted</summary>

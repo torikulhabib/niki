@@ -118,7 +118,7 @@ If you like Niki and you want to support its development,consider supporting via
 - [x] Camera Effect.
 
 ### v 0.9
-- [ ] Camera device. (Inprogress)
+- [ ] Input Camera device. (Inprogress)
 - [ ] Music Library View. (Inprogress)
 - [ ] Video Library View. (Inprogress)
 - [ ] Audio Tag. (Inprogress)
@@ -126,4 +126,5 @@ If you like Niki and you want to support its development,consider supporting via
 - [ ] Video Crop. (Inprogress)
 - [ ] DLNA Media Export. (Inprogress)
 - [x] Scrowled lyric mode.
+- [ ] lyric Maker. (Inprogress)
 - [ ] Download lyric.(Inprogress).

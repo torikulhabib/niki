@@ -12,8 +12,6 @@ namespace niki {
 
         public override void process (Gtk.ListStore lrc_store, string ln) {
             var lns = lyric_formatter.split (ln);
-            int minutes, seconds, milli;
-            parse_time (lns[0], out minutes, out seconds, out milli);
             if (lns[1] == null) {
                 return;
             }
@@ -21,18 +19,15 @@ namespace niki {
             if (text.length > 0) {
                 Gtk.TreeIter iter;
                 lrc_store.append (out iter);
-                lrc_store.set (iter, 0, time_to_us (minutes, seconds, milli), 1, text, 2, "", 3, "");
+                lrc_store.set (iter, 0, time_to_int (lns[0]), 1, text, 2, "", 3, "");
             }
         }
 
-        private void parse_time (string time, out int minutes, out int seconds, out int milli) {
-            minutes = int.parse (time [1:3]);
-            seconds = int.parse (time [4:6]);
-            milli = !(lyric_formatter.is_simplified_lrc (time)) ? int.parse (time [7:9]) : 0;
-        }
-
-        private int64 time_to_us (uint minutes, uint seconds, uint milliseconds) {
-            return (minutes*60*1000 + seconds*1000 + milliseconds)*1000;
+        private int64 time_to_int (string time) {
+            int minutes = int.parse (time [1:3]);
+            int seconds = int.parse (time [4:6]);
+            int milli = !(lyric_formatter.is_simplified_lrc (time)) ? int.parse (time [7:9]) : 0;
+            return (minutes*60*1000 + seconds*1000 + milli)*1000;
         }
     }
 }

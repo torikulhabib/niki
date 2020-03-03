@@ -72,7 +72,6 @@ namespace niki {
             ((Clutter.BoxLayout)layout_manager).set_orientation (Clutter.Orientation.VERTICAL);
             ((Clutter.BoxLayout)layout_manager).set_spacing (0);
             menu_actor = new Clutter.Actor ();
-            menu_actor.height = 324;
             menu_actor.set_layout_manager (layout_manager);
             scroll = new Clutter.ScrollActor ();
             scroll.set_scroll_mode (Clutter.ScrollMode.VERTICALLY);
@@ -386,7 +385,7 @@ namespace niki {
             item = menu.get_child_at_index (index_in);
             Clutter.Point point = Clutter.Point ();
             item.get_position (out point.x, out point.y);
-            point.y = point.y - 150;
+            point.y = point.y - ((menu_actor.height / 2) - (((Clutter.Text)item).height / 2));
             scroll.save_easing_state ();
             scroll.scroll_to_point (point);
             scroll.restore_easing_state ();
@@ -436,6 +435,9 @@ namespace niki {
         }
         public void signal_window () {
             if (NikiApp.settings.get_boolean("audio-video")) {
+                int height;
+                window.get_size (null, out height);
+                menu_actor.height = height - 150;
                 update_position_cover ();
             }
         }

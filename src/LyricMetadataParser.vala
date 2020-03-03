@@ -1,7 +1,7 @@
 namespace niki {
     public class LyricMetadataParser : LyricChain {
         public override bool can_parse (string item) {
-            return Regex.match_simple ("\\[\\D", item);
+            return Regex.match_simple ("\\[\\D", item) || Regex.match_simple ("\\[\\D\\", item);
         }
 
         public override void process (Gtk.ListStore lrc_store, string ln) {
@@ -12,7 +12,7 @@ namespace niki {
                 lrc_store.append (out iter);
                 lrc_store.set (iter, 0, -1, 1, "-1", 2, tag[0], 3, tag[1]);
             } else {
-                critical (@"Couldn't parse $ln");
+                warning (@"$ln");
             }
         }
     }

@@ -172,6 +172,12 @@ namespace niki {
         INPUTMODE,
         N_COLUMNS
     }
+    private enum LyricColumns {
+        TIMEINT,
+        TIMEVIEW,
+        LYRIC,
+        N_COLUMNS
+    }
     private enum DlnaComboColumns {
         PIXBUF,
         DEVICENAME,
@@ -400,9 +406,14 @@ namespace niki {
         int hours = seconds / 3600;
         int min = (seconds % 3600) / 60;
         int sec = (seconds % 60);
+        int mili = ((seconds % 30));
 
         if (!need){
-            return  ("%u:%02u:%02u".printf (hours, min, sec));
+            if (hours > 0) {
+                return  ("%u:%02u:%02u.%02u".printf (hours, min, sec, mili));
+            } else {
+                return  ("%02u:%02u.%02u".printf (min, sec, mili));
+            }
         } else {
             if (hours > 0) {
                 return ("%d:%02d:%02d".printf (sign * hours, min, sec));
@@ -564,9 +575,237 @@ namespace niki {
         Gdk.Pixbuf pixbuf_unknow = Gdk.pixbuf_get_from_surface (surface, 0, 0, 256, 256);
         return pixbuf_unknow;
     }
-
+    private string? niki_mime_type () {
+        var builder = new StringBuilder ();
+        builder.append (@"MimeType=");
+        builder.append (@"audio/aac;");
+        builder.append (@"audio/x-aiff;");
+        builder.append (@"audio/aiff;");
+        builder.append (@"audio/m4a;");
+        builder.append (@"audio/x-m4a;");
+        builder.append (@"audio/mp1;");
+        builder.append (@"audio/x-mp1;");
+        builder.append (@"audio/mp2;");
+        builder.append (@"audio/x-mp2;");
+        builder.append (@"audio/mp2;");
+        builder.append (@"audio/x-mp3;");
+        builder.append (@"audio/mpeg;");
+        builder.append (@"audio/rn-mpeg;");
+        builder.append (@"audio/mpeg2;");
+        builder.append (@"audio/mpeg3;");
+        builder.append (@"audio/mpegurl;");
+        builder.append (@"audio/x-mpegurl;");
+        builder.append (@"audio/x-mpg;");
+        builder.append (@"audio/x-wav;");
+        builder.append (@"audio/musepack;");
+        builder.append (@"audio/x-musepack;");
+        builder.append (@"audio/ogg;");
+        builder.append (@"audio/scpls;");
+        builder.append (@"audio/vnd.rn-realaudio;");
+        builder.append (@"audio/wav;");
+        builder.append (@"audio/x-pn-wav;");
+        builder.append (@"audio/x-pn-windows-pcm;");
+        builder.append (@"audio/x-realaudio;");
+        builder.append (@"audio/x-pn-realaudio;");
+        builder.append (@"audio/x-ms-wma;");
+        builder.append (@"audio/x-pls;");
+        builder.append (@"audio/mp4;");
+        builder.append (@"audio/webm;");
+        builder.append (@"audio/vorbis;");
+        builder.append (@"audio/x-vorbis;");
+        builder.append (@"audio/x-vorbis+ogg;");
+        builder.append (@"audio/x-shorten;");
+        builder.append (@"audio/x-ape;");
+        builder.append (@"audio/x-wavpack;");
+        builder.append (@"audio/x-ape;");
+        builder.append (@"audio/x-tta;");
+        builder.append (@"audio/AMR;");
+        builder.append (@"audio/m3u;");
+        builder.append (@"audio/ac3;");
+        builder.append (@"audio/ts.hd;");
+        builder.append (@"audio/eac3;");
+        builder.append (@"audio/x-adpcm;");
+        builder.append (@"audio/amr-wb;");
+        builder.append (@"audio/flac;");
+        builder.append (@"audio/x-pn-au;");
+        builder.append (@"audio/dv;");
+        builder.append (@"audio/x-adpcm;");
+        builder.append (@"audio/vnd.dts;");
+        builder.append (@"video/mpeg;");
+        builder.append (@"video/x-mpeg2;");
+        builder.append (@"video/x-mpeg3;");
+        builder.append (@"video/mp4v-es;");
+        builder.append (@"video/mp4;");
+        builder.append (@"video/divx;");
+        builder.append (@"video/vnd.divx;");
+        builder.append (@"video/msvideo;");
+        builder.append (@"video/ogg;");
+        builder.append (@"video/quicktime;");
+        builder.append (@"video/vnd.rn-realvideo;");
+        builder.append (@"video/x-ms-afs;");
+        builder.append (@"video/x-ms-asf;");
+        builder.append (@"video/x-ms-asf;");
+        builder.append (@"video/x-ms-wmv;");
+        builder.append (@"video/x-ms-wmx;");
+        builder.append (@"video/x-ms-wvxvideo;");
+        builder.append (@"video/x-avi;");
+        builder.append (@"video/avi;");
+        builder.append (@"video/x-flic;");
+        builder.append (@"video/x-flc;");
+        builder.append (@"video/x-flv;");
+        builder.append (@"video/x-fli;");
+        builder.append (@"video/flv;");
+        builder.append (@"video/x-theora;");
+        builder.append (@"video/x-theora+ogg;");
+        builder.append (@"video/x-matroska;");
+        builder.append (@"video/mkv;");
+        builder.append (@"video/webm;");
+        builder.append (@"video/x-ogm;");
+        builder.append (@"video/x-ogm+ogg;");
+        builder.append (@"video/3gpp;");
+        builder.append (@"video/3gpp2;");
+        builder.append (@"video/3gp;");
+        builder.append (@"video/dv;");
+        builder.append (@"video/opus;");
+        builder.append (@"video/mp2t;");
+        builder.append (@"video/vnd.mpegurl;");
+        builder.append (@"application/vnd.smaf;");
+        return builder.str;
+    }
     private string protocol_Info (){
-        string join_string = string.join (",", "http-get:*:video/mp4:DLNA.ORG_PN=AVC_MP4_BL_CIF15_AAC_520", "http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_TS_HD_NA_ISO", "http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_TS_SD_NA_ISO", "http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_TS_SD_EU_ISO", "http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMAPRO", "http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMAFULL", "http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMABASE", "http-get:*:audio/l16;rate=44100;channels=1:DLNA.ORG_PN=LPCM", "http-get:*:audio/l16;rate=44100;channels=2:DLNA.ORG_PN=LPCM", "http-get:*:audio/3gpp:DLNA.ORG_PN=AAC_ISO_320", "http-get:*:audio/mp4:DLNA.ORG_PN=AAC_ISO_320", "http-get:*:audio/vnd.dlna.adts:DLNA.ORG_PN=AAC_ADTS_320", "http-get:*:audio/mpeg:DLNA.ORG_PN=MP3X", "http-get:*:audio/mpeg:DLNA.ORG_PN=MP3", "http-get:*:image/png:DLNA.ORG_PN=PNG_LRG", "http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_LRG", "http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_MED", "http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_SM", "http-get:*:text/xml:DLNA.ORG_PN=DIDL_S", "rtsp:*:video/mp4:DLNA.ORG_PN=AVC_MP4_BL_CIF15_AAC_520", "rtsp:*:video/mpeg:DLNA.ORG_PN=MPEG_TS_HD_NA_ISO", "rtsp:*:video/mpeg:DLNA.ORG_PN=MPEG_TS_SD_NA_ISO", "rtsp:*:video/mpeg:DLNA.ORG_PN=MPEG_TS_SD_EU_ISO", "rtsp:*:audio/x-ms-wma:DLNA.ORG_PN=WMAPRO", "rtsp:*:audio/x-ms-wma:DLNA.ORG_PN=WMAFULL", "rtsp:*:audio/x-ms-wma:DLNA.ORG_PN=WMABASE", "rtsp:*:audio/l16;rate=44100;channels=1:DLNA.ORG_PN=LPCM", "rtsp:*:audio/l16;rate=44100;channels=2:DLNA.ORG_PN=LPCM", "rtsp:*:audio/3gpp:DLNA.ORG_PN=AAC_ISO_320", "rtsp:*:audio/mp4:DLNA.ORG_PN=AAC_ISO_320", "rtsp:*:audio/vnd.dlna.adts:DLNA.ORG_PN=AAC_ADTS_320", "rtsp:*:audio/mpeg:DLNA.ORG_PN=MP3X", "rtsp:*:audio/mpeg:DLNA.ORG_PN=MP3", "rtsp:*:image/png:DLNA.ORG_PN=PNG_LRG", "rtsp:*:image/jpeg:DLNA.ORG_PN=JPEG_LRG", "rtsp:*:image/jpeg:DLNA.ORG_PN=JPEG_MED", "rtsp:*:image/jpeg:DLNA.ORG_PN=JPEG_SM", "rtsp:*:text/xml:DLNA.ORG_PN=DIDL_S", "http-get:*:audio/mpeg:*", "http-get:*:application/ogg:*", "http-get:*:audio/x-vorbis:*", "http-get:*:audio/x-vorbis+ogg:*", "http-get:*:audio/ogg:*", "http-get:*:audio/x-ms-wma:*", "http-get:*:audio/x-ms-asf:*", "http-get:*:audio/x-flac:*", "http-get:*:audio/x-flac+ogg:*", "http-get:*:audio/flac:*", "http-get:*:audio/mp4:*", "http-get:*:audio/3gpp:*", "http-get:*:audio/vnd.dlna.adts:*", "http-get:*:audio/x-mod:*", "http-get:*:audio/x-wav:*", "http-get:*:audio/wav:*", "http-get:*:audio/x-ac3:*", "http-get:*:audio/x-m4a:*", "http-get:*:audio/l16;rate=44100;channels=2:*", "http-get:*:audio/l16;rate=44100;channels=1:*", "http-get:*:audio/l16;channels=2;rate=44100:*", "http-get:*:audio/l16;channels=1;rate=44100:*", "http-get:*:audio/l16;rate=44100:*", "http-get:*:image/jpeg:*", "http-get:*:image/png:*", "http-get:*:video/x-theora:*", "http-get:*:video/x-theora+ogg:*", "http-get:*:video/x-oggm:*", "http-get:*:video/ogg:*", "http-get:*:video/x-dirac:*", "http-get:*:video/x-wmv:*", "http-get:*:video/x-wma:*", "http-get:*:video/x-msvideo:*", "http-get:*:video/x-3ivx:*", "http-get:*:video/x-3ivx:*", "http-get:*:video/x-matroska:*", "http-get:*:video/x-mkv:*", "http-get:*:video/mpeg:*", "http-get:*:video/mp4:*", "http-get:*:application/x-shockwave-flash:*", "http-get:*:video/x-ms-asf:*", "http-get:*:video/x-xvid:*", "http-get:*:video/x-ms-wmv:*", "http-get:*:audio/mpegurl:*", "http-get:*:audio/x-mpegurl:*", "http-get:*:video/mpegurl:*", "http-get:*:video/x-mpegurl:*", "rtsp:*:audio/mpeg:*", "rtsp:*:application/ogg:*", "rtsp:*:audio/x-vorbis:*", "rtsp:*:audio/x-vorbis+ogg:*", "rtsp:*:audio/ogg:*", "rtsp:*:audio/x-ms-wma:*", "rtsp:*:audio/x-ms-asf:*", "rtsp:*:audio/x-flac:*", "rtsp:*:audio/x-flac+ogg:*", "rtsp:*:audio/flac:*", "rtsp:*:audio/mp4:*", "rtsp:*:audio/3gpp:*", "rtsp:*:audio/vnd.dlna.adts:*", "rtsp:*:audio/x-mod:*", "rtsp:*:audio/x-wav:*", "rtsp:*:audio/wav:*", "rtsp:*:audio/x-ac3:*", "rtsp:*:audio/x-m4a:*", "rtsp:*:audio/l16;rate=44100;channels=2:*", "rtsp:*:audio/l16;rate=44100;channels=1:*", "rtsp:*:audio/l16;channels=2;rate=44100:*", "rtsp:*:audio/l16;channels=1;rate=44100:*", "rtsp:*:audio/l16;rate=44100:*", "rtsp:*:image/jpeg:*", "rtsp:*:image/png:*", "rtsp:*:video/x-theora:*", "rtsp:*:video/x-theora+ogg:*", "rtsp:*:video/x-oggm:*", "rtsp:*:video/ogg:*", "rtsp:*:video/x-dirac:*", "rtsp:*:video/x-wmv:*", "rtsp:*:video/x-wma:*", "rtsp:*:video/x-msvideo:*", "rtsp:*:video/x-3ivx:*", "rtsp:*:video/x-3ivx:*", "rtsp:*:video/x-matroska:*", "rtsp:*:video/x-mkv:*", "rtsp:*:video/mpeg:*", "rtsp:*:video/mp4:*", "rtsp:*:application/x-shockwave-flash:*", "rtsp:*:video/x-ms-asf:*", "rtsp:*:video/x-xvid:*", "rtsp:*:video/x-ms-wmv:*", "rtsp:*:audio/mpegurl:*", "rtsp:*:audio/x-mpegurl:*", "rtsp:*:video/mpegurl:*", "rtsp:*:video/x-mpegurl:*");
-        return join_string;
+        var builder = new StringBuilder ();
+        builder.append (@"http-get:*:video/mp4:DLNA.ORG_PN=AVC_MP4_BL_CIF15_AAC_520,");
+        builder.append (@"http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_TS_HD_NA_ISO,");
+        builder.append (@"http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_TS_SD_NA_ISO,");
+        builder.append (@"http-get:*:video/mpeg:DLNA.ORG_PN=MPEG_TS_SD_EU_ISO,");
+        builder.append (@"http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMAPRO,");
+        builder.append (@"http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMAFULL,");
+        builder.append (@"http-get:*:audio/x-ms-wma:DLNA.ORG_PN=WMABASE,");
+        builder.append (@"http-get:*:audio/l16;rate=44100;channels=1:DLNA.ORG_PN=LPCM,");
+        builder.append (@"http-get:*:audio/l16;rate=44100;channels=2:DLNA.ORG_PN=LPCM,");
+        builder.append (@"http-get:*:audio/3gpp:DLNA.ORG_PN=AAC_ISO_320,");
+        builder.append (@"http-get:*:audio/mp4:DLNA.ORG_PN=AAC_ISO_320,");
+        builder.append (@"http-get:*:audio/vnd.dlna.adts:DLNA.ORG_PN=AAC_ADTS_320,");
+        builder.append (@"http-get:*:audio/mpeg:DLNA.ORG_PN=MP3X,");
+        builder.append (@"http-get:*:audio/mpeg:DLNA.ORG_PN=MP3,");
+        builder.append (@"http-get:*:image/png:DLNA.ORG_PN=PNG_LRG,");
+        builder.append (@"http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_LRG,");
+        builder.append (@"http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_MED,");
+        builder.append (@"http-get:*:image/jpeg:DLNA.ORG_PN=JPEG_SM,");
+        builder.append (@"http-get:*:text/xml:DLNA.ORG_PN=DIDL_S,");
+        builder.append (@"rtsp:*:video/mp4:DLNA.ORG_PN=AVC_MP4_BL_CIF15_AAC_520,");
+        builder.append (@"rtsp:*:video/mpeg:DLNA.ORG_PN=MPEG_TS_HD_NA_ISO,");
+        builder.append (@"rtsp:*:video/mpeg:DLNA.ORG_PN=MPEG_TS_SD_NA_ISO,");
+        builder.append (@"rtsp:*:video/mpeg:DLNA.ORG_PN=MPEG_TS_SD_EU_ISO,");
+        builder.append (@"rtsp:*:audio/x-ms-wma:DLNA.ORG_PN=WMAPRO,");
+        builder.append (@"rtsp:*:audio/x-ms-wma:DLNA.ORG_PN=WMAFULL,");
+        builder.append (@"rtsp:*:audio/x-ms-wma:DLNA.ORG_PN=WMABASE,");
+        builder.append (@"rtsp:*:audio/l16;rate=44100;channels=1:DLNA.ORG_PN=LPCM,");
+        builder.append (@"rtsp:*:audio/l16;rate=44100;channels=2:DLNA.ORG_PN=LPCM,");
+        builder.append (@"rtsp:*:audio/3gpp:DLNA.ORG_PN=AAC_ISO_320,");
+        builder.append (@"rtsp:*:audio/mp4:DLNA.ORG_PN=AAC_ISO_320,");
+        builder.append (@"rtsp:*:audio/vnd.dlna.adts:DLNA.ORG_PN=AAC_ADTS_320,");
+        builder.append (@"rtsp:*:audio/mpeg:DLNA.ORG_PN=MP3X,");
+        builder.append (@"rtsp:*:audio/mpeg:DLNA.ORG_PN=MP3,");
+        builder.append (@"rtsp:*:image/png:DLNA.ORG_PN=PNG_LRG,");
+        builder.append (@"rtsp:*:image/jpeg:DLNA.ORG_PN=JPEG_LRG,");
+        builder.append (@"rtsp:*:image/jpeg:DLNA.ORG_PN=JPEG_MED,");
+        builder.append (@"rtsp:*:image/jpeg:DLNA.ORG_PN=JPEG_SM,");
+        builder.append (@"rtsp:*:text/xml:DLNA.ORG_PN=DIDL_S,");
+        builder.append (@"http-get:*:audio/mpeg:*,");
+        builder.append (@"http-get:*:application/ogg:*,");
+        builder.append (@"http-get:*:audio/x-vorbis:*,");
+        builder.append (@"http-get:*:audio/x-vorbis+ogg:*,");
+        builder.append (@"http-get:*:audio/ogg:*,");
+        builder.append (@"http-get:*:audio/x-ms-wma:*,");
+        builder.append (@"http-get:*:audio/x-ms-asf:*,");
+        builder.append (@"http-get:*:audio/x-flac:*,");
+        builder.append (@"http-get:*:audio/x-flac+ogg:*,");
+        builder.append (@"http-get:*:audio/flac:*,");
+        builder.append (@"http-get:*:audio/mp4:*,");
+        builder.append (@"http-get:*:audio/3gpp:*,");
+        builder.append (@"http-get:*:audio/vnd.dlna.adts:*,");
+        builder.append (@"http-get:*:audio/x-mod:*,");
+        builder.append (@"http-get:*:audio/x-wav:*,");
+        builder.append (@"http-get:*:audio/wav:*,");
+        builder.append (@"http-get:*:audio/x-ac3:*,");
+        builder.append (@"http-get:*:audio/x-m4a:*,");
+        builder.append (@"http-get:*:audio/l16;rate=44100;channels=2:*,");
+        builder.append (@"http-get:*:audio/l16;rate=44100;channels=1:*,");
+        builder.append (@"http-get:*:audio/l16;channels=2;rate=44100:*,");
+        builder.append (@"http-get:*:audio/l16;channels=1;rate=44100:*,");
+        builder.append (@"http-get:*:audio/l16;rate=44100:*,");
+        builder.append (@"http-get:*:image/jpeg:*,");
+        builder.append (@"http-get:*:image/png:*,");
+        builder.append (@"http-get:*:video/x-theora:*,");
+        builder.append (@"http-get:*:video/x-theora+ogg:*,");
+        builder.append (@"http-get:*:video/x-oggm:*,");
+        builder.append (@"http-get:*:video/ogg:*,");
+        builder.append (@"http-get:*:video/x-dirac:*,");
+        builder.append (@"http-get:*:video/x-wmv:*,");
+        builder.append (@"http-get:*:video/x-wma:*,");
+        builder.append (@"http-get:*:video/x-msvideo:*,");
+        builder.append (@"http-get:*:video/x-3ivx:*,");
+        builder.append (@"http-get:*:video/x-3ivx:*,");
+        builder.append (@"http-get:*:video/x-matroska:*,");
+        builder.append (@"http-get:*:video/x-mkv:*,");
+        builder.append (@"http-get:*:video/mpeg:*,");
+        builder.append (@"http-get:*:video/mp4:*,");
+        builder.append (@"http-get:*:application/x-shockwave-flash:*,");
+        builder.append (@"http-get:*:video/x-ms-asf:*,");
+        builder.append (@"http-get:*:video/x-xvid:*,");
+        builder.append (@"http-get:*:video/x-ms-wmv:*,");
+        builder.append (@"http-get:*:audio/mpegurl:*,");
+        builder.append (@"http-get:*:audio/x-mpegurl:*,");
+        builder.append (@"http-get:*:video/mpegurl:*,");
+        builder.append (@"http-get:*:video/x-mpegurl:*,");
+        builder.append (@"rtsp:*:audio/mpeg:*,");
+        builder.append (@"rtsp:*:application/ogg:*,");
+        builder.append (@"rtsp:*:audio/x-vorbis:*,");
+        builder.append (@"rtsp:*:audio/x-vorbis+ogg:*,");
+        builder.append (@"rtsp:*:audio/ogg:*,");
+        builder.append (@"rtsp:*:audio/x-ms-wma:*,");
+        builder.append (@"rtsp:*:audio/x-ms-asf:*,");
+        builder.append (@"rtsp:*:audio/x-flac:*,");
+        builder.append (@"rtsp:*:audio/x-flac+ogg:*,");
+        builder.append (@"rtsp:*:audio/flac:*,");
+        builder.append (@"rtsp:*:audio/mp4:*,");
+        builder.append (@"rtsp:*:audio/3gpp:*,");
+        builder.append (@"rtsp:*:audio/vnd.dlna.adts:*,");
+        builder.append (@"rtsp:*:audio/x-mod:*,");
+        builder.append (@"rtsp:*:audio/x-wav:*,");
+        builder.append (@"rtsp:*:audio/wav:*,");
+        builder.append (@"rtsp:*:audio/x-ac3:*,");
+        builder.append (@"rtsp:*:audio/x-m4a:*,");
+        builder.append (@"rtsp:*:audio/l16;rate=44100;channels=2:*,");
+        builder.append (@"rtsp:*:audio/l16;rate=44100;channels=1:*,");
+        builder.append (@"rtsp:*:audio/l16;channels=2;rate=44100:*,");
+        builder.append (@"rtsp:*:audio/l16;channels=1;rate=44100:*,");
+        builder.append (@"rtsp:*:audio/l16;rate=44100:*,");
+        builder.append (@"rtsp:*:image/jpeg:*,");
+        builder.append (@"rtsp:*:image/png:*,");
+        builder.append (@"rtsp:*:video/x-theora:*,");
+        builder.append (@"rtsp:*:video/x-theora+ogg:*,");
+        builder.append (@"rtsp:*:video/x-oggm:*,");
+        builder.append (@"rtsp:*:video/ogg:*,");
+        builder.append (@"rtsp:*:video/x-dirac:*,");
+        builder.append (@"rtsp:*:video/x-wmv:*,");
+        builder.append (@"rtsp:*:video/x-wma:*,");
+        builder.append (@"rtsp:*:video/x-msvideo:*,");
+        builder.append (@"rtsp:*:video/x-3ivx:*,");
+        builder.append (@"rtsp:*:video/x-3ivx:*,");
+        builder.append (@"rtsp:*:video/x-matroska:*,");
+        builder.append (@"rtsp:*:video/x-mkv:*,");
+        builder.append (@"rtsp:*:video/mpeg:*,");
+        builder.append (@"rtsp:*:video/mp4:*,");
+        builder.append (@"rtsp:*:application/x-shockwave-flash:*,");
+        builder.append (@"rtsp:*:video/x-ms-asf:*,");
+        builder.append (@"rtsp:*:video/x-xvid:*,");
+        builder.append (@"rtsp:*:video/x-ms-wmv:*,");
+        builder.append (@"rtsp:*:audio/mpegurl:*,");
+        builder.append (@"rtsp:*:audio/x-mpegurl:*,");
+        builder.append (@"rtsp:*:video/mpegurl:*,");
+        builder.append (@"rtsp:*:video/x-mpegurl:*");
+        return builder.str;
     }
 }
