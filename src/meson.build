@@ -40,8 +40,7 @@ executable(
     'Welcome.vala',
     'WelcomeButton.vala',
     'ScanFolder.vala',
-    'Thumbnailer.vala',
-    'VideoThumbnailer.vala',
+    'DbusThumbnailer.vala',
     'AudioCover.vala',
     'EqualizerPreset.vala',
     'AudioMix.vala',
@@ -88,6 +87,8 @@ executable(
     'CropDialog.vala',
     'CropView.vala',
     'MediaEntry.vala',
+    'HeaderLabel.vala',
+
     c_args: c_args,
     dependencies: [
         dependency('gobject-introspection-1.0'),

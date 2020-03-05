@@ -138,6 +138,15 @@ namespace niki {
             playlist.enter_notify_event.connect (() => {
                 return cursor_hand_mode(0);
             });
+            button_press_event.connect (() => {
+                hovered = true;
+                return Gdk.EVENT_PROPAGATE;
+            });
+
+            button_release_event.connect (() => {
+                hovered = true;
+                return false;
+            });
             playlist.motion_notify_event.connect (() => {
                 size_flexible ();
                 return cursor_hand_mode(0);

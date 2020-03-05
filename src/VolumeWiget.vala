@@ -48,23 +48,15 @@ namespace niki {
                 scale.set_value (NikiApp.settings.get_double ("volume-adjust"));
             });
 
-            scale.motion_notify_event.connect (() => {
-                return update_tooltip ();
-            });
-
-            scale.button_press_event.connect (() => {
-                return update_tooltip ();
-            });
             scale.change_value.connect ((scroll, new_value) => {
                 if (scroll == Gtk.ScrollType.JUMP) {
                     NikiApp.settings.set_double ("volume-adjust", new_value);
                 }
                 return false;
             });
-            scale.button_release_event.connect (() => {
-                return update_tooltip ();
-            });
-
+            scale.button_release_event.connect (update_tooltip);
+            scale.motion_notify_event.connect (update_tooltip);
+            scale.button_press_event.connect (update_tooltip);
             scale.enter_notify_event.connect (() => {
                 hovering_grabing = true;
                 leave_scale ();
@@ -80,18 +72,12 @@ namespace niki {
             margin_top = 3;
             valign = Gtk.Align.CENTER;
             scale_widh ();
-            NikiApp.settings.changed["audio-video"].connect (() => {
-                scale_widh ();
-            });
+            NikiApp.settings.changed["audio-video"].connect (scale_widh);
             add (scale);
             show_all ();
         }
         private void scale_widh () {
-            if (NikiApp.settings.get_boolean ("audio-video")) {
-                scale.width_request = 61;
-            } else {
-                scale.width_request = 81;
-            }
+            scale.width_request = NikiApp.settings.get_boolean ("audio-video")? 61 : 81;
         }
         public bool update_tooltip () {
             scale.tooltip_text = double_to_percent (scale.get_value ());

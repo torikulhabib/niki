@@ -49,6 +49,7 @@ actions = [
     '.title-symbolic.svg',
     '.ascending-symbolic.svg',
     '.descending-symbolic.svg',
+    '.color-symbolic.svg',
 ]
 
 foreach m : actions

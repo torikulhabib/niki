@@ -70,6 +70,7 @@ If you like Niki and you want to support its development,consider supporting via
 * Keyboard i = Info
 * Keyboard L = Lyric
 * Keyboard S = Settings
+* Keyboard H = Home
 
 ### Roadmap
 #### v0.5
@@ -117,9 +118,13 @@ If you like Niki and you want to support its development,consider supporting via
 - [x] Camera Effect.
 
 ### v 0.9
+- [ ] Input Camera device. (Inprogress)
 - [ ] Music Library View. (Inprogress)
 - [ ] Video Library View. (Inprogress)
 - [ ] Audio Tag. (Inprogress)
 - [ ] DLNA Player. (Inprogress)
-- [ ] Scrowled lyric mode. (Inprogress).
+- [ ] Video Crop. (Inprogress)
+- [ ] DLNA Media Export. (Inprogress)
+- [x] Scrowled lyric mode.
+- [ ] lyric Maker. (Inprogress)
 - [ ] Download lyric.(Inprogress).

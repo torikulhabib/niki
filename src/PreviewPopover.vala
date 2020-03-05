@@ -23,6 +23,7 @@ namespace niki {
     public class PreviewPopover : Gtk.Popover {
         public PreviewClutterGst? playback;
         public Gtk.Label label_progress;
+        public GtkClutter.Embed clutter;
         private double clutter_height;
         private double clutter_width; 
         private uint loop_timer_id = 0;
@@ -31,7 +32,6 @@ namespace niki {
         private uint idle_id = 0;
         private double req_progress = 0;
         public bool req_loop = false;
-        private signal void open_popover ();
 
         construct {
             get_style_context ().add_class ("popover");
@@ -41,47 +41,40 @@ namespace niki {
                 clutter_height = height; 
                 clutter_width = width; 
             });
-            NikiApp.settings.changed["uri-video"].connect (load_playback);
-            var clutter = new GtkClutter.Embed ();
+            clutter = new GtkClutter.Embed ();
             clutter.margin = 1;
             var stage = (Clutter.Stage)clutter.get_stage ();
             stage.background_color = Clutter.Color.from_string ("black");
             var aspectratio = new ClutterGst.Aspectratio ();
             aspectratio.player = playback;
-            open_popover.connect (() => {
-                if (clutter_width > 0 && clutter_height > 0 && !NikiApp.settings.get_boolean ("audio-video")) {
-                    double diagonal_window = GLib.Math.sqrt (((NikiApp.settings.get_int ("window-width") * NikiApp.settings.get_int ("window-width")) + (NikiApp.settings.get_int ("window-height") * NikiApp.settings.get_int ("window-height")))/45);
-                    double diagonal = Math.sqrt ((clutter_width * clutter_width)  + (clutter_height * clutter_height));
-                    double k = (diagonal_window / diagonal);
-                    stage.set_size ((int)(clutter_width * k), (int)(clutter_height * k));
-                    clutter.set_size_request ((int)(clutter_width * k), (int)(clutter_height * k));
-                } else {
-                    clutter.set_size_request (60, 20);
-                }
-            });
+            stage.content = aspectratio;
+
             label_progress = new Gtk.Label (null);
             label_progress.get_style_context ().add_class ("label_popover");
-            var main_actionbar = new Gtk.HeaderBar ();
-            main_actionbar.get_style_context ().add_class ("ground_action_button");
-            main_actionbar.has_subtitle = false;
-            main_actionbar.custom_title = label_progress;
-            main_actionbar.show_all ();
-            var label_progress_actor = new GtkClutter.Actor.with_contents (main_actionbar);
+            label_progress.halign = Gtk.Align.CENTER;
+            var label_progress_actor = new GtkClutter.Actor.with_contents (label_progress);
             label_progress_actor.add_constraint (new Clutter.AlignConstraint (stage, Clutter.AlignAxis.Y_AXIS, 1));
             label_progress_actor.add_constraint (new Clutter.BindConstraint (stage, Clutter.BindCoordinate.WIDTH, 1));
             stage.add_child (label_progress_actor);
-            stage.content = aspectratio;
             modal = false;
             can_focus = false;
             opacity = 255;
             add (clutter);
             hide ();
+            NikiApp.settings.changed["uri-video"].connect (load_playback);
             load_playback ();
         }
-
+        private void clutter_resize () {
+            if (clutter_width > 0 && clutter_height > 0 && !NikiApp.settings.get_boolean ("audio-video")) {
+                double diagonal_window = GLib.Math.sqrt ((GLib.Math.pow (NikiApp.settings.get_int ("window-width"), 2) + GLib.Math.pow (NikiApp.settings.get_int ("window-height"), 2)) / 45);
+                double diagonal = Math.sqrt (GLib.Math.pow (clutter_width, 2)  + GLib.Math.pow(clutter_height, 2));
+                double k = (diagonal_window / diagonal);
+                clutter.set_size_request ((int)(clutter_width * k), (int)(clutter_height * k));
+            }
+        }
         public void load_playback () {
             Idle.add (() => {
-                if (NikiApp.settings.get_boolean("home-signal")) {
+                if (NikiApp.settings.get_boolean("home-signal") || NikiApp.settings.get_boolean("audio-video")) {
                     playback.uri = null;
                 } else {
                     playback.uri = NikiApp.settings.get_string ("uri-video");
@@ -91,6 +84,9 @@ namespace niki {
             });
         }
         public void set_preview_progress (double progress, bool loop = false) {
+            if (NikiApp.settings.get_boolean ("audio-video")) {
+                return;
+            }
             req_progress = progress;
             req_loop = loop;
             if (!visible || idle_id > 0) {
@@ -130,11 +126,14 @@ namespace niki {
         }
 
         public void schedule_show () {
+            if (NikiApp.settings.get_boolean ("audio-video")) {
+                return;
+            }
             if (show_timer_id > 0) {
                 return;
             }
             cancel_timer (ref hide_timer_id);
-            open_popover ();
+            clutter_resize ();
             show_timer_id = Timeout.add (350, () => {
                 show_all ();
                 if (req_progress >= 0) {
@@ -146,11 +145,14 @@ namespace niki {
         }
 
         public void schedule_hide () {
+            if (NikiApp.settings.get_boolean ("audio-video")) {
+                return;
+            }
             if (hide_timer_id > 0) {
                 return;
             }
             cancel_timer (ref show_timer_id);
-            open_popover ();
+            clutter_resize ();
             hide_timer_id = Timeout.add (350, () => {
                 hide ();
                 hide_timer_id = 0;

@@ -4,7 +4,7 @@ namespace niki {
             return item == "";
         }
 
-        public override void process (Lyric lyric, string ln) {
+        public override void process (Gtk.ListStore lrc_store, string ln) {
             return;
         }
     }

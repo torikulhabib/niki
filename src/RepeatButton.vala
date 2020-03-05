@@ -6,6 +6,7 @@ namespace niki {
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             repeat_image = new Gtk.Image.from_icon_name ("tools-timer-symbolic", Gtk.IconSize.BUTTON);
             repeat_image.valign = Gtk.Align.CENTER;
+            repeat_image.halign = Gtk.Align.CENTER;
             clicked.connect (() => {
                 repeatmode.switch_repeat_mode ();
             });

@@ -26,7 +26,7 @@ namespace niki {
                 }
                 File deleteunuse = File.new_for_path (tmp_file);
                 deleteunuse.delete_async.begin ();
-                Gdk.Pixbuf pixbuf = align_and_scale_pixbuf (return_value, 60);
+                Gdk.Pixbuf pixbuf = align_and_scale_pixbuf (return_value, return_value.get_width (), return_value.get_height ());
                 try {
                     pixbuf.save (tmp_file, "jpeg", "quality", "100");
                 } catch (Error err) {

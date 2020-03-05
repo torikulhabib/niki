@@ -73,8 +73,10 @@ namespace niki {
                 window.show_all ();
             } else {
                 window.show ();
-                if (NikiApp.settings.get_int ("window-x") != -1 && NikiApp.settings.get_int ("window-y") != -1) {
-                    window.move (NikiApp.settings.get_int ("window-x"), NikiApp.settings.get_int ("window-y"));
+                if (NikiApp.settings.get_boolean ("audio-video") && window.main_stack.visible_child_name == "player") {
+                    if (NikiApp.settings.get_int ("window-x") != -1 && NikiApp.settings.get_int ("window-y") != -1) {
+                        window.move (NikiApp.settings.get_int ("window-x"), NikiApp.settings.get_int ("window-y"));
+                    }
                 }
                 return;
             }
@@ -125,7 +127,7 @@ namespace niki {
 
 public static int main (string []? args) {
     var app = new niki.NikiApp ().instance;
-    Gst.init (ref args);
     Clutter.init (ref args);
+    Gst.init (ref args);
     return app.run (args);
 }

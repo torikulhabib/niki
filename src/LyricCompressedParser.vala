@@ -9,26 +9,22 @@ namespace niki {
             return is_compressed (lyric_formatter.split_simple_lrc (item)) || is_compressed (lyric_formatter.split_lrc (item));
         }
 
-        public override void process (Lyric lyric, string ln) {
+        public override void process (Gtk.ListStore lrc_store, string ln) {
             var lns = lyric_formatter.split (ln);
             var text_pos = find_text_pos (lns);
             for (int len = 0; len < text_pos; len++) {
-                lirycchainroot.parse (lyric, lns[len] + lns[text_pos]);
+                lirycchainroot.parse (lrc_store, lns[len] + lns[text_pos]);
             }
             if (text_pos > 0 && text_pos < lns.length) {
-                lirycchainroot.parse (lyric, string.joinv ("", lns[text_pos:lns.length]));
+                lirycchainroot.parse (lrc_store, string.joinv ("", lns[text_pos:lns.length]));
             }
         }
 
         private int find_text_pos (string[] lns) {
-            string text = null;
-            int pos = 0;
-
-            while (text == null && pos <= lns.length) {
-                if (!lyric_formatter.is_timestamp (lns[pos])) {
+            for (int pos = 0; pos <= lns.length; pos++) {
+                if (!lyric_formatter.is_timestamp (lns[pos] != null? lns[pos] : "")) {
                     return pos;
                 }
-                pos++;
             }
             return -1;
         }

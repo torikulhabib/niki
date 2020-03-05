@@ -177,14 +177,8 @@ namespace niki {
                 switch (index) {
                     case 0:
                         window.run_open_file (true);
-                        if (NikiApp.settings.get_boolean ("stream-mode")) {
-                            NikiApp.settings.set_boolean ("stream-mode", false);
-                        }
                         break;
                     case 1:
-                        if (!NikiApp.settings.get_boolean ("stream-mode")) {
-                            NikiApp.settings.set_boolean ("stream-mode", true);
-                        }
                         window.player_page.playlist_widget ().clear_items ();
                         Gtk.Clipboard clipboard = Gtk.Clipboard.get_for_display (get_display (), Gdk.SELECTION_CLIPBOARD);
                         string text = clipboard.wait_for_text ().strip ();
@@ -199,9 +193,6 @@ namespace niki {
                     case 2:
                         window.player_page.playlist_widget ().clear_items ();
                         window.run_open_folder ();
-                        if (NikiApp.settings.get_boolean ("stream-mode")) {
-                            NikiApp.settings.set_boolean ("stream-mode", false);
-                        }
                         break;
                     case 3:
 		                window.main_stack.visible_child_name = "camera";
@@ -214,16 +205,10 @@ namespace niki {
                     case 0:
                         window.player_page.playlist_widget ().clear_items ();
                         scanfolder.scanning (GLib.Environment.get_user_special_dir (UserDirectory.VIDEOS), 1);
-                        if (NikiApp.settings.get_boolean ("stream-mode")) {
-                            NikiApp.settings.set_boolean ("stream-mode", false);
-                        }
                         break;
                     case 1:
                         window.player_page.playlist_widget ().clear_items ();
                         scanfolder.scanning (GLib.Environment.get_user_special_dir (UserDirectory.MUSIC), 2);
-                        if (NikiApp.settings.get_boolean ("stream-mode")) {
-                            NikiApp.settings.set_boolean ("stream-mode", false);
-                        }
                         break;
                     case 2:
                         stack.visible_child = dlna_grid;

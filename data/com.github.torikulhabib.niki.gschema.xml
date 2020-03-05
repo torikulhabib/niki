@@ -71,15 +71,20 @@
 	  	<summary>Mode switch</summary>
 	  	<description>Mode switch</description>
   	</key>
+	  <key name="make-lrc" type="b">
+	  	<default>false</default>
+	  	<summary>Make Lyric</summary>
+	  	<description>Make Lyric</description>
+  	</key>
 	  <key name="dlna-muted" type="b">
 	  	<default>false</default>
 	  	<summary>DLNA muted</summary>
 	  	<description>DLNA muted</description>
   	</key>
-	  <key name="stream-mode" type="b">
+	  <key name="blur-mode" type="b">
 	  	<default>false</default>
-	  	<summary>Streaming condition</summary>
-	  	<description>Streaming condition</description>
+	  	<summary>Blur condition</summary>
+	  	<description>Blur condition</description>
   	</key>
 	  <key name="fullscreen" type="b">
 	  	<default>false</default>

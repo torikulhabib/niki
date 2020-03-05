@@ -27,6 +27,7 @@ namespace niki {
         private Gtk.Button close_botton;
         private Gtk.Revealer menu_revealer;
         private Gtk.Stack stack;
+        public ButtonRevealer blur_button;
         public Gtk.Label label_info;
         public Gtk.Label info_label_full;
         private Gtk.Label my_app;
@@ -74,6 +75,15 @@ namespace niki {
                 }
                 return false;
             });
+            button_press_event.connect (() => {
+                hovered = true;
+                return Gdk.EVENT_PROPAGATE;
+            });
+
+            button_release_event.connect (() => {
+                hovered = true;
+                return false;
+            });
             leave_notify_event.connect ((event) => {
               if (window.is_active) {
                     if (event.window == get_window ()) {
@@ -115,7 +125,12 @@ namespace niki {
                 NikiApp.settings.set_boolean ("information-button", !NikiApp.settings.get_boolean ("information-button"));
                 info_button ();
             });
-
+            blur_button = new ButtonRevealer ("view-paged-symbolic-symbolic");
+            blur_button.revealer_button.get_style_context ().add_class ("button_action");
+            blur_button.clicked.connect (() => {
+                NikiApp.settings.set_boolean ("blur-mode", !NikiApp.settings.get_boolean ("blur-mode"));
+                blured_button ();
+            });
             my_app = new Gtk.Label (null);
             my_app.get_style_context ().add_class ("button_action");
             my_app.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
@@ -131,6 +146,7 @@ namespace niki {
             main_actionbar.pack_start (home_button);
             main_actionbar.set_center_widget (my_app);
             main_actionbar.pack_end (maximize_button);
+            main_actionbar.pack_end (blur_button);
             main_actionbar.show_all ();
 
             label_info = new Gtk.Label (null);
@@ -183,9 +199,14 @@ namespace niki {
                 label_my_app ();
             });
             label_my_app ();
+            blured_button ();
             info_button ();
             stack_fulscreen ();
             revealer_menu ();
+        }
+        private void blured_button () {
+            blur_button.change_icon (NikiApp.settings.get_boolean ("blur-mode")? "applications-graphics-symbolic" : "com.github.torikulhabib.niki.color-symbolic");
+            blur_button.tooltip_text = NikiApp.settings.get_boolean ("blur-mode")? "Blur" : "Normal";
         }
         private void info_button () {
             ((Gtk.Image) info_option.image).icon_name = !NikiApp.settings.get_boolean ("information-button")? "dialog-information-symbolic" : "com.github.torikulhabib.niki.info-hide-symbolic";
@@ -203,6 +224,7 @@ namespace niki {
             stack.visible_child_name = !NikiApp.settings.get_boolean ("fullscreen") && !NikiApp.settings.get_boolean ("audio-video")? "info_actionbar" : "grid";
         }
         private void revealer_menu () {
+            blur_button.set_reveal_child (NikiApp.settings.get_boolean ("audio-video"));
             menu_revealer.set_reveal_child (!NikiApp.settings.get_boolean ("audio-video") && NikiApp.settings.get_boolean ("information-button")? true : false);
         }
         private void maximized_button () {
