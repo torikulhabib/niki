@@ -180,7 +180,7 @@ namespace niki {
                         state += 1;
                         return false;
                     case 1:
-                        text = StringPot.Titile;
+                        text = StringPot.Title;
                         state += 1;
                         break;
                     case 2:
