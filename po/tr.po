@@ -745,7 +745,7 @@ msgstr "Bulanıklık"
 
 #: src/StringPot.vala:206
 msgid "Buffering: "
-msgstr "Arabelleğe: "
+msgstr "Tamponlama: "
 
 #: src/StringPot.vala:207
 msgid "Save"
