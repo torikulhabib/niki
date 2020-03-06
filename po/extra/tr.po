@@ -3,7 +3,6 @@
 # This file is distributed under the same license as the extra package.
 # Safak Genisol <Bjksafak45@gmail.com>, 2020.
 #
-#, fuzzy
 msgid ""
 msgstr ""
 "Project-Id-Version: extra\n"
