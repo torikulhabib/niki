@@ -126,5 +126,5 @@ If you like Niki and you want to support its development,consider supporting via
 - [ ] Video Crop. (Inprogress)
 - [ ] DLNA Media Export. (Inprogress)
 - [x] Scrowled lyric mode.
-- [x] lyric Maker. (Inprogress)
+- [x] lyric Maker.
 - [ ] Download lyric.(Inprogress).
