@@ -257,7 +257,7 @@ namespace niki {
             file.destroy ();
         }
 
-       public void run_open_folder () {
+       public bool run_open_folder (int loca_set) {
             var folder_location = new Gtk.FileChooserDialog (
             StringPot.Open, this, Gtk.FileChooserAction.SELECT_FOLDER,
             StringPot.Cancel, Gtk.ResponseType.CANCEL,
@@ -267,12 +267,23 @@ namespace niki {
             var filter_folder = new Gtk.FileFilter ();
             filter_folder.add_mime_type ("inode/directory");
             folder_location.set_filter (filter_folder);
-
-            if (folder_location.run () == Gtk.ResponseType.ACCEPT) {
-                NikiApp.settings.set_string ("folder-location", folder_location.get_file ().get_path ());
-                welcome_page.scanfolder.scanning (NikiApp.settings.get_string ("folder-location"), 0);
+            var res = folder_location.run ();
+            if (res == Gtk.ResponseType.ACCEPT) {
+                switch (loca_set) {
+                    case 0 :
+                        NikiApp.settings.set_string ("folder-location", folder_location.get_file ().get_path ());
+                        welcome_page.scanfolder.scanning (NikiApp.settings.get_string ("folder-location"), 0);
+                        break;
+                    case 1 :
+                        NikiApp.settings.set_string ("lyric-location", folder_location.get_file ().get_path ());
+                        break;
+                    case 2 :
+                        NikiApp.settings.set_string ("ask-lyric", folder_location.get_file ().get_path ());
+                        break;
+                }
             }
             folder_location.destroy ();
+            return res == Gtk.ResponseType.ACCEPT;
         }
 
         public void open_files (File[] files, bool clear_playlist = false, bool force_play = true) {

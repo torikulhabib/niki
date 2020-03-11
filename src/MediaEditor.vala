@@ -40,7 +40,6 @@ namespace niki {
         private MediaEntry audio_samplerate;
         private MediaEntry audio_depth;
         private Gtk.Stack stack;
-
         private Gst.Pipeline pipeline;
         private dynamic Gst.Element id3v2mux;
         private dynamic Gst.Element id3demux;
@@ -73,10 +72,10 @@ namespace niki {
             comment_textview = new Gtk.TextView ();
             comment_textview.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             comment_textview.set_wrap_mode (Gtk.WrapMode.WORD_CHAR);
-            var comment_scrolledwindow = new Gtk.ScrolledWindow (null, null);
-            comment_scrolledwindow.set_policy (Gtk.PolicyType.EXTERNAL, Gtk.PolicyType.AUTOMATIC);
-            comment_scrolledwindow.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            comment_scrolledwindow.add (comment_textview);
+            var comment_scr = new Gtk.ScrolledWindow (null, null);
+            comment_scr.set_policy (Gtk.PolicyType.EXTERNAL, Gtk.PolicyType.AUTOMATIC);
+            comment_scr.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            comment_scr.add (comment_textview);
             var local_time = new DateTime.now_local ();
             date_spinbutton = new Gtk.SpinButton.with_range (0, local_time.get_year (), 1);
             date_spinbutton.margin_end = 10;
@@ -88,7 +87,7 @@ namespace niki {
             var comment_frame = new Gtk.Frame (null);
             comment_frame.expand = true;
             comment_frame.margin_end = 10;
-            comment_frame.add (comment_scrolledwindow);
+            comment_frame.add (comment_scr);
 
             asyncimage = new AsyncImage (true);
             asyncimage.pixel_size = 85;
@@ -351,42 +350,34 @@ namespace niki {
                 return false;
             });
             string file_name;
-            playlist.liststore.get (playlist.select_iter, PlaylistColumns.FILENAME, out file_name);
+            playlist.liststore.get (playlist.selected_iter (), PlaylistColumns.FILENAME, out file_name);
             set_media (file_name);
         }
 
         private void previous_track () {
-            if (!playlist.liststore.iter_is_valid (playlist.select_iter)) {
-                if (!playlist.get_selection().get_selected(null, out playlist.select_iter)) {
-                    return;
-                }
+            Gtk.TreeIter iter = playlist.selected_iter ();
+            if (playlist.model.iter_previous (ref iter)) {
+                playlist.get_selection().select_iter (iter);
             }
-            if (playlist.model.iter_previous (ref playlist.select_iter)) {
-                playlist.get_selection().select_iter (playlist.select_iter);
-            }
-            if (!playlist.liststore.iter_is_valid (playlist.select_iter)) {
+            if (!playlist.liststore.iter_is_valid (iter)) {
                 return;
             }
             string file_name;
-            playlist.liststore.get (playlist.select_iter, PlaylistColumns.FILENAME, out file_name);
+            playlist.liststore.get (iter, PlaylistColumns.FILENAME, out file_name);
             stack.transition_type = Gtk.StackTransitionType.SLIDE_RIGHT;
             set_media (file_name);
         }
 
         private void next_track () {
-            if (!playlist.liststore.iter_is_valid (playlist.select_iter)) {
-                if (!playlist.get_selection().get_selected(null, out playlist.select_iter)) {
-                    return;
-                }
+            Gtk.TreeIter iter = playlist.selected_iter ();
+            if (playlist.model.iter_next (ref iter)) {
+                playlist.get_selection().select_iter (iter);
             }
-            if (playlist.model.iter_next (ref playlist.select_iter)) {
-                playlist.get_selection().select_iter (playlist.select_iter);
-            }
-            if (!playlist.liststore.iter_is_valid (playlist.select_iter)) {
+            if (!playlist.liststore.iter_is_valid (iter)) {
                 return;
             }
             string file_name;
-            playlist.liststore.get (playlist.select_iter, PlaylistColumns.FILENAME, out file_name);
+            playlist.liststore.get (iter, PlaylistColumns.FILENAME, out file_name);
             stack.transition_type = Gtk.StackTransitionType.SLIDE_LEFT;
             set_media (file_name);
         }
@@ -423,7 +414,7 @@ namespace niki {
             if (mask == 2) {
                 tags.add (Gst.TagMergeMode.KEEP, Gst.Tags.ALBUM, album_entry.text);
            }
-  /*          if (mask == (1 << 3)) {
+  /*          if (mask = (1 << 3)) {
                 if (date_spinbutton.value > 0) {
                     Gst.DateTime date_time = new Gst.DateTime.y ((int)date_spinbutton.value);
                     tags.add (Gst.TagMergeMode.REPLACE, Gst.Tags.DATE_TIME, date_time);
@@ -459,11 +450,8 @@ namespace niki {
             return tags;
         }
         private void save_to_file () {
-            if (!playlist.get_selection().get_selected(null, out playlist.select_iter)) {
-                return;
-            }
             string file_name;
-            playlist.liststore.get (playlist.select_iter, PlaylistColumns.FILENAME, out file_name);
+            playlist.liststore.get (playlist.selected_iter (), PlaylistColumns.FILENAME, out file_name);
             pipeline.set_state (Gst.State.NULL);
             for (int i = 0; i < 3; ++i) {
        //         int mask = (int)Random.next_int ();

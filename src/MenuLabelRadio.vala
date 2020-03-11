@@ -33,15 +33,15 @@ namespace niki {
             construct set {
                 _radio_but = value;
                 last_button.set_group (radio_button.get_group ());
+                radio_button.active = value;
                 last_button.active = !value;
             }
         }
 
-        public MenuLabelRadio (string image_name, string label, bool radio_but) {
+        public MenuLabelRadio (string image_name, string label) {
             Object (
                 image_name: image_name,
-                label: label,
-                radio_but: radio_but
+                label: label
             );
         }
 

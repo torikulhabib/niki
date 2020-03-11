@@ -192,7 +192,7 @@ namespace niki {
                         break;
                     case 2:
                         window.player_page.playlist_widget ().clear_items ();
-                        window.run_open_folder ();
+                        window.run_open_folder (0);
                         break;
                     case 3:
 		                window.main_stack.visible_child_name = "camera";

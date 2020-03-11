@@ -17,6 +17,8 @@ namespace niki {
                 process (lrc_store, ln);
             } else if (lirycchain != null) {
                 lirycchain.parse (lrc_store, ln);
+            } else{
+                warning (@"$ln\n");
             }
         }
 

@@ -1,19 +1,17 @@
 namespace niki {
     public class Lyric : Gee.TreeMap<int64?, string> {
-        private struct Metadata {
-            string tag;
-            string info;
-        }
-
-        private Metadata [] metadata = {};
+        public Gtk.ListStore meta_data;
         private Gee.BidirMapIterator<int64?, string> lrc_iterator;
         private int offset = 0;
 
+        construct {
+            meta_data = new Gtk.ListStore (2, typeof (string), typeof (string));
+        }
+
         public void add_metadata (string _tag, string _info) {
-            metadata += Metadata () {
-                tag = _tag,
-                info = _info
-            };
+            Gtk.TreeIter iter;
+            meta_data.append (out iter);
+            meta_data.set (iter, 0, _tag, 1, _info);
             if (_tag == "offset") {
                 offset = int.parse (_info);
             }
@@ -47,21 +45,6 @@ namespace niki {
                 iterator_get ().previous ();
             }
             return iterator_get ();
-        }
-
-        public string to_string () {
-            var builder = new StringBuilder ();
-            builder.append (@"Metadata:\n");
-            foreach (var data in metadata) {
-                builder.append (@"$(data.tag) = ");
-                builder.append (@"$(data.info)\n");
-            }
-            builder.append (@"Lyric:\n");
-            this.foreach ((item) => {
-                builder.append (@"$(item.key) : $(item.value)\n");
-                return true;
-            });
-            return builder.str;
         }
     }
 }

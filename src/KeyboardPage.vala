@@ -17,21 +17,21 @@ namespace niki {
             uint keycode = e.hardware_keycode;
             bool ctrl_pressed = (e.state & Gdk.ModifierType.CONTROL_MASK) != 0;
             bool shift_pressed = Gdk.ModifierType.SHIFT_MASK in e.state;
-            if (match_keycode (Gdk.Key.space, keycode) && window.main_stack.visible_child_name == "player") {
+            if (match_keycode (Gdk.Key.space, keycode) && window.main_stack.visible_child_name == "player" && !NikiApp.settings.get_boolean ("make-lrc")) {
                 window.player_page.playback.playing = !window.player_page.playback.playing;
                 window.player_page.string_notify (window.player_page.playback.playing? StringPot.Play : StringPot.Pause);
-            } else if (match_keycode (Gdk.Key.f, keycode)) {
+            } else if (match_keycode (Gdk.Key.f, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
                 if (NikiApp.settings.get_boolean ("fullscreen")) {
                     NikiApp.settings.set_boolean ("fullscreen", !NikiApp.settings.get_boolean ("fullscreen"));
                 }
-            } else if (ctrl_pressed && match_keycode (Gdk.Key.o, keycode)) {
+            } else if (ctrl_pressed && match_keycode (Gdk.Key.o, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
                 window.run_open_file ();
-            } else if (match_keycode (Gdk.Key.q, keycode)) {
+            } else if (match_keycode (Gdk.Key.q, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
                 destroy_mode ();
-            } else if (match_keycode (Gdk.Key.m, keycode)) {
+            } else if (match_keycode (Gdk.Key.m, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
                 NikiApp.settings.set_boolean ("status-muted", !NikiApp.settings.get_boolean ("status-muted"));
                 window.player_page.string_notify (NikiApp.settings.get_boolean ("status-muted")? StringPot.Muted : double_to_percent (NikiApp.settings.get_double ("volume-adjust")));
-            } else if (match_keycode (Gdk.Key.n, keycode)) {
+            } else if (match_keycode (Gdk.Key.n, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
                 if (NikiApp.settings.get_boolean("next-status")) {
                     window.player_page.next ();
                     GLib.Timeout.add (250, () => {
@@ -39,7 +39,7 @@ namespace niki {
                         return Source.REMOVE;
                     });
                 }
-            } else if (match_keycode (Gdk.Key.b, keycode)) {
+            } else if (match_keycode (Gdk.Key.b, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
                 if (NikiApp.settings.get_boolean ("previous-status")) {
                     window.player_page.previous ();
                     GLib.Timeout.add (250, () => {
@@ -47,17 +47,17 @@ namespace niki {
                         return Source.REMOVE;
                     });
                 }
-            } else if (match_keycode (Gdk.Key.p, keycode)) {
+            } else if (match_keycode (Gdk.Key.p, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
                 window.player_page.right_bar.reveal_control ();
-            } else if (match_keycode (Gdk.Key.l, keycode)) {
+            } else if (match_keycode (Gdk.Key.l, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
                 NikiApp.settings.set_boolean ("liric-button", !NikiApp.settings.get_boolean ("liric-button"));
-            } else if (match_keycode (Gdk.Key.i, keycode)) {
+            } else if (match_keycode (Gdk.Key.i, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
                 NikiApp.settings.set_boolean ("information-button", !NikiApp.settings.get_boolean ("information-button"));
-            } else if (match_keycode (Gdk.Key.s, keycode)) {
+            } else if (match_keycode (Gdk.Key.s, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
                 NikiApp.settings.set_boolean ("settings-button", !NikiApp.settings.get_boolean ("settings-button"));
-            } else if (match_keycode (Gdk.Key.r, keycode)) {
+            } else if (match_keycode (Gdk.Key.r, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
                 repeatmode.switch_repeat_mode ();
-            } else if (match_keycode (Gdk.Key.h, keycode)) {
+            } else if (match_keycode (Gdk.Key.h, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
 		        if (window.main_stack.visible_child_name == "player") {
                     window.player_page.top_bar.button_home ();
                 } else if (window.welcome_page.stack.visible_child_name == "dlna" && window.main_stack.visible_child_name != "player") {
@@ -77,18 +77,22 @@ namespace niki {
                     }
                     break;
                 case Gdk.Key.Down:
-                    if (!window.player_page.right_bar.hovered && !NikiApp.settings.get_boolean ("settings-button")) {
+                    if (!window.player_page.right_bar.hovered && !NikiApp.settings.get_boolean ("settings-button") && !NikiApp.settings.get_boolean ("make-lrc")) {
                         window.player_page.seek_jump_seconds (shift_pressed? -60 : -30);
                     }
                     break;
                 case Gdk.Key.Left:
-                    window.player_page.seek_jump_seconds (shift_pressed? -10 : -5);
+                    if (!NikiApp.settings.get_boolean ("make-lrc")) {
+                        window.player_page.seek_jump_seconds (shift_pressed? -10 : -5);
+                    }
                     break;
                 case Gdk.Key.Right:
-                    window.player_page.seek_jump_seconds (shift_pressed? 10 : 5);
+                    if (!NikiApp.settings.get_boolean ("make-lrc")) {
+                        window.player_page.seek_jump_seconds (shift_pressed? 10 : 5);
+                    }
                     break;
                 case Gdk.Key.Up:
-                    if (!window.player_page.right_bar.hovered && !NikiApp.settings.get_boolean ("settings-button")) {
+                    if (!window.player_page.right_bar.hovered && !NikiApp.settings.get_boolean ("settings-button") && !NikiApp.settings.get_boolean ("make-lrc")) {
                         window.player_page.seek_jump_seconds (shift_pressed? 60 : 30);
                     }
                     break;

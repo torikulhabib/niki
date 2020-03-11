@@ -1,6 +1,6 @@
 namespace niki {
     public class WelcomeButton : Gtk.Button {
-        public string title { get; construct;}
+        public string title {get; construct;}
         public string description {get; construct;}
         public string image_text {get; construct;}
 
@@ -35,6 +35,21 @@ namespace niki {
             button_grid.attach (button_description, 1, 1, 1, 1);
             button_grid.attach (image_menu, 0, 0, 1, 2);
             add (button_grid);
+            enter_notify_event.connect (() => {
+                if (window.is_active) {
+                    get_style_context ().remove_class ("widget_background");
+                    get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
+                }
+                return Gdk.EVENT_PROPAGATE;
+            });
+
+            leave_notify_event.connect (() => {
+                if (window.is_active) {
+                    get_style_context ().remove_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
+                    get_style_context ().add_class ("widget_background");
+                }
+                return Gdk.EVENT_PROPAGATE;
+            });
         }
     }
 }

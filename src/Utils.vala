@@ -173,7 +173,6 @@ namespace niki {
         N_COLUMNS
     }
     private enum LyricColumns {
-        TIMEINT,
         TIMEVIEW,
         LYRIC,
         N_COLUMNS
@@ -226,14 +225,12 @@ namespace niki {
     private string get_artist_music (string inputfile) {
         string inputstring = File.new_for_uri (inputfile).get_path ();
 		var info =  new TagLib.File(inputstring);
-		string artist_music = info.tag.artist.char_count () < 1? StringPot.Unknow : info.tag.artist;
-        return artist_music;
+		return info.tag.artist.char_count () < 1? StringPot.Unknow : info.tag.artist;
     }
     private string get_album_music (string inputfile) {
         string inputstring = File.new_for_uri (inputfile).get_path ();
 		var info =  new TagLib.File(inputstring);
-		string album_music = info.tag.album.char_count () < 1? StringPot.Unknow : info.tag.album;
-        return album_music;
+		return info.tag.album.char_count () < 1? StringPot.Unknow : info.tag.album;
     }
 
     private string get_mime_type (File fileinput) {
@@ -364,7 +361,22 @@ namespace niki {
             return null;
         }
     }
-
+    private string get_name_noext (string filename) {
+        var base_name = File.new_for_uri (filename).get_basename ();
+        int last_dot = base_name.last_index_of (".", 0);
+        return base_name.slice (0, last_dot);
+    }
+    private string str_ext_lrc (string uri) {
+        string without_ext;
+        int last_dot = uri.last_index_of (".", 0);
+        int last_slash = uri.last_index_of ("/", 0);
+        if (last_dot < last_slash) {
+            without_ext = uri;
+        } else {
+            without_ext = uri.slice (0, last_dot);
+        }
+        return without_ext + "." + "lrc";
+    }
     private static bool file_exists (string uri) {
         if (!uri.has_prefix ("http")) {
             return File.new_for_uri (uri).query_exists ();
@@ -406,14 +418,9 @@ namespace niki {
         int hours = seconds / 3600;
         int min = (seconds % 3600) / 60;
         int sec = (seconds % 60);
-        int mili = ((seconds % 30));
 
         if (!need){
-            if (hours > 0) {
-                return  ("%u:%02u:%02u.%02u".printf (hours, min, sec, mili));
-            } else {
-                return  ("%02u:%02u.%02u".printf (min, sec, mili));
-            }
+            return  ("%u:%02u:%02u".printf (hours, min, sec));
         } else {
             if (hours > 0) {
                 return ("%d:%02d:%02d".printf (sign * hours, min, sec));
@@ -421,6 +428,12 @@ namespace niki {
                 return ("%02d:%02d".printf (sign * min, sec));
             }
         }
+    }
+    private static string lrc_sec_to_time (int64 seconds) {
+        int time = (int) seconds / 1000000;
+        int min = (time % 3600) / 60;
+        int sec = (time % 60);
+        return  ("%02u:%02u".printf (min, sec));
     }
     private double seconds_from_time (string time_string) {
         string [] tokens = {};
@@ -439,13 +452,11 @@ namespace niki {
         return seconds;
     }
     private static string double_to_percent (double seconds) {
-        string result = ((int)(seconds * 100)).to_string () + "%";
-        return result;
+        return ((int)(seconds * 100)).to_string () + "%";
     }
 
     private static string cache_image (string name) {
-        string cache_icon = GLib.Path.build_filename (cache_folder (), name + ".jpg");
-        return cache_icon;
+        return GLib.Path.build_filename (cache_folder (), name + ".jpg");
     }
     private static string cache_folder () {
         var cache_dir = File.new_for_path (GLib.Path.build_path (GLib.Path.DIR_SEPARATOR_S, Environment.get_user_cache_dir (), Environment.get_application_name()));
@@ -460,13 +471,11 @@ namespace niki {
     }
     private static string? normal_thumb (File thum_file) {
         string hash_file = GLib.Checksum.compute_for_string (ChecksumType.MD5, thum_file.get_uri (), thum_file.get_uri ().length);
-        string thum_path = Path.build_filename (GLib.Environment.get_user_cache_dir (),"thumbnails", "normal", hash_file + ".png");
-        return thum_path;
+        return Path.build_filename (GLib.Environment.get_user_cache_dir (),"thumbnails", "normal", hash_file + ".png");
     }
     private static string? large_thumb (File thum_file) {
         string hash_file = GLib.Checksum.compute_for_string (ChecksumType.MD5, thum_file.get_uri (), thum_file.get_uri ().length);
-        string thum_path = Path.build_filename (GLib.Environment.get_user_cache_dir (), "thumbnails", "large", hash_file + ".png");
-        return thum_path;
+        return Path.build_filename (GLib.Environment.get_user_cache_dir (), "thumbnails", "large", hash_file + ".png");
     }
     private Gdk.Pixbuf pix_scale (string input, int size) {
         Gdk.Pixbuf pixbuf = null;
@@ -533,11 +542,19 @@ namespace niki {
         props.sets (Canberra.PROP_MEDIA_ROLE, "event");
         context.play_full (0, props, null);
     }
-    public Gdk.Pixbuf? align_and_scale_pixbuf (Gdk.Pixbuf input_pixbuf, int sizew, int sizeh = 0) {
+    private Gdk.Pixbuf? align_and_scale_pixbuf (Gdk.Pixbuf input_pixbuf, int sizew, int sizeh = 0) {
         Gdk.Pixbuf pixbuf_scale = input_pixbuf.scale_simple (sizew, sizeh == 0? sizew : sizeh, Gdk.InterpType.BILINEAR);
         return pixbuf_scale;
     }
-
+    private Lyric file_lyric (string liric_file) {
+        return new LyricParser ().parse (File.new_for_uri (liric_file));
+    }
+    private void notify_app (string message, string msg_bd) {
+        var notification = new GLib.Notification ("");
+        notification.set_title (message);
+        notification.set_body (msg_bd);
+        window.application.send_notification ("notify.app", notification);
+    }
     private Gdk.Pixbuf? unknow_cover () {
 	    Cairo.ImageSurface surface = new Cairo.ImageSurface (Cairo.Format.RGB30, 256, 256);
 	    Cairo.Context context = new Cairo.Context (surface);
@@ -575,6 +592,7 @@ namespace niki {
         Gdk.Pixbuf pixbuf_unknow = Gdk.pixbuf_get_from_surface (surface, 0, 0, 256, 256);
         return pixbuf_unknow;
     }
+
     private string? niki_mime_type () {
         var builder = new StringBuilder ();
         builder.append (@"MimeType=");

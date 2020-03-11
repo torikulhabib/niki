@@ -65,7 +65,7 @@ namespace niki {
         }
 
         public SeekBar (PlayerPage playerpage) {
-            get_style_context ().add_class ("ground_action_button");
+            get_style_context ().add_class ("transparantbg");
             get_style_context ().add_class ("seek_bar");
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, 0.0, 1.0, 0.01);
@@ -81,7 +81,6 @@ namespace niki {
                 start (playerpage);
             });
             playerpage.playback.notify["duration"].connect (() => {
-                scale.set_range (0.0, 1.0);
                 playback_duration = playerpage.playback.duration;
             });
 
@@ -116,9 +115,7 @@ namespace niki {
                     } else {
                         playerpage.playback.progress = new_value;
                     }
-                    if (NikiApp.settings.get_boolean("audio-video") && !NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean ("liric-button") && NikiApp.settings.get_boolean("lyric-available")) {
-                        playerpage.seek_music ();
-                    }
+                    playerpage.seek_music ();
                 }
                 return false;
             });
@@ -127,10 +124,6 @@ namespace niki {
             hexpand = true;
             add (scale);
             show_all ();
-        }
-
-        public Lyric file_lyric (string liric_file) {
-            return new LyricParser ().parse (File.new_for_uri (liric_file));
         }
 
         public void on_lyric_update (Lyric lyric, PlayerPage playerpage) {

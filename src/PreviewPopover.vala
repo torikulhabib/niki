@@ -34,7 +34,6 @@ namespace niki {
         public bool req_loop = false;
 
         construct {
-            get_style_context ().add_class ("popover");
             playback = new PreviewClutterGst ();
             playback.set_seek_flags (ClutterGst.SeekFlags.ACCURATE);
             playback.size_change.connect ((width, height) => {

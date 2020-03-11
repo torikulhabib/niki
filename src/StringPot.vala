@@ -82,7 +82,7 @@ namespace niki {
         public abstract const string Playlist                   = _("Playlist");
         public abstract const string Select_Remove              = _("Select to Remove");
         public abstract const string Back_Playlist              = _("Back to Playlist");
-        public abstract const string Remove_List                = _("Remove Multiple List");
+        public abstract const string Remove_MuList              = _("Remove Multiple List");
         public abstract const string Repeat_All                 = _("Repeat ALL");
         public abstract const string Repeat_One                 = _("Repeat One");
         public abstract const string Disable_Repeat             = _("Disable Repeat");
@@ -224,5 +224,26 @@ namespace niki {
         public abstract const string Empty_Audio                = _("Library Music is Empty\n");
         public abstract const string Empty_Video                = _("Library Video is Empty\n");
         public abstract const string Custom                     = _("Custom");
+        public abstract const string Time                       = _("Time");
+        public abstract const string Lyric                      = _("Lyric");
+        public abstract const string Open_Text                  = _("Open Text");
+        public abstract const string Add_List                   = _("Add Row");
+        public abstract const string Insert_After               = _("Insert After");
+        public abstract const string Insert_Before              = _("Insert Before");
+        public abstract const string Remove_List                = _("Remove Row");
+        public abstract const string Edit_Exist_Lyric           = _("Edit Exist Lyric");
+        public abstract const string Save_Lyric                 = _("Save Lyric");
+        public abstract const string Lyric_Maker                = _("Niki - Lyric Maker");
+        public abstract const string Folder_Location            = _("Folder Location");
+        public abstract const string Maker                      = _("Maker");
+        public abstract const string Writer                     = _("Writer");
+        public abstract const string Error_Make                 = _("Error Make Lyric");
+        public abstract const string Succes_Make                = _("Succes Make Lyric");
+        public abstract const string Save_to                    = _("Save to");
+        public abstract const string Location_Music             = _("Location Music");
+        public abstract const string Save_to_Folder             = _("Save to Folder");
+        public abstract const string Ask_Place                  = _("Ask Place");
+        public abstract const string Text                       = _("Text");
+        public abstract const string Audio_and_Video            = _("Audio and Video");
     }
 }
