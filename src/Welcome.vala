@@ -22,32 +22,7 @@ namespace niki {
             add (content);
         }
 
-        public void set_item_visible (uint index, bool val) {
-            if (index < children.length () && children.nth_data (index) is Gtk.Widget) {
-                children.nth_data(index).set_no_show_all (!val);
-                children.nth_data(index).set_visible (val);
-            }
-        }
-
-        public void remove_item (uint index) {
-            if (index < children.length () && children.nth_data (index) is Gtk.Widget) {
-                var item = children.nth_data (index);
-                item.destroy ();
-                children.remove (item);
-            }
-        }
-
-        public void set_item_sensitivity (uint index, bool val) {
-            if (index < children.length () && children.nth_data (index) is Gtk.Widget) {
-                children.nth_data (index).set_sensitive (val);
-            }
-        }
-
         public int append (string icon_name, string option_text, string description_text) {
-            return append_with_image (icon_name, option_text, description_text);
-        }
-
-        public int append_with_image (string icon_name, string option_text, string description_text) {
             var button = new WelcomeButton (icon_name, option_text, description_text);
             children.append (button);
             options.add (button);

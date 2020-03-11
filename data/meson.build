@@ -50,6 +50,11 @@ actions = [
     '.ascending-symbolic.svg',
     '.descending-symbolic.svg',
     '.color-symbolic.svg',
+    '.time-lrc-symbolic.svg',
+    '.make-lrc-symbolic.svg',
+    '.insert-after-symbolic.svg',
+    '.insert-before-symbolic.svg',
+    '.lrc-file-symbolic.svg',
 ]
 
 foreach m : actions

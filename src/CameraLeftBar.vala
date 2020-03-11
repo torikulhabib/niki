@@ -49,7 +49,6 @@ namespace niki {
             events |= Gdk.EventMask.POINTER_MOTION_MASK;
             events |= Gdk.EventMask.LEAVE_NOTIFY_MASK;
             events |= Gdk.EventMask.ENTER_NOTIFY_MASK;
-            get_style_context ().add_class ("ground_action_button");
 
             enter_notify_event.connect ((event) => {
                 if (event.window == get_window ()) {

@@ -28,7 +28,7 @@ msgid "Media Player"
 msgstr ""
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:10
-msgid "DLNA Video Music and streaming."
+msgid "DLNA Video Music and Streaming."
 msgstr ""
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:11
@@ -44,41 +44,49 @@ msgid "Music player."
 msgstr ""
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:15
-msgid "Font subtitle lyric."
+msgid "lyric Maker."
 msgstr ""
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:16
-msgid "Equalizer."
+msgid "lyric."
 msgstr ""
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:17
-msgid "Video Balance."
+msgid "Equalizer."
 msgstr ""
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:18
-msgid "Apply album art as background."
+msgid "Video Balance."
 msgstr ""
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:19
-msgid "Blur bacground."
+msgid "Music art as background."
 msgstr ""
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:20
-msgid "DLNA Explorer."
+msgid "Blur bacground."
 msgstr ""
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:21
-msgid "Camera."
+msgid "DLNA Explorer."
 msgstr ""
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:22
-msgid "Disk Drive."
+msgid "DLNA Controller."
 msgstr ""
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:23
-msgid "MPRIS"
+msgid "Camera."
 msgstr ""
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:24
+msgid "Disk Drive."
+msgstr ""
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:25
+msgid "MPRIS"
+msgstr ""
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:26
 msgid "Streaming."
 msgstr ""

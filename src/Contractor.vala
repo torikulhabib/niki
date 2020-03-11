@@ -35,15 +35,15 @@ namespace niki {
             try {
                 File file = file_contr ();
                 remove_contract ();
-        		FileOutputStream os = file.create (FileCreateFlags.PRIVATE);
+        		FileOutputStream out_stream = file.create (FileCreateFlags.PRIVATE);
                 string str_name=@"Name=$(StringPot.Add_Niki_Playlist)\n";
                 string str_desc=@"Description=$(StringPot.Add_Niki_Playlist)\n";
                 string str_command ="Exec=com.github.torikulhabib.niki --playlist %U \n";
-        		os.write ("[Contractor Entry]\n".data);
-                os.write (str_name.data);
-                os.write (str_desc.data);
-                os.write (@"$(niki_mime_type ())\n".data);
-                os.write (str_command.data);
+        		out_stream.write ("[Contractor Entry]\n".data);
+                out_stream.write (str_name.data);
+                out_stream.write (str_desc.data);
+                out_stream.write (@"$(niki_mime_type ())\n".data);
+                out_stream.write (str_command.data);
         	} catch (Error e) {
         		warning ("Error: %s\n", e.message);
         	}

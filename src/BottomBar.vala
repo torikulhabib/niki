@@ -22,6 +22,7 @@
 namespace niki {
     public class BottomBar : Gtk.Revealer {
         private Gtk.Button menu_settings;
+        public MakeLyric make_grid_lrc;
         public OtherGrid? othergrid;
         public SettingsPopover? menu_popover;
         private EqualizerGrid? equalizer_grid;
@@ -31,10 +32,10 @@ namespace niki {
         private TimeMusic? time_music;
         private VolumeWiget? volume_widget;
         public Gtk.Button play_button;
-        private Gtk.Button play_button_center;
-        private Gtk.Revealer action_box_revealer;
+        private Gtk.Button play_but_cen;
+        private Gtk.Revealer action_box_rev;
         private Gtk.Revealer box_action_revealer;
-        private Gtk.Revealer box_setting_list_revealer;
+        private Gtk.Revealer box_set_list_rev;
         public ButtonRevealer previous_revealer;
         public ButtonRevealer next_revealer;
         public ButtonRevealer subtitle_revealer;
@@ -46,8 +47,8 @@ namespace niki {
         private Gtk.Button previous_button_center;
         public ButtonRevealer stop_revealer;
         private ButtonRevealer liric_revealer;
-        private Gtk.Revealer font_button_revealer;
-        private Gtk.Revealer no_plylist_repeat_revealer;
+        private Gtk.Revealer font_but_rev;
+        private Gtk.Revealer no_rep_rev;
         private RepeatButton repeat_button;
         private RepeatButton no_plylist_repeat;
         private Gtk.Button shuffle_button;
@@ -103,9 +104,9 @@ namespace niki {
             set {
                 _playing = value;
                 ((Gtk.Image) play_button.image).icon_name = value? "media-playback-pause-symbolic" : "media-playback-start-symbolic";
-                ((Gtk.Image) play_button_center.image).icon_name = value? "com.github.torikulhabib.niki.pause-symbolic" : "com.github.torikulhabib.niki.play-symbolic";
+                ((Gtk.Image) play_but_cen.image).icon_name = value? "com.github.torikulhabib.niki.pause-symbolic" : "com.github.torikulhabib.niki.play-symbolic";
                 play_button.tooltip_text = value? StringPot.Pause : StringPot.Play;
-                play_button_center.tooltip_text = value? StringPot.Pause : StringPot.Play;
+                play_but_cen.tooltip_text = value? StringPot.Pause : StringPot.Play;
             }
         }
 
@@ -115,7 +116,6 @@ namespace niki {
             events |= Gdk.EventMask.POINTER_MOTION_MASK;
             events |= Gdk.EventMask.LEAVE_NOTIFY_MASK;
             events |= Gdk.EventMask.ENTER_NOTIFY_MASK;
-            get_style_context ().add_class ("ground_action_button");
 
             enter_notify_event.connect ((event) => {
                 if (window.is_active) {
@@ -126,15 +126,7 @@ namespace niki {
                 }
                 return false;
             });
-            button_press_event.connect (() => {
-                hovered = true;
-                return Gdk.EVENT_PROPAGATE;
-            });
 
-            button_release_event.connect (() => {
-                hovered = true;
-                return false;
-            });
             motion_notify_event.connect (() => {
                 if (window.is_active) {
                     reveal_control ();
@@ -164,10 +156,10 @@ namespace niki {
                 playing = !playing;
             });
 
-            play_button_center = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.play-symbolic", Gtk.IconSize.BUTTON);
-            ((Gtk.Image) play_button_center.image).pixel_size = NikiApp.settings.get_boolean ("audio-video")? 48 : 16;
-            play_button_center.get_style_context ().add_class ("button_action");
-            play_button_center.clicked.connect (() => {
+            play_but_cen = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.play-symbolic", Gtk.IconSize.BUTTON);
+            ((Gtk.Image) play_but_cen.image).pixel_size = NikiApp.settings.get_boolean ("audio-video")? 48 : 16;
+            play_but_cen.get_style_context ().add_class ("button_action");
+            play_but_cen.clicked.connect (() => {
                 playing = !playing;
             });
             stop_revealer.clicked.connect (() => {
@@ -178,10 +170,10 @@ namespace niki {
             });
             repeat_button = new RepeatButton ();
             no_plylist_repeat = new RepeatButton ();
-            no_plylist_repeat_revealer = new Gtk.Revealer ();
-            no_plylist_repeat_revealer.add (no_plylist_repeat);
-            no_plylist_repeat_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
-            no_plylist_repeat_revealer.transition_duration = 100;
+            no_rep_rev = new Gtk.Revealer ();
+            no_rep_rev.add (no_plylist_repeat);
+            no_rep_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
+            no_rep_rev.transition_duration = 100;
 
             shuffle_button = new Gtk.Button.from_icon_name ("media-playlist-no-repeat-symbolic", Gtk.IconSize.BUTTON);
             shuffle_button.get_style_context ().add_class ("button_action");
@@ -206,10 +198,10 @@ namespace niki {
                 menu_popover.font_button ();
                 font_button.tooltip_text = NikiApp.settings.get_string ("font");
             });
-            font_button_revealer = new Gtk.Revealer ();
-            font_button_revealer.add (font_button);
-            font_button_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
-            font_button_revealer.transition_duration = 100;
+            font_but_rev = new Gtk.Revealer ();
+            font_but_rev.add (font_button);
+            font_but_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
+            font_but_rev.transition_duration = 100;
 
             menu_settings = new Gtk.Button.from_icon_name ("open-menu-symbolic", Gtk.IconSize.BUTTON);
             menu_settings.get_style_context ().add_class ("button_action");
@@ -339,7 +331,7 @@ namespace niki {
             var setting_actionbar = new Gtk.ActionBar ();
             setting_actionbar.hexpand = true;
             setting_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            setting_actionbar.get_style_context ().add_class ("ground_action_button");
+            setting_actionbar.get_style_context ().add_class ("transbgborder");
             setting_actionbar.set_center_widget (setting_stack);
             setting_actionbar.pack_start (settings_prev_button);
             setting_actionbar.pack_end (settings_next_button);
@@ -352,6 +344,24 @@ namespace niki {
             settings_revealer.set_reveal_child (NikiApp.settings.get_boolean ("settings-button"));
             NikiApp.settings.changed["settings-button"].connect (() => {
                 settings_revealer.set_reveal_child (NikiApp.settings.get_boolean ("settings-button"));
+            });
+
+            make_grid_lrc = new MakeLyric (this, playerpage);
+            time_music.position_sec.connect (make_grid_lrc.set_time_sec);
+            var make_lrc_rev = new Gtk.Revealer ();
+            make_lrc_rev.add (make_grid_lrc);
+            make_lrc_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_UP;
+            make_lrc_rev.transition_duration = 500;
+            make_lrc_rev.notify["child-revealed"].connect (()=> {
+                make_grid_lrc.resize_scr ();
+                if (!make_lrc_rev.child_revealed) {
+                    make_grid_lrc.clear_listmodel ();
+                    make_grid_lrc.text_lrc.buffer.text = "";
+                }
+            });
+            make_lrc_rev.set_reveal_child (NikiApp.settings.get_boolean ("make-lrc"));
+            NikiApp.settings.changed["make-lrc"].connect (() => {
+                make_lrc_rev.set_reveal_child (NikiApp.settings.get_boolean ("make-lrc"));
             });
 
 		    var box_action = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
@@ -367,39 +377,39 @@ namespace niki {
 		    var action_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
 		    action_box.pack_start (shuffle_button, false, false, 0);
 		    action_box.pack_start (previous_button_center, false, false, 0);
-		    action_box.pack_start (play_button_center, false, false, 0);
+		    action_box.pack_start (play_but_cen, false, false, 0);
 		    action_box.pack_start (next_button_center, false, false, 0);
 		    action_box.pack_start (repeat_button, false, false, 0);
-            action_box_revealer = new Gtk.Revealer ();
-            action_box_revealer.add (action_box);
-            action_box_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
-            action_box_revealer.transition_duration = 50;
+            action_box_rev = new Gtk.Revealer ();
+            action_box_rev.add (action_box);
+            action_box_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
+            action_box_rev.transition_duration = 50;
 
-		    var box_setting_list = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
-		    box_setting_list.pack_start (subtitle_revealer, false, false, 0);
-		    box_setting_list.pack_start (menu_settings, false, false, 0);
-		    box_setting_list.pack_start (fullscreen_button, false, false, 0);
-            box_setting_list_revealer = new Gtk.Revealer ();
-            box_setting_list_revealer.add (box_setting_list);
-            box_setting_list_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
-            box_setting_list_revealer.transition_duration = 50;
+		    var box_set_list = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+		    box_set_list.pack_start (subtitle_revealer, false, false, 0);
+		    box_set_list.pack_start (menu_settings, false, false, 0);
+		    box_set_list.pack_start (fullscreen_button, false, false, 0);
+            box_set_list_rev = new Gtk.Revealer ();
+            box_set_list_rev.add (box_set_list);
+            box_set_list_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
+            box_set_list_rev.transition_duration = 50;
 
             var main_actionbar = new Gtk.ActionBar ();
             main_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            main_actionbar.get_style_context ().add_class ("ground_action_button");
+            main_actionbar.get_style_context ().add_class ("transbgborder");
             main_actionbar.hexpand = true;
             main_actionbar.margin_bottom = 8;
-            main_actionbar.set_center_widget (action_box_revealer);
+            main_actionbar.set_center_widget (action_box_rev);
             main_actionbar.pack_start (box_action_revealer);
             main_actionbar.pack_start (volume_button);
             main_actionbar.pack_start (volume_widget);
             main_actionbar.pack_start (liric_revealer);
             main_actionbar.pack_start (time_video);
-            main_actionbar.pack_end (box_setting_list_revealer);
+            main_actionbar.pack_end (box_set_list_rev);
             main_actionbar.pack_end (playlist_revealer);
-            main_actionbar.pack_end (font_button_revealer);
+            main_actionbar.pack_end (font_but_rev);
             main_actionbar.pack_end (setting_niki);
-            main_actionbar.pack_end (no_plylist_repeat_revealer);
+            main_actionbar.pack_end (no_rep_rev);
             main_actionbar.show_all ();
 
 		    var grid = new Gtk.Grid ();
@@ -408,6 +418,7 @@ namespace niki {
             grid.get_style_context ().add_class ("bottombar");
             grid.margin = grid.row_spacing = grid.column_spacing = grid.margin_top = 0;
             grid.add (seekbar_widget);
+            grid.add (make_lrc_rev);
             grid.add (time_music);
             grid.add (main_actionbar);
             grid.add (settings_revealer);
@@ -420,6 +431,7 @@ namespace niki {
                 view_player ();
                 signal_playlist ();
             });
+            NikiApp.settings.changed["make-lrc"].connect (make_grid_lrc.resize_scr);
             NikiApp.settings.changed["tooltip-equalizer"].connect (settings_icon);
             NikiApp.settings.changed["tooltip-videos"].connect (settings_icon);
             NikiApp.settings.changed["lyric-available"].connect (lyric_sensitive);
@@ -438,13 +450,18 @@ namespace niki {
             subtittle_button ();
         }
         private void mode_change () {
+            if (!NikiApp.settings.get_boolean ("audio-video")) {
+                if (NikiApp.settings.get_boolean ("make-lrc")) {
+                    NikiApp.settings.set_boolean ("make-lrc", false);
+                }
+            }
             view_player ();
-            ((Gtk.Image) play_button_center.image).pixel_size = NikiApp.settings.get_boolean ("audio-video")? 48 : 16;
+            ((Gtk.Image) play_but_cen.image).pixel_size = NikiApp.settings.get_boolean ("audio-video")? 48 : 16;
             lyric_sensitive ();
         }
         private void lyric_sensitive () {
             liric_revealer.sensitive = NikiApp.settings.get_boolean ("lyric-available");
-            font_button_revealer.set_reveal_child (!playlist_revealer.child_revealed && NikiApp.settings.get_boolean ("audio-video"));
+            font_but_rev.set_reveal_child (!playlist_revealer.child_revealed && NikiApp.settings.get_boolean ("audio-video"));
             font_button.sensitive = NikiApp.settings.get_boolean ("lyric-available");
         }
         private void liric_icon () {
@@ -489,7 +506,7 @@ namespace niki {
                     settings_prev_button.tooltip_text = StringPot.Video_Balance;
                     settings_next_button.tooltip_text = StringPot.Other_Preferences;
                     ((Gtk.Image) setting_niki.image).icon_name = "preferences-other-symbolic";
-                    setting_niki.tooltip_markup = _("%s: %s").printf (StringPot.Preferences, "<b> Audio and Video </b>");
+                    setting_niki.tooltip_markup = _("%s: %s").printf (StringPot.Preferences, "<b> @$(StringPot.Audio_and_Video) </b>");
                     break;
             }
         }
@@ -501,11 +518,11 @@ namespace niki {
             }
             time_video.set_reveal_child (!NikiApp.settings.get_boolean ("audio-video"));
             time_music.set_reveal_child (NikiApp.settings.get_boolean ("audio-video"));
-            box_setting_list_revealer.set_reveal_child (!NikiApp.settings.get_boolean ("audio-video"));
+            box_set_list_rev.set_reveal_child (!NikiApp.settings.get_boolean ("audio-video"));
             box_action_revealer.set_reveal_child (!NikiApp.settings.get_boolean ("audio-video"));
-            action_box_revealer.set_reveal_child (NikiApp.settings.get_boolean ("audio-video"));
+            action_box_rev.set_reveal_child (NikiApp.settings.get_boolean ("audio-video"));
             liric_revealer.set_reveal_child (NikiApp.settings.get_boolean ("audio-video"));
-            no_plylist_repeat_revealer.set_reveal_child (!NikiApp.settings.get_boolean ("audio-video") && !playlist_revealer.child_revealed);
+            no_rep_rev.set_reveal_child (!NikiApp.settings.get_boolean ("audio-video") && !playlist_revealer.child_revealed);
         }
         private void signal_playlist () {
             playlist_revealer.set_reveal_child (NikiApp.settings.get_boolean ("next-status") || NikiApp.settings.get_boolean ("previous-status")? true : false);
@@ -513,7 +530,7 @@ namespace niki {
             next_revealer.set_reveal_child (NikiApp.settings.get_boolean ("next-status")? true : false);
             previous_button_center.sensitive = NikiApp.settings.get_boolean ("previous-status")? true : false;
             next_button_center.sensitive = NikiApp.settings.get_boolean ("next-status")? true : false;
-            font_button_revealer.set_reveal_child (!playlist_revealer.child_revealed && NikiApp.settings.get_boolean ("audio-video"));
+            font_but_rev.set_reveal_child (!playlist_revealer.child_revealed && NikiApp.settings.get_boolean ("audio-video"));
             font_button.sensitive = NikiApp.settings.get_boolean ("lyric-available");
         }
 
@@ -585,8 +602,8 @@ namespace niki {
             if (hiding_timer != 0) {
                 Source.remove (hiding_timer);
             }
-            hiding_timer = GLib.Timeout.add (NikiApp.settings.get_boolean ("liric-button")? 700 : 3000, () => {
-                if (hovered || seekbar_widget.preview_popover.visible || menu_popover.visible || NikiApp.settings.get_boolean ("settings-button") || volume_widget.child_revealed) {
+            hiding_timer = GLib.Timeout.add (3000, () => {
+                if (hovered || seekbar_widget.preview_popover.visible || menu_popover.visible || NikiApp.settings.get_boolean ("settings-button") || NikiApp.settings.get_boolean ("make-lrc") || volume_widget.child_revealed) {
                     hiding_timer = 0;
                     return false;
                 }

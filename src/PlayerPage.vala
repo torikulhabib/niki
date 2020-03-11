@@ -22,6 +22,7 @@ namespace niki {
         private GtkClutter.Actor bottom_actor_notif;
         public Clutter.ScrollActor scroll;
         public Clutter.Actor menu_actor;
+        public Clutter.Point point;
         public MPRIS? mpris;
         private uint mouse_timer = 0;
         private bool firstplay = false;
@@ -379,18 +380,16 @@ namespace niki {
             Clutter.Actor item;
             Clutter.Actor menu = scroll.get_first_child ();
             if (index_in > 0) {
-                item = menu.get_child_at_index (index_in - 1);
-                ((Clutter.Text)item).color = Clutter.Color.from_string ("white");
+                seek_music ();
             }
             item = menu.get_child_at_index (index_in);
-            Clutter.Point point = Clutter.Point ();
             item.get_position (out point.x, out point.y);
             point.y = point.y - ((menu_actor.height / 2) - (((Clutter.Text)item).height / 2));
             scroll.save_easing_state ();
             scroll.scroll_to_point (point);
             scroll.restore_easing_state ();
             ((Clutter.Text)item).color = Clutter.Color.from_string ("orange");
-            ((GLib.Object)scroll).set_data ("selected-item", (pointer) index_in);
+            ((GLib.Object)scroll).set_data ("selected-item", index_in.to_pointer ());
         }
 
         private void font_change () {
@@ -401,10 +400,12 @@ namespace niki {
             }
         }
         public void seek_music () {
-            for (int i = 0; i < menu_actor.get_n_children (); i++) {
-                Clutter.Actor menu = scroll.get_first_child ();
-                Clutter.Actor item = menu.get_child_at_index (i);
-                ((Clutter.Text)item).color = Clutter.Color.from_string ("white");
+            if (NikiApp.settings.get_boolean("audio-video") && !NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean ("liric-button") && NikiApp.settings.get_boolean("lyric-available")) {
+                for (int i = 0; i < menu_actor.get_n_children (); i++) {
+                    Clutter.Actor menu = scroll.get_first_child ();
+                    Clutter.Actor item = menu.get_child_at_index (i);
+                    ((Clutter.Text)item).color = Clutter.Color.from_string ("white");
+                }
             }
         }
         public Clutter.Actor text_clutter (string name) {
@@ -484,9 +485,6 @@ namespace niki {
                         stage.content = aspect_ratio;
                     } else {
                         stage.content = NikiApp.settings.get_boolean ("blur-mode")? blur_image : oriimage;
-                        if (NikiApp.settings.get_boolean("audio-video") && !NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean ("liric-button") && NikiApp.settings.get_boolean("lyric-available")) {
-                            seek_music ();
-                        }
                     }
                     break;
                 case 1 :
@@ -621,7 +619,7 @@ namespace niki {
             check_lr_sub ();
             string? liric_uri = get_playing_liric (check);
             if (liric_uri != null && liric_uri != check) {
-                bottom_bar.seekbar_widget.on_lyric_update (bottom_bar.seekbar_widget.file_lyric (liric_uri), this);
+                bottom_bar.seekbar_widget.on_lyric_update (file_lyric (liric_uri), this);
                 NikiApp.settings.set_boolean("lyric-available", true);
             }
             string? sub_uri = get_subtitle_for_uri (check);
@@ -696,9 +694,7 @@ namespace niki {
             if (!bottom_bar.child_revealed) {
                 notifybottombar.reveal_control ();
             }
-            if (NikiApp.settings.get_boolean("audio-video") && !NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean ("liric-button") && NikiApp.settings.get_boolean("lyric-available")) {
-                seek_music ();
-            }
+            seek_music ();
         }
 
         public void seek_volume (double steps) {

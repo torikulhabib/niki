@@ -60,7 +60,7 @@ namespace niki {
             events |= Gdk.EventMask.POINTER_MOTION_MASK;
             events |= Gdk.EventMask.LEAVE_NOTIFY_MASK;
             events |= Gdk.EventMask.ENTER_NOTIFY_MASK;
-            get_style_context ().add_class ("ground_action_button");
+
             img_store = new Gtk.ListStore (2, typeof (string), typeof (string));
             vid_store = new Gtk.ListStore (2, typeof (string), typeof (string));
             ((Gtk.TreeSortable)img_store).set_sort_column_id (1, Gtk.SortType.DESCENDING);
@@ -100,11 +100,11 @@ namespace niki {
 
             var main_actionbar = new Gtk.ActionBar ();
             main_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            main_actionbar.get_style_context ().add_class ("ground_action_button");
+            main_actionbar.get_style_context ().add_class ("transbgborder");
 
             var camera_actionbar = new Gtk.ActionBar ();
             camera_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            camera_actionbar.get_style_context ().add_class ("ground_action_button");
+            camera_actionbar.get_style_context ().add_class ("transbgborder");
 
             option_button = new Gtk.Button.from_icon_name ("camera-photo-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
             option_button.get_style_context ().add_class ("button_action");
@@ -130,7 +130,7 @@ namespace niki {
 
             timer_button = new TimerButton ();
             timer_label = new Gtk.Label (null);
-            timer_label.get_style_context ().add_class ("ground_action_button");
+            timer_label.get_style_context ().add_class ("transbgborder");
             timer_label.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
             timer_label.ellipsize = Pango.EllipsizeMode.END;
             timer_revealer = new Gtk.Revealer ();

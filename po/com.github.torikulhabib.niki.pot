@@ -826,3 +826,87 @@ msgstr ""
 #: src/StringPot.vala:226
 msgid "Custom"
 msgstr ""
+
+#: src/StringPot.vala:227
+msgid "Time"
+msgstr ""
+
+#: src/StringPot.vala:228
+msgid "Lyric"
+msgstr ""
+
+#: src/StringPot.vala:229
+msgid "Open Text"
+msgstr ""
+
+#: src/StringPot.vala:230
+msgid "Add Row"
+msgstr ""
+
+#: src/StringPot.vala:231
+msgid "Insert After"
+msgstr ""
+
+#: src/StringPot.vala:232
+msgid "Insert Before"
+msgstr ""
+
+#: src/StringPot.vala:233
+msgid "Remove Row"
+msgstr ""
+
+#: src/StringPot.vala:234
+msgid "Edit Exist Lyric"
+msgstr ""
+
+#: src/StringPot.vala:235
+msgid "Save Lyric"
+msgstr ""
+
+#: src/StringPot.vala:236
+msgid "Niki - Lyric Maker"
+msgstr ""
+
+#: src/StringPot.vala:237
+msgid "Folder Location"
+msgstr ""
+
+#: src/StringPot.vala:238
+msgid "Maker"
+msgstr ""
+
+#: src/StringPot.vala:239
+msgid "Writer"
+msgstr ""
+
+#: src/StringPot.vala:240
+msgid "Error Make Lyric"
+msgstr ""
+
+#: src/StringPot.vala:241
+msgid "Succes Make Lyric"
+msgstr ""
+
+#: src/StringPot.vala:242
+msgid "Save to"
+msgstr ""
+
+#: src/StringPot.vala:243
+msgid "Location Music"
+msgstr ""
+
+#: src/StringPot.vala:244
+msgid "Save to Folder"
+msgstr ""
+
+#: src/StringPot.vala:245
+msgid "Ask Place"
+msgstr ""
+
+#: src/StringPot.vala:246
+msgid "Text"
+msgstr ""
+
+#: src/StringPot.vala:247
+msgid "Audio and Video"
+msgstr ""

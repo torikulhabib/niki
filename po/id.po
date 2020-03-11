@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: com.github.torikulhabib.niki\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-04 12:58+0700\n"
-"PO-Revision-Date: 2020-02-07 07:49+0700\n"
+"PO-Revision-Date: 2020-03-12 00:06+0700\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -826,4 +826,88 @@ msgstr "Pustaka video kosong\n"
 
 #: src/StringPot.vala:226
 msgid "Custom"
-msgstr "Custom"
+msgstr "Kustem"
+
+#: src/StringPot.vala:227
+msgid "Time"
+msgstr "Waktu"
+
+#: src/StringPot.vala:228
+msgid "Lyric"
+msgstr "Lirik"
+
+#: src/StringPot.vala:229
+msgid "Open Text"
+msgstr "Buka Teks"
+
+#: src/StringPot.vala:230
+msgid "Add Row"
+msgstr "Tambah Baris"
+
+#: src/StringPot.vala:231
+msgid "Insert After"
+msgstr "Sisipkan Sesudah"
+
+#: src/StringPot.vala:232
+msgid "Insert Before"
+msgstr "Sisipkan Sebelum"
+
+#: src/StringPot.vala:233
+msgid "Remove Row"
+msgstr "Hapus Baris"
+
+#: src/StringPot.vala:234
+msgid "Edit Exist Lyric"
+msgstr "Edit Sudah ada"
+
+#: src/StringPot.vala:235
+msgid "Save Lyric"
+msgstr "Simpan Lirik"
+
+#: src/StringPot.vala:236
+msgid "Niki - Lyric Maker"
+msgstr "Niki - Pembuat Lyric"
+
+#: src/StringPot.vala:237
+msgid "Folder Location"
+msgstr "Folder Lokasi"
+
+#: src/StringPot.vala:238
+msgid "Maker"
+msgstr "Pembuat"
+
+#: src/StringPot.vala:239
+msgid "Writer"
+msgstr "Penulis"
+
+#: src/StringPot.vala:240
+msgid "Error Make Lyric"
+msgstr "Bermasalah Membuat Lirik"
+
+#: src/StringPot.vala:241
+msgid "Succes Make Lyric"
+msgstr "Sukses Membuat Lirik"
+
+#: src/StringPot.vala:242
+msgid "Save to"
+msgstr "Simpan ke"
+
+#: src/StringPot.vala:243
+msgid "Location Music"
+msgstr "Lokasi musik"
+
+#: src/StringPot.vala:244
+msgid "Save to Folder"
+msgstr "Simpan ke Folder"
+
+#: src/StringPot.vala:245
+msgid "Ask Place"
+msgstr "Bertanya Tempat"
+
+#: src/StringPot.vala:246
+msgid "Text"
+msgstr "Teks"
+
+#: src/StringPot.vala:247
+msgid "Audio and Video"
+msgstr "Audio dan Video"

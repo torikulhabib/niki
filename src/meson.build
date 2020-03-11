@@ -88,6 +88,7 @@ executable(
     'CropView.vala',
     'MediaEntry.vala',
     'HeaderLabel.vala',
+    'MakeLyric.vala',
 
     c_args: c_args,
     dependencies: [

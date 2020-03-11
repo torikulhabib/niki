@@ -38,7 +38,6 @@ namespace niki {
             events |= Gdk.EventMask.POINTER_MOTION_MASK;
             events |= Gdk.EventMask.LEAVE_NOTIFY_MASK;
             events |= Gdk.EventMask.ENTER_NOTIFY_MASK;
-            get_style_context ().add_class ("ground_action_button");
 
             enter_notify_event.connect ((event) => {
               if (window.is_active) {
@@ -87,7 +86,7 @@ namespace niki {
             var main_actionbar = new Gtk.ActionBar ();
             main_actionbar.hexpand = true;
             main_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            main_actionbar.get_style_context ().add_class ("ground_action_button");
+            main_actionbar.get_style_context ().add_class ("transbgborder");
 
             close_botton = new Gtk.Button.from_icon_name ("window-close-symbolic", Gtk.IconSize.BUTTON);
             close_botton.tooltip_text = StringPot.Close;

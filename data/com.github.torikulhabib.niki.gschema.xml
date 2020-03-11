@@ -201,6 +201,11 @@
         <summary>Volume</summary>
         <description>Volume</description>
     </key>
+	  <key name="location-save" type="i">
+	  	<default>0</default>
+	  	<summary>Location</summary>
+	  	<description>Location</description>
+  	</key>
 	  <key name="sort-by" type="i">
 	  	<default>0</default>
 	  	<summary>Sort By</summary>
@@ -295,6 +300,16 @@
         <default>"/com/github/torikulhabib/niki/css/applicationlight.css"</default>
         <summary>Path Css</summary>
         <description>Path Css</description>
+    </key>
+    <key name="ask-lyric" type="s">
+        <default>""</default>
+        <summary>Ask Lyric</summary>
+        <description>Ask Lyric</description>
+    </key>
+    <key name="lyric-location" type="s">
+        <default>""</default>
+        <summary>Lyric Location</summary>
+        <description>Lyric Location</description>
     </key>
     <key name="uri-video" type="s">
         <default>""</default>

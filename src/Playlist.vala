@@ -25,11 +25,9 @@ namespace niki {
         public signal void item_added ();
         private ObjectPixbuf? objectpixbuf;
         public Gtk.ListStore liststore;
-        public Gtk.TreeIter select_iter;
         public int current = 0;
         public int total = 0;
-        public bool visible_menu = false;
-        public signal void visible_menus ();
+        public Gtk.Menu menu;
 
         construct {
             get_style_context ().add_class ("playlist");
@@ -55,23 +53,102 @@ namespace niki {
                     send_iter_to (iter);
                 }
             });
-            cursor_changed.connect (() => {
-                if (!get_selection().get_selected(null, out select_iter)) {
-                    return;
-                }
+
+            menu = new Gtk.Menu ();
+            var playing = new Gtk.MenuItem ();
+            playing.add (new MenuLabel ("media-playback-start-symbolic", StringPot.Play));
+            playing.activate.connect (() => {
+                send_iter_to (selected_iter ());
             });
+            var from_list = new Gtk.MenuItem ();
+            from_list.add (new MenuLabel ("list-remove-symbolic", StringPot.Remove_Playlist));
+            from_list.activate.connect (() => {
+                remove_iter ();
+            });
+            var from_device = new Gtk.MenuItem ();
+            from_device.add (new MenuLabel ("edit-delete-symbolic", StringPot.Remove_Device));
+            from_device.activate.connect (() => {
+                create_dialog (selected_iter ());
+            });
+            var info_details = new Gtk.MenuItem ();
+            info_details.add (new MenuLabel ("dialog-information-symbolic", StringPot.Details));
+            info_details.activate.connect (() => {
+                edit_info ();
+            });
+            var save_to = new Gtk.MenuItem ();
+            save_to.add (new MenuLabel ("drive-harddisk-symbolic", StringPot.Save_MyComputer));
+            save_to.activate.connect (() => {
+                save_to_computer (selected_iter ());
+            });
+
+            var menu_sub = new Gtk.MenuItem ();
+            menu_sub.add (new MenuLabel ("go-jump-symbolic", StringPot.Short_by));
+
+            var tittle_short = new Gtk.MenuItem ();
+            var sub_tit = new MenuLabelRadio ("com.github.torikulhabib.niki.title-symbolic", StringPot.Titile);
+            tittle_short.add (sub_tit);
+            tittle_short.activate.connect (() => {
+                NikiApp.settings.set_int ("sort-by", 0);
+            });
+            var artist_short = new Gtk.MenuItem ();
+            var sub_art = new MenuLabelRadio ("avatar-default-symbolic", StringPot.Artist);
+            artist_short.add (sub_art);
+            artist_short.activate.connect (() => {
+                NikiApp.settings.set_int ("sort-by", 1);
+            });
+
+            var album_short = new Gtk.MenuItem ();
+            var sub_alb = new MenuLabelRadio ("media-optical-symbolic", StringPot.Album);
+            album_short.add (sub_alb);
+            album_short.activate.connect (() => {
+                NikiApp.settings.set_int ("sort-by", 2);
+            });
+
+            var costum_short = new Gtk.MenuItem ();
+            var sub_cus = new MenuLabelRadio ("edit-symbolic", StringPot.Custom);
+            costum_short.add (sub_cus);
+            costum_short.activate.connect (() => {
+                NikiApp.settings.set_int ("sort-by", 3);
+            });
+
+            var spart_short = new Gtk.MenuItem ();
+            spart_short.add (new Gtk.Separator (Gtk.Orientation.HORIZONTAL));
+
+            var ascending_short = new Gtk.MenuItem ();
+            var sub_asc = new MenuLabelRadio ("view-sort-descending-symbolic", StringPot.Ascending);
+            ascending_short.add (sub_asc);
+            ascending_short.activate.connect (() => {
+                NikiApp.settings.set_boolean("ascen-descen", true);
+            });
+
+            var descending_short = new Gtk.MenuItem ();
+            var sub_des = new MenuLabelRadio ("view-sort-ascending-symbolic", StringPot.Descending);
+            descending_short.add (sub_des);
+            descending_short.activate.connect (() => {
+                NikiApp.settings.set_boolean("ascen-descen", false);
+            });
+            var submenu_menu2 = new Gtk.Menu ();
+            submenu_menu2.add (tittle_short);
+            submenu_menu2.add (artist_short);
+            submenu_menu2.add (album_short);
+            submenu_menu2.add (costum_short);
+            submenu_menu2.add (spart_short);
+            submenu_menu2.add (ascending_short);
+            submenu_menu2.add (descending_short);
+            menu_sub.submenu = submenu_menu2;
+
+            menu.append (playing);
+            menu.append (menu_sub);
+            menu.append (from_list);
+            menu.append (from_device);
+            menu.append (info_details);
+            menu.append (save_to);
+            menu.show_all ();
 
             button_press_event.connect ((event) => {
                 if (event.button == Gdk.BUTTON_PRIMARY) {
                     if (NikiApp.settings.get_boolean ("edit-playlist")) {
-                        Idle.add (() => {
-                            if (!liststore.iter_is_valid (select_iter)) {
-                                return Gdk.EVENT_PROPAGATE;
-                            }
-                            liststore.remove (ref select_iter);
-                            update_playlist (50);
-                            return Gdk.EVENT_PROPAGATE;
-                        });
+                        Idle.add (remove_iter);
                     }
                 }
                 if (event.button == Gdk.BUTTON_SECONDARY && event.type != Gdk.EventType.2BUTTON_PRESS) {
@@ -174,8 +251,36 @@ namespace niki {
                             visible_menus ();
                         });
                         menu.show_all ();
+                    sub_tit.radio_but = NikiApp.settings.get_int ("sort-by") == 0;
+                    sub_art.radio_but = NikiApp.settings.get_int ("sort-by") == 1;
+                    sub_alb.radio_but = NikiApp.settings.get_int ("sort-by") == 2;
+                    sub_cus.radio_but = NikiApp.settings.get_int ("sort-by") == 3;
+                    sub_asc.radio_but = NikiApp.settings.get_boolean ("ascen-descen");
+                    sub_des.radio_but = !NikiApp.settings.get_boolean ("ascen-descen");
+                    Gtk.TreeIter iter = selected_iter ();
+                    if (!liststore.iter_is_valid (iter)) {
                         return Gdk.EVENT_PROPAGATE;
-                    });
+                    }
+                    int input_mode, mediatype;
+                    liststore.get (iter, PlaylistColumns.INPUTMODE, out input_mode, PlaylistColumns.MEDIATYPE, out mediatype);
+                    if (input_mode == 0) {
+                        from_device.show ();
+                    } else {
+                        from_device.hide ();
+                    }
+                    if (input_mode == 0 && mediatype == 1) {
+                        info_details.show ();
+                    } else if (input_mode == 0 && mediatype == 0) {
+                        info_details.show ();
+                    } else {
+                        info_details.hide ();
+                    }
+                    if (input_mode == 2) {
+                        save_to.show ();
+                    } else {
+                        save_to.hide ();
+                    }
+                    menu.popup_at_pointer (event);
                 }
                 return Gdk.EVENT_PROPAGATE;
             });
@@ -191,6 +296,20 @@ namespace niki {
             NikiApp.settings.changed["shuffle-button"].connect (get_random);
             NikiApp.settings.changed["ascen-descen"].connect (get_random);
             get_random ();
+        }
+        private bool remove_iter () {
+            Gtk.TreeIter iter = selected_iter ();
+            if (!liststore.iter_is_valid (iter)) {
+                return Gdk.EVENT_PROPAGATE;
+            }
+            liststore.remove (ref iter);
+            update_playlist (50);
+            return Gdk.EVENT_PROPAGATE;
+        }
+        public Gtk.TreeIter selected_iter () {
+            Gtk.TreeIter iter;
+            get_selection().get_selected(null, out iter);
+            return iter;
         }
         private void get_random () {
             if (NikiApp.settings.get_boolean ("shuffle-button")) {
