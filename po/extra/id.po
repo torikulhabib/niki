@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: extra\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-04 13:35+0700\n"
-"PO-Revision-Date: 2020-02-04 13:39+0700\n"
+"PO-Revision-Date: 2020-03-12 00:06+0700\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -46,11 +46,11 @@ msgstr "Player Musik."
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:15
 msgid "lyric Maker."
-msgstr "Pembuat"
+msgstr "pembuat Lirik."
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:16
 msgid "lyric."
-msgstr "Lirik"
+msgstr "lirik."
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:17
 msgid "Equalizer."
@@ -74,7 +74,7 @@ msgstr "Penjelajah DLNA."
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:22
 msgid "DLNA Controller."
-msgstr "DLNA Kontroler"
+msgstr "DLNA Kontroler."
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:23
 msgid "Camera."
