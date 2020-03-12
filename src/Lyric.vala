@@ -33,15 +33,17 @@ namespace niki {
             var time_with_offset = time_in_us + offset;
             return iterator_lyric (time_with_offset, cur_pos).get_key ();
         }
-
+        private bool end_lrc = false;
         private Gee.BidirMapIterator<int64?, string> iterator_lyric (int64 time_in_us, bool cur_pos = true) {
             if (iterator_get ().get_key () > time_in_us) {
                 iterator_get ().first ();
             }
+            end_lrc = false;
             while (iterator_get ().get_key () < time_in_us && iterator_get ().has_next ()) {
                 iterator_get ().next ();
+                end_lrc = true;
             }
-            if (cur_pos) {
+            if (cur_pos && end_lrc) {
                 iterator_get ().previous ();
             }
             return iterator_get ();
