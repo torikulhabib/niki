@@ -116,15 +116,15 @@ namespace niki {
             actionbar.hexpand = true;
             add (actionbar);
             show_all ();
-            Timeout.add (35, animation_timer);
-            NikiApp.settings.changed["player-mode"].connect (() => {
-                if (remove_time != 0 && NikiApp.settings.get_boolean("audio-video") && window.main_stack.visible_child_name == "player") {
-                    Source.remove (remove_time);
-                }
-                remove_time = Timeout.add (35, animation_timer);
-            });
+            NikiApp.settings.changed["player-mode"].connect (start_anime);
+            start_anime ();
         }
-
+        private void start_anime () {
+            if (remove_time != 0 && NikiApp.settings.get_boolean("audio-video") && window.main_stack.visible_child_name == "player") {
+                Source.remove (remove_time);
+            }
+            remove_time = Timeout.add (35, animation_timer);
+        }
         private bool anim_draw (Cairo.Context cr) {
             if (!visible_text) {
                 return false;

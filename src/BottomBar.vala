@@ -506,7 +506,7 @@ namespace niki {
                     settings_prev_button.tooltip_text = StringPot.Video_Balance;
                     settings_next_button.tooltip_text = StringPot.Other_Preferences;
                     ((Gtk.Image) setting_niki.image).icon_name = "preferences-other-symbolic";
-                    setting_niki.tooltip_markup = _("%s: %s").printf (StringPot.Preferences, "<b> @$(StringPot.Audio_and_Video) </b>");
+                    setting_niki.tooltip_markup = _("%s: %s").printf (StringPot.Preferences, @"<b> $(StringPot.Audio_and_Video) </b>");
                     break;
             }
         }

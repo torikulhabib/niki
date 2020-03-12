@@ -485,6 +485,7 @@ namespace niki {
                         stage.content = aspect_ratio;
                     } else {
                         stage.content = NikiApp.settings.get_boolean ("blur-mode")? blur_image : oriimage;
+                        seek_music ();
                     }
                     break;
                 case 1 :
