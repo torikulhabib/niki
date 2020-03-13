@@ -9,13 +9,14 @@ msgstr ""
 "Project-Id-Version: com.github.torikulhabib.niki\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-02-04 12:58+0700\n"
-"PO-Revision-Date: 2020-03-01 20:50+0300\n"
+"PO-Revision-Date: 2020-03-13 19:53+0700\n"
 "Last-Translator: Safak Genisol <Bjksafak45@gmail.com>\n"
 "Language-Team: none\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.2\n"
+"Language: tr\n"
 
 #: src/StringPot.vala:24
 msgid "Home"
@@ -27,7 +28,7 @@ msgstr "Niki"
 
 #: src/StringPot.vala:26
 msgid "Niki - DLNA Browser"
-msgstr ""Niki - DLNA Tarayıcı"
+msgstr "Niki - DLNA Tarayıcı"
 
 #: src/StringPot.vala:27
 msgid "Open"
@@ -178,8 +179,8 @@ msgid "Close"
 msgstr "Kapat"
 
 #: src/StringPot.vala:64
-msgid "Album:"
-msgstr "Albüm:"
+msgid "Album"
+msgstr "Albüm"
 
 #: src/StringPot.vala:65
 msgid "Artist"
@@ -333,7 +334,7 @@ msgstr "Azalan"
 
 #: src/StringPot.vala:102
 msgid "Are you sure for remove from device"
-msgstr "Cihazdan kaldırdığınızdan emin misiniz?"
+msgstr "Cihazdan kaldırdığınızdan emin misiniz"
 
 #: src/StringPot.vala:103
 msgid "This will remove the file from your playlist and from any device."
@@ -781,7 +782,7 @@ msgstr "Sanatçı:"
 
 #: src/StringPot.vala:215
 msgid "Album:"
-msgstr "Albüm"
+msgstr "Albüm:"
 
 #: src/StringPot.vala:216
 msgid "Genre:"
