@@ -253,9 +253,9 @@ namespace niki {
             subtitle_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             subtitle_revealer.transition_duration = 500;
             subtitle_revealer.clicked.connect (() => {
-                NikiApp.settings.set_boolean ("activate-subtittle", !NikiApp.settings.get_boolean ("activate-subtittle"));
+                NikiApp.settings.set_boolean ("activate-subtitle", !NikiApp.settings.get_boolean ("activate-subtitle"));
             });
-            NikiApp.settings.changed["activate-subtittle"].connect (subtittle_button);
+            NikiApp.settings.changed["activate-subtitle"].connect (subtitle_button);
             NikiApp.settings.changed["subtitle-available"].connect (() => {
                 subtitle_revealer.set_reveal_child (NikiApp.settings.get_boolean ("subtitle-available"));
             });
@@ -447,7 +447,7 @@ namespace niki {
             view_player ();
             liric_icon ();
             fullscreen_signal ();
-            subtittle_button ();
+            subtitle_button ();
         }
         private void mode_change () {
             if (!NikiApp.settings.get_boolean ("audio-video")) {
@@ -538,9 +538,9 @@ namespace niki {
             ((Gtk.Image) fullscreen_button.image).icon_name = NikiApp.settings.get_boolean ("fullscreen")? "com.github.torikulhabib.niki.fullscreen-symbolic" : "com.github.torikulhabib.niki.unfullscreen-symbolic";
             fullscreen_button.tooltip_text = NikiApp.settings.get_boolean ("fullscreen")? StringPot.Fullscreen : StringPot.Exit_Fullscreen;
         }
-        private void subtittle_button () {
-            subtitle_revealer.change_icon (NikiApp.settings.get_boolean ("activate-subtittle")? "com.github.torikulhabib.niki.subtittle-on-symbolic" : "com.github.torikulhabib.niki.subtittle-off-symbolic");
-            subtitle_revealer.tooltip_text = NikiApp.settings.get_boolean ("activate-subtittle")? StringPot.Subtitles_On : StringPot.Subtitles_Off;
+        private void subtitle_button () {
+            subtitle_revealer.change_icon (NikiApp.settings.get_boolean ("activate-subtitle")? "com.github.torikulhabib.niki.subtitle-on-symbolic" : "com.github.torikulhabib.niki.subtitle-off-symbolic");
+            subtitle_revealer.tooltip_text = NikiApp.settings.get_boolean ("activate-subtitle")? StringPot.Subtitles_On : StringPot.Subtitles_Off;
         }
 
         public void schedule_show () {
