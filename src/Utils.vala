@@ -343,7 +343,7 @@ namespace niki {
         }
         return find_sub;
     }
-    private string? get_playing_liric (string uri) {
+    private string? get_playing_lyric (string uri) {
         string without_ext;
         int last_dot = uri.last_index_of (".", 0);
         int last_slash = uri.last_index_of ("/", 0);
@@ -546,8 +546,8 @@ namespace niki {
         Gdk.Pixbuf pixbuf_scale = input_pixbuf.scale_simple (sizew, sizeh == 0? sizew : sizeh, Gdk.InterpType.BILINEAR);
         return pixbuf_scale;
     }
-    private Lyric file_lyric (string liric_file) {
-        return new LyricParser ().parse (File.new_for_uri (liric_file));
+    private Lyric file_lyric (string lyric_file) {
+        return new LyricParser ().parse (File.new_for_uri (lyric_file));
     }
     private void notify_app (string message, string msg_bd) {
         var notification = new GLib.Notification ("");

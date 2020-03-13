@@ -6,10 +6,10 @@ namespace niki {
         private Clutter.Actor cover_center;
         private Clutter.Text title_music;
         private Clutter.Text artist_music;
-        private Clutter.Text first_liric;
-        private Clutter.Text seconds_liric;
+        private Clutter.Text first_lyric;
+        private Clutter.Text seconds_lyric;
         private Clutter.Text notify_text;
-        public Clutter.Text liric_sc;
+        public Clutter.Text lyric_sc;
         private Clutter.Image oriimage;
         private Clutter.Image blur_image;
         public RightBar? right_bar;
@@ -93,23 +93,23 @@ namespace niki {
             notify_text.use_markup = true;
             stage.add_child (notify_text);
 
-            first_liric = new Clutter.Text ();
-            first_liric.ellipsize = Pango.EllipsizeMode.END;
-            first_liric.color = Clutter.Color.from_string ("orange");
-            first_liric.background_color = Clutter.Color.from_string ("black") { alpha = 100 };
-            first_liric.line_alignment = Pango.Alignment.CENTER;
-            first_liric.single_line_mode = true;
-            first_liric.use_markup = true;
-            stage.add_child (first_liric);
+            first_lyric = new Clutter.Text ();
+            first_lyric.ellipsize = Pango.EllipsizeMode.END;
+            first_lyric.color = Clutter.Color.from_string ("orange");
+            first_lyric.background_color = Clutter.Color.from_string ("black") { alpha = 100 };
+            first_lyric.line_alignment = Pango.Alignment.CENTER;
+            first_lyric.single_line_mode = true;
+            first_lyric.use_markup = true;
+            stage.add_child (first_lyric);
 
-            seconds_liric = new Clutter.Text ();
-            seconds_liric.ellipsize = Pango.EllipsizeMode.END;
-            seconds_liric.color = Clutter.Color.from_string ("white");
-            seconds_liric.background_color = Clutter.Color.from_string ("black") { alpha = 100 };
-            seconds_liric.line_alignment = Pango.Alignment.CENTER;
-            seconds_liric.single_line_mode = true;
-            seconds_liric.use_markup = true;
-            stage.add_child (seconds_liric);
+            seconds_lyric = new Clutter.Text ();
+            seconds_lyric.ellipsize = Pango.EllipsizeMode.END;
+            seconds_lyric.color = Clutter.Color.from_string ("white");
+            seconds_lyric.background_color = Clutter.Color.from_string ("black") { alpha = 100 };
+            seconds_lyric.line_alignment = Pango.Alignment.CENTER;
+            seconds_lyric.single_line_mode = true;
+            seconds_lyric.use_markup = true;
+            stage.add_child (seconds_lyric);
 
             title_music = new Clutter.Text ();
             title_music.ellipsize = Pango.EllipsizeMode.END;
@@ -262,8 +262,8 @@ namespace niki {
             playback.notify["progress"].connect (() => {
                 if (playback.playing) {
                     if (NikiApp.settings.get_boolean("lyric-available") && NikiApp.settings.get_boolean("audio-video")) {
-                        first_liric.text = bottom_bar.seekbar_widget.get_liric_now ();
-                        seconds_liric.text = bottom_bar.seekbar_widget.get_liric_next ();
+                        first_lyric.text = bottom_bar.seekbar_widget.get_lyric_now ();
+                        seconds_lyric.text = bottom_bar.seekbar_widget.get_lyric_next ();
                         update_position_cover ();
                     }
                 }
@@ -400,7 +400,7 @@ namespace niki {
             }
         }
         public void seek_music () {
-            if (NikiApp.settings.get_boolean("audio-video") && !NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean ("liric-button") && NikiApp.settings.get_boolean("lyric-available")) {
+            if (NikiApp.settings.get_boolean("audio-video") && !NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean ("lyric-button") && NikiApp.settings.get_boolean("lyric-available")) {
                 for (int i = 0; i < menu_actor.get_n_children (); i++) {
                     Clutter.Actor menu = scroll.get_first_child ();
                     Clutter.Actor item = menu.get_child_at_index (i);
@@ -409,14 +409,14 @@ namespace niki {
             }
         }
         public Clutter.Actor text_clutter (string name) {
-            liric_sc = new Clutter.Text ();
-            liric_sc.set_text (name);
-            liric_sc.font_name = NikiApp.settings.get_string("font");
-            liric_sc.color = Clutter.Color.from_string ("white");
-            liric_sc.background_color = Clutter.Color.from_string ("black") { alpha = 100 };
-            liric_sc.set_margin_left (12);
-            liric_sc.set_margin_right (12);
-            return liric_sc;
+            lyric_sc = new Clutter.Text ();
+            lyric_sc.set_text (name);
+            lyric_sc.font_name = NikiApp.settings.get_string("font");
+            lyric_sc.color = Clutter.Color.from_string ("white");
+            lyric_sc.background_color = Clutter.Color.from_string ("black") { alpha = 100 };
+            lyric_sc.set_margin_left (12);
+            lyric_sc.set_margin_right (12);
+            return lyric_sc;
         }
 
         public void save_destroy () {
@@ -494,18 +494,18 @@ namespace niki {
         }
 
         private bool update_position_cover () {
-            scroll.x = NikiApp.settings.get_boolean("audio-video") && !NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean ("liric-button") && NikiApp.settings.get_boolean("lyric-available")? (stage.width / 2) - (scroll.width / 2) : -scroll.width;
-            scroll.y = NikiApp.settings.get_boolean("audio-video") && !NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean ("liric-button") && NikiApp.settings.get_boolean("lyric-available")? ((stage.height / 2) - (scroll.height / 2)) : -scroll.height;
+            scroll.x = NikiApp.settings.get_boolean("audio-video") && !NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean ("lyric-button") && NikiApp.settings.get_boolean("lyric-available")? (stage.width / 2) - (scroll.width / 2) : -scroll.width;
+            scroll.y = NikiApp.settings.get_boolean("audio-video") && !NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean ("lyric-button") && NikiApp.settings.get_boolean("lyric-available")? ((stage.height / 2) - (scroll.height / 2)) : -scroll.height;
             cover_center.x = NikiApp.settings.get_boolean("audio-video") && NikiApp.settings.get_boolean ("information-button")? (stage.width / 2) - (cover_center.width / 2) : -cover_center.width;
             cover_center.y = NikiApp.settings.get_boolean("audio-video") && NikiApp.settings.get_boolean ("information-button")? ((stage.height / 2) - (cover_center.height / 2) - 50) : -cover_center.height;
             title_music.x = NikiApp.settings.get_boolean("audio-video") && NikiApp.settings.get_boolean ("information-button")? ((stage.width / 2) - (title_music.width / 2)) : -title_music.width;
             title_music.y = NikiApp.settings.get_boolean("audio-video") && NikiApp.settings.get_boolean ("information-button")? ((stage.height / 2) - (title_music.height / 2) + 90) : -artist_music.height;
             artist_music.x = NikiApp.settings.get_boolean("audio-video") && NikiApp.settings.get_boolean ("information-button")? ((stage.width / 2) - (artist_music.width / 2)) : -artist_music.width;
             artist_music.y = NikiApp.settings.get_boolean("audio-video") && NikiApp.settings.get_boolean ("information-button")? ((stage.height / 2) - (artist_music.height / 2) + (92 + title_music.height)) : -artist_music.height;
-            first_liric.x = NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean("lyric-available") && NikiApp.settings.get_boolean("audio-video") && NikiApp.settings.get_boolean ("liric-button")? ((stage.width / 2) - (first_liric.width / 2)) : -first_liric.width;
-            first_liric.y = NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean("lyric-available") && NikiApp.settings.get_boolean("audio-video") && NikiApp.settings.get_boolean ("liric-button")? ((stage.height / 2) - (first_liric.height / 2) + (125 + artist_music.height)) : -first_liric.height;
-            seconds_liric.x = NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean("lyric-available") && NikiApp.settings.get_boolean("audio-video") && NikiApp.settings.get_boolean ("liric-button")? ((stage.width / 2) - (seconds_liric.width / 2)) : -seconds_liric.width;
-            seconds_liric.y = NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean("lyric-available") && NikiApp.settings.get_boolean("audio-video") && NikiApp.settings.get_boolean ("liric-button")? ((stage.height / 2) - (seconds_liric.height / 2) + (155 + first_liric.height)) : -seconds_liric.height;
+            first_lyric.x = NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean("lyric-available") && NikiApp.settings.get_boolean("audio-video") && NikiApp.settings.get_boolean ("lyric-button")? ((stage.width / 2) - (first_lyric.width / 2)) : -first_lyric.width;
+            first_lyric.y = NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean("lyric-available") && NikiApp.settings.get_boolean("audio-video") && NikiApp.settings.get_boolean ("lyric-button")? ((stage.height / 2) - (first_lyric.height / 2) + (125 + artist_music.height)) : -first_lyric.height;
+            seconds_lyric.x = NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean("lyric-available") && NikiApp.settings.get_boolean("audio-video") && NikiApp.settings.get_boolean ("lyric-button")? ((stage.width / 2) - (seconds_lyric.width / 2)) : -seconds_lyric.width;
+            seconds_lyric.y = NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean("lyric-available") && NikiApp.settings.get_boolean("audio-video") && NikiApp.settings.get_boolean ("lyric-button")? ((stage.height / 2) - (seconds_lyric.height / 2) + (155 + first_lyric.height)) : -seconds_lyric.height;
             return Source.REMOVE;
         }
 
@@ -515,7 +515,7 @@ namespace niki {
 
         private void font_option () {
             playback.set_subtitle_font_name (NikiApp.settings.get_int("font-options") == 0? "" : NikiApp.settings.get_string("font"));
-            first_liric.font_name = seconds_liric.font_name = NikiApp.settings.get_string("font");
+            first_lyric.font_name = seconds_lyric.font_name = NikiApp.settings.get_string("font");
             font_change ();
         }
 
@@ -617,9 +617,9 @@ namespace niki {
         }
         private void sub_lr_check (string check) {
             check_lr_sub ();
-            string? liric_uri = get_playing_liric (check);
-            if (liric_uri != null && liric_uri != check) {
-                bottom_bar.seekbar_widget.on_lyric_update (file_lyric (liric_uri), this);
+            string? lyric_uri = get_playing_lyric (check);
+            if (lyric_uri != null && lyric_uri != check) {
+                bottom_bar.seekbar_widget.on_lyric_update (file_lyric (lyric_uri), this);
                 NikiApp.settings.set_boolean("lyric-available", true);
             }
             string? sub_uri = get_subtitle_for_uri (check);
@@ -644,7 +644,7 @@ namespace niki {
                 if (!NikiApp.settings.get_boolean("audio-video")) {
                     NikiApp.settings.set_boolean("audio-video", true);
                 }
-                if (NikiApp.settings.get_boolean ("liric-button") && NikiApp.settings.get_boolean ("lyric-available") && playback.playing) {
+                if (NikiApp.settings.get_boolean ("lyric-button") && NikiApp.settings.get_boolean ("lyric-available") && playback.playing) {
                     Inhibitor.instance.inhibit ();
                 } else {
                     Inhibitor.instance.uninhibit ();

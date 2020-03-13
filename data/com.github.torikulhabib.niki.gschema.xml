@@ -156,10 +156,10 @@
       <summary>Information button</summary>
       <description>Information button</description>
     </key>
-    <key name="liric-button" type="b">
+    <key name="lyric-button" type="b">
       <default>false</default>
-      <summary>Liric button</summary>
-      <description>Liric button</description>
+      <summary>lyric button</summary>
+      <description>lyric button</description>
     </key>
     <key name="spinner-wait" type="b">
       <default>false</default>
