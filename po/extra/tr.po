@@ -1,0 +1,83 @@
+# Turkish translations for extra package.
+# Copyright (C) 2020 THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the extra package.
+# Safak Genisol <Bjksafak45@gmail.com>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: extra\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-02-04 13:35+0700\n"
+"PO-Revision-Date: 2020-03-06 00:45+0300\n"
+"Last-Translator: Safak Genisol <Bjksafak45@gmail.com>\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.2\n"
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:7
+#: data/com.github.torikulhabib.niki.desktop.in:3
+msgid "Niki"
+msgstr "Niki"
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:8
+#: data/com.github.torikulhabib.niki.desktop.in:4
+msgid "Media Player"
+msgstr "Medya Oynatıcı"
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:10
+msgid "DLNA Video Music and streaming."
+msgstr "DLNA Video Müzik ve yayın."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:11
+msgid "Features:"
+msgstr "Özellikler:"
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:13
+msgid "Movie player."
+msgstr "Film oynatıcı."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:14
+msgid "Music player."
+msgstr "Müzik oynatıcı"
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:15
+msgid "Font subtitle lyric."
+msgstr "Yazı tipi altyazı sözü."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:16
+msgid "Equalizer."
+msgstr "Ekolayzer"
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:17
+msgid "Video Balance."
+msgstr "Video Dengesi."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:18
+msgid "Apply album art as background."
+msgstr "Albüm kapağını arka plan olarak uygulayın."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:19
+msgid "Blur bacground."
+msgstr "Bulanıklık arka plan."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:20
+msgid "DLNA Explorer."
+msgstr "DLNA Gezgini."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:21
+msgid "Camera."
+msgstr "Kamera."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:22
+msgid "Disk Drive."
+msgstr "Disk Sürücüsü."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:23
+msgid "MPRIS"
+msgstr "MPRIS"
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:24
+msgid "Streaming."
+msgstr "Canlı Yayın Akışı."
