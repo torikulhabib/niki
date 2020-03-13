@@ -225,12 +225,12 @@ namespace niki {
     private string get_artist_music (string inputfile) {
         string inputstring = File.new_for_uri (inputfile).get_path ();
 		var info =  new TagLib.File(inputstring);
-		return info.tag.artist.char_count () < 1? StringPot.Unknow : info.tag.artist;
+		return info.tag.artist.char_count () < 1? StringPot.Unknown : info.tag.artist;
     }
     private string get_album_music (string inputfile) {
         string inputstring = File.new_for_uri (inputfile).get_path ();
 		var info =  new TagLib.File(inputstring);
-		return info.tag.album.char_count () < 1? StringPot.Unknow : info.tag.album;
+		return info.tag.album.char_count () < 1? StringPot.Unknown : info.tag.album;
     }
 
     private string get_mime_type (File fileinput) {
@@ -343,7 +343,7 @@ namespace niki {
         }
         return find_sub;
     }
-    private string? get_playing_liric (string uri) {
+    private string? get_playing_lyric (string uri) {
         string without_ext;
         int last_dot = uri.last_index_of (".", 0);
         int last_slash = uri.last_index_of ("/", 0);
@@ -546,8 +546,8 @@ namespace niki {
         Gdk.Pixbuf pixbuf_scale = input_pixbuf.scale_simple (sizew, sizeh == 0? sizew : sizeh, Gdk.InterpType.BILINEAR);
         return pixbuf_scale;
     }
-    private Lyric file_lyric (string liric_file) {
-        return new LyricParser ().parse (File.new_for_uri (liric_file));
+    private Lyric file_lyric (string lyric_file) {
+        return new LyricParser ().parse (File.new_for_uri (lyric_file));
     }
     private void notify_app (string message, string msg_bd) {
         var notification = new GLib.Notification ("");
@@ -555,7 +555,7 @@ namespace niki {
         notification.set_body (msg_bd);
         window.application.send_notification ("notify.app", notification);
     }
-    private Gdk.Pixbuf? unknow_cover () {
+    private Gdk.Pixbuf? unknown_cover () {
 	    Cairo.ImageSurface surface = new Cairo.ImageSurface (Cairo.Format.RGB30, 256, 256);
 	    Cairo.Context context = new Cairo.Context (surface);
 	    Cairo.Pattern bacground = new Cairo.Pattern.linear (0.0, 0.0, 0.0, 256.0);
@@ -589,8 +589,8 @@ namespace niki {
 	    context.set_source (arc4);
 	    context.arc (128.0, 128.0, 10.8, 0, 2 * Math.PI);
 	    context.fill ();
-        Gdk.Pixbuf pixbuf_unknow = Gdk.pixbuf_get_from_surface (surface, 0, 0, 256, 256);
-        return pixbuf_unknow;
+        Gdk.Pixbuf pixbuf_unknown = Gdk.pixbuf_get_from_surface (surface, 0, 0, 256, 256);
+        return pixbuf_unknown;
     }
 
     private string? niki_mime_type () {

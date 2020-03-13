@@ -190,7 +190,7 @@ namespace niki {
             add (stack);
             show_all ();
             NikiApp.settings.changed["information-button"].connect (revealer_menu);
-            NikiApp.settings.changed["tittle-playing"].connect (label_my_app);
+            NikiApp.settings.changed["title-playing"].connect (label_my_app);
             NikiApp.settings.changed["album-music"].connect (label_my_app);
             NikiApp.settings.changed["maximize"].connect (maximized_button);
             NikiApp.settings.changed["audio-video"].connect (() => {
@@ -214,7 +214,7 @@ namespace niki {
 
         private void label_my_app () {
             if (NikiApp.settings.get_boolean ("audio-video")) {
-                my_app.label = Markup.escape_text (NikiApp.settings.get_string ("tittle-playing")) + " <b> "+ StringPot.Artist + " </b> " + Markup.escape_text (NikiApp.settings.get_string ("artist-music")) + " <b> "+ StringPot.Album +" </b> " + Markup.escape_text (NikiApp.settings.get_string ("album-music"));
+                my_app.label = Markup.escape_text (NikiApp.settings.get_string ("title-playing")) + " <b> "+ StringPot.Artist + " </b> " + Markup.escape_text (NikiApp.settings.get_string ("artist-music")) + " <b> "+ StringPot.Album +" </b> " + Markup.escape_text (NikiApp.settings.get_string ("album-music"));
             } else {
                 my_app.label = StringPot.Niki_Video;
             }

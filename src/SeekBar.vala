@@ -139,14 +139,14 @@ namespace niki {
                 count++;
                 return true;
             });
-            foreach (string liric_sc in list_lyric) {
-                playerpage.menu_actor.add_child (playerpage.text_clutter (@" $(liric_sc) "));
+            foreach (string lyric_sc in list_lyric) {
+                playerpage.menu_actor.add_child (playerpage.text_clutter (@" $(lyric_sc) "));
             }
         }
-        public string get_liric_now () {
+        public string get_lyric_now () {
             return current_lyric;
         }
-        public string get_liric_next () {
+        public string get_lyric_next () {
             return next_lyric_end;
         }
 

@@ -82,12 +82,12 @@ namespace niki {
             });
 
             var menu_sub = new Gtk.MenuItem ();
-            menu_sub.add (new MenuLabel ("go-jump-symbolic", StringPot.Short_by));
+            menu_sub.add (new MenuLabel ("go-jump-symbolic", StringPot.Sort_by));
 
-            var tittle_short = new Gtk.MenuItem ();
-            var sub_tit = new MenuLabelRadio ("com.github.torikulhabib.niki.title-symbolic", StringPot.Titile);
-            tittle_short.add (sub_tit);
-            tittle_short.activate.connect (() => {
+            var title_short = new Gtk.MenuItem ();
+            var sub_tit = new MenuLabelRadio ("com.github.torikulhabib.niki.title-symbolic", StringPot.Title);
+            title_short.add (sub_tit);
+            title_short.activate.connect (() => {
                 NikiApp.settings.set_int ("sort-by", 0);
             });
             var artist_short = new Gtk.MenuItem ();
@@ -128,7 +128,7 @@ namespace niki {
                 NikiApp.settings.set_boolean("ascen-descen", false);
             });
             var submenu_menu2 = new Gtk.Menu ();
-            submenu_menu2.add (tittle_short);
+            submenu_menu2.add (title_short);
             submenu_menu2.add (artist_short);
             submenu_menu2.add (album_short);
             submenu_menu2.add (costum_short);
@@ -255,7 +255,7 @@ namespace niki {
             int mediatype;
             bool playnow;
             liststore.get (iter, PlaylistColumns.FILENAME, out file_plying, PlaylistColumns.TITLE, out titlename, PlaylistColumns.FILESIZE, out filesize, PlaylistColumns.MEDIATYPE, out mediatype, PlaylistColumns.ALBUMMUSIC, out album, PlaylistColumns.ARTISTMUSIC, out artist, PlaylistColumns.PLAYNOW, out playnow);
-            NikiApp.settings.set_string ("tittle-playing", titlename);
+            NikiApp.settings.set_string ("title-playing", titlename);
             NikiApp.settings.set_string ("artist-music", artist);
             NikiApp.settings.set_string ("album-music", album);
             play (file_plying, filesize, mediatype, playnow);
@@ -334,12 +334,12 @@ namespace niki {
             liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, inputstream [2], PlaylistColumns.ARTISTTITLE, Markup.escape_text (inputstream [2]), PlaylistColumns.FILENAME, inputstream [0], PlaylistColumns.MEDIATYPE, mediatype, PlaylistColumns.FILESIZE, "", PlaylistColumns.ALBUMMUSIC, "", PlaylistColumns.ARTISTMUSIC, "", PlaylistColumns.PLAYNOW, true, PlaylistColumns.INPUTMODE, 1);
         }
 
-        public void add_dlna (string input_url, string input_tittle, string input_album, string input_artist, int mediatype, bool playnow, string upnp_class, string size_file) {
+        public void add_dlna (string input_url, string input_title, string input_album, string input_artist, int mediatype, bool playnow, string upnp_class, string size_file) {
             bool exist = false;
             if (mediatype == 4) {
                 mediatype = 0;
             }
-            string filenamein = Markup.escape_text (input_tittle);
+            string filenamein = Markup.escape_text (input_title);
             Gtk.TreeIter iter;
             liststore.foreach ((model, path, iter) => {
                 string filename;
@@ -355,7 +355,7 @@ namespace niki {
 
             Gdk.Pixbuf preview = objectpixbuf.icon_from_type (upnp_class, 48);
             liststore.append (out iter);
-            liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, input_tittle, PlaylistColumns.ARTISTTITLE, mediatype == 2? "<b>" + Markup.escape_text (input_tittle) + "</b>" + "\n" + Markup.escape_text (input_artist) + " - " + Markup.escape_text (input_album) : Markup.escape_text (input_tittle), PlaylistColumns.FILENAME, input_url, PlaylistColumns.FILESIZE, size_file, PlaylistColumns.MEDIATYPE, mediatype, PlaylistColumns.ALBUMMUSIC, input_album, PlaylistColumns.ARTISTMUSIC, input_artist, PlaylistColumns.PLAYNOW, playnow, PlaylistColumns.INPUTMODE, 2);
+            liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, input_title, PlaylistColumns.ARTISTTITLE, mediatype == 2? "<b>" + Markup.escape_text (input_title) + "</b>" + "\n" + Markup.escape_text (input_artist) + " - " + Markup.escape_text (input_album) : Markup.escape_text (input_title), PlaylistColumns.FILENAME, input_url, PlaylistColumns.FILESIZE, size_file, PlaylistColumns.MEDIATYPE, mediatype, PlaylistColumns.ALBUMMUSIC, input_album, PlaylistColumns.ARTISTMUSIC, input_artist, PlaylistColumns.PLAYNOW, playnow, PlaylistColumns.INPUTMODE, 2);
             update_playlist (50);
         }
 
@@ -429,7 +429,7 @@ namespace niki {
             if (liststore.get_iter_first (out iter)){
                 string filename, titlename, album, artist;
                 liststore.get (iter, PlaylistColumns.FILENAME, out filename, PlaylistColumns.TITLE, out titlename, PlaylistColumns.ALBUMMUSIC, out album, PlaylistColumns.ARTISTMUSIC, out artist);
-                NikiApp.settings.set_string ("tittle-playing", titlename);
+                NikiApp.settings.set_string ("title-playing", titlename);
                 NikiApp.settings.set_string ("album-music", album);
                 NikiApp.settings.set_string ("artist-music", artist);
                 return filename;
@@ -472,7 +472,7 @@ namespace niki {
             if (liststore.get_iter_from_string (out iter, (total - 1).to_string ())){
                 string filename, titlename, album, artist;
                 liststore.get (iter, PlaylistColumns.FILENAME, out filename, PlaylistColumns.TITLE, out titlename, PlaylistColumns.ALBUMMUSIC, out album, PlaylistColumns.ARTISTMUSIC, out artist);
-                NikiApp.settings.set_string ("tittle-playing", titlename);
+                NikiApp.settings.set_string ("title-playing", titlename);
                 NikiApp.settings.set_string ("album-music", album);
                 NikiApp.settings.set_string ("artist-music", artist);
                 return filename;

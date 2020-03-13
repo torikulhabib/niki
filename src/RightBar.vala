@@ -202,7 +202,7 @@ namespace niki {
         private void playlist_edit () {
             header_label.label = !NikiApp.settings.get_boolean ("edit-playlist")? StringPot.Playlist : StringPot.Select_Remove;
             ((Gtk.Image) edit_button.image).icon_name = NikiApp.settings.get_boolean ("edit-playlist")? "go-previous-symbolic" : "list-remove-symbolic";
-            edit_button.tooltip_text = NikiApp.settings.get_boolean ("edit-playlist")? StringPot.Back_Playlist : StringPot.Remove_MuList;
+            edit_button.tooltip_text = NikiApp.settings.get_boolean ("edit-playlist")? StringPot.Back_Playlist : StringPot.Remove_Playlists;
         }
 
         private void size_flexible (){

@@ -93,31 +93,31 @@ namespace niki {
 
             var ex_subtitle_label = new Gtk.Label (StringPot.External_Sub);
             ex_subtitle_label.halign = Gtk.Align.END;
-            var file_chooser_subtittle = new Gtk.FileChooserButton (StringPot.Pick_File, Gtk.FileChooserAction.OPEN);
+            var file_chooser_subtitle = new Gtk.FileChooserButton (StringPot.Pick_File, Gtk.FileChooserAction.OPEN);
 
             var all_files_filter = new Gtk.FileFilter ();
-            all_files_filter.set_filter_name (StringPot.All_File);
+            all_files_filter.set_filter_name (StringPot.All_Files);
             all_files_filter.add_pattern ("*");
             var subtitle_files_filter = new Gtk.FileFilter ();
-            subtitle_files_filter.set_filter_name (StringPot.Subtitle_File);
+            subtitle_files_filter.set_filter_name (StringPot.Subtitle_Files);
             subtitle_files_filter.add_mime_type ("application/smil");
             subtitle_files_filter.add_mime_type ("application/x-subrip");
             subtitle_files_filter.add_mime_type ("text/x-microdvd");
             subtitle_files_filter.add_mime_type ("text/x-ssa");
-            file_chooser_subtittle.add_filter (subtitle_files_filter);
-            file_chooser_subtittle.add_filter (all_files_filter);
+            file_chooser_subtitle.add_filter (subtitle_files_filter);
+            file_chooser_subtitle.add_filter (all_files_filter);
 
             NikiApp.settings.changed["subtitle-choose"].connect (() => {
-                file_chooser_subtittle.select_uri (NikiApp.settings.get_string("subtitle-choose"));
+                file_chooser_subtitle.select_uri (NikiApp.settings.get_string("subtitle-choose"));
             });
-            file_chooser_subtittle.file_set.connect (() => {
-                if (is_subtitle (file_chooser_subtittle.get_uri())) {
-                    NikiApp.settings.set_string("subtitle-choose", file_chooser_subtittle.get_uri());
+            file_chooser_subtitle.file_set.connect (() => {
+                if (is_subtitle (file_chooser_subtitle.get_uri())) {
+                    NikiApp.settings.set_string("subtitle-choose", file_chooser_subtitle.get_uri());
                     if (!NikiApp.settings.get_boolean("subtitle-available")) {
                         NikiApp.settings.set_boolean ("subtitle-available", true);
                     }
                 } else {
-                    file_chooser_subtittle.select_uri (NikiApp.settings.get_string("subtitle-choose"));
+                    file_chooser_subtitle.select_uri (NikiApp.settings.get_string("subtitle-choose"));
                 }
             });
 
@@ -134,7 +134,7 @@ namespace niki {
             grid.attach (Speed_label, 0, 4);
             grid.attach (speed_combox, 1, 4);
             grid.attach (ex_subtitle_label, 0, 5);
-            grid.attach (file_chooser_subtittle, 1, 5);
+            grid.attach (file_chooser_subtitle, 1, 5);
             grid.show_all ();
             add (grid);
             NikiApp.settings.bind ("speed-playing", speed_combox, "active", GLib.SettingsBindFlags.DEFAULT);
@@ -146,8 +146,8 @@ namespace niki {
             languages.changed.connect (on_languages_changed);
             revealer_view ();
             playerpage.playback.ready.connect (subtitle_audio_track);
-            NikiApp.settings.changed["activate-subtittle"].connect (()=> {
-                subtitles.sensitive = NikiApp.settings.get_boolean ("activate-subtittle")? true : false;
+            NikiApp.settings.changed["activate-subtitle"].connect (()=> {
+                subtitles.sensitive = NikiApp.settings.get_boolean ("activate-subtitle")? true : false;
             });
         }
 
@@ -186,23 +186,23 @@ namespace niki {
             if (subtitles.model.iter_n_children (null) >= 0) {
                 subtitles.remove_all ();
             }
-            GLib.List<string> subtitles_names = get_subtittle_track_names ();
+            GLib.List<string> subtitles_names = get_subtitle_track_names ();
             uint track = 1;
             foreach (string? subtitle in playerpage.playback.subtitle_tracks) {
                 if (subtitle == null) {
                     continue;
                 }
                 if (subtitles_names.nth_data (track - 1) == null) {
-                    subtitles.appending ("com.github.torikulhabib.niki.subtittle-on-symbolic", _("%s %u").printf (StringPot.Track, track));
+                    subtitles.appending ("com.github.torikulhabib.niki.subtitle-on-symbolic", _("%s %u").printf (StringPot.Track, track));
                 } else {
-                    subtitles.appending ("com.github.torikulhabib.niki.subtittle-on-symbolic", _("%s %u").printf (subtitles_names.nth_data (track - 1), track));
+                    subtitles.appending ("com.github.torikulhabib.niki.subtitle-on-symbolic", _("%s %u").printf (subtitles_names.nth_data (track - 1), track));
                 }
                 track ++;
                 if (!NikiApp.settings.get_boolean("subtitle-available")) {
                     NikiApp.settings.set_boolean ("subtitle-available", true);
                 }
-                if (!NikiApp.settings.get_boolean("activate-subtittle")) {
-                    NikiApp.settings.set_boolean ("activate-subtittle", true);
+                if (!NikiApp.settings.get_boolean("activate-subtitle")) {
+                    NikiApp.settings.set_boolean ("activate-subtitle", true);
                 }
             }
 
@@ -214,7 +214,7 @@ namespace niki {
             subtitles.changed.connect (on_subtitles_changed);
         }
 
-        private GLib.List<string> get_subtittle_track_names () {
+        private GLib.List<string> get_subtitle_track_names () {
             var subtitles_streams = discoverer_info.get_subtitle_streams ();
             GLib.List<string> subtitle_languages = null;
             foreach (var subtitle_stream in subtitles_streams) {
