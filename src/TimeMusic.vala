@@ -194,7 +194,7 @@ namespace niki {
                         state += 1;
                         break;
                     case 2:
-                        text = NikiApp.settings.get_string ("tittle-playing");
+                        text = NikiApp.settings.get_string ("title-playing");
                         state += 1;
                       break;
                     case 3:
