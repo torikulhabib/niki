@@ -62,8 +62,8 @@ namespace niki {
                     }
                 }
             });
-            NikiApp.settings.changed["activate-subtittle"].connect (() => {
-                playback.subtitle_track = NikiApp.settings.get_boolean ("activate-subtittle")? playback.get_subtitle_track() : -1;
+            NikiApp.settings.changed["activate-subtitle"].connect (() => {
+                playback.subtitle_track = NikiApp.settings.get_boolean ("activate-subtitle")? playback.get_subtitle_track() : -1;
             });
             mpris = new MPRIS ();
             mpris.bus_acive (playback);
@@ -213,8 +213,8 @@ namespace niki {
                         if (!NikiApp.settings.get_string("last-played").has_prefix ("http")) {
                             playback.uri = NikiApp.settings.get_string("last-played");
                             playback.progress = NikiApp.settings.get_double("last-stopped");
-                            top_bar.label_info.set_label (NikiApp.settings.get_string("tittle-playing") + get_info_size (playback.uri));
-                            top_bar.info_label_full.set_label (NikiApp.settings.get_string("tittle-playing") + get_info_size (playback.uri));
+                            top_bar.label_info.set_label (NikiApp.settings.get_string("title-playing") + get_info_size (playback.uri));
+                            top_bar.info_label_full.set_label (NikiApp.settings.get_string("title-playing") + get_info_size (playback.uri));
                             if (playback.uri.down().contains (NikiApp.settings.get_string("last-played").down())) {
                                 NikiApp.settings.set_double("last-stopped", 0);
                             }
@@ -576,8 +576,8 @@ namespace niki {
         public void play_file (string uri, string filesize, int mediatype, bool from_beginning = true) {
             firstplay = true;
             NikiApp.settings.set_enum ("player-mode", mediatype);
-            top_bar.label_info.set_label (NikiApp.settings.get_string("tittle-playing") + filesize);
-            top_bar.info_label_full.set_label (NikiApp.settings.get_string("tittle-playing") + filesize);
+            top_bar.label_info.set_label (NikiApp.settings.get_string("title-playing") + filesize);
+            top_bar.info_label_full.set_label (NikiApp.settings.get_string("title-playing") + filesize);
             if (uri.has_prefix ("http")) {
                 NikiApp.settings.set_string("uri-video", uri);
                 playback.uri = uri;
@@ -650,7 +650,7 @@ namespace niki {
                     Inhibitor.instance.uninhibit ();
                 }
                 audio_banner ();
-                title_music.text = @" $(NikiApp.settings.get_string ("tittle-playing")) ";
+                title_music.text = @" $(NikiApp.settings.get_string ("title-playing")) ";
                 artist_music.text = @" $(NikiApp.settings.get_string ("artist-music")) ";
             }
             update_position_cover ();
