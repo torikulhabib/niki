@@ -143,8 +143,10 @@ namespace niki {
                     NikiApp.settings.set_int ("window-height", height);
                     int root_x, root_y;
                     get_position (out root_x, out root_y);
-                    NikiApp.settings.set_int ("window-x", root_x);
-                    NikiApp.settings.set_int ("window-y", root_y);
+                    if (NikiApp.settings.get_boolean ("audio-video") && main_stack.visible_child_name == "player") {
+                        NikiApp.settings.set_int ("window-x", root_x);
+                        NikiApp.settings.set_int ("window-y", root_y);
+                    }
                     move_stoped = 0;
                     return Source.REMOVE;
                 });
@@ -213,32 +215,31 @@ namespace niki {
             file.update_preview.connect (() => {
                 string uri = file.get_preview_uri ();
                 if (uri != null && uri.has_prefix ("file://")) {
-                    var preview_file = File.new_for_uri (uri);
-                    try {
-                        Gdk.Pixbuf pixbuf = null;
-                        switch (file_type (preview_file)) {
-                            case 0 :
-                                var videopreview = new VideoPreview (preview_file.get_path (), preview_file.get_uri(), get_mime_type (preview_file));
-                                videopreview.run_preview ();
-                                if (get_mime_type (preview_file).has_prefix ("video/")) {
-                                    pixbuf = new Gdk.Pixbuf.from_file_at_scale (videopreview.set_preview_large (), 256, 256, true);
-                                }
-                                break;
-                            case 1 :
-                                var audiocover = new AudioCover();
-                                audiocover.import (preview_file.get_uri ());
-                                pixbuf = audiocover.pixbuf_albumart;
-                                break;
+                    var file_pre = File.new_for_uri (uri);
+                    Gdk.Pixbuf pixbuf = null;
+                    if (get_mime_type (file_pre).has_prefix ("video/")) {
+                        if (!FileUtils.test (large_thumb (file_pre), FileTest.EXISTS)) {
+                            var dbus_Thum = new DbusThumbnailer ().instance;
+                            dbus_Thum.instand_thumbler (file_pre, "large");
+                            dbus_Thum.load_finished.connect (()=>{
+                                preview_area.set_from_pixbuf (pix_scale (large_thumb (file_pre), 256));
+                                label.label = get_info_file (file_pre);
+                                preview_area.show ();
+                                file.set_preview_widget_active (true);
+                            });
+                        } else {
+                            pixbuf = pix_scale (large_thumb (file_pre), 256);
                         }
-                        if (pixbuf != null) {
-                            label.label = get_info_file (preview_file);
-                            preview_area.set_from_pixbuf (pixbuf);
-                            preview_area.show ();
-                            file.set_preview_widget_active (true);
-                        }
-                    } catch (Error e) {
-                        GLib.warning (e.message);
-                        file.update_preview ();
+                    } else if (get_mime_type (file_pre).has_prefix ("audio/")) {
+                        var audiocover = new AudioCover();
+                        audiocover.import (file_pre.get_uri ());
+                        pixbuf = audiocover.pixbuf_albumart;
+                    }
+                    if (pixbuf != null) {
+                        label.label = get_info_file (file_pre);
+                        preview_area.set_from_pixbuf (pixbuf);
+                        preview_area.show ();
+                        file.set_preview_widget_active (true);
                     }
                 } else {
                     preview_area.hide ();
@@ -256,7 +257,7 @@ namespace niki {
             file.destroy ();
         }
 
-       public void run_open_folder () {
+       public bool run_open_folder (int loca_set) {
             var folder_location = new Gtk.FileChooserDialog (
             StringPot.Open, this, Gtk.FileChooserAction.SELECT_FOLDER,
             StringPot.Cancel, Gtk.ResponseType.CANCEL,
@@ -266,12 +267,23 @@ namespace niki {
             var filter_folder = new Gtk.FileFilter ();
             filter_folder.add_mime_type ("inode/directory");
             folder_location.set_filter (filter_folder);
-
-            if (folder_location.run () == Gtk.ResponseType.ACCEPT) {
-                NikiApp.settings.set_string ("folder-location", folder_location.get_file ().get_path ());
-                welcome_page.scanfolder.scanning (NikiApp.settings.get_string ("folder-location"), 0);
+            var res = folder_location.run ();
+            if (res == Gtk.ResponseType.ACCEPT) {
+                switch (loca_set) {
+                    case 0 :
+                        NikiApp.settings.set_string ("folder-location", folder_location.get_file ().get_path ());
+                        welcome_page.scanfolder.scanning (NikiApp.settings.get_string ("folder-location"), 0);
+                        break;
+                    case 1 :
+                        NikiApp.settings.set_string ("lyric-location", folder_location.get_file ().get_path ());
+                        break;
+                    case 2 :
+                        NikiApp.settings.set_string ("ask-lyric", folder_location.get_file ().get_path ());
+                        break;
+                }
             }
             folder_location.destroy ();
+            return res == Gtk.ResponseType.ACCEPT;
         }
 
         public void open_files (File[] files, bool clear_playlist = false, bool force_play = true) {

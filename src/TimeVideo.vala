@@ -66,9 +66,8 @@ namespace niki {
                 playback_duration = playback.duration;
             });
 
-            get_style_context ().add_class ("seek_bar");
             progress_duration_label = new Gtk.Label (null);
-            progress_duration_label.get_style_context ().add_class ("seek_bar");
+            progress_duration_label.get_style_context ().add_class ("button_action");
             progress_duration_label.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
             progress_duration_label.selectable = true;
             progress_duration_label.halign = Gtk.Align.START;

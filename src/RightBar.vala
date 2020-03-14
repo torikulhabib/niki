@@ -54,7 +54,6 @@ namespace niki {
             events |= Gdk.EventMask.POINTER_MOTION_MASK;
             events |= Gdk.EventMask.LEAVE_NOTIFY_MASK;
             events |= Gdk.EventMask.ENTER_NOTIFY_MASK;
-            get_style_context ().add_class ("ground_action_button");
 
             enter_notify_event.connect ((event) => {
                 if (event.window == get_window ()) {
@@ -87,7 +86,7 @@ namespace niki {
             add_folder.get_style_context ().add_class ("button_action");
             add_folder.set_tooltip_text (StringPot.Open_Folder);
             add_folder.clicked.connect ( () => {
-                window.run_open_folder ();
+                window.run_open_folder (0);
             });
             edit_button = new Gtk.Button.from_icon_name ("list-remove-symbolic", Gtk.IconSize.BUTTON);
             edit_button.get_style_context ().add_class ("button_action");
@@ -127,7 +126,7 @@ namespace niki {
             playlist_scrolled = new Gtk.ScrolledWindow (null, null);
             playlist_scrolled.get_style_context ().add_class ("scrollbar");
             adjustment = playlist_scrolled.vadjustment;
-            playlist_scrolled.vscrollbar_policy = Gtk.PolicyType.AUTOMATIC;
+            playlist_scrolled.set_policy (Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC);
             playlist_scrolled.add (playlist);
             notify["child-revealed"].connect (() => {
                 if (!child_revealed) {
@@ -138,6 +137,7 @@ namespace niki {
             playlist.enter_notify_event.connect (() => {
                 return cursor_hand_mode(0);
             });
+
             playlist.motion_notify_event.connect (() => {
                 size_flexible ();
                 return cursor_hand_mode(0);
@@ -146,8 +146,6 @@ namespace niki {
             playlist.leave_notify_event.connect (() => {
                 return cursor_hand_mode(2);
             });
-
-            NikiApp.settings.changed["edit-playlist"].connect (playlist_edit);
 
             header_label = new Gtk.Label ("");
             header_label.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
@@ -164,12 +162,12 @@ namespace niki {
             header.hexpand = true;
             header.set_center_widget (header_label);
             header.pack_start (focus_button);
-            playlist_edit ();
-		    var box_action = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
-    		box_action.spacing = 0;
-		    box_action.pack_start (open_button, false, false, 0);
-		    box_action.pack_start (add_folder, false, false, 0);
-		    box_action.pack_start (edit_button, false, false, 0);
+
+		    var box_action = new Gtk.Grid ();
+            box_action.orientation = Gtk.Orientation.HORIZONTAL;
+		    box_action.add (open_button);
+		    box_action.add (add_folder);
+		    box_action.add (edit_button);
 
             var main_actionbar = new Gtk.ActionBar ();
             main_actionbar.get_style_context ().add_class ("playlist");
@@ -186,9 +184,6 @@ namespace niki {
             content_box.add (main_actionbar);
             add (content_box);
             show_all ();
-            playlist.visible_menus.connect (() => {
-                reveal_control (false);
-            });
             uint remove_time = 0;
             size_allocate.connect (()=> {
                 if (remove_time != 0) {
@@ -200,12 +195,14 @@ namespace niki {
                     return Source.REMOVE;
                 });
             });
+            NikiApp.settings.changed["edit-playlist"].connect (playlist_edit);
+            playlist_edit ();
         }
 
         private void playlist_edit () {
             header_label.label = !NikiApp.settings.get_boolean ("edit-playlist")? StringPot.Playlist : StringPot.Select_Remove;
             ((Gtk.Image) edit_button.image).icon_name = NikiApp.settings.get_boolean ("edit-playlist")? "go-previous-symbolic" : "list-remove-symbolic";
-            edit_button.tooltip_text = NikiApp.settings.get_boolean ("edit-playlist")? StringPot.Back_Playlist : StringPot.Remove_List;
+            edit_button.tooltip_text = NikiApp.settings.get_boolean ("edit-playlist")? StringPot.Back_Playlist : StringPot.Remove_Playlists;
         }
 
         private void size_flexible (){
@@ -217,14 +214,14 @@ namespace niki {
                 set_reveal_child (!child_revealed? true : false);
             }
             content_box.margin = 5;
-            margin_top = 47;
-            margin_bottom = NikiApp.settings.get_boolean ("audio-video")? 108 : 56;
+            margin_top = NikiApp.settings.get_boolean ("audio-video")? 25 : 47;
+            margin_bottom = NikiApp.settings.get_boolean ("audio-video")? 110 : 56;
             if (hiding_timer != 0) {
                 Source.remove (hiding_timer);
             }
 
             hiding_timer = GLib.Timeout.add_seconds (2, () => {
-                if (hovered || playlist.visible_menu) {
+                if (hovered || playlist.menu.visible) {
                     hiding_timer = 0;
                     return false;
                 }

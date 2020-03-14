@@ -36,7 +36,7 @@ namespace niki {
             add (icon_image);
         }
         private void darklight () {
-            tooltip_text = !NikiApp.settings.get_boolean ("dark-style")? _("Light") : _("Dark");
+            tooltip_text = !NikiApp.settings.get_boolean ("dark-style")? _("Light mode") : _("Dark mode");
             icon_image.icon_name = !NikiApp.settings.get_boolean ("dark-style")? "display-brightness-symbolic" : "weather-clear-night-symbolic";
             Gtk.Settings.get_default ().gtk_application_prefer_dark_theme = NikiApp.settings.get_boolean ("dark-style");
             var css_provider = new Gtk.CssProvider ();

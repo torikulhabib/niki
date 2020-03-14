@@ -43,7 +43,7 @@ namespace niki {
                         signal_notify (StringPot.Empty_Audio);
                     }
                     if (mode_scan == 0 && !content_check) {
-                        signal_notify (StringPot.Folder_Empty);
+                        signal_notify (StringPot.Empty_Folder);
                     }
                     content_check = false;
                     check_count = 0;
@@ -70,18 +70,20 @@ namespace niki {
                             }
                         }
                         if (mode_scan == 1 && !content_video) {
-                            signal_notify (StringPot.Nothing_Video);
+                            signal_notify (StringPot.Empty_Video);
                         }
                         if (mode_scan == 2 && !content_Audio) {
-                            signal_notify (StringPot.Nothing_Audio);
+                            signal_notify (StringPot.Empty_Audio);
                         }
                         if (mode_scan == 0 && !content_Audio && !content_video) {
-                            signal_notify (StringPot.Nothing_AV);
+                            signal_notify (StringPot.Empty_Folder);
+                        }
+                        if (content_video || content_Audio) {
+                            if (window.main_stack.visible_child_name == "welcome") {
+                                window.player_page.play_first_in_playlist ();
+                            }
                         }
                         mimetype_contents = {};
-                        if (content_video || content_Audio) {
-                            window.player_page.play_first_in_playlist ();
-                        }
                         content_count = 0;
                         return Source.REMOVE;
                     });

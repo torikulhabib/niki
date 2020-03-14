@@ -21,13 +21,17 @@
 
 namespace niki {
     public class TimeMusic : Gtk.Revealer {
-        public Gtk.Label progression_label { get; construct set; }
-        public Gtk.Label duration_label { get; construct set; }
+        public signal void position_sec (int64 position);
+        public Gtk.Label progression_label;
+        public Gtk.Label duration_label;
+        private Gtk.Button make_lrc_but;
+        private Gtk.Button set_time_lrc;
+        private Pango.Layout layout;
+        private Gtk.DrawingArea anim_area;
+        private uint remove_time = 0;
         private int animstep = 0;
         private int state = 0;
         private bool visible_text = false;
-        private Pango.Layout layout;
-        private Gtk.DrawingArea anim_area;
         private double _playback_duration;
         public double playback_duration {
             get {
@@ -71,15 +75,28 @@ namespace niki {
                 playback_duration = playback.duration;
             });
 
-            get_style_context ().add_class ("seek_bar");
             progression_label = new Gtk.Label (null);
-            progression_label.get_style_context ().add_class ("seek_bar");
+            progression_label.get_style_context ().add_class ("button_action");
             progression_label.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
             progression_label.selectable = true;
+            progression_label.width_request = 50;
             duration_label = new Gtk.Label (null);
             duration_label.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
             duration_label.selectable = true;
+            duration_label.width_request = 50;
 
+            make_lrc_but = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.make-lrc-symbolic", Gtk.IconSize.BUTTON);
+            make_lrc_but.get_style_context ().add_class ("button_action");
+            make_lrc_but.tooltip_text = "Make Lyric";
+            make_lrc_but.clicked.connect (() => {
+                NikiApp.settings.set_boolean ("make-lrc", !NikiApp.settings.get_boolean ("make-lrc"));
+            });
+            set_time_lrc = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.time-lrc-symbolic", Gtk.IconSize.BUTTON);
+            set_time_lrc.get_style_context ().add_class ("button_action");
+            set_time_lrc.tooltip_text = "Set Time Lyric";
+            set_time_lrc.clicked.connect (() => {
+                position_sec ((int64)(playback.get_position () * 1000000));
+            });
             anim_area = new Gtk.DrawingArea ();
             anim_area.halign = Gtk.Align.CENTER;
             layout = anim_area.create_pango_layout (null);
@@ -88,15 +105,25 @@ namespace niki {
             anim_area.height_request = height;
             anim_area.draw.connect (anim_draw);
             anim_area.show ();
-            Timeout.add (500, animation_timer);
+
             var actionbar = new Gtk.ActionBar ();
-            actionbar.get_style_context ().add_class ("ground_action_button");
+            actionbar.get_style_context ().add_class ("transbgborder");
             actionbar.pack_start (progression_label);
+            actionbar.pack_start (set_time_lrc);
             actionbar.set_center_widget (anim_area);
             actionbar.pack_end (duration_label);
+            actionbar.pack_end (make_lrc_but);
             actionbar.hexpand = true;
             add (actionbar);
             show_all ();
+            NikiApp.settings.changed["player-mode"].connect (start_anime);
+            start_anime ();
+        }
+        private void start_anime () {
+            if (remove_time > 0 && NikiApp.settings.get_boolean("audio-video") && window.main_stack.visible_child_name == "player") {
+                Source.remove (remove_time);
+            }
+            remove_time = Timeout.add (35, animation_timer);
         }
         private bool anim_draw (Cairo.Context cr) {
             if (!visible_text) {
@@ -104,11 +131,11 @@ namespace niki {
             }
             double alpha = 0;
             if (animstep < 16) {
-                alpha = (double) animstep / 15.0;
+                alpha = animstep / 15.0;
             } else if (animstep < 18) {
                 alpha = 1.0;
             } else if (animstep < 33) {
-                alpha = 1.0 - ((double) (animstep - 17)) / 15.0;
+                alpha = 1.0 - (animstep - 17) / 15.0;
             }
 
             Gtk.StyleContext style = get_style_context ();
@@ -128,8 +155,6 @@ namespace niki {
         }
         private void decorate_text (int anim_type, double time) {
             Pango.Attribute attr;
-            Pango.Rectangle irect = {0, 0, 0, 0};
-            Pango.Rectangle lrect = {0, 0, 0, 0};
             string text = layout.get_text ();
             int width;
             layout.get_pixel_size (out width, null);
@@ -140,13 +165,6 @@ namespace niki {
                 case 0:
                     break;
                 case 1:
-                    for (int i = 0; i < text.char_count (); i++) {
-                        lrect.width = (int) ((1.0 - time) * 15.0 * Pango.SCALE + 0.5);
-                        attr = Pango.attr_shape_new (irect, lrect);
-                        attr.start_index = text.char_count () / 2;
-                        attr.end_index = (text.char_count () / 2) + 1;
-                        attrlist.change ((owned) attr);
-                    }
                     break;
                 case 2:
                     int letter_count = 0;
@@ -168,39 +186,39 @@ namespace niki {
                 visible_text = true;
                 switch (state) {
                     case 0:
-                        Timeout.add (30, animation_timer);
+                        remove_time = Timeout.add (35, animation_timer);
                         state += 1;
                         return false;
                     case 1:
-                        text = NikiApp.settings.get_boolean("audio-video") == true? StringPot.Titile : "";
+                        text = StringPot.Title;
                         state += 1;
                         break;
                     case 2:
-                        text = NikiApp.settings.get_boolean("audio-video") == true? NikiApp.settings.get_string ("tittle-playing") : "";
+                        text = NikiApp.settings.get_string ("title-playing");
                         state += 1;
                       break;
                     case 3:
-                        text = NikiApp.settings.get_boolean("audio-video") == true? StringPot.Artist : "";
+                        text = StringPot.Artist;
                         state += 1;
                         break;
                     case 4:
-                        text = NikiApp.settings.get_boolean("audio-video") == true? NikiApp.settings.get_string ("artist-music") : "";
+                        text = NikiApp.settings.get_string ("artist-music");
                         state += 1;
                         break;
                     case 5:
-                        text = NikiApp.settings.get_boolean("audio-video") == true? StringPot.Album : "";
+                        text = StringPot.Album;
                         state += 1;
                         break;
                     case 6:
-                        text = NikiApp.settings.get_boolean("audio-video") == true? NikiApp.settings.get_string ("album-music") : "";
+                        text = NikiApp.settings.get_string ("album-music");
                         state += 1;
                         break;
                     case 7:
-                        text = NikiApp.settings.get_boolean("audio-video") == true? StringPot.Equalizer : "";
+                        text = StringPot.Equalizer;
                         state += 1;
                         break;
                     case 8:
-                        text = NikiApp.settings.get_boolean("audio-video") == true? NikiApp.settings.get_string ("tooltip-equalizer") : "";
+                        text = NikiApp.settings.get_string ("tooltip-equalizer");
                         state = 0;
                         break;
                 }
@@ -209,28 +227,28 @@ namespace niki {
             }
 
             if (animstep < 16) {
-                decorate_text (2, ((double) animstep) / 15.0);
+                decorate_text (2, (animstep) / 15.0);
             } else if (animstep == 16) {
                 timeout = 900;
             } else if (animstep == 17) {
-                timeout = 30;
+                timeout = 35;
             } else if (animstep < 33) {
-                decorate_text (1, 1.0 - ((double) (animstep - 17)) / 15.0);
+                decorate_text (1, 1.0 - (animstep - 17) / 15.0);
             } else if (animstep == 33) {
                 visible_text = false;
                 timeout = 300;
             } else {
                 visible_text  = false;
                 animstep = -1;
-                timeout = 30;
+                timeout = 35;
             }
             animstep++;
             anim_area.queue_draw ();
             if (timeout > 0) { 
-                Timeout.add (timeout, animation_timer);
+                remove_time = Timeout.add (timeout, animation_timer);
                 return false;
             }
-            return true;
+            return NikiApp.settings.get_boolean("audio-video") && window.main_stack.visible_child_name == "player";
         }
     }
 }

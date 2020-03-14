@@ -67,7 +67,7 @@ namespace niki {
             margin_bottom = 2;
 
             foreach (string croma in CHROMA) {
-                var scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, croma != StringPot.Blur? -100 : -200, croma != StringPot.Blur? 100 : 200, 0.1);
+                var scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, -100, 100, 0.1);
                 scale.get_style_context ().add_class ("volume");
                 scale.set_margin_start (2);
                 scale.set_margin_end (2);

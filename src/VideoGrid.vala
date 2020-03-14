@@ -1,6 +1,5 @@
 namespace niki {
     public class VideoGrid : Gtk.Grid {
-        private const string saturation = "";
         private PlayerPage? playerpage;
         private Gtk.Entry new_preset_entry;
         private Gtk.Grid side_list;

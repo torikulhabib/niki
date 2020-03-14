@@ -3,6 +3,7 @@ namespace niki {
         private Gtk.ProgressBar progress_bar;
         private Gtk.Label bottom_label;
         private bool loop_run = false;
+	    private Cancellable cancellable;
 
         public DownloadDialog (string primary_text, string secondary_text, int mode_type) {
             Object (
@@ -70,6 +71,7 @@ namespace niki {
                 download_dlna (primary_text, file_out);
             });
             stop_button.clicked.connect (() => {
+				cancellable.cancel ();
                 if (loop_run) {
 	                try {
 		                File file = File.new_for_uri ("file://" + file_out);
@@ -106,10 +108,11 @@ namespace niki {
         public void download_dlna (string uri, string uriout) {
             var file_path = File.new_for_path (uriout);
             var file_from_uri = File.new_for_uri (uri);
+            cancellable = new Cancellable ();
             double progress = 0.0;
             progress_bar.set_fraction (0);
 
-            file_from_uri.copy_async.begin (file_path, FileCopyFlags.BACKUP | FileCopyFlags.ALL_METADATA, GLib.Priority.DEFAULT, null, (current_num_bytes, total_num_bytes) => {
+            file_from_uri.copy_async.begin (file_path, FileCopyFlags.BACKUP | FileCopyFlags.ALL_METADATA, GLib.Priority.DEFAULT, cancellable, (current_num_bytes, total_num_bytes) => {
                 loop_run = true;
                 progress = (double) current_num_bytes / total_num_bytes;
                 progress_bar.set_fraction (progress);
@@ -119,19 +122,9 @@ namespace niki {
 		        try {
 			        file_from_uri.copy_async.end (res);
 		        } catch (Error e) {
-			        print ("Error: %s\n", e.message);
+			        print ("%s\n", e.message);
 		        }
 		        destroy ();
-                destroy.connect (() => {
-                    Idle.add (()=> {
-		                try {
-			                file_from_uri.copy_async.end (res);
-		                } catch (Error e) {
-			                print ("Error: %s\n", e.message);
-		                }
-		                return false;
-		            });
-                });
 		    });
         }
     }

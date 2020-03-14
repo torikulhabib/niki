@@ -33,21 +33,11 @@ namespace niki {
             this.connection = connection;
             this.playback = playback;
             metadata = new HashTable<string, Variant> (str_hash, str_equal);
-
             playback.notify["playing"].connect (playing_changed);
             playback.eos.connect (update_metadata);
-            playback.notify["idle"].connect (() => {
-                playing_changed ();
-                update_metadata ();
-            });
-            NikiApp.settings.changed["next-status"].connect (() => {
-                playing_changed ();
-                update_metadata ();
-            });
-            NikiApp.settings.changed["previous-status"].connect (() => {
-                playing_changed ();
-                update_metadata ();
-            });
+            playback.notify["idle"].connect (update_metadata);
+            NikiApp.settings.changed["next-status"].connect (update_metadata);
+            NikiApp.settings.changed["previous-status"].connect (update_metadata);
         }
 
         private uint update_metadata_source = 0;
@@ -66,7 +56,8 @@ namespace niki {
         }
 
         private void update_metadata () {
-            string album_path = cache_image (NikiApp.settings.get_string("tittle-playing"));
+            playing_changed ();
+            string album_path = cache_image (NikiApp.settings.get_string("title-playing"));
             switch (NikiApp.settings.get_enum ("player-mode")) {
                 case PlayerMode.VIDEO :
                     string hash_file_poster = GLib.Checksum.compute_for_string (ChecksumType.MD5, NikiApp.settings.get_string ("uri-video"), NikiApp.settings.get_string ("uri-video").length);
@@ -74,17 +65,17 @@ namespace niki {
                     metadata = new HashTable<string, Variant> (null, null);
                     metadata.insert ("mpris:length", playback.duration * 1000000);
                     metadata.insert ("mpris:artUrl", "file://" + preview_path);
-                    metadata.insert ("xesam:title", NikiApp.settings.get_string("tittle-playing"));
-                    metadata.insert ("xesam:album", "Unknow");
-                    metadata.insert ("xesam:artist", get_simple_string_array ("Unknow"));
+                    metadata.insert ("xesam:title", NikiApp.settings.get_string("title-playing"));
+                    metadata.insert ("xesam:album", "Unknown");
+                    metadata.insert ("xesam:artist", get_simple_string_array ("Unknown"));
                     metadata.insert ("xesam:url", NikiApp.settings.get_string ("uri-video"));
                     break;
                 case PlayerMode.AUDIO :
-                    string album_path_music = cache_image (NikiApp.settings.get_string("tittle-playing") + " " + NikiApp.settings.get_string ("artist-music"));
+                    string album_path_music = cache_image (NikiApp.settings.get_string("title-playing") + " " + NikiApp.settings.get_string ("artist-music"));
                     metadata = new HashTable<string, Variant> (null, null);
                     metadata.insert ("mpris:length", playback.duration * 1000000);
                     metadata.insert ("mpris:artUrl", "file://" + album_path_music);
-                    metadata.insert ("xesam:title", NikiApp.settings.get_string ("tittle-playing"));
+                    metadata.insert ("xesam:title", NikiApp.settings.get_string ("title-playing"));
                     metadata.insert ("xesam:album", NikiApp.settings.get_string ("album-music"));
                     metadata.insert ("xesam:artist", get_simple_string_array (NikiApp.settings.get_string ("artist-music")));
                     metadata.insert ("xesam:url", NikiApp.settings.get_string ("uri-video"));
@@ -93,13 +84,13 @@ namespace niki {
                     metadata = new HashTable<string, Variant> (null, null);
                     metadata.insert ("mpris:length", playback.duration * 1000000);
                     metadata.insert ("mpris:artUrl", "file://" + album_path);
-                    metadata.insert ("xesam:title", NikiApp.settings.get_string("tittle-playing"));
+                    metadata.insert ("xesam:title", NikiApp.settings.get_string("title-playing"));
                     break;
                 case PlayerMode.STREAMVID :
                     metadata = new HashTable<string, Variant> (null, null);
                     metadata.insert ("mpris:length", playback.duration * 1000000);
                     metadata.insert ("mpris:artUrl", "file://" + album_path);
-                    metadata.insert ("xesam:title", NikiApp.settings.get_string("tittle-playing"));
+                    metadata.insert ("xesam:title", NikiApp.settings.get_string("title-playing"));
                     break;
             }
         }

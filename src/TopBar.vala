@@ -27,6 +27,7 @@ namespace niki {
         private Gtk.Button close_botton;
         private Gtk.Revealer menu_revealer;
         private Gtk.Stack stack;
+        public ButtonRevealer blur_button;
         public Gtk.Label label_info;
         public Gtk.Label info_label_full;
         private Gtk.Label my_app;
@@ -56,7 +57,6 @@ namespace niki {
             events |= Gdk.EventMask.POINTER_MOTION_MASK;
             events |= Gdk.EventMask.LEAVE_NOTIFY_MASK;
             events |= Gdk.EventMask.ENTER_NOTIFY_MASK;
-            get_style_context ().add_class ("ground_action_button");
 
             enter_notify_event.connect ((event) => {
               if (window.is_active) {
@@ -72,6 +72,15 @@ namespace niki {
                     reveal_control ();
                     hovered = true;
                 }
+                return false;
+            });
+            button_press_event.connect (() => {
+                hovered = true;
+                return Gdk.EVENT_PROPAGATE;
+            });
+
+            button_release_event.connect (() => {
+                hovered = true;
                 return false;
             });
             leave_notify_event.connect ((event) => {
@@ -115,7 +124,12 @@ namespace niki {
                 NikiApp.settings.set_boolean ("information-button", !NikiApp.settings.get_boolean ("information-button"));
                 info_button ();
             });
-
+            blur_button = new ButtonRevealer ("view-paged-symbolic-symbolic");
+            blur_button.revealer_button.get_style_context ().add_class ("button_action");
+            blur_button.clicked.connect (() => {
+                NikiApp.settings.set_boolean ("blur-mode", !NikiApp.settings.get_boolean ("blur-mode"));
+                blured_button ();
+            });
             my_app = new Gtk.Label (null);
             my_app.get_style_context ().add_class ("button_action");
             my_app.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
@@ -125,12 +139,13 @@ namespace niki {
             var main_actionbar = new Gtk.ActionBar ();
             main_actionbar.hexpand = true;
             main_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            main_actionbar.get_style_context ().add_class ("ground_action_button");
+            main_actionbar.get_style_context ().add_class ("transbgborder");
             main_actionbar.pack_start (close_botton);
             main_actionbar.pack_start (info_option);
             main_actionbar.pack_start (home_button);
             main_actionbar.set_center_widget (my_app);
             main_actionbar.pack_end (maximize_button);
+            main_actionbar.pack_end (blur_button);
             main_actionbar.show_all ();
 
             label_info = new Gtk.Label (null);
@@ -156,7 +171,7 @@ namespace niki {
             grid.show_all ();
 
             info_label_full = new Gtk.Label (null);
-            info_label_full.get_style_context ().add_class ("ground_action_button");
+            info_label_full.get_style_context ().add_class ("button_action");
             info_label_full.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
             info_label_full.ellipsize = Pango.EllipsizeMode.END;
             info_label_full.selectable = true;
@@ -175,7 +190,7 @@ namespace niki {
             add (stack);
             show_all ();
             NikiApp.settings.changed["information-button"].connect (revealer_menu);
-            NikiApp.settings.changed["tittle-playing"].connect (label_my_app);
+            NikiApp.settings.changed["title-playing"].connect (label_my_app);
             NikiApp.settings.changed["album-music"].connect (label_my_app);
             NikiApp.settings.changed["maximize"].connect (maximized_button);
             NikiApp.settings.changed["audio-video"].connect (() => {
@@ -183,9 +198,14 @@ namespace niki {
                 label_my_app ();
             });
             label_my_app ();
+            blured_button ();
             info_button ();
             stack_fulscreen ();
             revealer_menu ();
+        }
+        private void blured_button () {
+            blur_button.change_icon (NikiApp.settings.get_boolean ("blur-mode")? "applications-graphics-symbolic" : "com.github.torikulhabib.niki.color-symbolic");
+            blur_button.tooltip_text = NikiApp.settings.get_boolean ("blur-mode")? "Blur" : "Normal";
         }
         private void info_button () {
             ((Gtk.Image) info_option.image).icon_name = !NikiApp.settings.get_boolean ("information-button")? "dialog-information-symbolic" : "com.github.torikulhabib.niki.info-hide-symbolic";
@@ -194,7 +214,7 @@ namespace niki {
 
         private void label_my_app () {
             if (NikiApp.settings.get_boolean ("audio-video")) {
-                my_app.label = Markup.escape_text (NikiApp.settings.get_string ("tittle-playing")) + " <b> "+ StringPot.Artist + " </b> " + Markup.escape_text (NikiApp.settings.get_string ("artist-music")) + " <b> "+ StringPot.Album +" </b> " + Markup.escape_text (NikiApp.settings.get_string ("album-music"));
+                my_app.label = Markup.escape_text (NikiApp.settings.get_string ("title-playing")) + " <b> "+ StringPot.Artist + " </b> " + Markup.escape_text (NikiApp.settings.get_string ("artist-music")) + " <b> "+ StringPot.Album +" </b> " + Markup.escape_text (NikiApp.settings.get_string ("album-music"));
             } else {
                 my_app.label = StringPot.Niki_Video;
             }
@@ -203,6 +223,7 @@ namespace niki {
             stack.visible_child_name = !NikiApp.settings.get_boolean ("fullscreen") && !NikiApp.settings.get_boolean ("audio-video")? "info_actionbar" : "grid";
         }
         private void revealer_menu () {
+            blur_button.set_reveal_child (NikiApp.settings.get_boolean ("audio-video"));
             menu_revealer.set_reveal_child (!NikiApp.settings.get_boolean ("audio-video") && NikiApp.settings.get_boolean ("information-button")? true : false);
         }
         private void maximized_button () {

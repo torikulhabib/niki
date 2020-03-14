@@ -22,7 +22,6 @@
 namespace niki {
     public class DLNARenderControl : Gtk.ComboBox {
         private WelcomePage? welcompage;
-        private uint timeout_id = 0;
         private static Gtk.ListStore liststore;
         private static GUPnP.ServiceProxy connection_manager;
         private const string SEPARATOR_NAME = "<separator_item_unique_name>";
@@ -170,11 +169,7 @@ namespace niki {
             if (!FileUtils.test (nameimage, FileTest.EXISTS)) {
                 icon = align_and_scale_pixbuf (new ObjectPixbuf ().get_pixbuf_device_info (info), 16);
             } else {
-                try {
-                    icon = new Gdk.Pixbuf.from_file_at_scale (nameimage, 16, 16, true);
-	            } catch (Error e) {
-                    GLib.warning (e.message);
-	            }
+                icon = pix_scale (nameimage, 16);
 	        }
             if (name == null) {
                 return;
@@ -208,6 +203,9 @@ namespace niki {
                 GUPnP.DeviceProxy proxy_udn;
                 string sparator;
                 model.get (iter, DlnaComboColumns.DEVICEPROXY, out proxy_udn, DlnaComboColumns.DEVICENAME, out sparator);
+                if (proxy_udn == null) {
+                    return false;
+                }
                 if (udn == proxy_udn.get_udn ()) {
                     exist = true;
                 }
@@ -450,7 +448,7 @@ namespace niki {
             }
             av_transport.begin_action ("GetMediaInfo", get_next_info_cb, "InstanceID", Type.UINT, 0);
         }
-
+        private uint timeout_id = 0;
         private void add_timeout () {
             if (timeout_id == 0) {
                 timeout_id = Timeout.add_seconds (1, update_position);

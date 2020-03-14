@@ -28,19 +28,17 @@ namespace niki {
         private Gtk.TreeStore treestore;
         private Gtk.TreeIter active_iter;
         private Gtk.TreeIter root_device;
-        private Gtk.TreeIter selected_iter;
         private Gtk.TreeIter tree_all;
         private bool inseted = false;
         public bool downloaded = false;
         public bool next_uri = false;
-        private uint time_out = 0;
         private uint time_outs = 0;
         public signal void reload_device ();
 
         public DLNATreeView (WelcomePage welcompage) {
             get_style_context ().add_class ("dlnaplaylist");
             this.welcompage = welcompage;
-            serverdlna = new DLNAServer();
+            serverdlna = new DLNAServer ();
             objectpixbuf = new ObjectPixbuf ();
             treestore = new Gtk.TreeStore (DlnaTreeColumns.N_COLUMNS, typeof (Gdk.Pixbuf), typeof (string), typeof (GUPnP.DeviceInfo), typeof (GUPnP.ServiceProxy), typeof (string), typeof (int), typeof (string));
             insert_column_with_attributes (-1, "pixbuf", new Gtk.CellRendererPixbuf (), "pixbuf", DlnaTreeColumns.ICON);
@@ -60,83 +58,86 @@ namespace niki {
             });
 
             cursor_changed.connect (() => {
-                if (!get_selection().get_selected(null, out selected_iter)) {
+                Gtk.TreeIter iter;
+                if (!get_selection ().get_selected(null, out iter)) {
                     return;
                 }
                 string id;
                 int container;
-                treestore.get (selected_iter, DlnaTreeColumns.ID, out id, DlnaTreeColumns.DEVICEINFO, out device_all, DlnaTreeColumns.CONTAINER, out container);
-                if (treestore.iter_n_children (selected_iter) < 1 && container > 0) {
+                treestore.get (iter, DlnaTreeColumns.ID, out id, DlnaTreeColumns.DEVICEINFO, out device_all, DlnaTreeColumns.CONTAINER, out container);
+                if (treestore.iter_n_children (iter) < 1 && container > 0) {
                     NikiApp.settings.set_boolean ("spinner-wait", sensitive = false);
                     browse (id);
                 }
             });
+            var menu = new Gtk.Menu ();
+            var playing = new Gtk.MenuItem ();
+            playing.add (new MenuLabel ("media-playback-start-symbolic", "Play"));
+            playing.activate.connect (() => {
+                string id;
+                treestore.get (selected_iter (), DlnaTreeColumns.ID, out id, DlnaTreeColumns.DEVICEINFO, out device_all);
+                browse_metadata (id);
+                if (!get_selection().get_selected (null, out active_iter)) {
+                    return;
+                }
+                get_selection ().select_iter (active_iter);
+            });
+            var next_playing = new Gtk.MenuItem ();
+            next_playing.add (new MenuLabel ("com.github.torikulhabib.niki.next-symbolic", "Play Next"));
+            next_playing.activate.connect (() => {
+                string id;
+                treestore.get (selected_iter (), DlnaTreeColumns.ID, out id, DlnaTreeColumns.DEVICEINFO, out device_all);
+                browse_metadata (id);
+                next_uri = true;
+            });
+            var save_to = new Gtk.MenuItem ();
+            save_to.add (new MenuLabel ("drive-harddisk-symbolic", "Save to My Computer"));
+            save_to.activate.connect (() => {
+                downloaded = true;
+                string id;
+                treestore.get (selected_iter (), DlnaTreeColumns.ID, out id);
+                browse_metadata (id);
+            });
+            var rescan_device = new Gtk.MenuItem ();
+            rescan_device.add (new MenuLabel ("view-refresh-symbolic", "Rescan"));
+            rescan_device.activate.connect (() => {
+                int b = treestore.iter_n_children (null);
+                for (int i = 0; i < b; i++) {
+                    Gtk.TreeIter iter;
+                    if (treestore.get_iter_first (out iter)){
+                        treestore.remove (ref iter);
+                    }
+                }
+                reload_device ();
+            });
+            menu.add (playing);
+            menu.add (next_playing);
+            menu.add (save_to);
+            menu.add (rescan_device);
+            menu.show_all ();
+
             button_press_event.connect ((event) => {
                 if (event.button == Gdk.BUTTON_SECONDARY && event.type != Gdk.EventType.2BUTTON_PRESS) {
-                    Idle.add (() => {
-                        var menu = new Gtk.Menu ();
-                        var playing = new Gtk.MenuItem ();
-                        playing.add (new MenuLabel ("media-playback-start-symbolic", "Play"));
-                        var next_playing = new Gtk.MenuItem ();
-                        next_playing.add (new MenuLabel ("com.github.torikulhabib.niki.next-symbolic", "Play Next"));
-                        var save_to = new Gtk.MenuItem ();
-                        save_to.add (new MenuLabel ("drive-harddisk-symbolic", "Save to My Computer"));
-                        var rescan_device = new Gtk.MenuItem ();
-                        rescan_device.add (new MenuLabel ("view-refresh-symbolic", "Rescan"));
-                        if (get_selection().get_selected(null, out selected_iter)) {
-                            string upnp_class;
-                            treestore.get (selected_iter, DlnaTreeColumns.UPNPCLASS, out upnp_class);
-                            if (upnp_class == "object.item.videoItem" || upnp_class == "object.item.audioItem.musicTrack" || upnp_class == "object.item.imageItem.photo") {
-                                menu.add (playing);
-                                if (!welcompage.dlnarendercontrol.get_selected_device ()) {
-                                    menu.add (next_playing);
-                                }
-                                menu.add (save_to);
-                            }
+                    Gtk.TreeIter iter = selected_iter ();
+                    if (!treestore.iter_is_valid (iter)) {
+                        return Gdk.EVENT_PROPAGATE;
+                    }
+                    string upnp_class;
+                    treestore.get (iter, DlnaTreeColumns.UPNPCLASS, out upnp_class);
+                    if (upnp_class == "object.item.videoItem" || upnp_class == "object.item.audioItem.musicTrack" || upnp_class == "object.item.imageItem.photo") {
+                        playing.show ();
+                        save_to.show ();
+                        if (!welcompage.dlnarendercontrol.get_selected_device ()) {
+                            next_playing.show ();
+                        } else {
+                            next_playing.hide ();
                         }
-                        menu.add (rescan_device);
-                        menu.popup_at_pointer (event);
-                        playing.activate.connect (() => {
-                            string id;
-                            treestore.get (selected_iter, DlnaTreeColumns.ID, out id, DlnaTreeColumns.DEVICEINFO, out device_all);
-                            browse_metadata (id);
-                            if (!get_selection().get_selected(null, out active_iter)) {
-                                return;
-                            }
-                            get_selection().select_iter (active_iter);
-                            menu.hide ();
-                        });
-                        next_playing.activate.connect (() => {
-                            string id;
-                            treestore.get (selected_iter, DlnaTreeColumns.ID, out id, DlnaTreeColumns.DEVICEINFO, out device_all);
-                            browse_metadata (id);
-                            next_uri = true;
-                            menu.hide ();
-                        });
-                        save_to.activate.connect (() => {
-                            downloaded = true;
-                            string id;
-                            treestore.get (selected_iter, DlnaTreeColumns.ID, out id);
-                            browse_metadata (id);
-                            menu.hide ();
-                        });
-                        rescan_device.activate.connect (() => {
-                            int b = model.iter_n_children (null);
-                            for (int i = 0; i < b; i++) {
-                                Gtk.TreeIter iter;
-                                if (treestore.get_iter_first (out iter)){
-                                    treestore.remove (ref iter);
-                                }
-                            }
-                            Timeout.add (500,() => {
-                                reload_device ();
-                                return false;
-                            });
-                            menu.hide ();
-                        });
-                        menu.show_all ();
-                        return false;
-                    });
+                    } else {
+                        playing.hide ();
+                        save_to.hide ();
+                        next_playing.hide ();
+                    }
+                    menu.popup_at_pointer (event);
                 }
                 return Gdk.EVENT_PROPAGATE;
             });
@@ -154,15 +155,21 @@ namespace niki {
                 browse_cb (didl_xml);
             });
         }
+        public Gtk.TreeIter selected_iter () {
+            Gtk.TreeIter iter;
+            get_selection ().get_selected (null, out iter);
+            return iter;
+        }
+
         public void next_signal () {
             string id;
             if (!treestore.iter_is_valid (active_iter)) {
-                if (!get_selection().get_selected (null, out active_iter)) {
+                if (!get_selection ().get_selected (null, out active_iter)) {
                     return;
                 }
             }
             if (model.iter_next (ref active_iter)) {
-                get_selection().select_iter (active_iter);
+                get_selection ().select_iter (active_iter);
             }
             if (!treestore.iter_is_valid (active_iter)) {
                 return;
@@ -173,12 +180,12 @@ namespace niki {
         public void previous_signal () {
             string id;
             if (!treestore.iter_is_valid (active_iter)) {
-                if (!get_selection().get_selected (null, out active_iter)) {
+                if (!get_selection ().get_selected (null, out active_iter)) {
                     return;
                 }
             }
             if (model.iter_previous (ref active_iter)) {
-                get_selection().select_iter (active_iter);
+                get_selection ().select_iter (active_iter);
             }
             if (!treestore.iter_is_valid (active_iter)) {
                 return;
@@ -203,18 +210,20 @@ namespace niki {
         }
 
         private void on_didl_object_available (GUPnP.DIDLLiteParser parser, GUPnP.DIDLLiteObject object) {
-            if (!get_selection().get_selected(null, out selected_iter)) {
+            Gtk.TreeIter iter;
+            if (!get_selection ().get_selected (null, out iter)) {
                 treestore.append (out tree_all, root_device);
             } else {
                 if (inseted) {
                     treestore.append (out tree_all, root_device);
                 } else {
-                    treestore.append (out tree_all, selected_iter);
+                    treestore.append (out tree_all, iter);
                 }
             }
             append_didl_object (object, device_all);
             added_media ();
         }
+        private uint time_out = 0;
         public void added_media () {
             if (time_out != 0) {
                 Source.remove (time_out);
@@ -308,10 +317,6 @@ namespace niki {
                     playnow = true;
                 }
 
-                if (!NikiApp.settings.get_boolean ("stream-mode")) {
-                    NikiApp.settings.set_boolean ("stream-mode", true);
-                }
-
                 if (downloaded) {
                     var download_dialog = new DownloadDialog (uri, title, mediatype);
                     download_dialog.show_all ();
@@ -335,36 +340,12 @@ namespace niki {
         }
         private void browse (string container_id) {
             serverdlna.get_content_directory (device_all);
-            serverdlna.browse_async (container_id);
+            serverdlna.browse (container_id);
         }
 
         private void browse_metadata (string id) {
             serverdlna.get_content_directory (device_all);
-            serverdlna.browse_metadata_async (id);
-        }
-
-        private void append_media_server (GUPnP.DeviceProxy proxy) {
-            GUPnP.DeviceInfo info = (GUPnP.DeviceInfo)proxy;
-            string friendly_name = info.get_friendly_name ();
-            GUPnP.ServiceProxy content_dir = serverdlna.get_content_directory (info);
-            Gdk.Pixbuf icon = null;
-            string nameimage = cache_image (proxy.get_udn ());
-            if (!FileUtils.test (nameimage, FileTest.EXISTS)) {
-                icon = align_and_scale_pixbuf (objectpixbuf.get_pixbuf_device_info (info), 30);
-            } else {
-                try {
-                    icon = new Gdk.Pixbuf.from_file_at_scale (nameimage, 30, 30, true);
-	            } catch (Error e) {
-                    GLib.warning (e.message);
-	            }
-	        }
-            if (friendly_name != null && content_dir != null) {
-                inseted = true;
-                device_all = info;
-                treestore.append (out root_device, null);
-                treestore.set (root_device, DlnaTreeColumns.ICON, icon, DlnaTreeColumns.TITLE, friendly_name, DlnaTreeColumns.DEVICEINFO, info, DlnaTreeColumns.SERVICEPROXY, content_dir, DlnaTreeColumns.ID, "0");
-                browse ("0");
-            }
+            serverdlna.browse_metadata (id);
         }
 
         public void add_media_server (GUPnP.DeviceProxy proxy) {
@@ -380,7 +361,23 @@ namespace niki {
             if (exist) {
                 return;
             }
-            append_media_server (proxy);
+            GUPnP.DeviceInfo info = (GUPnP.DeviceInfo)proxy;
+            string friendly_name = info.get_friendly_name ();
+            GUPnP.ServiceProxy content_dir = serverdlna.get_content_directory (info);
+            Gdk.Pixbuf icon = null;
+            string nameimage = cache_image (proxy.get_udn ());
+            if (!FileUtils.test (nameimage, FileTest.EXISTS)) {
+                icon = align_and_scale_pixbuf (objectpixbuf.get_pixbuf_device_info (info), 30);
+            } else {
+                icon = pix_scale (nameimage, 30);
+	        }
+            if (friendly_name != null && content_dir != null) {
+                inseted = true;
+                device_all = info;
+                treestore.append (out root_device, null);
+                treestore.set (root_device, DlnaTreeColumns.ICON, icon, DlnaTreeColumns.TITLE, friendly_name, DlnaTreeColumns.DEVICEINFO, info, DlnaTreeColumns.SERVICEPROXY, content_dir, DlnaTreeColumns.ID, "0");
+                browse ("0");
+            }
         }
 
         public void remove_media_server (GUPnP.DeviceProxy proxy) {

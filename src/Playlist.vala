@@ -25,12 +25,9 @@ namespace niki {
         public signal void item_added ();
         private ObjectPixbuf? objectpixbuf;
         public Gtk.ListStore liststore;
-        public Gtk.TreeIter select_iter;
         public int current = 0;
         public int total = 0;
-        private uint finish_timer = 0;
-        public bool visible_menu = false;
-        public signal void visible_menus ();
+        public Gtk.Menu menu;
 
         construct {
             get_style_context ().add_class ("playlist");
@@ -56,125 +53,135 @@ namespace niki {
                     send_iter_to (iter);
                 }
             });
-            cursor_changed.connect (() => {
-                if (!get_selection().get_selected(null, out select_iter)) {
-                    return;
-                }
+
+            menu = new Gtk.Menu ();
+            var playing = new Gtk.MenuItem ();
+            playing.add (new MenuLabel ("media-playback-start-symbolic", StringPot.Play));
+            playing.activate.connect (() => {
+                send_iter_to (selected_iter ());
             });
+            var from_list = new Gtk.MenuItem ();
+            from_list.add (new MenuLabel ("list-remove-symbolic", StringPot.Remove_Playlist));
+            from_list.activate.connect (() => {
+                remove_iter ();
+            });
+            var from_device = new Gtk.MenuItem ();
+            from_device.add (new MenuLabel ("edit-delete-symbolic", StringPot.Remove_Device));
+            from_device.activate.connect (() => {
+                create_dialog (selected_iter ());
+            });
+            var info_details = new Gtk.MenuItem ();
+            info_details.add (new MenuLabel ("dialog-information-symbolic", StringPot.Details));
+            info_details.activate.connect (() => {
+                edit_info ();
+            });
+            var save_to = new Gtk.MenuItem ();
+            save_to.add (new MenuLabel ("drive-harddisk-symbolic", StringPot.Save_MyComputer));
+            save_to.activate.connect (() => {
+                save_to_computer (selected_iter ());
+            });
+
+            var menu_sub = new Gtk.MenuItem ();
+            menu_sub.add (new MenuLabel ("go-jump-symbolic", StringPot.Sort_by));
+
+            var title_short = new Gtk.MenuItem ();
+            var sub_tit = new MenuLabelRadio ("com.github.torikulhabib.niki.title-symbolic", StringPot.Title);
+            title_short.add (sub_tit);
+            title_short.activate.connect (() => {
+                NikiApp.settings.set_int ("sort-by", 0);
+            });
+            var artist_short = new Gtk.MenuItem ();
+            var sub_art = new MenuLabelRadio ("avatar-default-symbolic", StringPot.Artist);
+            artist_short.add (sub_art);
+            artist_short.activate.connect (() => {
+                NikiApp.settings.set_int ("sort-by", 1);
+            });
+
+            var album_short = new Gtk.MenuItem ();
+            var sub_alb = new MenuLabelRadio ("media-optical-symbolic", StringPot.Album);
+            album_short.add (sub_alb);
+            album_short.activate.connect (() => {
+                NikiApp.settings.set_int ("sort-by", 2);
+            });
+
+            var costum_short = new Gtk.MenuItem ();
+            var sub_cus = new MenuLabelRadio ("edit-symbolic", StringPot.Custom);
+            costum_short.add (sub_cus);
+            costum_short.activate.connect (() => {
+                NikiApp.settings.set_int ("sort-by", 3);
+            });
+
+            var spart_short = new Gtk.MenuItem ();
+            spart_short.add (new Gtk.Separator (Gtk.Orientation.HORIZONTAL));
+
+            var ascending_short = new Gtk.MenuItem ();
+            var sub_asc = new MenuLabelRadio ("view-sort-descending-symbolic", StringPot.Ascending);
+            ascending_short.add (sub_asc);
+            ascending_short.activate.connect (() => {
+                NikiApp.settings.set_boolean("ascen-descen", true);
+            });
+
+            var descending_short = new Gtk.MenuItem ();
+            var sub_des = new MenuLabelRadio ("view-sort-ascending-symbolic", StringPot.Descending);
+            descending_short.add (sub_des);
+            descending_short.activate.connect (() => {
+                NikiApp.settings.set_boolean("ascen-descen", false);
+            });
+            var submenu_menu2 = new Gtk.Menu ();
+            submenu_menu2.add (title_short);
+            submenu_menu2.add (artist_short);
+            submenu_menu2.add (album_short);
+            submenu_menu2.add (costum_short);
+            submenu_menu2.add (spart_short);
+            submenu_menu2.add (ascending_short);
+            submenu_menu2.add (descending_short);
+            menu_sub.submenu = submenu_menu2;
+
+            menu.append (playing);
+            menu.append (menu_sub);
+            menu.append (from_list);
+            menu.append (from_device);
+            menu.append (info_details);
+            menu.append (save_to);
+            menu.show_all ();
 
             button_press_event.connect ((event) => {
                 if (event.button == Gdk.BUTTON_PRIMARY) {
                     if (NikiApp.settings.get_boolean ("edit-playlist")) {
-                        Idle.add (() => {
-                            if (!liststore.iter_is_valid (select_iter)) {
-                                return false;
-                            }
-                            liststore.remove (ref select_iter);
-                            update_playlist (50);
-                            return Gdk.EVENT_PROPAGATE;
-                        });
+                        Idle.add (remove_iter);
                     }
                 }
                 if (event.button == Gdk.BUTTON_SECONDARY && event.type != Gdk.EventType.2BUTTON_PRESS) {
-                    Idle.add (() => {
-                        var menu = new Gtk.Menu ();
-                        var playing = new Gtk.MenuItem ();
-                        playing.add (new MenuLabel ("media-playback-start-symbolic", StringPot.Play));
-                        var from_list = new Gtk.MenuItem ();
-                        from_list.add (new MenuLabel ("list-remove-symbolic", StringPot.Remove_Playlist));
-                        var from_device = new Gtk.MenuItem ();
-                        from_device.add (new MenuLabel ("edit-delete-symbolic", StringPot.Remove_Device));
-                        var edit_tag = new Gtk.MenuItem ();
-                        edit_tag.add (new MenuLabel ("dialog-information-symbolic", StringPot.Details));
-                        var save_to = new Gtk.MenuItem ();
-                        save_to.add (new MenuLabel ("drive-harddisk-symbolic", StringPot.Save_MyComputer));
-                        menu.append (playing);
-                        var menu_sub = new Gtk.MenuItem ();
-                        menu_sub.add (new MenuLabel ("go-jump-symbolic", StringPot.Short_by));
-                        var submenu_menu2 = new Gtk.Menu ();
-                        var tittle_short = new Gtk.MenuItem ();
-                        tittle_short.add (new MenuLabelRadio ("com.github.torikulhabib.niki.title-symbolic", StringPot.Titile, NikiApp.settings.get_int ("sort-by") == 0));
-                        submenu_menu2.add (tittle_short);
-                        var artist_short = new Gtk.MenuItem ();
-                        artist_short.add (new MenuLabelRadio ("avatar-default-symbolic", StringPot.Artist, NikiApp.settings.get_int ("sort-by") == 1));
-                        submenu_menu2.add (artist_short);
-                        var album_short = new Gtk.MenuItem ();
-                        album_short.add (new MenuLabelRadio ("media-optical-symbolic", StringPot.Album, NikiApp.settings.get_int ("sort-by") == 2));
-                        submenu_menu2.add (album_short);
-                        var costum_short = new Gtk.MenuItem ();
-                        costum_short.add (new MenuLabelRadio ("edit-symbolic", StringPot.Custom, NikiApp.settings.get_int ("sort-by") == 3));
-                        submenu_menu2.add (costum_short);
-                        var spart_short = new Gtk.MenuItem ();
-                        spart_short.add (new Gtk.Separator (Gtk.Orientation.HORIZONTAL));
-                        submenu_menu2.add (spart_short);
-                        var ascending_short = new Gtk.MenuItem ();
-                        ascending_short.add (new MenuLabelRadio ("view-sort-descending-symbolic", StringPot.Ascending, NikiApp.settings.get_boolean ("ascen-descen")));
-                        submenu_menu2.add (ascending_short);
-                        var descending_short = new Gtk.MenuItem ();
-                        descending_short.add (new MenuLabelRadio ("view-sort-ascending-symbolic", StringPot.Descending, !NikiApp.settings.get_boolean ("ascen-descen")));
-                        submenu_menu2.add (descending_short);
-                        menu_sub.submenu = (submenu_menu2);
-                        menu.append (menu_sub);
-                        menu.append (from_list);
-                        tittle_short.activate.connect (() => {
-                            NikiApp.settings.set_int ("sort-by", 0);
-                        });
-                        artist_short.activate.connect (() => {
-                            NikiApp.settings.set_int ("sort-by", 1);
-                        });
-                        album_short.activate.connect (() => {
-                            NikiApp.settings.set_int ("sort-by", 2);
-                        });
-                        costum_short.activate.connect (() => {
-                            NikiApp.settings.set_int ("sort-by", 3);
-                        });
-                        ascending_short.activate.connect (() => {
-                            NikiApp.settings.set_boolean("ascen-descen", true);
-                        });
-                        descending_short.activate.connect (() => {
-                            NikiApp.settings.set_boolean("ascen-descen", false);
-                        });
-                        playing.activate.connect (() => {
-                            send_iter_to (select_iter);
-                            menu.hide ();
-                        });
-                        int input_mode, mediatype;
-                        liststore.get (select_iter, PlaylistColumns.INPUTMODE, out input_mode, PlaylistColumns.MEDIATYPE, out mediatype);
-                        if (input_mode == 0) {
-                            menu.append (from_device);
-                        }
-                        if (input_mode == 0 && mediatype == 1) {
-                            menu.append (edit_tag);
-                        }
-                        if (input_mode == 2) {
-                            menu.append (save_to);
-                        }
-                        menu.popup_at_pointer (event);
-                        from_list.activate.connect (() => {
-                            liststore.remove (ref select_iter);
-                            update_playlist (50);
-                            menu.hide ();
-                        });
-                        save_to.activate.connect (() => {
-                            save_to_computer (select_iter);
-                            menu.hide ();
-                        });
-                        from_device.activate.connect (() => {
-                            create_dialog (select_iter);
-                            menu.hide ();
-                        });
-                        edit_tag.activate.connect (() => {
-                            edit_info ();
-                            menu.hide ();
-                        });
-                        visible_menu = menu.visible;
-                        menu.hide.connect (() => {
-                            visible_menu = false;
-                            visible_menus ();
-                        });
-                        menu.show_all ();
-                        return false;
-                    });
+                    sub_tit.radio_but = NikiApp.settings.get_int ("sort-by") == 0;
+                    sub_art.radio_but = NikiApp.settings.get_int ("sort-by") == 1;
+                    sub_alb.radio_but = NikiApp.settings.get_int ("sort-by") == 2;
+                    sub_cus.radio_but = NikiApp.settings.get_int ("sort-by") == 3;
+                    sub_asc.radio_but = NikiApp.settings.get_boolean ("ascen-descen");
+                    sub_des.radio_but = !NikiApp.settings.get_boolean ("ascen-descen");
+                    Gtk.TreeIter iter = selected_iter ();
+                    if (!liststore.iter_is_valid (iter)) {
+                        return Gdk.EVENT_PROPAGATE;
+                    }
+                    int input_mode, mediatype;
+                    liststore.get (iter, PlaylistColumns.INPUTMODE, out input_mode, PlaylistColumns.MEDIATYPE, out mediatype);
+                    if (input_mode == 0) {
+                        from_device.show ();
+                    } else {
+                        from_device.hide ();
+                    }
+                    if (input_mode == 0 && mediatype == 1) {
+                        info_details.show ();
+                    } else if (input_mode == 0 && mediatype == 0) {
+                        info_details.show ();
+                    } else {
+                        info_details.hide ();
+                    }
+                    if (input_mode == 2) {
+                        save_to.show ();
+                    } else {
+                        save_to.hide ();
+                    }
+                    menu.popup_at_pointer (event);
                 }
                 return Gdk.EVENT_PROPAGATE;
             });
@@ -190,6 +197,20 @@ namespace niki {
             NikiApp.settings.changed["shuffle-button"].connect (get_random);
             NikiApp.settings.changed["ascen-descen"].connect (get_random);
             get_random ();
+        }
+        private bool remove_iter () {
+            Gtk.TreeIter iter = selected_iter ();
+            if (!liststore.iter_is_valid (iter)) {
+                return Gdk.EVENT_PROPAGATE;
+            }
+            liststore.remove (ref iter);
+            update_playlist (50);
+            return Gdk.EVENT_PROPAGATE;
+        }
+        public Gtk.TreeIter selected_iter () {
+            Gtk.TreeIter iter;
+            get_selection().get_selected(null, out iter);
+            return iter;
         }
         private void get_random () {
             if (NikiApp.settings.get_boolean ("shuffle-button")) {
@@ -234,7 +255,7 @@ namespace niki {
             int mediatype;
             bool playnow;
             liststore.get (iter, PlaylistColumns.FILENAME, out file_plying, PlaylistColumns.TITLE, out titlename, PlaylistColumns.FILESIZE, out filesize, PlaylistColumns.MEDIATYPE, out mediatype, PlaylistColumns.ALBUMMUSIC, out album, PlaylistColumns.ARTISTMUSIC, out artist, PlaylistColumns.PLAYNOW, out playnow);
-            NikiApp.settings.set_string ("tittle-playing", titlename);
+            NikiApp.settings.set_string ("title-playing", titlename);
             NikiApp.settings.set_string ("artist-music", artist);
             NikiApp.settings.set_string ("album-music", album);
             play (file_plying, filesize, mediatype, playnow);
@@ -305,8 +326,7 @@ namespace niki {
             if (exist) {
                 return;
             }
-            Gdk.Pixbuf preview = null;
-            preview = align_and_scale_pixbuf (objectpixbuf.get_pixbuf_from_url (inputstream [1], inputstream [2]), 48);
+            Gdk.Pixbuf preview = align_and_scale_pixbuf (objectpixbuf.get_pixbuf_from_url (inputstream [1], inputstream [2]), 48);
             if (preview != null) {
                 preview = objectpixbuf.icon_from_mediatype (mediatype);
             }
@@ -314,12 +334,12 @@ namespace niki {
             liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, inputstream [2], PlaylistColumns.ARTISTTITLE, Markup.escape_text (inputstream [2]), PlaylistColumns.FILENAME, inputstream [0], PlaylistColumns.MEDIATYPE, mediatype, PlaylistColumns.FILESIZE, "", PlaylistColumns.ALBUMMUSIC, "", PlaylistColumns.ARTISTMUSIC, "", PlaylistColumns.PLAYNOW, true, PlaylistColumns.INPUTMODE, 1);
         }
 
-        public void add_dlna (string input_url, string input_tittle, string input_album, string input_artist, int mediatype, bool playnow, string upnp_class, string size_file) {
+        public void add_dlna (string input_url, string input_title, string input_album, string input_artist, int mediatype, bool playnow, string upnp_class, string size_file) {
             bool exist = false;
             if (mediatype == 4) {
                 mediatype = 0;
             }
-            string filenamein = Markup.escape_text (input_tittle);
+            string filenamein = Markup.escape_text (input_title);
             Gtk.TreeIter iter;
             liststore.foreach ((model, path, iter) => {
                 string filename;
@@ -335,7 +355,7 @@ namespace niki {
 
             Gdk.Pixbuf preview = objectpixbuf.icon_from_type (upnp_class, 48);
             liststore.append (out iter);
-            liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, input_tittle, PlaylistColumns.ARTISTTITLE, mediatype == 2? "<b>" + Markup.escape_text (input_tittle) + "</b>" + "\n" + Markup.escape_text (input_artist) + " - " + Markup.escape_text (input_album) : Markup.escape_text (input_tittle), PlaylistColumns.FILENAME, input_url, PlaylistColumns.FILESIZE, size_file, PlaylistColumns.MEDIATYPE, mediatype, PlaylistColumns.ALBUMMUSIC, input_album, PlaylistColumns.ARTISTMUSIC, input_artist, PlaylistColumns.PLAYNOW, playnow, PlaylistColumns.INPUTMODE, 2);
+            liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, input_title, PlaylistColumns.ARTISTTITLE, mediatype == 2? "<b>" + Markup.escape_text (input_title) + "</b>" + "\n" + Markup.escape_text (input_artist) + " - " + Markup.escape_text (input_album) : Markup.escape_text (input_title), PlaylistColumns.FILENAME, input_url, PlaylistColumns.FILESIZE, size_file, PlaylistColumns.MEDIATYPE, mediatype, PlaylistColumns.ALBUMMUSIC, input_album, PlaylistColumns.ARTISTMUSIC, input_artist, PlaylistColumns.PLAYNOW, playnow, PlaylistColumns.INPUTMODE, 2);
             update_playlist (50);
         }
 
@@ -362,39 +382,31 @@ namespace niki {
             }
 
             Gdk.Pixbuf preview = null;
-            int type_file = file_type (path);
-            switch (type_file) {
-                case 0 :
-                    var videopreview = new VideoPreview (path.get_path (), path.get_uri(), get_mime_type (path));
-                    videopreview.run_preview ();
-                    try {
-                        preview = new Gdk.Pixbuf.from_file_at_scale (videopreview.set_preview (), 48, 48, true);
-	                } catch (Error e) {
-                        preview = objectpixbuf.icon_from_mediatype (0);
-                        GLib.warning (e.message);
-	                }
-                    break;
-                case 1 :
-                    album_music = get_album_music (file_name);
-                    artist_music = get_artist_music (file_name);
-                    string nameimage = cache_image (info_songs + " " + artist_music);
-                    if (!FileUtils.test (nameimage, FileTest.EXISTS)) {
-                        var audiocover = new AudioCover();
-                        audiocover.import (path.get_uri ());
-                        preview = audiocover.pixbuf_playlist;
-                    } else {
-                        try {
-                            preview = new Gdk.Pixbuf.from_file_at_scale (nameimage, 48, 48, true);
-	                    } catch (Error e) {
-                            GLib.warning (e.message);
-	                    }
-	                }
-                    break;
-            }
+            if (get_mime_type (path).has_prefix ("video/")) {
+                if (!FileUtils.test (normal_thumb (path), FileTest.EXISTS)) {
+                    var dbus_Thum = new DbusThumbnailer ().instance;
+                    dbus_Thum.instand_thumbler (path, "normal");
+                }
+                preview = pix_scale (normal_thumb (path), 48);
+                if (preview == null) {
+                    preview = objectpixbuf.icon_from_mediatype (0);
+                }
+            } else if (get_mime_type (path).has_prefix ("audio/")) {
+                album_music = get_album_music (file_name);
+                artist_music = get_artist_music (file_name);
+                string nameimage = cache_image (info_songs + " " + artist_music);
+                if (!FileUtils.test (nameimage, FileTest.EXISTS)) {
+                    var audiocover = new AudioCover();
+                    audiocover.import (path.get_uri ());
+                    preview = audiocover.pixbuf_playlist;
+                } else {
+                    preview = pix_scale (nameimage, 48);
+	            }
+	        }
             liststore.append (out iter);
-            liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE,  info_songs, PlaylistColumns.ARTISTTITLE, type_file == 0? Markup.escape_text (info_songs) : "<b>" + Markup.escape_text  (info_songs) + "</b>" + "\n" + Markup.escape_text (artist_music) + " - " + Markup.escape_text (album_music), PlaylistColumns.FILENAME, path.get_uri (), PlaylistColumns.FILESIZE, get_info_size (path.get_uri ()), PlaylistColumns.MEDIATYPE, file_type (path), PlaylistColumns.ALBUMMUSIC, album_music, PlaylistColumns.ARTISTMUSIC, artist_music, PlaylistColumns.PLAYNOW, true, PlaylistColumns.INPUTMODE, 0);
+            liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE,  info_songs, PlaylistColumns.ARTISTTITLE, file_type (path) == 0? Markup.escape_text (info_songs) : "<b>" + Markup.escape_text  (info_songs) + "</b>" + "\n" + Markup.escape_text (artist_music) + " - " + Markup.escape_text (album_music), PlaylistColumns.FILENAME, path.get_uri (), PlaylistColumns.FILESIZE, get_info_size (path.get_uri ()), PlaylistColumns.MEDIATYPE, file_type (path), PlaylistColumns.ALBUMMUSIC, album_music, PlaylistColumns.ARTISTMUSIC, artist_music, PlaylistColumns.PLAYNOW, true, PlaylistColumns.INPUTMODE, 0);
         }
-
+        private uint finish_timer = 0;
         private void update_playlist (uint timeout) {
             if (finish_timer != 0) {
                 Source.remove (finish_timer);
@@ -417,7 +429,7 @@ namespace niki {
             if (liststore.get_iter_first (out iter)){
                 string filename, titlename, album, artist;
                 liststore.get (iter, PlaylistColumns.FILENAME, out filename, PlaylistColumns.TITLE, out titlename, PlaylistColumns.ALBUMMUSIC, out album, PlaylistColumns.ARTISTMUSIC, out artist);
-                NikiApp.settings.set_string ("tittle-playing", titlename);
+                NikiApp.settings.set_string ("title-playing", titlename);
                 NikiApp.settings.set_string ("album-music", album);
                 NikiApp.settings.set_string ("artist-music", artist);
                 return filename;
@@ -460,7 +472,7 @@ namespace niki {
             if (liststore.get_iter_from_string (out iter, (total - 1).to_string ())){
                 string filename, titlename, album, artist;
                 liststore.get (iter, PlaylistColumns.FILENAME, out filename, PlaylistColumns.TITLE, out titlename, PlaylistColumns.ALBUMMUSIC, out album, PlaylistColumns.ARTISTMUSIC, out artist);
-                NikiApp.settings.set_string ("tittle-playing", titlename);
+                NikiApp.settings.set_string ("title-playing", titlename);
                 NikiApp.settings.set_string ("album-music", album);
                 NikiApp.settings.set_string ("artist-music", artist);
                 return filename;

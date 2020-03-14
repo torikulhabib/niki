@@ -71,15 +71,20 @@
 	  	<summary>Mode switch</summary>
 	  	<description>Mode switch</description>
   	</key>
+	  <key name="make-lrc" type="b">
+	  	<default>false</default>
+	  	<summary>Make Lyric</summary>
+	  	<description>Make Lyric</description>
+  	</key>
 	  <key name="dlna-muted" type="b">
 	  	<default>false</default>
 	  	<summary>DLNA muted</summary>
 	  	<description>DLNA muted</description>
   	</key>
-	  <key name="stream-mode" type="b">
+	  <key name="blur-mode" type="b">
 	  	<default>false</default>
-	  	<summary>Streaming condition</summary>
-	  	<description>Streaming condition</description>
+	  	<summary>Blur condition</summary>
+	  	<description>Blur condition</description>
   	</key>
 	  <key name="fullscreen" type="b">
 	  	<default>false</default>
@@ -94,12 +99,12 @@
     <key name="subtitle-available" type="b">
         <default>false</default>
         <summary>Subtitle signal</summary>
-        <description>Subtittle signal</description>
+        <description>Subtitle signal</description>
     </key>
-    <key name="activate-subtittle" type="b">
+    <key name="activate-subtitle" type="b">
         <default>false</default>
-        <summary>Active subtittle signal</summary>
-        <description>Active subtittle signal</description>
+        <summary>Active subtitle signal</summary>
+        <description>Active subtitle signal</description>
     </key>
     <key name="edit-playlist" type="b">
         <default>false</default>
@@ -151,10 +156,10 @@
       <summary>Information button</summary>
       <description>Information button</description>
     </key>
-    <key name="liric-button" type="b">
+    <key name="lyric-button" type="b">
       <default>false</default>
-      <summary>Liric button</summary>
-      <description>Liric button</description>
+      <summary>lyric button</summary>
+      <description>lyric button</description>
     </key>
     <key name="spinner-wait" type="b">
       <default>false</default>
@@ -196,6 +201,11 @@
         <summary>Volume</summary>
         <description>Volume</description>
     </key>
+	  <key name="location-save" type="i">
+	  	<default>0</default>
+	  	<summary>Location</summary>
+	  	<description>Location</description>
+  	</key>
 	  <key name="sort-by" type="i">
 	  	<default>0</default>
 	  	<summary>Sort By</summary>
@@ -291,15 +301,25 @@
         <summary>Path Css</summary>
         <description>Path Css</description>
     </key>
+    <key name="ask-lyric" type="s">
+        <default>""</default>
+        <summary>Ask Lyric</summary>
+        <description>Ask Lyric</description>
+    </key>
+    <key name="lyric-location" type="s">
+        <default>""</default>
+        <summary>Lyric Location</summary>
+        <description>Lyric Location</description>
+    </key>
     <key name="uri-video" type="s">
         <default>""</default>
         <summary>Uri video</summary>
         <description>Uri video</description>
     </key>
-    <key name="tittle-playing" type="s">
+    <key name="title-playing" type="s">
         <default>""</default>
-        <summary>tittle playing</summary>
-        <description>tittle playing</description>
+        <summary>title playing</summary>
+        <description>title playing</description>
     </key>
     <key name="artist-music" type="s">
         <default>""</default>
@@ -313,8 +333,8 @@
     </key>
     <key name="subtitle-choose" type="s">
       <default>''</default>
-      <summary>Subtittle file</summary>
-      <description>subtittle file</description>
+      <summary>Subtitle file</summary>
+      <description>subtitle file</description>
     </key>
     <key name="last-played" type="s">
       <default>''</default>

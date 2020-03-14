@@ -71,20 +71,9 @@
     color: @SolidWhite
 }
 
-.popover {
-    border-color: @SolidWhite;
-    background: @SolidWhite;
-    color: @SemiBlack;
-}
-
-.ground_action_button {
+.transbgborder {
     border-color: @transparancyColor;
     background: @transparancyColor;
-}
-
-.seek_bar {
-    color: @SolidWhite;
-    border-color: @SolidWhite;
 }
 
 .progress_bar progress {
@@ -170,8 +159,8 @@
 }
 
 .scrollbar trough slider {
-    background-color: @SolidWhite;
-    border-color: @SolidWhite;
+    background-color: rgba (200, 200, 200, 1);
+    border-color: @transparancyColor;
 }
 
 .dlna_scrollbar {
@@ -180,8 +169,8 @@
 }
 
 .dlna_scrollbar trough slider {
-    background-color: @SemiBlack;
-    border-color: @SemiBlack;
+    border-color: @transparancyColor;
+    background-color: rgba (80, 80, 80, 1);
 }
 
 .spinbut {

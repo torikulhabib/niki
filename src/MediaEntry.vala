@@ -24,10 +24,11 @@ namespace niki {
         public string first_label { get; construct; }
         public string second_label { get; construct; }
 
-        public MediaEntry (string first_label, string second_label) {
+        public MediaEntry (string first_label, string second_label, bool second = true) {
             Object (
                 first_label: first_label,
-                second_label: second_label
+                second_label: second_label,
+                secondary_icon_activatable: second
             );
         }
 
@@ -43,8 +44,8 @@ namespace niki {
                     text = clipboard.wait_for_text ().strip ();
                 }
             });
+            margin_end = 10;
             activates_default = true;
-            secondary_icon_activatable = true;
         }
     }
 }

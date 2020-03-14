@@ -1,6 +1,6 @@
 namespace niki {
     public class DLNAServer : Object {
-        public GUPnP.ServiceProxy content_directory;
+        private GUPnP.ServiceProxy content_directory;
         public signal void browse_finish (string didl_xml);
         public signal void browse_metadata_finish (string container_id);
 
@@ -21,11 +21,11 @@ namespace niki {
 	        }
         }
  
-        public void browse_async (string container_id) {
+        public void browse (string container_id) {
             content_directory.begin_action ("Browse", on_browse, "ObjectID", Type.STRING, container_id, "BrowseFlag", Type.STRING, "BrowseDirectChildren", "Filter", Type.STRING, "@childCount", "StartingIndex", Type.UINT, 0, "RequestedCount", Type.UINT, 0, "SortCriteria", Type.STRING, "");
         }
 
-        public void on_browse_metadata (GUPnP.ServiceProxy content_dir, GUPnP.ServiceProxyAction action) {
+        private void on_browse_metadata (GUPnP.ServiceProxy content_dir, GUPnP.ServiceProxyAction action) {
             string didl_xml;
             try {
                 if (content_dir.end_action (action, "Result", Type.STRING, out didl_xml)) {
@@ -35,7 +35,7 @@ namespace niki {
                 GLib.warning (e.message);
 	        }
         }
-        public void browse_metadata_async (string id) {
+        public void browse_metadata (string id) {
             content_directory.begin_action("Browse", on_browse_metadata, "ObjectID", Type.STRING, id, "BrowseFlag", Type.STRING, "BrowseMetadata", "Filter", Type.STRING, "*", "StartingIndex", Type.UINT, 0, "RequestedCount", Type.UINT, 0, "SortCriteria", Type.STRING, "");
         }
 

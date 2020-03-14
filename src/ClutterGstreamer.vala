@@ -24,7 +24,6 @@ namespace niki {
         public dynamic Gst.Element pipeline;
         private dynamic Gst.Element playsink;
         private dynamic Gst.Element visualmode;
-        private Value value;
         public VideoMix? videomix;
         public AudioMix? audiomix;
         private const string [] VISUALMODE = {"goom", "goom2k1", "spacescope", "spectrascope", "synaescope", "wavescope", "monoscope"};
@@ -35,10 +34,10 @@ namespace niki {
             pipeline = this.get_pipeline ();
             pipeline["video-sink"] = videomix;
             var iter = ((Gst.Bin)pipeline).iterate_sinks ();
-            string sink_name = null;
+            Value value;
             while (iter.next (out value) == Gst.Iterator.OK) {
                 playsink = (Gst.Element)value;
-                sink_name = playsink.get_name ();
+                string sink_name = playsink.get_name ();
                 if (strcmp (sink_name, "playsink") != 0) {
                     sink_name = null;
                     break;

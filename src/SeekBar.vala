@@ -21,10 +21,11 @@
 
 namespace niki {
     public class SeekBar : Gtk.Grid {
-        public PreviewPopover? preview_popover {get; set;}
+        public PreviewPopover? preview_popover;
         private Gtk.Scale scale;
         private Gee.HashMap<string, string> string_lyric;
-        private Lyric? lyric;
+        private Gee.HashMap<string, int> sc_lyric;
+        public Lyric? lyric;
         private string current_lyric;
         private string next_lyric_end;
         private string duration_string;
@@ -64,7 +65,7 @@ namespace niki {
         }
 
         public SeekBar (PlayerPage playerpage) {
-            get_style_context ().add_class ("ground_action_button");
+            get_style_context ().add_class ("transparantbg");
             get_style_context ().add_class ("seek_bar");
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, 0.0, 1.0, 0.01);
@@ -80,7 +81,6 @@ namespace niki {
                 start (playerpage);
             });
             playerpage.playback.notify["duration"].connect (() => {
-                scale.set_range (0.0, 1.0);
                 playback_duration = playerpage.playback.duration;
             });
 
@@ -100,7 +100,7 @@ namespace niki {
                 cursor_hand_mode (0);
                 preview_popover.update_pointing ((int) event.x);
                 preview_popover.set_preview_progress (event.x / ((double) event.window.get_width ()), !playerpage.playback.playing);
-                preview_popover.label_progress.label = " " + seconds_to_time ((int) (event.x / ((double) event.window.get_width ()) * playerpage.playback.duration)) + " ";
+                preview_popover.label_progress.label = @" $(seconds_to_time ((int) (event.x / ((double) event.window.get_width ()) * playerpage.playback.duration))) ";
                 return false;
             });
 
@@ -115,6 +115,7 @@ namespace niki {
                     } else {
                         playerpage.playback.progress = new_value;
                     }
+                    playerpage.seek_music ();
                 }
                 return false;
             });
@@ -125,22 +126,27 @@ namespace niki {
             show_all ();
         }
 
-        public Lyric file_lyric (string liric_file) {
-            return new LyricParser ().parse (File.new_for_uri (liric_file));
-        }
-
-        public void on_lyric_update (Lyric lyric) {
+        public void on_lyric_update (Lyric lyric, PlayerPage playerpage) {
             this.lyric = lyric;
+            int count = 0;
+		    List<string> list_lyric = new List<string> ();
             string_lyric = new Gee.HashMap<string, string> ();
+            sc_lyric = new Gee.HashMap<string, int> ();
             lyric.foreach ((item) => {
+                list_lyric.append (item.value);
+                sc_lyric[item.key.to_string ()] = count;
                 string_lyric[item.key.to_string ()] = item.value;
+                count++;
                 return true;
             });
+            foreach (string lyric_sc in list_lyric) {
+                playerpage.menu_actor.add_child (playerpage.text_clutter (@" $(lyric_sc) "));
+            }
         }
-        public string get_liric_now () {
+        public string get_lyric_now () {
             return current_lyric;
         }
-        public string get_liric_next () {
+        public string get_lyric_next () {
             return next_lyric_end;
         }
 
@@ -148,8 +154,9 @@ namespace niki {
             if (playerpage.playback.playing) {
                 if (NikiApp.settings.get_boolean("lyric-available") && NikiApp.settings.get_boolean("audio-video")) {
                     var seconds_time = ((int64)(playerpage.playback.get_position () * 1000000));
-                    current_lyric = " " + string_lyric[lyric.get_lyric_timestamp (seconds_time).to_string ()] + " ";
-                    string next_lyric = " " + string_lyric[lyric.get_lyric_timestamp (seconds_time, false).to_string ()] + " ";
+                    current_lyric = @" $(string_lyric[lyric.get_lyric_timestamp (seconds_time).to_string ()]) ";
+                    playerpage.scroll_actor (sc_lyric[lyric.get_lyric_timestamp (seconds_time).to_string ()]);
+                    string next_lyric = @" $(string_lyric[lyric.get_lyric_timestamp (seconds_time, false).to_string ()]) ";
                     next_lyric_end = next_lyric.contains (current_lyric)? "" : next_lyric;
                 }
             }

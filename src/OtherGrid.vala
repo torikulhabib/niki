@@ -49,7 +49,7 @@ namespace niki {
                     case StringPot.Color_Effects:
                         int i = 0;
                         foreach (string color_effect in COLOREFFECTS) {
-                            settingcombox.appending (COLOREFFECTS [i] == COLOREFFECTS [0]? "system-shutdown-symbolic" : "preferences-color-symbolic", color_effect);
+                            settingcombox.appending (COLOREFFECTS [i] == COLOREFFECTS [0]? "system-shutdown-symbolic" : "com.github.torikulhabib.niki.color-symbolic", color_effect);
                             i++;
                         }
                         NikiApp.settings.bind ("coloreffects-options", settingcombox, "active", GLib.SettingsBindFlags.DEFAULT);

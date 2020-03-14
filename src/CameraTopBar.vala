@@ -20,7 +20,7 @@
 */
 
 namespace niki {
-    public class CameraTopBar : Gtk.Revealer {
+    public class CameraTopBar : Gtk.EventBox {
         public Gtk.Button maximize_button;
         private Gtk.Button close_botton;
         private Gtk.Label my_app;
@@ -35,13 +35,9 @@ namespace niki {
         }
 
         construct {
-            transition_type = Gtk.RevealerTransitionType.CROSSFADE;
-            transition_duration = 500;
-            set_reveal_child (true);
             events |= Gdk.EventMask.POINTER_MOTION_MASK;
             events |= Gdk.EventMask.LEAVE_NOTIFY_MASK;
             events |= Gdk.EventMask.ENTER_NOTIFY_MASK;
-            get_style_context ().add_class ("ground_action_button");
 
             enter_notify_event.connect ((event) => {
               if (window.is_active) {
@@ -55,6 +51,15 @@ namespace niki {
                 if (window.is_active) {
                     hovered = true;
                 }
+                return false;
+            });
+            button_press_event.connect (() => {
+                hovered = true;
+                return Gdk.EVENT_PROPAGATE;
+            });
+
+            button_release_event.connect (() => {
+                hovered = true;
                 return false;
             });
             leave_notify_event.connect ((event) => {
@@ -81,7 +86,7 @@ namespace niki {
             var main_actionbar = new Gtk.ActionBar ();
             main_actionbar.hexpand = true;
             main_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            main_actionbar.get_style_context ().add_class ("ground_action_button");
+            main_actionbar.get_style_context ().add_class ("transbgborder");
 
             close_botton = new Gtk.Button.from_icon_name ("window-close-symbolic", Gtk.IconSize.BUTTON);
             close_botton.tooltip_text = StringPot.Close;
