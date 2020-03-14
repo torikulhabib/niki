@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extra\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-21 19:15+0100\n"
+"POT-Creation-Date: 2020-03-14 13:29+0100\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -47,7 +47,7 @@ msgid "lyric Maker."
 msgstr ""
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:16
-msgid "lyric."
+msgid "Lyric."
 msgstr ""
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:17
@@ -59,11 +59,11 @@ msgid "Video Balance."
 msgstr ""
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:19
-msgid "Music art as background."
+msgid "Album art as background."
 msgstr ""
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:20
-msgid "Blur bacground."
+msgid "Blurred background."
 msgstr ""
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:21
@@ -83,18 +83,38 @@ msgid "Disk Drive."
 msgstr ""
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:25
-msgid "MPRIS"
+msgid "MPRIS."
 msgstr ""
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:26
 msgid "Streaming."
 msgstr ""
 
-#: data/com.github.torikulhabib.niki.appdata.xml.in:34
+#: data/com.github.torikulhabib.niki.appdata.xml.in:36
+msgid "Fix and add Features!"
+msgstr ""
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:37
+msgid "Lyric Maker!"
+msgstr ""
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:38
+msgid "Scr Lyric!"
+msgstr ""
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:39
+msgid "Fix Typos by Nathan Bonnemains!"
+msgstr ""
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:40
+msgid "Updated Dutch translation by Safak GENISOL!"
+msgstr ""
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:45
 msgid "Hello Hera!"
 msgstr ""
 
-#: data/com.github.torikulhabib.niki.appdata.xml.in:87
+#: data/com.github.torikulhabib.niki.appdata.xml.in:98
 msgid "Torikul Habib"
 msgstr ""
 

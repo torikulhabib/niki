@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extra\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-21 19:15+0100\n"
+"POT-Creation-Date: 2020-03-14 13:29+0100\n"
 "PO-Revision-Date: 2020-02-21 19:11+0100\n"
 "Last-Translator: Nathan Bonnemains (@NathanBnm)\n"
 "Language-Team: none\n"
@@ -27,7 +27,7 @@ msgid "Media Player"
 msgstr "Lecteur multimédia"
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:10
-msgid "DLNA Video Music and streaming."
+msgid "DLNA Video Music and Streaming."
 msgstr "Lecteur multimédia DLNA, Vidéo, Musique et Streaming."
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:11
@@ -43,50 +43,78 @@ msgid "Music player."
 msgstr "Lecteure de musique."
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:15
-msgid "Font subtitle lyric."
-msgstr ""
+msgid "lyric Maker."
+msgstr "Créateur de paroles."
 
 #: data/com.github.torikulhabib.niki.appdata.xml.in:16
+msgid "Lyric."
+msgstr "Paroles."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:17
 msgid "Equalizer."
 msgstr "Égaliseur."
 
-#: data/com.github.torikulhabib.niki.appdata.xml.in:17
+#: data/com.github.torikulhabib.niki.appdata.xml.in:18
 msgid "Video Balance."
 msgstr "Balance vidéo."
 
-#: data/com.github.torikulhabib.niki.appdata.xml.in:18
-msgid "Apply album art as background."
+#: data/com.github.torikulhabib.niki.appdata.xml.in:19
+msgid "Album art as background."
 msgstr "Pochette d'album en arrière-plan."
 
-#: data/com.github.torikulhabib.niki.appdata.xml.in:19
-msgid "Blur bacground."
+#: data/com.github.torikulhabib.niki.appdata.xml.in:20
+msgid "Blurred background."
 msgstr "Arrière plan flou."
 
-#: data/com.github.torikulhabib.niki.appdata.xml.in:20
+#: data/com.github.torikulhabib.niki.appdata.xml.in:21
 msgid "DLNA Explorer."
 msgstr "Explorateur DLNA."
 
-#: data/com.github.torikulhabib.niki.appdata.xml.in:21
+#: data/com.github.torikulhabib.niki.appdata.xml.in:22
+msgid "DLNA Controller."
+msgstr "Explorateur DLNA."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:23
 msgid "Camera."
 msgstr "Appareil photo."
 
-#: data/com.github.torikulhabib.niki.appdata.xml.in:22
+#: data/com.github.torikulhabib.niki.appdata.xml.in:24
 msgid "Disk Drive."
 msgstr "Lecteur de disque."
 
-#: data/com.github.torikulhabib.niki.appdata.xml.in:23
+#: data/com.github.torikulhabib.niki.appdata.xml.in:25
 msgid "MPRIS."
 msgstr "MPRIS."
 
-#: data/com.github.torikulhabib.niki.appdata.xml.in:24
+#: data/com.github.torikulhabib.niki.appdata.xml.in:26
 msgid "Streaming."
 msgstr "Streaming."
 
-#: data/com.github.torikulhabib.niki.appdata.xml.in:34
+#: data/com.github.torikulhabib.niki.appdata.xml.in:36
+msgid "Fix and add Features!"
+msgstr "Correction et ajout de fonctionnalités !"
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:37
+msgid "Lyric Maker!"
+msgstr "Créateur de paroles !"
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:38
+msgid "Scr Lyric!"
+msgstr "Synchronisation des paroles !"
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:39
+msgid "Fix Typos by Nathan Bonnemains!"
+msgstr "Correction de fautes d'orthographe par Nathan Bonnemains !"
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:40
+msgid "Updated Dutch translation by Safak GENISOL!"
+msgstr "Mise à jour des traductions en néerlandais par Safak GENISOL !"
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:45
 msgid "Hello Hera!"
 msgstr "Bonjour Hera !"
 
-#: data/com.github.torikulhabib.niki.appdata.xml.in:87
+#: data/com.github.torikulhabib.niki.appdata.xml.in:98
 msgid "Torikul Habib"
 msgstr "Torikul Habib"
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: com.github.torikulhabib.niki\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-02-21 19:09+0100\n"
+"POT-Creation-Date: 2020-03-14 13:29+0100\n"
 "PO-Revision-Date: 2020-02-21 18:34+0100\n"
 "Last-Translator: Nathan Bonnemains (@NathanBnm)\n"
 "Language-Team: none\n"
@@ -58,7 +58,7 @@ msgid "Paste URL"
 msgstr "Coller l'URL"
 
 #: src/StringPot.vala:34
-msgid "Play Straming"
+msgid "Play Streaming"
 msgstr "Lire en streaming"
 
 #: src/StringPot.vala:35
@@ -146,7 +146,7 @@ msgid "Custom: "
 msgstr "Personnalisé : "
 
 #: src/StringPot.vala:56
-msgid "Unknow"
+msgid "Unknown"
 msgstr "Inconnu"
 
 #: src/StringPot.vala:57
@@ -230,441 +230,509 @@ msgid "Pick a File"
 msgstr "Sélectionnez un fichier"
 
 #: src/StringPot.vala:77
-msgid "All File"
-msgstr "Tous les fichiers"
-
-#: src/StringPot.vala:78
-msgid "Subtitle File"
+msgid "Subtitle Files"
 msgstr "Fichiers de sous-titres"
 
-#: src/StringPot.vala:79
+#: src/StringPot.vala:78
 msgid "Track"
 msgstr "Piste"
 
-#: src/StringPot.vala:80
-msgid "Nothing Video in Library\n"
-msgstr "Votre bibliothèqe vidéo est vide\n"
-
-#: src/StringPot.vala:81
-msgid "Nothing Music in Library\n"
-msgstr "Votre bibliothèque de musique est vide\n"
-
-#: src/StringPot.vala:82
+#: src/StringPot.vala:79
 msgid "Playlist"
 msgstr "Playlist"
 
-#: src/StringPot.vala:83
+#: src/StringPot.vala:80
 msgid "Select to Remove"
 msgstr "Sélectionnez pour supprimer"
 
-#: src/StringPot.vala:84
+#: src/StringPot.vala:81
 msgid "Back to Playlist"
 msgstr "Retour à la playlist"
 
-#: src/StringPot.vala:85
-msgid "Remove Multiple List"
+#: src/StringPot.vala:82
+msgid "Remove Multiple Playlists"
 msgstr "Supprimer plusieurs playlists"
 
-#: src/StringPot.vala:86
-msgid "Repeat ALL"
+#: src/StringPot.vala:83
+msgid "Repeat All"
 msgstr "Répéter tout"
 
-#: src/StringPot.vala:87
+#: src/StringPot.vala:84
 msgid "Repeat One"
 msgstr "Répéter une fois"
 
-#: src/StringPot.vala:88
+#: src/StringPot.vala:85
 msgid "Disable Repeat"
 msgstr "Désactiver la répétition"
 
-#: src/StringPot.vala:89
+#: src/StringPot.vala:86
 msgid "Play"
 msgstr "Lecture"
 
-#: src/StringPot.vala:90
+#: src/StringPot.vala:87
 msgid "Pause"
 msgstr "Pause"
 
-#: src/StringPot.vala:91
+#: src/StringPot.vala:88
 msgid "Stop"
 msgstr "Arrêter"
 
-#: src/StringPot.vala:92
+#: src/StringPot.vala:89
 msgid "Next"
 msgstr "Suivant"
 
-#: src/StringPot.vala:93
+#: src/StringPot.vala:90
 msgid "Previous"
 msgstr "Précédent"
 
-#: src/StringPot.vala:94
+#: src/StringPot.vala:91
 msgid "Remove from Playlist"
 msgstr "Supprimer de la playlist"
 
-#: src/StringPot.vala:95
+#: src/StringPot.vala:92
 msgid "Remove from Device"
 msgstr "Supprimer de l'appareil"
 
-#: src/StringPot.vala:96
+#: src/StringPot.vala:93
 msgid "Details"
 msgstr "Détails"
 
-#: src/StringPot.vala:97
+#: src/StringPot.vala:94
 msgid "Save to MyComputer"
 msgstr "Enregistrer dans mon ordinateur"
 
-#: src/StringPot.vala:98
-msgid "Short by"
+#: src/StringPot.vala:95
+msgid "Sort by"
 msgstr "Trier par"
 
-#: src/StringPot.vala:99
-msgid "Titile"
+#: src/StringPot.vala:96
+msgid "Title"
 msgstr "Titre"
 
-#: src/StringPot.vala:100
+#: src/StringPot.vala:97
 msgid "Ascending"
 msgstr "Croissant"
 
-#: src/StringPot.vala:101
+#: src/StringPot.vala:98
 msgid "Descending"
 msgstr "Décroissant"
 
-#: src/StringPot.vala:102
-msgid "Are you sure for remove from device"
+#: src/StringPot.vala:99
+msgid "Do you really want to remove this from device?"
 msgstr "Êtes-vous sûr de vouloir suporimer ceci de votre appareil ?"
 
-#: src/StringPot.vala:103
+#: src/StringPot.vala:100
 msgid "This will remove the file from your playlist and from any device."
 msgstr "Ceci supprimera le fichier de votre playlist et de tout appareil."
 
-#: src/StringPot.vala:104
+#: src/StringPot.vala:101
 msgid "Move to Trash"
 msgstr "Déplacer vers la corbeille"
 
-#: src/StringPot.vala:105
-msgid "Delete Permanent"
+#: src/StringPot.vala:102
+msgid "Delete Permanently"
 msgstr "Supprimer définitivement"
 
-#: src/StringPot.vala:106
+#: src/StringPot.vala:103
 msgid "Replay"
 msgstr "Relire"
 
-#: src/StringPot.vala:107
+#: src/StringPot.vala:104
 msgid "Press ESC to exit full screen"
 msgstr "Appuyez sur ÉCHAP pour quitter le plein écran"
 
-#: src/StringPot.vala:108
+#: src/StringPot.vala:105
 msgid "Delete Current"
 msgstr "Supprimer l'élément courant"
 
-#: src/StringPot.vala:109
+#: src/StringPot.vala:106
 msgid "Flat"
 msgstr "Flat"
 
-#: src/StringPot.vala:110
+#: src/StringPot.vala:107
 msgid "Classical"
 msgstr "Classique"
 
-#: src/StringPot.vala:111
+#: src/StringPot.vala:108
 msgid "Club"
 msgstr "Club"
 
-#: src/StringPot.vala:112
+#: src/StringPot.vala:109
 msgid "Dance"
 msgstr "Danse"
 
-#: src/StringPot.vala:113
+#: src/StringPot.vala:110
 msgid "Full Bass"
 msgstr "Bass booster"
 
-#: src/StringPot.vala:114
+#: src/StringPot.vala:111
 msgid "Full Treble"
 msgstr "Treble booster"
 
-#: src/StringPot.vala:115
+#: src/StringPot.vala:112
 msgid "Full Bass + Treble"
 msgstr "Bass + Treble booster"
 
-#: src/StringPot.vala:116
+#: src/StringPot.vala:113
 msgid "Headphones"
 msgstr "Casque"
 
-#: src/StringPot.vala:117
+#: src/StringPot.vala:114
 msgid "Large Hall"
 msgstr "Grande salle"
 
-#: src/StringPot.vala:118
+#: src/StringPot.vala:115
 msgid "Live"
 msgstr "Live"
 
-#: src/StringPot.vala:119
+#: src/StringPot.vala:116
 msgid "Party"
 msgstr "Fête"
 
-#: src/StringPot.vala:120
+#: src/StringPot.vala:117
 msgid "Pop"
 msgstr "Pop"
 
-#: src/StringPot.vala:121
+#: src/StringPot.vala:118
 msgid "Reggae"
 msgstr "Reggae"
 
-#: src/StringPot.vala:122
+#: src/StringPot.vala:119
 msgid "Rock"
 msgstr "Rock"
 
-#: src/StringPot.vala:123
+#: src/StringPot.vala:120
 msgid "Ska"
 msgstr "Ska"
 
-#: src/StringPot.vala:124
+#: src/StringPot.vala:121
 msgid "Soft Rock"
 msgstr "Rock alternatif"
 
-#: src/StringPot.vala:125
+#: src/StringPot.vala:122
 msgid "Techno"
 msgstr "Techno"
 
-#: src/StringPot.vala:126
+#: src/StringPot.vala:123
 msgid "Settings"
 msgstr "Paramètres"
 
-#: src/StringPot.vala:127
+#: src/StringPot.vala:124
 msgid "Fullscreen"
 msgstr "Plein écran"
 
-#: src/StringPot.vala:128
+#: src/StringPot.vala:125
 msgid "Other Preferences"
 msgstr "Autres préférences"
 
-#: src/StringPot.vala:129
+#: src/StringPot.vala:126
 msgid "Exit Fullscreen"
 msgstr "Quitter le plein écran"
 
-#: src/StringPot.vala:130
-msgid "Lyric On"
+#: src/StringPot.vala:127
+msgid "Lyrics On"
 msgstr "Paroles activées"
 
-#: src/StringPot.vala:131
-msgid "Lyric Off"
+#: src/StringPot.vala:128
+msgid "Lyrics Off"
 msgstr "Paroles désactivées"
 
-#: src/StringPot.vala:132
+#: src/StringPot.vala:129
 msgid "Equalizer"
 msgstr "Égaliseur"
 
-#: src/StringPot.vala:133
+#: src/StringPot.vala:130
 msgid "Video Balance"
 msgstr "Balance vidéo"
 
-#: src/StringPot.vala:134
+#: src/StringPot.vala:131
 msgid "Preferences"
 msgstr "Préférences"
 
-#: src/StringPot.vala:135
-msgid "Subtitle On"
+#: src/StringPot.vala:132
+msgid "Subtitles On"
 msgstr "Sous-titres activés"
 
-#: src/StringPot.vala:136
-msgid "Subtitle Off"
+#: src/StringPot.vala:133
+msgid "Subtitles Off"
 msgstr "Sous-titres désactivés"
 
-#: src/StringPot.vala:137
+#: src/StringPot.vala:134
 msgid "Record"
 msgstr "Enregistrer"
 
-#: src/StringPot.vala:138
-msgid "Setting Filter"
+#: src/StringPot.vala:135
+msgid "Filter Settings"
 msgstr "Paramètres de filtre"
 
-#: src/StringPot.vala:139
+#: src/StringPot.vala:136
 msgid "Camera"
 msgstr "Appareil photo"
 
-#: src/StringPot.vala:140
+#: src/StringPot.vala:137
 msgid "Video"
 msgstr "Vidéo"
 
-#: src/StringPot.vala:141
+#: src/StringPot.vala:138
 msgid "Capture"
 msgstr "Prendre une photo"
 
-#: src/StringPot.vala:142
+#: src/StringPot.vala:139
 msgid "Zoom In"
 msgstr "Zoom avant"
 
-#: src/StringPot.vala:143
+#: src/StringPot.vala:140
 msgid "Zoom Out"
 msgstr "Zoom arrière"
 
-#: src/StringPot.vala:144
+#: src/StringPot.vala:141
 msgid "Zoom X"
 msgstr "Zoom X"
 
-#: src/StringPot.vala:145
+#: src/StringPot.vala:142
 msgid "Camera Mode"
 msgstr "Mode photo"
 
-#: src/StringPot.vala:146
+#: src/StringPot.vala:143
 msgid "Video Mode"
 msgstr "Mode vidéo"
 
-#: src/StringPot.vala:147
+#: src/StringPot.vala:144
 msgid "Photo Saved"
 msgstr "Photo sauvegardée"
 
-#: src/StringPot.vala:148
+#: src/StringPot.vala:145
 msgid "Video Saved"
 msgstr "Vidéo sauvegardée"
 
-#: src/StringPot.vala:149
+#: src/StringPot.vala:146
 msgid "Flip Off"
 msgstr "Inversion désactivée"
 
-#: src/StringPot.vala:150
+#: src/StringPot.vala:147
 msgid "Flip On"
 msgstr "Inversion activée"
 
-#: src/StringPot.vala:151
+#: src/StringPot.vala:148
 msgid "Flash Off"
 msgstr "Flash désactivé"
 
-#: src/StringPot.vala:152
+#: src/StringPot.vala:149
 msgid "Flash On"
 msgstr "Flash activé"
 
-#: src/StringPot.vala:153
+#: src/StringPot.vala:150
 msgid "Niki - Camera"
 msgstr "Niki - Appareil photo"
 
-#: src/StringPot.vala:154
+#: src/StringPot.vala:151
 msgid "Reload"
 msgstr "Recharger"
 
-#: src/StringPot.vala:155
+#: src/StringPot.vala:152
 msgid "Niki Player"
 msgstr "Lecteur Niki"
 
-#: src/StringPot.vala:156
+#: src/StringPot.vala:153
 msgid "Add to Niki Playlist"
 msgstr "Ajouter à la playlist de Niki"
 
-#: src/StringPot.vala:157
+#: src/StringPot.vala:154
 msgid "Default"
 msgstr "Par défaut"
 
-#: src/StringPot.vala:158
+#: src/StringPot.vala:155
 msgid "Audio Video"
 msgstr "Audio Vidéo"
 
-#: src/StringPot.vala:206
+#: src/StringPot.vala:203
 msgid "Buffering: "
 msgstr "Mise en mémoire tampon : "
 
-#: src/StringPot.vala:207
+#: src/StringPot.vala:204
 msgid "Save"
 msgstr "Enregistrer"
 
-#: src/StringPot.vala:208
+#: src/StringPot.vala:205
 msgid "Crop & Position"
 msgstr "Rogner et positionner"
 
-#: src/StringPot.vala:209
-msgid "Choose the part of the image to use as an cover."
+#: src/StringPot.vala:206
+msgid "Choose the part of the image to use as a cover."
 msgstr "Sélectionnez la partie de l'image a utiliser comme pochette."
 
-#: src/StringPot.vala:210
+#: src/StringPot.vala:207
 msgid "Set cover"
 msgstr "Définir la pochette"
 
-#: src/StringPot.vala:211
+#: src/StringPot.vala:208
 msgid "Cover:"
 msgstr "Pochette : "
 
-#: src/StringPot.vala:212
+#: src/StringPot.vala:209
 msgid "Comment:"
 msgstr "Commentaire : "
 
-#: src/StringPot.vala:213
+#: src/StringPot.vala:210
 msgid "Title:"
 msgstr "Titre : "
 
-#: src/StringPot.vala:214
+#: src/StringPot.vala:211
 msgid "Artist:"
 msgstr "Artiste : "
 
-#: src/StringPot.vala:215
+#: src/StringPot.vala:212
 msgid "Album:"
 msgstr "Album : "
 
-#: src/StringPot.vala:216
+#: src/StringPot.vala:213
 msgid "Genre:"
 msgstr "Genre : "
 
-#: src/StringPot.vala:217
+#: src/StringPot.vala:214
 msgid "Composer:"
 msgstr "Compositeur : "
 
-#: src/StringPot.vala:218
+#: src/StringPot.vala:215
 msgid "Group:"
 msgstr "Groupe : "
 
-#: src/StringPot.vala:219
+#: src/StringPot.vala:216
 msgid "Track:"
 msgstr "Piste : "
 
-#: src/StringPot.vala:220
+#: src/StringPot.vala:217
 msgid "Date:"
 msgstr "Date : "
 
-#: src/StringPot.vala:221
+#: src/StringPot.vala:218
 msgid "Image"
-msgstr ""
+msgstr "Image"
 
-#: src/StringPot.vala:222
+#: src/StringPot.vala:219
+msgid "Empty Music Library\n"
+msgstr "Bibliothèque musicale vide\n"
+
+#: src/StringPot.vala:220
+msgid "Empty Video Library\n"
+msgstr "Bibliothèqe vidéo vide\n"
+
+#: src/StringPot.vala:221
 msgid "Folder is Empty\n"
 msgstr "Le dossier est vide\n"
 
-#: src/StringPot.vala:223
-msgid "Nothing Video And Music in Folder\n"
-msgstr "Les dossiers de vidéo et de musique sont vides\n"
-
-#: src/StringPot.vala:224
-msgid "Library Music is Empty\n"
-msgstr "La bibliothèque de musique est vide\n"
-
-#: src/StringPot.vala:225
-msgid "Library Video is Empty\n"
-msgstr "La bibliothèque vidéo est vide\n"
-
-#: src/StringPot.vala:226
+#: src/StringPot.vala:222
 msgid "Custom"
 msgstr "Personnalisé"
 
+#: src/StringPot.vala:223
+msgid "Time"
+msgstr "Temps"
+
+#: src/StringPot.vala:224
+msgid "Lyric"
+msgstr "Paroles"
+
+#: src/StringPot.vala:225
+msgid "Open Text"
+msgstr "Ouvrir le texte"
+
+#: src/StringPot.vala:226
+msgid "Add Row"
+msgstr "Ajouter une ligne"
+
+#: src/StringPot.vala:227
+msgid "Insert After"
+msgstr "Insérer après"
+
+#: src/StringPot.vala:228
+msgid "Insert Before"
+msgstr "Insérer avant"
+
+#: src/StringPot.vala:229
+msgid "Remove Row"
+msgstr "Supprimer la ligne"
+
+#: src/StringPot.vala:230
+msgid "Edit Exist Lyric"
+msgstr "Modifier les paroles existantes"
+
+#: src/StringPot.vala:231
+msgid "Save Lyric"
+msgstr "Enregistrer les paroles"
+
+#: src/StringPot.vala:232
+msgid "Niki - Lyric Maker"
+msgstr "Niki - Créateur de paroles"
+
+#: src/StringPot.vala:233
+msgid "Folder Location"
+msgstr "Emplacement du dossier"
+
+#: src/StringPot.vala:234
+msgid "Maker"
+msgstr "Créateur"
+
+#: src/StringPot.vala:235
+msgid "Writer"
+msgstr "Enregistreur"
+
+#: src/StringPot.vala:236
+msgid "Error Make Lyric"
+msgstr "Erreur lors de la création des paroles"
+
+#: src/StringPot.vala:237
+msgid "Succes Make Lyric"
+msgstr "Paroles créées avec succès"
+
+#: src/StringPot.vala:238
+msgid "Save to"
+msgstr "Enregistrer sous"
+
+#: src/StringPot.vala:239
+msgid "Location Music"
+msgstr "Emplacement de musique"
+
+#: src/StringPot.vala:240
+msgid "Save to Folder"
+msgstr "Enregistrer dans le dossier"
+
+#: src/StringPot.vala:241
+msgid "Ask Place"
+msgstr "Demander l'emplacement"
+
+#: src/StringPot.vala:242
+msgid "Text"
+msgstr "Texte"
+
+#: src/StringPot.vala:243
+msgid "Audio and Video"
+msgstr "Audio et Vidéo"
+
 #: src/LightDark.vala:39
-msgid "Light"
+msgid "Light mode"
 msgstr "Thème clair"
 
 #: src/LightDark.vala:39
-msgid "Dark"
+msgid "Dark mode"
 msgstr "Thème sombre"
 
-#: src/MediaEditor.vala:466
+#: src/MediaEditor.vala:627
 msgid " kHz"
 msgstr " kHz"
 
-#: src/MediaEditor.vala:467
+#: src/MediaEditor.vala:628
 msgid " bps"
 msgstr " bps"
 
-#: src/MediaEditor.vala:468
+#: src/MediaEditor.vala:629
 msgid "Stereo"
 msgstr "Stéréo"
 
-#: src/MediaEditor.vala:468
+#: src/MediaEditor.vala:629
 msgid "Mono"
 msgstr "Mono"
 
-#: src/MediaEntry.vala:37
+#: src/MediaEntry.vala:38
 msgid "Paste"
 msgstr "Coller"
