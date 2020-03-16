@@ -77,14 +77,15 @@ namespace niki {
             add (main_stack);
             show_all ();
 
-            main_stack.notify["visible-child"].connect (() => {
-                headerbar_mode ();
-            });
             welcome_page.stack.notify["visible-child"].connect (() => {
                 home_revealer.set_reveal_child (welcome_page.stack.visible_child_name == "dlna"? true : false);
                 headerbar.title = welcome_page.stack.visible_child_name == "dlna"? StringPot.Niki_DLNA_Browser : StringPot.Niki;
             });
             main_stack.notify["visible-child"].connect (() => {
+                headerbar_mode ();
+                if (welcome_page.stack.visible_child_name == "circular") {
+                    welcome_page.stack.visible_child_name = "home";
+                }
                 home_revealer.set_reveal_child (welcome_page.stack.visible_child_name == "dlna"? true : false);
                 headerbar.title = welcome_page.stack.visible_child_name == "dlna"? StringPot.Niki_DLNA_Browser : StringPot.Niki;
             });
@@ -272,7 +273,6 @@ namespace niki {
                 switch (loca_set) {
                     case 0 :
                         NikiApp.settings.set_string ("folder-location", folder_location.get_file ().get_path ());
-                        welcome_page.scanfolder.scanning (NikiApp.settings.get_string ("folder-location"), 0);
                         break;
                     case 1 :
                         NikiApp.settings.set_string ("lyric-location", folder_location.get_file ().get_path ());

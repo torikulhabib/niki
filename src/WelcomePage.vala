@@ -33,6 +33,8 @@ namespace niki {
         public DLNATreeView? treview;
         public DLNARenderControl? dlnarendercontrol;
         public DLNAAction? dlnaaction;
+        public CircularGrid? circulargrid;
+        public int index_but;
 
         construct {
             dlnamain = new DLNAMain (this);
@@ -99,22 +101,52 @@ namespace niki {
             dlna_scrolled.get_style_context ().add_class ("dlna_scrollbar");
             dlna_scrolled.add (treview);
             dlna_scrolled.show_all ();
+
             var dlna_grid = new Gtk.Grid ();
             dlna_grid.orientation = Gtk.Orientation.VERTICAL;
             dlna_grid.margin = 10;
             dlna_grid.add (dlna_scrolled);
             dlna_grid.add (dlnaaction);
             dlna_grid.add (dlnarendercontrol);
-
+            circulargrid = new CircularGrid ();
             stack = new Gtk.Stack ();
             stack.transition_type = Gtk.StackTransitionType.SLIDE_LEFT_RIGHT;
             stack.transition_duration = 500;
             stack.add_named (vertical_grid, "home");
             stack.add_named (dlna_grid, "dlna");
+            stack.add_named (circulargrid, "circular");
             stack.visible_child = vertical_grid;
             stack.vhomogeneous = false;
             stack.show_all ();
-
+            scanfolder.backtohome.connect (()=>{
+                if (stack.visible_child_name == "circular") {
+                    stack.visible_child_name = "home";
+                }
+            });
+            stack.notify["visible-child"].connect (() => {
+                if (stack.visible_child_name == "circular") {
+                    circulargrid.circular_clear ();
+                    Timeout.add (550, ()=>{
+                        if (index_but < 3) {
+                            scanfolder.remove_all ();
+                            if (index_but == 0) {
+                                scanfolder.scanning (NikiApp.settings.get_string ("folder-location"), index_but);
+                            } else if (index_but == 1) {
+                                scanfolder.scanning (GLib.Environment.get_user_special_dir (UserDirectory.VIDEOS), index_but);
+                            } if (index_but == 2) {
+                                scanfolder.scanning (GLib.Environment.get_user_special_dir (UserDirectory.MUSIC), index_but);
+                            }
+                            scanfolder.signal_succes.connect ((store_uri)=>{
+                                circulargrid.count_uri (store_uri);
+                            });
+                            index_but = 0;
+                        } else {
+                            circulargrid.count_uri (window.player_page.restore_file ());
+                        }
+                        return false;
+                    });
+                }
+            });
             var overlay = new Gtk.Overlay ();
             overlay.add (stack);
             overlay.add_overlay (infobar);
@@ -192,7 +224,11 @@ namespace niki {
                         break;
                     case 2:
                         window.player_page.playlist_widget ().clear_items ();
-                        window.run_open_folder (0);
+                        if (window.run_open_folder (0)) {
+                            stack.visible_child_name = "circular";
+                            index_but = 0;
+                            window.player_page.playlist_widget ().clear_items ();
+                        }
                         break;
                     case 3:
 		                window.main_stack.visible_child_name = "camera";
@@ -203,12 +239,14 @@ namespace niki {
             welcome_left.activated.connect ((index) => {
                 switch (index) {
                     case 0:
+                        stack.visible_child_name = "circular";
+                        index_but = 1;
                         window.player_page.playlist_widget ().clear_items ();
-                        scanfolder.scanning (GLib.Environment.get_user_special_dir (UserDirectory.VIDEOS), 1);
                         break;
                     case 1:
+                        stack.visible_child_name = "circular";
+                        index_but = 2;
                         window.player_page.playlist_widget ().clear_items ();
-                        scanfolder.scanning (GLib.Environment.get_user_special_dir (UserDirectory.MUSIC), 2);
                         break;
                     case 2:
                         stack.visible_child = dlna_grid;

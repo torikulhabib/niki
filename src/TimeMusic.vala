@@ -117,10 +117,10 @@ namespace niki {
             add (actionbar);
             show_all ();
             NikiApp.settings.changed["player-mode"].connect (start_anime);
-            start_anime ();
+            playback.notify["playing"].connect (start_anime);
         }
         private void start_anime () {
-            if (remove_time > 0 && NikiApp.settings.get_boolean("audio-video") && window.main_stack.visible_child_name == "player") {
+            if (remove_time > 0 && NikiApp.settings.get_boolean("audio-video") && window.main_stack.visible_child_name == "player" && window.player_page.playback.playing) {
                 Source.remove (remove_time);
             }
             remove_time = Timeout.add (35, animation_timer);
@@ -158,7 +158,7 @@ namespace niki {
             string text = layout.get_text ();
             int width;
             layout.get_pixel_size (out width, null);
-            anim_area.width_request = (int) (width * 1.12);
+            anim_area.width_request = (int) (width * 1.112);
             Pango.AttrList attrlist = new Pango.AttrList ();
 
             switch (anim_type) {

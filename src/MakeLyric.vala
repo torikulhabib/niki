@@ -148,7 +148,7 @@ namespace niki {
             get_fol_rev.clicked.connect (() => {
                 window.run_open_folder (1);
             });
-            var label_make = new Gtk.Label (StringPot.Lyric_Maker);
+            var label_make = new Gtk.Label (StringPot.Niki_Lyric_Maker);
             label_make.get_style_context ().add_class ("transparantbg");
             label_make.ellipsize = Pango.EllipsizeMode.END;
             label_make.selectable = true;

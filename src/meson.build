@@ -89,6 +89,8 @@ executable(
     'MediaEntry.vala',
     'HeaderLabel.vala',
     'MakeLyric.vala',
+    'CircularGrid.vala',
+    'CircularProgressBar.vala',
 
     c_args: c_args,
     dependencies: [

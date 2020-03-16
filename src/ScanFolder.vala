@@ -22,10 +22,17 @@
 namespace niki {
     public class ScanFolder : GLib.Object {
         public signal void signal_notify (string output);
+        public signal void backtohome ();
+        public signal void signal_succes (Gtk.ListStore liststore);
         private string [] mimetype_contents = {};
         private uint content_count = 0;
         private uint check_count = 0;
         private bool content_check = false;
+        public Gtk.ListStore liststore;
+
+        construct {
+            liststore = new Gtk.ListStore (1, typeof (string));
+        }
 
         public void scanning (string path, int mode_scan) {
             File directory = File.new_for_path (path);
@@ -38,12 +45,15 @@ namespace niki {
                 check_count = GLib.Timeout.add (50, () => {
                     if (mode_scan == 1 && !content_check) {
                         signal_notify (StringPot.Empty_Video);
+                        backtohome ();
                     }
                     if (mode_scan == 2 && !content_check) {
                         signal_notify (StringPot.Empty_Audio);
+                        backtohome ();
                     }
                     if (mode_scan == 0 && !content_check) {
                         signal_notify (StringPot.Empty_Folder);
+                        backtohome ();
                     }
                     content_check = false;
                     check_count = 0;
@@ -71,17 +81,18 @@ namespace niki {
                         }
                         if (mode_scan == 1 && !content_video) {
                             signal_notify (StringPot.Empty_Video);
+                            backtohome ();
                         }
                         if (mode_scan == 2 && !content_Audio) {
                             signal_notify (StringPot.Empty_Audio);
+                            backtohome ();
                         }
                         if (mode_scan == 0 && !content_Audio && !content_video) {
                             signal_notify (StringPot.Empty_Folder);
+                            backtohome ();
                         }
                         if (content_video || content_Audio) {
-                            if (window.main_stack.visible_child_name == "welcome") {
-                                window.player_page.play_first_in_playlist ();
-                            }
+                            signal_succes (liststore);
                         }
                         mimetype_contents = {};
                         content_count = 0;
@@ -107,24 +118,20 @@ namespace niki {
                         switch (mode_scan) {
                             case 0:
                                 if (video_file) {
-                                    var found_path = GLib.File.new_build_filename (path, file_info.get_name ());
-                                    add_to_playlist (found_path);
+                                    list_append (path, file_info);
                                 }
                                 if (Audio_file) {
-                                    var found_path = GLib.File.new_build_filename (path, file_info.get_name ());
-                                    add_to_playlist (found_path);
+                                    list_append (path, file_info);
                                 }
                                 break;
                             case 1:
                                 if (video_file) {
-                                    var found_path = GLib.File.new_build_filename (path, file_info.get_name ());
-                                    add_to_playlist (found_path);
+                                    list_append (path, file_info);
                                 }
                                 break;
                             case 2:
                                 if (Audio_file) {
-                                    var found_path = GLib.File.new_build_filename (path, file_info.get_name ());
-                                    add_to_playlist (found_path);
+                                    list_append (path, file_info);
                                 }
                                 break;
                         }
@@ -134,9 +141,16 @@ namespace niki {
                 warning (err.message);
             }
         }
-
-        private void add_to_playlist (File found_path) {
-            window.player_page.playlist_widget ().add_item (found_path);
+        private void list_append (string path, FileInfo info) {
+            Gtk.TreeIter iter;
+            liststore.append (out iter);
+            var found_path = GLib.File.new_build_filename (path, info.get_name ());
+            liststore.set (iter, 0, found_path.get_uri ());
+        }
+        public void remove_all () {
+            if (liststore.iter_n_children (null) > 0) {
+                liststore.clear ();
+            }
         }
     }
 }

@@ -573,13 +573,5 @@ namespace niki {
             }
             NikiApp.settings.set_strv ("last-played-videos", videos);
         }
-
-        public void restore_playlist () {
-            foreach (string restore_last in NikiApp.settings.get_strv ("last-played-videos")) {
-                if (!restore_last.has_prefix ("http")) {
-                    add_item (File.new_for_uri (restore_last));
-                }
-            }
-        }
     }
 }

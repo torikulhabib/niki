@@ -69,16 +69,7 @@ namespace niki {
                 int standard_output;
                 int standard_error;
 
-                Process.spawn_async_with_pipes (
-                	cache_folder (),
-                    spawn_args,
-                    Environ.get (),
-                    SpawnFlags.SEARCH_PATH | SpawnFlags.DO_NOT_REAP_CHILD,
-                    null,
-                    out child_pid,
-                    out standard_input,
-                    out standard_output,
-                    out standard_error);
+                Process.spawn_async_with_pipes ( cache_folder (), spawn_args, Environ.get (), SpawnFlags.SEARCH_PATH | SpawnFlags.DO_NOT_REAP_CHILD, null, out child_pid, out standard_input, out standard_output, out standard_error);
                 IOChannel output = new IOChannel.unix_new (standard_output);
                 output.add_watch (IOCondition.IN | IOCondition.HUP, (channel, condition) => {
                     return process_line (channel, condition, "stdout");

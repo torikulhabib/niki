@@ -22,6 +22,11 @@
 namespace niki {
     private Window window = null;
     public class NikiApp : Gtk.Application {
+        public static GLib.Settings settings = new GLib.Settings ("com.github.torikulhabib.niki");
+        public static GLib.Settings settingsEq = new GLib.Settings ("com.github.torikulhabib.equalizer");
+        public static GLib.Settings settingsVf = new GLib.Settings ("com.github.torikulhabib.videofilter");
+        public static GLib.Settings settingsCv = new GLib.Settings ("com.github.torikulhabib.videocamera");
+
         private static NikiApp _instance = null;
         public static NikiApp instance {
             get {
@@ -53,16 +58,6 @@ namespace niki {
         private void on_shutdown () {
             Inhibitor.instance.uninhibit ();
             Contractor.remove_contract ();
-        }
-        public static GLib.Settings settings;
-        public static GLib.Settings settingsEq;
-        public static GLib.Settings settingsVf;
-        public static GLib.Settings settingsCv;
-        static construct {
-            settings = new GLib.Settings ("com.github.torikulhabib.niki");
-            settingsEq = new GLib.Settings ("com.github.torikulhabib.equalizer");
-            settingsVf = new GLib.Settings ("com.github.torikulhabib.videofilter");
-            settingsCv = new GLib.Settings ("com.github.torikulhabib.videocamera");
         }
 
         public void active () {

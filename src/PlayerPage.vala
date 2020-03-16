@@ -25,7 +25,6 @@ namespace niki {
         public Clutter.Point point;
         public MPRIS? mpris;
         private uint mouse_timer = 0;
-        private bool firstplay = false;
         private bool _mouse_hovered = false;
         private bool mouse_hovered {
             get {
@@ -205,30 +204,7 @@ namespace niki {
             bottom_bar.notify["child-revealed"].connect (mouse_blank);
             top_bar.notify["child-revealed"].connect (mouse_blank);
             right_bar.notify["child-revealed"].connect (mouse_blank);
-            bool startup = false;
-            playlist_widget ().item_added.connect (() => {
-                load_current_list ();
-                if (!startup) {
-                    if (!firstplay) {
-                        if (!NikiApp.settings.get_string("last-played").has_prefix ("http")) {
-                            playback.uri = NikiApp.settings.get_string("last-played");
-                            playback.progress = NikiApp.settings.get_double("last-stopped");
-                            top_bar.label_info.set_label (NikiApp.settings.get_string("title-playing") + get_info_size (playback.uri));
-                            top_bar.info_label_full.set_label (NikiApp.settings.get_string("title-playing") + get_info_size (playback.uri));
-                            if (playback.uri.down().contains (NikiApp.settings.get_string("last-played").down())) {
-                                NikiApp.settings.set_double("last-stopped", 0);
-                            }
-                            NikiApp.settings.set_string ("uri-video", NikiApp.settings.get_string("last-played"));
-                            sub_lr_check (NikiApp.settings.get_string("last-played"));
-                            update_position_cover ();
-                            load_current_list ();
-                            signal_playing ();
-                            bottom_bar.stop_revealer.set_reveal_child (false);
-                            startup = true;
-                        }
-                    }
-                }
-            });
+            playlist_widget ().item_added.connect (load_current_list);
 
             playback.eos.connect (() => {
                 playback.progress = 0;
@@ -350,8 +326,9 @@ namespace niki {
             if (!playback.playing) {
                 if (window.is_privacy_mode_enabled () && !NikiApp.settings.get_boolean("home-signal")) {
                     if (file_exists (NikiApp.settings.get_string("last-played"))) {
-                        window.main_stack.visible_child_name = "player";
-                        playlist_widget ().restore_playlist ();
+                        window.welcome_page.index_but = 3;
+                        window.welcome_page.stack.visible_child_name = "circular";
+                        restore_file ();
                     } else {
                         gohome ();
                     }
@@ -361,13 +338,39 @@ namespace niki {
             } else {
                 window.main_stack.visible_child_name = "player";
             }
-            if (NikiApp.settings.get_boolean("audio-video") && !NikiApp.settings.get_boolean("home-signal")){
+            return false;
+        }
+        public Gtk.ListStore restore_file () {
+            var liststore = new Gtk.ListStore (1, typeof (string));
+            foreach (string restore_last in NikiApp.settings.get_strv ("last-played-videos")) {
+                if (!restore_last.has_prefix ("http")) {
+                    Gtk.TreeIter iter;
+                    liststore.append (out iter);
+                    liststore.set (iter, 0, restore_last);
+                }
+            }
+            return liststore;
+        }
+        public void get_first () {
+            if (NikiApp.settings.get_boolean("audio-video")){
                 audio_banner ();
                 resize_player_page (460, 460);
-            } else {
-                resize_player_page (570, 430);
             }
-            return false;
+            if (!NikiApp.settings.get_string("last-played").has_prefix ("http")) {
+                playback.uri = NikiApp.settings.get_string("last-played");
+                playback.progress = NikiApp.settings.get_double("last-stopped");
+                top_bar.label_info.set_label (NikiApp.settings.get_string("title-playing") + get_info_size (playback.uri));
+                top_bar.info_label_full.set_label (NikiApp.settings.get_string("title-playing") + get_info_size (playback.uri));
+                if (playback.uri.down().contains (NikiApp.settings.get_string("last-played").down())) {
+                    NikiApp.settings.set_double("last-stopped", 0);
+                }
+                NikiApp.settings.set_string ("uri-video", NikiApp.settings.get_string("last-played"));
+                sub_lr_check (NikiApp.settings.get_string("last-played"));
+                update_position_cover ();
+                load_current_list ();
+                signal_playing ();
+                bottom_bar.stop_revealer.set_reveal_child (false);
+            }
         }
         private void gohome () {
             if (!NikiApp.settings.get_boolean("home-signal")) {
@@ -575,7 +578,6 @@ namespace niki {
             play_file (playlist_widget ().end_filename (), playlist_widget ().end_filesize (), playlist_widget ().end_mediatype (), playlist_widget ().end_playnow ());
         }
         public void play_file (string uri, string filesize, int mediatype, bool from_beginning = true) {
-            firstplay = true;
             NikiApp.settings.set_enum ("player-mode", mediatype);
             top_bar.label_info.set_label (NikiApp.settings.get_string("title-playing") + filesize);
             top_bar.info_label_full.set_label (NikiApp.settings.get_string("title-playing") + filesize);

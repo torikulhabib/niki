@@ -229,7 +229,7 @@ namespace niki {
         public abstract const string Remove_List                = _("Remove Row");
         public abstract const string Edit_Exist_Lyric           = _("Edit Exist Lyric");
         public abstract const string Save_Lyric                 = _("Save Lyric");
-        public abstract const string Lyric_Maker                = _("Niki - Lyric Maker");
+        public abstract const string Niki_Lyric_Maker           = _("Niki - Lyric Maker");
         public abstract const string Folder_Location            = _("Folder Location");
         public abstract const string Maker                      = _("Maker");
         public abstract const string Writer                     = _("Writer");
@@ -241,5 +241,6 @@ namespace niki {
         public abstract const string Ask_Place                  = _("Ask Place");
         public abstract const string Text                       = _("Text");
         public abstract const string Audio_and_Video            = _("Audio and Video");
+        public abstract const string Loading_Files              = _("Loading Files");
     }
 }
