@@ -134,6 +134,7 @@ namespace niki {
             adjustment = playlist_scrolled.vadjustment;
             playlist_scrolled.set_policy (Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC);
             playlist_scrolled.add (playlist);
+            playlist_scrolled.show_all ();
             notify["child-revealed"].connect (() => {
                 if (!child_revealed) {
                     hovered = child_revealed;

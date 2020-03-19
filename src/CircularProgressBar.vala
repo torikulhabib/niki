@@ -30,7 +30,6 @@ namespace niki {
         }
 
         construct {
-            int line_width = 15;
             set_size_request (350, 350);
             draw.connect ((cr)=> {
                 cr.save ();
@@ -38,6 +37,7 @@ namespace niki {
                 var center_x = get_allocated_width () / 2;
                 var center_y = get_allocated_height () / 2;
                 var radius =  calculate_radius ();
+                int line_width = 15;
                 var d = radius - line_width;
                 int delta = radius - line_width / 2;
                 if (d < 0) {

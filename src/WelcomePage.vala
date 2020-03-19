@@ -21,8 +21,8 @@
 
 namespace niki {
     public class WelcomePage : Gtk.Grid {
-        public WelcomeSource? welcome_rigth;
-        public WelcomeSource? welcome_left;
+        public Welcome? welcome_rigth;
+        public Welcome? welcome_left;
         private InfoBar? infobar;
         private Gtk.Label title_label;
         private Gtk.Label subtitle_label;
@@ -69,13 +69,13 @@ namespace niki {
             subtitle_label.wrap = true;
             subtitle_label.wrap_mode = Pango.WrapMode.WORD;
 
-            welcome_rigth = new WelcomeSource ();
+            welcome_rigth = new Welcome ();
             welcome_rigth.append ("applications-multimedia", StringPot.Open_File, StringPot.Open_File);
             welcome_rigth.append ("edit-paste", StringPot.Paste_URL, StringPot.Play_Stream);
             welcome_rigth.append ("document-open", StringPot.Open_Folder, StringPot.Open_Folder);
             welcome_rigth.append ("camera-web", StringPot.Open_Camera, StringPot.Camera_Device);
 
-            welcome_left = new WelcomeSource ();
+            welcome_left = new Welcome ();
             welcome_left.append ("folder-videos", StringPot.Browse_Library, StringPot.Movie_Library);
             welcome_left.append ("folder-music", StringPot.Browse_Library, StringPot.Music_Library);
             welcome_left.append ("folder-remote", StringPot.Browse_Library, StringPot.DLNA_Library);
@@ -118,11 +118,7 @@ namespace niki {
             stack.visible_child = vertical_grid;
             stack.vhomogeneous = false;
             stack.show_all ();
-            scanfolder.backtohome.connect (()=>{
-                if (stack.visible_child_name == "circular") {
-                    stack.visible_child_name = "home";
-                }
-            });
+
             stack.notify["visible-child"].connect (() => {
                 if (stack.visible_child_name == "circular") {
                     circulargrid.circular_clear ();
@@ -187,7 +183,6 @@ namespace niki {
                 welcome_left.sensitive = true;
                 welcome_rigth.sensitive = true;
                 NikiApp.settings.set_boolean ("spinner-wait", true);
-                links = null;
             });
 
             getlink.process_all.connect ((links) => {
@@ -198,9 +193,11 @@ namespace niki {
 		        if (window.main_stack.visible_child_name == "welcome") {
                     window.player_page.play_first_in_playlist ();
                 }
-                links = null;
             });
             scanfolder.signal_notify.connect((notif)=> {
+                if (stack.visible_child_name == "circular") {
+                    stack.visible_child_name = "home";
+                }
                 infobar.title = notif;
                 infobar.send_notification ();
             });

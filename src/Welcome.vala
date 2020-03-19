@@ -1,5 +1,5 @@
 namespace niki {
-    public class WelcomeSource : Gtk.Grid {
+    public class Welcome : Gtk.Grid {
         public signal void activated (int index);
         protected new GLib.List<Gtk.Button> children = new GLib.List<Gtk.Button> ();
         protected Gtk.Grid options;

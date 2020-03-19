@@ -229,7 +229,7 @@ namespace niki {
                         }
 			        }
 		        } catch (Error e) {
-			        print ("Error: %s\n", e.message);
+			        warning ("Error: %s\n", e.message);
 		        }
         	});
         }

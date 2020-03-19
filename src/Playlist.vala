@@ -186,7 +186,7 @@ namespace niki {
                 return Gdk.EVENT_PROPAGATE;
             });
             show_all ();
-            ((Gtk.TreeSortable)liststore).sort_column_changed.connect (()=> {
+            ((Gtk.TreeSortable) liststore).sort_column_changed.connect (()=> {
                 update_playlist (50);
             });
             model.row_inserted.connect (()=>{

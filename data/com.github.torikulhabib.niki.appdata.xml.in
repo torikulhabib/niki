@@ -31,13 +31,13 @@
     <binary>com.github.torikulhabib.niki</binary>
   </provides>
 ​  <releases>
-    <release version="0.7.30" date="2020-3-12">
+    <release version="0.7.31" date="2020-3-12">
       <description>
         <p>Fix and add Features!</p>
         <p>Lyric Maker!</p>
         <p>Scr Lyric!</p>
         <p>Fix Typos by Nathan Bonnemains!</p>
-        <p>Updated Dutch translation by Safak GENISOL!</p>
+        <p>Updated Turkey translation by Safak GENISOL!</p>
       </description>
     </release>
     <release version="0.7.20" date="2020-2-21">

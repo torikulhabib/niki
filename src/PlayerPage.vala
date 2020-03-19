@@ -269,7 +269,6 @@ namespace niki {
             top_bar.button_home.connect (() => {
                 playback.playing = false;
                 playback.uri = null;
-                playlist_widget ().clear_items ();
                 Inhibitor.instance.uninhibit ();
                 resize_player_page (570, 430);
                 if (!NikiApp.settings.get_boolean("home-signal")) {
@@ -279,6 +278,7 @@ namespace niki {
                 NikiApp.settings.set_string("last-played", " ");
                 NikiApp.settings.set_string("uri-video", " ");
                 mouse_blank ();
+                playlist_widget ().clear_items ();
             });
 
             playback.ready.connect (signal_window); 

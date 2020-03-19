@@ -22,7 +22,6 @@
 namespace niki {
     public class ScanFolder : GLib.Object {
         public signal void signal_notify (string output);
-        public signal void backtohome ();
         public signal void signal_succes (Gtk.ListStore liststore);
         private string [] mimetype_contents = {};
         private uint content_count = 0;
@@ -36,82 +35,76 @@ namespace niki {
 
         public void scanning (string path, int mode_scan) {
             File directory = File.new_for_path (path);
-            try {
-                var children = directory.enumerate_children ("standard::*", GLib.FileQueryInfoFlags.NONE);
-                FileInfo file_info;
-                if (check_count != 0) {
-                    Source.remove (check_count);
+            if (check_count != 0) {
+                Source.remove (check_count);
+            }
+            check_count = GLib.Timeout.add (50, () => {
+                if (mode_scan == 1 && !content_check) {
+                    signal_notify (StringPot.Empty_Video);
                 }
-                check_count = GLib.Timeout.add (50, () => {
-                    if (mode_scan == 1 && !content_check) {
-                        signal_notify (StringPot.Empty_Video);
-                        backtohome ();
-                    }
-                    if (mode_scan == 2 && !content_check) {
-                        signal_notify (StringPot.Empty_Audio);
-                        backtohome ();
-                    }
-                    if (mode_scan == 0 && !content_check) {
-                        signal_notify (StringPot.Empty_Folder);
-                        backtohome ();
-                    }
-                    content_check = false;
-                    check_count = 0;
-                    return Source.REMOVE;
-                });
-                while ((file_info = children.next_file ()) != null) {
-                    if (file_info.get_is_hidden ()) {
-                        continue;
-                    }
-                    content_check = true;
-                    mimetype_contents += file_info.get_content_type ();
-                    if (content_count != 0) {
-                        Source.remove (content_count);
-                    }
-                    content_count = GLib.Timeout.add (50, () => {
-                        bool content_video = false;
-                        bool content_Audio = false;
-                        foreach (string mime_content in mimetype_contents) {
-                            if (mime_content.has_prefix ("video/")) {
-                                content_video = true;
+                if (mode_scan == 2 && !content_check) {
+                    signal_notify (StringPot.Empty_Audio);
+                }
+                if (mode_scan == 0 && !content_check) {
+                    signal_notify (StringPot.Empty_Folder);
+                }
+                content_check = false;
+                check_count = 0;
+                return Source.REMOVE;
+            });
+	        directory.enumerate_children_async.begin ("standard::*", FileQueryInfoFlags.NONE, Priority.DEFAULT, null, (obj, res) => {
+		        try {
+			        FileEnumerator enumerator = directory.enumerate_children_async.end (res);
+			        FileInfo file_info;
+			        while ((file_info = enumerator.next_file (null)) != null) {
+                        if (file_info.get_is_hidden ()) {
+                            continue;
+                        }
+                        content_check = true;
+                        mimetype_contents += file_info.get_content_type ();
+                        if (content_count != 0) {
+                            Source.remove (content_count);
+                        }
+                        content_count = GLib.Timeout.add (50, () => {
+                            bool content_video = false;
+                            bool content_Audio = false;
+                            foreach (string mime_content in mimetype_contents) {
+                                if (mime_content.has_prefix ("video/")) {
+                                    content_video = true;
+                                }
+                                if (mime_content.has_prefix ("audio/")) {
+                                    content_Audio = true;
+                                }
                             }
-                            if (mime_content.has_prefix ("audio/")) {
-                                content_Audio = true;
+                            if (mode_scan == 1 && !content_video) {
+                                signal_notify (StringPot.Empty_Video);
                             }
+                            if (mode_scan == 2 && !content_Audio) {
+                                signal_notify (StringPot.Empty_Audio);
+                            }
+                            if (mode_scan == 0 && !content_Audio && !content_video) {
+                                signal_notify (StringPot.Empty_Folder);
+                            }
+                            if (content_video || content_Audio) {
+                                signal_succes (liststore);
+                            }
+                            mimetype_contents = {};
+                            content_count = 0;
+                            return Source.REMOVE;
+                        });
+                        if (file_info.get_is_symlink ()) {
+                            string target = file_info.get_symlink_target ();
+                            var symlink = File.new_for_path (target);
+                            var file_type = symlink.query_file_type (0);
+                            if (file_type == FileType.DIRECTORY) {
+                                scanning (target, mode_scan);
+                            }
+                        } else if (file_info.get_file_type () == FileType.DIRECTORY) {
+                            if (!directory.get_uri ().has_prefix ("file://")) {
+                                Thread.usleep (1000000);
+                            }
+                            scanning (GLib.Path.build_filename (path, file_info.get_name ()), mode_scan);
                         }
-                        if (mode_scan == 1 && !content_video) {
-                            signal_notify (StringPot.Empty_Video);
-                            backtohome ();
-                        }
-                        if (mode_scan == 2 && !content_Audio) {
-                            signal_notify (StringPot.Empty_Audio);
-                            backtohome ();
-                        }
-                        if (mode_scan == 0 && !content_Audio && !content_video) {
-                            signal_notify (StringPot.Empty_Folder);
-                            backtohome ();
-                        }
-                        if (content_video || content_Audio) {
-                            signal_succes (liststore);
-                        }
-                        mimetype_contents = {};
-                        content_count = 0;
-                        return Source.REMOVE;
-                    });
-
-                    if (file_info.get_is_symlink ()) {
-                        string target = file_info.get_symlink_target ();
-                        var symlink = File.new_for_path (target);
-                        var file_type = symlink.query_file_type (0);
-                        if (file_type == FileType.DIRECTORY) {
-                            scanning (target, mode_scan);
-                        }
-                    } else if (file_info.get_file_type () == FileType.DIRECTORY) {
-                        if (!directory.get_uri ().has_prefix ("file://")) {
-                            Thread.usleep (1000000);
-                        }
-                        scanning (GLib.Path.build_filename (path, file_info.get_name ()), mode_scan);
-                    } else {
                         string mime_type = file_info.get_content_type ();
                         bool video_file = !file_info.get_is_hidden () && mime_type.has_prefix ("video/");
                         bool Audio_file = !file_info.get_is_hidden () && mime_type.has_prefix ("audio/");
@@ -136,10 +129,10 @@ namespace niki {
                                 break;
                         }
                     }
-                }
-            } catch (Error err) {
-                warning (err.message);
-            }
+		        } catch (Error e) {
+			        warning ("Error: %s\n", e.message);
+		        }
+        	});
         }
         private void list_append (string path, FileInfo info) {
             Gtk.TreeIter iter;

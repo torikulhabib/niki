@@ -42,8 +42,8 @@ namespace niki {
         		out_stream.write ("[Contractor Entry]\n".data);
                 out_stream.write (str_name.data);
                 out_stream.write (str_desc.data);
-                out_stream.write (@"$(niki_mime_type ())\n".data);
                 out_stream.write (str_command.data);
+                out_stream.write (@"$(niki_mime_type ())\n".data);
         	} catch (Error e) {
         		warning ("Error: %s\n", e.message);
         	}
