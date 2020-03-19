@@ -1,1 +1,4 @@
 src/StringPot.vala
+src/LightDark.vala
+src/MediaEditor.vala
+src/MediaEntry.vala
