@@ -31,7 +31,7 @@
     <binary>com.github.torikulhabib.niki</binary>
   </provides>
 ​  <releases>
-    <release version="0.7.31" date="2020-3-12">
+    <release version="0.7.32" date="2020-3-20">
       <description>
         <p>Fix and add Features!</p>
         <p>Lyric Maker!</p>

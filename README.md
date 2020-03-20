@@ -11,8 +11,6 @@
 ![screenshot1](4.png)
 ![screenshot1](5.png)
 
-## Author
-## Written in VALAC
 ## Building, Testing, and Installation
 ## You'll need the following dependencies:
 
@@ -64,13 +62,13 @@ If you like Niki and you want to support its development,consider supporting via
 * Shift + Arrow Down = seek -10
 * Shift + Arrow Right = seek +60
 * Shift + Arrow Left = seek -60
-* Keyboard N = Next
-* Keyboard B = Previous
-* Keyboard P = Playlist
-* Keyboard i = Info
-* Keyboard L = Lyric
-* Keyboard S = Settings
-* Keyboard H = Home
+* N = Next
+* B = Previous
+* P = Playlist
+* i = Info
+* L = Lyric
+* S = Settings
+* H = Home
 
 ### Roadmap
 #### v0.5
