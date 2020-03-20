@@ -74,11 +74,7 @@ namespace niki {
             string album_path = cache_image (get_song_info (File.new_for_uri (path)) + " " + get_artist_music (path));
             if (!FileUtils.test (album_path, FileTest.EXISTS)) {
                 pixbuf_playlist = align_and_scale_pixbuf (save_pixbuf, 48);
-                try {
-                    pixbuf_playlist.save (album_path, "jpeg", "quality", "100");
-                } catch (Error err) {
-                    warning (err.message);
-                }
+                pix_to_file (pixbuf_playlist, album_path);
             }
         }
         public void create_background (Gdk.Pixbuf in_pixbuf) {

@@ -44,7 +44,6 @@ namespace niki {
                 }
                 _playback_duration = duration;
                 duration_label.label = seconds_to_time ((int) duration);
-
             }
         }
 
@@ -76,24 +75,25 @@ namespace niki {
             });
 
             progression_label = new Gtk.Label (null);
-            progression_label.get_style_context ().add_class ("button_action");
+            progression_label.get_style_context ().add_class ("selectedlabel");
             progression_label.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
             progression_label.selectable = true;
             progression_label.width_request = 50;
             duration_label = new Gtk.Label (null);
+            duration_label.get_style_context ().add_class ("selectedlabel");
             duration_label.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
             duration_label.selectable = true;
             duration_label.width_request = 50;
 
             make_lrc_but = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.make-lrc-symbolic", Gtk.IconSize.BUTTON);
             make_lrc_but.get_style_context ().add_class ("button_action");
-            make_lrc_but.tooltip_text = "Make Lyric";
+            make_lrc_but.tooltip_text = StringPot.Make_Lyric;
             make_lrc_but.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("make-lrc", !NikiApp.settings.get_boolean ("make-lrc"));
             });
             set_time_lrc = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.time-lrc-symbolic", Gtk.IconSize.BUTTON);
             set_time_lrc.get_style_context ().add_class ("button_action");
-            set_time_lrc.tooltip_text = "Set Time Lyric";
+            set_time_lrc.tooltip_text = StringPot.Set_Time_Lyric;
             set_time_lrc.clicked.connect (() => {
                 position_sec ((int64)(playback.get_position () * 1000000));
             });

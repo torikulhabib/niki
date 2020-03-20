@@ -73,7 +73,6 @@ namespace niki {
                         window.move (NikiApp.settings.get_int ("window-x"), NikiApp.settings.get_int ("window-y"));
                     }
                 }
-                return;
             }
         }
 

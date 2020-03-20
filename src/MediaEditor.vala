@@ -636,7 +636,7 @@ namespace niki {
                 var tag_list = info.get_tags ();
                 var sample = get_cover_sample (tag_list); 
                 if (sample == null) {
-                    tag_list.get_sample (Gst.Tags.PREVIEW_IMAGE, out sample);
+                    tag_list.get_sample (Gst.Tags.IMAGE, out sample);
                 }
                 if (sample != null) {
                     var buffer = sample.get_buffer ();

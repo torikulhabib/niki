@@ -19,19 +19,11 @@ namespace niki {
                 string tmp_file = cache_image (filename);
                 var file_stream = FileStream.open (tmp_file, "w");
                 file_stream.write (msg.response_body.data, (size_t)msg.response_body.length);
-                try {
-                    return_value = new Gdk.Pixbuf.from_file (tmp_file);
-                } catch (Error err) {
-                    warning (err.message);
-                }
+                return_value = pix_file (tmp_file);
                 File deleteunuse = File.new_for_path (tmp_file);
                 deleteunuse.delete_async.begin ();
                 Gdk.Pixbuf pixbuf = align_and_scale_pixbuf (return_value, return_value.get_width (), return_value.get_height ());
-                try {
-                    pixbuf.save (tmp_file, "jpeg", "quality", "100");
-                } catch (Error err) {
-                    warning (err.message);
-                }
+                pix_to_file (pixbuf, tmp_file);
             }
             return return_value;
         }

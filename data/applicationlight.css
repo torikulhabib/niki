@@ -191,6 +191,18 @@
     background: @SolidWhite;
     border-color: @SolidWhite;
 }
+
+.selectedlabel {
+    background: @transparancyColor;
+    color: @SolidWhite;
+    border-color: @SolidWhite;
+}
+
+.selectedlabel selection {
+    color: @SolidWhite;
+    background: @colorAccent;
+}
+
 .label {
     color: @SolidBlack;
     border-color: @SolidBlack;

@@ -2,7 +2,6 @@ namespace niki {
     public class CameraPresetList : Gtk.ComboBox {
         public signal void preset_selected (CameraPreset p);
         public signal void delete_preset_chosen ();
-        public signal void none_preset_chosen ();
         public CameraPreset? camera_preset;
         private Gtk.ListStore store;
         private const string SEPARATOR_NAME = "<separator_item_unique_name>";

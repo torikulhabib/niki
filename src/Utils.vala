@@ -245,8 +245,6 @@ namespace niki {
     }
 
     private int file_type (File filein) {
-        int type_file = 0;
-        string mime_types = null;
         if (filein.get_uri ().has_prefix ("https://cf-media.sndcdn.com")) {
             return 2;
         }
@@ -256,18 +254,18 @@ namespace niki {
         if (filein.get_uri ().char_count () > 1 && filein.query_exists ()) {
 	        try {
 		        FileInfo infos = filein.query_info ("standard::*",0);
-                mime_types = infos.get_content_type ();
-                if (mime_types.has_prefix ("video/")) {
+                string mime_type = infos.get_content_type ();
+                if (mime_type.has_prefix ("video/")) {
                     return 0;
                 }
-                if (mime_types.has_prefix ("audio/")) {
+                if (mime_type.has_prefix ("audio/")) {
                     return 1;
                 }
 	        } catch (Error e) {
                 GLib.warning (e.message);
 	        }
 	    }
-	    return type_file;
+	    return 0;
     }
     private static string get_info_file (File fileinput) {
         string file_info = null;
@@ -500,6 +498,13 @@ namespace niki {
             GLib.warning (e.message);
         }
         return pixbuf;
+    }
+    private void pix_to_file (Gdk.Pixbuf pixbuf, string input) {
+        try {
+            pixbuf.save (input, "jpeg", "quality", "100");
+        } catch (Error err) {
+            warning (err.message);
+        }
     }
     private string set_filename_media () {
         string time = new GLib.DateTime.now_local ().format ("%F%H:%M:%S");

@@ -242,5 +242,7 @@ namespace niki {
         public abstract const string Text                       = _("Text");
         public abstract const string Audio_and_Video            = _("Audio and Video");
         public abstract const string Loading_Files              = _("Loading Files");
+        public abstract const string Make_Lyric                 = _("Make Lyric");
+        public abstract const string Set_Time_Lyric             = _("Set Time Lyric");
     }
 }

@@ -2,7 +2,6 @@ namespace niki {
     public class EqualizerPresetList : Gtk.ComboBox {
         public signal void preset_selected (EqualizerPreset preset);
         public signal void delete_preset_chosen ();
-        public signal void none_preset_chosen ();
         public EqualizerPreset? equalizer_preset;
         private Gtk.ListStore store;
         private const string SEPARATOR_NAME = "<separator_item_unique_name>";

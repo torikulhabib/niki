@@ -149,7 +149,7 @@ namespace niki {
             main_actionbar.show_all ();
 
             label_info = new Gtk.Label (null);
-            label_info.get_style_context ().add_class ("button_action");
+            label_info.get_style_context ().add_class ("selectedlabel");
             label_info.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
             label_info.ellipsize = Pango.EllipsizeMode.END;
             label_info.halign = Gtk.Align.START;
@@ -171,7 +171,7 @@ namespace niki {
             grid.show_all ();
 
             info_label_full = new Gtk.Label (null);
-            info_label_full.get_style_context ().add_class ("button_action");
+            info_label_full.get_style_context ().add_class ("selectedlabel");
             info_label_full.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
             info_label_full.ellipsize = Pango.EllipsizeMode.END;
             info_label_full.selectable = true;
