@@ -67,7 +67,7 @@ namespace niki {
 
             string[] accels = {""};
             if (accel_string != null && accel_string != "") {
-                accels = Granite.accel_to_string (accel_string).split (" + ");
+                accels = accel_to_string (accel_string).split (" + ");
             } else if (action_name != null && action_name != "") {
                 accel_string = ((Gtk.Application) GLib.Application.get_default ()).get_accels_for_action (action_name)[0];
             }
@@ -79,11 +79,83 @@ namespace niki {
                     }
                     var accel_label = new Gtk.Label (accel);
                     var accel_label_context = accel_label.get_style_context ();
-                    accel_label_context.add_class (Granite.STYLE_CLASS_KEYCAP);
+                    accel_label_context.add_class ("keycap");
                     add (accel_label);
                 }
             }
             show_all ();
+        }
+
+        public static string accel_to_string (string? accel) {
+            if (accel == null) {
+                return "";
+            }
+            uint accel_key;
+            Gdk.ModifierType accel_mods;
+            Gtk.accelerator_parse (accel, out accel_key, out accel_mods);
+
+            string[] arr = {};
+            if (Gdk.ModifierType.SUPER_MASK in accel_mods) {
+                arr += "⌘";
+            }
+
+            if (Gdk.ModifierType.SHIFT_MASK in accel_mods) {
+                arr += _("Shift");
+            }
+
+            if (Gdk.ModifierType.CONTROL_MASK in accel_mods) {
+                arr += _("Ctrl");
+            }
+
+            if (Gdk.ModifierType.MOD1_MASK in accel_mods) {
+                arr += _("Alt");
+            }
+
+            switch (accel_key) {
+                case Gdk.Key.Up:
+                    arr += "↑";
+                    break;
+                case Gdk.Key.Down:
+                    arr += "↓";
+                    break;
+                case Gdk.Key.Left:
+                    arr += "←";
+                    break;
+                case Gdk.Key.Right:
+                    arr += "→";
+                    break;
+                case Gdk.Key.Alt_L:
+                    arr += _("Left Alt");
+                    break;
+                case Gdk.Key.Alt_R:
+                    arr += _("Right Alt");
+                    break;
+                case Gdk.Key.minus:
+                case Gdk.Key.KP_Subtract:
+                    arr += _("Minus");
+                    break;
+                case Gdk.Key.KP_Add:
+                case Gdk.Key.plus:
+                    arr += _("Plus");
+                    break;
+                case Gdk.Key.KP_Equal:
+                case Gdk.Key.equal:
+                    arr += _("Equals");
+                    break;
+                case Gdk.Key.Return:
+                    arr += _("Enter");
+                    break;
+                case Gdk.Key.Shift_L:
+                    arr += _("Left Shift");
+                    break;
+                case Gdk.Key.Shift_R:
+                    arr += _("Right Shift");
+                    break;
+                default:
+                    arr += Gtk.accelerator_get_label (accel_key, 0);
+                    break;
+            }
+            return string.joinv (" + ", arr);
         }
     }
 }
