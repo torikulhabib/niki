@@ -93,6 +93,7 @@ executable(
     'CircularGrid.vala',
     'CircularProgressBar.vala',
     'KeyboardInfo.vala',
+    'AccelLabel.vala',
 
     c_args: c_args,
     dependencies: [
