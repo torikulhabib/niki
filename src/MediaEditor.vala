@@ -56,7 +56,7 @@ namespace niki {
                 resizable: true,
                 deletable: false,
                 skip_taskbar_hint: true,
-                transient_for: window,
+                transient_for: NikiApp.window,
                 destroy_with_parent: true
             );
             this.playlist = playlist;
@@ -327,28 +327,7 @@ namespace niki {
                     destroy ();
                 }
             });
-            bool mouse_primary_down = false;
-            motion_notify_event.connect ((event) => {
-                if (mouse_primary_down) {
-                    mouse_primary_down = false;
-                    begin_move_drag (Gdk.BUTTON_PRIMARY, (int)event.x_root, (int)event.y_root, event.time);
-                }
-                return false;
-            });
-
-            button_press_event.connect ((event) => {
-                if (event.button == Gdk.BUTTON_PRIMARY) {
-                    mouse_primary_down = true;
-                }
-                return Gdk.EVENT_PROPAGATE;
-            });
-
-            button_release_event.connect ((event) => {
-                if (event.button == Gdk.BUTTON_PRIMARY) {
-                    mouse_primary_down = false;
-                }
-                return false;
-            });
+            move_widget (this, this);
             string file_name;
             playlist.liststore.get (playlist.selected_iter (), PlaylistColumns.FILENAME, out file_name);
             set_media (file_name);

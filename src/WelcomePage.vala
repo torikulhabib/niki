@@ -102,6 +102,17 @@ namespace niki {
             dlna_scrolled.add (treview);
             dlna_scrolled.show_all ();
 
+            var dvd_drive = new Welcome ();
+            dvd_drive.append ("media-optical", StringPot.Browse, StringPot.DVD);
+            var cd_drive = new Welcome ();
+            cd_drive.append ("media-optical", StringPot.Browse, StringPot.Audio_Cd);
+            var grid_drive = new Gtk.Grid ();
+            grid_drive.get_style_context ().add_class ("widget_background");
+            grid_drive.orientation = Gtk.Orientation.HORIZONTAL;
+            grid_drive.valign = Gtk.Align.CENTER;
+            grid_drive.margin_bottom = 30;
+            grid_drive.add (dvd_drive);
+            grid_drive.add (cd_drive);
             var dlna_grid = new Gtk.Grid ();
             dlna_grid.orientation = Gtk.Orientation.VERTICAL;
             dlna_grid.margin = 10;
@@ -115,6 +126,7 @@ namespace niki {
             stack.add_named (vertical_grid, "home");
             stack.add_named (dlna_grid, "dlna");
             stack.add_named (circulargrid, "circular");
+            stack.add_named (grid_drive, "dvd");
             stack.visible_child = vertical_grid;
             stack.vhomogeneous = false;
             stack.show_all ();
@@ -137,7 +149,7 @@ namespace niki {
                             });
                             index_but = 0;
                         } else {
-                            circulargrid.count_uri (window.player_page.restore_file ());
+                            circulargrid.count_uri (NikiApp.window.player_page.restore_file ());
                         }
                         return false;
                     });
@@ -152,31 +164,13 @@ namespace niki {
             add (eventbox);
             show_all ();
 
-            bool mouse_primary_down = false;
-            motion_notify_event.connect ((event) => {
-                if (mouse_primary_down) {
-                    mouse_primary_down = false;
-                    window.begin_move_drag (Gdk.BUTTON_PRIMARY, (int)event.x_root, (int)event.y_root, event.time);
-                }
-                return false;
-            });
-
             button_press_event.connect ((event) => {
-                if (event.button == Gdk.BUTTON_PRIMARY) {
-                    mouse_primary_down = true;
-                }
-                if (event.button == Gdk.BUTTON_PRIMARY && event.type == Gdk.EventType.2BUTTON_PRESS && window.welcome_page.stack.visible_child_name == "home") {
+                if (event.button == Gdk.BUTTON_PRIMARY && event.type == Gdk.EventType.2BUTTON_PRESS && NikiApp.window.welcome_page.stack.visible_child_name == "home") {
                     NikiApp.settings.set_boolean ("fullscreen", !NikiApp.settings.get_boolean ("fullscreen"));
                 }
                 return Gdk.EVENT_PROPAGATE;
             });
 
-            button_release_event.connect ((event) => {
-                if (event.button == Gdk.BUTTON_PRIMARY) {
-                    mouse_primary_down = false;
-                }
-                return false;
-            });
             getlink.errormsg.connect ((links) => {
                 infobar.title = links;
                 infobar.send_notification ();
@@ -186,12 +180,12 @@ namespace niki {
             });
 
             getlink.process_all.connect ((links) => {
-                window.player_page.playlist_widget ().add_stream (links);
+                NikiApp.window.player_page.playlist_widget ().add_stream (links);
                 welcome_left.sensitive = true;
                 welcome_rigth.sensitive = true;
                 NikiApp.settings.set_boolean ("spinner-wait", true);
-		        if (window.main_stack.visible_child_name == "welcome") {
-                    window.player_page.play_first_in_playlist ();
+		        if (NikiApp.window.main_stack.visible_child_name == "welcome") {
+                    NikiApp.window.player_page.play_first_in_playlist ();
                 }
             });
             scanfolder.signal_notify.connect((notif)=> {
@@ -205,10 +199,10 @@ namespace niki {
             welcome_rigth.activated.connect ((index) => {
                 switch (index) {
                     case 0:
-                        window.run_open_file (true);
+                        NikiApp.window.run_open_file (true);
                         break;
                     case 1:
-                        window.player_page.playlist_widget ().clear_items ();
+                        NikiApp.window.player_page.playlist_widget ().clear_items ();
                         Gtk.Clipboard clipboard = Gtk.Clipboard.get_for_display (get_display (), Gdk.SELECTION_CLIPBOARD);
                         string text = clipboard.wait_for_text ().strip ();
                         if (text == null) {
@@ -220,16 +214,16 @@ namespace niki {
                         NikiApp.settings.set_boolean ("spinner-wait", false);
                         break;
                     case 2:
-                        window.player_page.playlist_widget ().clear_items ();
-                        if (window.run_open_folder (0)) {
+                        NikiApp.window.player_page.playlist_widget ().clear_items ();
+                        if (NikiApp.window.run_open_folder (0)) {
                             stack.visible_child_name = "circular";
                             index_but = 0;
-                            window.player_page.playlist_widget ().clear_items ();
+                            NikiApp.window.player_page.playlist_widget ().clear_items ();
                         }
                         break;
                     case 3:
-		                window.main_stack.visible_child_name = "camera";
-		                window.camera_page.ready_play ();
+		                NikiApp.window.main_stack.visible_child_name = "camera";
+		                NikiApp.window.camera_page.ready_play ();
                         break;
                 }
             });
@@ -238,36 +232,46 @@ namespace niki {
                     case 0:
                         stack.visible_child_name = "circular";
                         index_but = 1;
-                        window.player_page.playlist_widget ().clear_items ();
+                        NikiApp.window.player_page.playlist_widget ().clear_items ();
                         break;
                     case 1:
                         stack.visible_child_name = "circular";
                         index_but = 2;
-                        window.player_page.playlist_widget ().clear_items ();
+                        NikiApp.window.player_page.playlist_widget ().clear_items ();
                         break;
                     case 2:
                         stack.visible_child = dlna_grid;
                         break;
                     case 3:
-                        read_first_disk.begin ();
+                        stack.visible_child_name = "dvd";
+                        break;
+                }
+            });
+            cd_drive.activated.connect ((index) => {
+                switch (index) {
+                    case 0:
+                        read_dvd.begin ();
+                        break;
+                }
+            });
+            dvd_drive.activated.connect ((index) => {
+                switch (index) {
+                    case 0:
+                        read_acd.begin ();
                         break;
                 }
             });
         }
-        private async void read_first_disk () {
-            var disk_manager = new DiskManager ().instance;
-            if (!disk_manager.has_media_volumes ()) {
-                infobar.title = StringPot.Disk_Empty;
-                infobar.send_notification ();
-                return;
-            }
-            if (disk_manager.get_volumes ().is_empty) {
+
+        private async void read_dvd () {
+            var dvdanager = new DVDManager ().instance;
+            if (!dvdanager.has_media_volumes ()) {
                 infobar.title = StringPot.Disk_Empty;
                 infobar.send_notification ();
                 return;
             }
 
-            var volume = disk_manager.get_volumes ().first ();
+            var volume = dvdanager.get_volumes ().first ();
             if (volume.can_mount () == true && volume.get_mount ().can_unmount () == false) {
                 try {
                     yield volume.mount (MountMountFlags.NONE, null);
@@ -278,10 +282,19 @@ namespace niki {
 
             var root = volume.get_mount ().get_default_location ();
             string uri_file = root.get_uri ().replace ("file:///", "dvd:///");
-            window.player_page.playlist_widget ().add_item (File.new_for_uri (uri_file));
-		    if (window.main_stack.visible_child_name == "welcome") {
-                window.player_page.play_first_in_playlist ();
+            NikiApp.window.player_page.playlist_widget ().add_item (File.new_for_uri (uri_file));
+		    if (NikiApp.window.main_stack.visible_child_name == "welcome") {
+                NikiApp.window.player_page.play_first_in_playlist ();
             }
+        }
+        private async void read_acd () {
+            var acdmanager = new ACDManager ().instance;
+            if (!acdmanager.has_media_volumes ()) {
+                infobar.title = StringPot.Disk_Empty;
+                infobar.send_notification ();
+                return;
+            }
+            acdmanager.get_acd_vol (acdmanager.get_volumes ().first ());
         }
     }
 }

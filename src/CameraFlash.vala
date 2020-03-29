@@ -65,10 +65,10 @@ namespace niki {
                 Source.remove (fade_timeout);
                 fade_timeout = 0;
             }
-            Gdk.Screen screen_win  = window.get_toplevel ().get_screen ();
+            Gdk.Screen screen_win  = NikiApp.window.get_toplevel ().get_screen ();
             Gdk.Monitor monitor_primary = screen_win.get_display ().get_primary_monitor ();
             Gdk.Rectangle rect = monitor_primary.get_workarea ();
-            set_transient_for (window);
+            set_transient_for (NikiApp.window);
             resize (rect.width, rect.height);
             move (rect.x, rect.y);
             opacity = 1;

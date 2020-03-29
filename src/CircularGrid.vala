@@ -40,18 +40,18 @@ namespace niki {
                 if (liststore.iter_is_valid (iter)) {
                     liststore.get (iter, 0, out filename);
                     if (filename != null) {
-                        window.player_page.playlist_widget ().add_item (File.new_for_uri (filename));
+                        NikiApp.window.player_page.playlist_widget ().add_item (File.new_for_uri (filename));
                     }
                 }
                 count ++;
                 count_pro = count_pro + count_to;
                 if (count > n_child) {
-		            if (window.main_stack.visible_child_name == "welcome") {
-		                if (window.welcome_page.index_but == 3) {
-                            window.main_stack.visible_child_name = "player";
-                            window.player_page.get_first ();
+		            if (NikiApp.window.main_stack.visible_child_name == "welcome") {
+		                if (NikiApp.window.welcome_page.index_but == 3) {
+                            NikiApp.window.main_stack.visible_child_name = "player";
+                            NikiApp.window.player_page.get_first ();
                         } else {
-                            window.player_page.play_first_in_playlist ();
+                            NikiApp.window.player_page.play_first_in_playlist ();
                         }
                     }
                     return false;

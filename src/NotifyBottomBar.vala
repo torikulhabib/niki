@@ -23,9 +23,6 @@ namespace niki {
     public class NotifyBottomBar : Gtk.Revealer {
         private Gtk.ProgressBar progress_bar;
         private PlayerPage? playerpage;
-        private Gtk.Grid main_actionbar;
-        private uint hiding_timer = 0;
-
         private double _playback_progress;
         public double playback_progress {
             get {
@@ -44,8 +41,6 @@ namespace niki {
         }
 
         public NotifyBottomBar (PlayerPage playerpage) {
-            get_style_context ().add_class ("ground_action_button");
-            get_style_context ().add_class ("progress_bar");
             this.playerpage = playerpage;
             transition_type = Gtk.RevealerTransitionType.SLIDE_UP;
             transition_duration = 500;
@@ -55,19 +50,16 @@ namespace niki {
             playerpage.playback.notify["progress"].connect (() => {
                 playback_progress = playerpage.playback.progress;
             });
-            main_actionbar = new Gtk.Grid ();
-            main_actionbar.get_style_context ().add_class ("ground_action_button");
-            main_actionbar.add (progress_bar);
-            main_actionbar.hexpand = true;
-            add (main_actionbar);
+            add (progress_bar);
             show_all ();
         }
 
+        private uint hiding_timer = 0;
         public void reveal_control () {
             if (!child_revealed) {
                 set_reveal_child (true);
             }
-            main_actionbar.margin_end = margin_start = 5;
+            margin_end = margin_start = 5;
             if (hiding_timer != 0) {
                 Source.remove (hiding_timer);
             }

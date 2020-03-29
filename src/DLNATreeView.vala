@@ -119,17 +119,20 @@ namespace niki {
             button_press_event.connect ((event) => {
                 if (event.button == Gdk.BUTTON_SECONDARY && event.type != Gdk.EventType.2BUTTON_PRESS) {
                     Gtk.TreeIter iter = selected_iter ();
-                    if (!treestore.iter_is_valid (iter)) {
-                        return Gdk.EVENT_PROPAGATE;
-                    }
-                    string upnp_class;
-                    treestore.get (iter, DlnaTreeColumns.UPNPCLASS, out upnp_class);
-                    if (upnp_class == "object.item.videoItem" || upnp_class == "object.item.audioItem.musicTrack" || upnp_class == "object.item.imageItem.photo") {
-                        playing.show ();
-                        save_to.show ();
-                        if (!welcompage.dlnarendercontrol.get_selected_device ()) {
-                            next_playing.show ();
+                    if (treestore.iter_is_valid (iter)) {
+                        string upnp_class;
+                        treestore.get (iter, DlnaTreeColumns.UPNPCLASS, out upnp_class);
+                        if (upnp_class == "object.item.videoItem" || upnp_class == "object.item.audioItem.musicTrack" || upnp_class == "object.item.imageItem.photo") {
+                            playing.show ();
+                            save_to.show ();
+                            if (!welcompage.dlnarendercontrol.get_selected_device ()) {
+                                next_playing.show ();
+                            } else {
+                                next_playing.hide ();
+                            }
                         } else {
+                            playing.hide ();
+                            save_to.hide ();
                             next_playing.hide ();
                         }
                     } else {
@@ -323,9 +326,9 @@ namespace niki {
                     downloaded = false;
                     return;
                 } else {
-                    window.player_page.playlist_widget ().add_dlna (uri, title, get_album, artist, mediatype, playnow, upnp_class, size_file);
-		            if (window.main_stack.visible_child_name == "welcome" && welcompage.dlnarendercontrol.get_selected_device ()) {
-                        window.player_page.play_first_in_playlist ();
+                    NikiApp.window.player_page.playlist_widget ().add_dlna (uri, title, get_album, artist, mediatype, playnow, upnp_class, size_file);
+		            if (NikiApp.window.main_stack.visible_child_name == "welcome" && welcompage.dlnarendercontrol.get_selected_device ()) {
+                        NikiApp.window.player_page.play_first_in_playlist ();
                     }
                     time_outs = GLib.Timeout.add (100, () => {
                         if (NikiApp.settings.get_boolean("home-signal")) {

@@ -36,7 +36,7 @@ namespace niki {
             set_default_size (570, 430);
             welcome_page = new WelcomePage ();
             player_page = new PlayerPage (this);
-            camera_page = new CameraPage (this);
+            camera_page = new CameraPage ();
             player_page.playback.notify["playing"].connect (position_window);
             var home_button = new Gtk.Button.from_icon_name ("go-home-symbolic", Gtk.IconSize.BUTTON);
             home_button.get_style_context ().add_class ("button_action");
@@ -78,7 +78,7 @@ namespace niki {
             show_all ();
 
             welcome_page.stack.notify["visible-child"].connect (() => {
-                home_revealer.set_reveal_child (welcome_page.stack.visible_child_name == "dlna"? true : false);
+                home_revealer.set_reveal_child (welcome_page.stack.visible_child_name == "dlna" || welcome_page.stack.visible_child_name == "dvd"? true : false);
                 headerbar.title = welcome_page.stack.visible_child_name == "dlna"? StringPot.Niki_DLNA_Browser : StringPot.Niki;
             });
             main_stack.notify["visible-child"].connect (() => {
@@ -86,7 +86,7 @@ namespace niki {
                 if (welcome_page.stack.visible_child_name == "circular") {
                     welcome_page.stack.visible_child_name = "home";
                 }
-                home_revealer.set_reveal_child (welcome_page.stack.visible_child_name == "dlna"? true : false);
+                home_revealer.set_reveal_child (welcome_page.stack.visible_child_name == "dlna" || welcome_page.stack.visible_child_name == "dvd"? true : false);
                 headerbar.title = welcome_page.stack.visible_child_name == "dlna"? StringPot.Niki_DLNA_Browser : StringPot.Niki;
             });
 
@@ -116,7 +116,7 @@ namespace niki {
             });
 
             key_press_event.connect ((e) => {
-                return new KeyboardPage ().key_press (e, window);
+                return new KeyboardPage ().key_press (e, this);
             });
 
             uint maximize_window = 0;
@@ -160,6 +160,7 @@ namespace niki {
                     return destroy_mode ();
                 }
             });
+            move_widget (this, this);
         }
 
         public void position_window () {

@@ -31,7 +31,7 @@ namespace niki {
         construct {
             videomix = new VideoMix (this);
             audiomix = new AudioMix ();
-            pipeline = this.get_pipeline ();
+            pipeline = get_pipeline ();
             pipeline["video-sink"] = videomix;
             var iter = ((Gst.Bin)pipeline).iterate_sinks ();
             Value value;
@@ -58,16 +58,14 @@ namespace niki {
             });
 
             NikiApp.settings.changed["subtitle-choose"].connect (() => {
-                if (window != null) {
-                    var start_progress = this.progress;
-                    pipeline.set_state (Gst.State.NULL);
-                    subtitle_uri = NikiApp.settings.get_string ("subtitle-choose");
-                    pipeline.set_state (Gst.State.PLAYING);
-                    ready.connect (() => {
-                        progress = start_progress;
-                        start_progress = 0.0;
-                    });
-                }
+                var start_progress = progress;
+                pipeline.set_state (Gst.State.NULL);
+                subtitle_uri = NikiApp.settings.get_string ("subtitle-choose");
+                pipeline.set_state (Gst.State.PLAYING);
+                ready.connect (() => {
+                    progress = start_progress;
+                    start_progress = 0.0;
+                });
             });
 
             flip_chage ();
@@ -125,7 +123,7 @@ namespace niki {
             }
         }
         private void visualisationsink () {
-            var start_progress = this.progress;
+            var start_progress = progress;
             pipeline.set_state (Gst.State.PAUSED);
             switch (NikiApp.settings.get_int ("visualisation-options")) {
                 case 0 :
@@ -153,10 +151,11 @@ namespace niki {
                     pipeline.set_state (Gst.State.NULL);
                     break;
             }
-            if (window != null) {
-                pipeline.set_state (Gst.State.PLAYING);
-                this.ready.connect (() => {
-                    this.progress = start_progress;
+
+            pipeline.set_state (Gst.State.PLAYING);
+            if (NikiApp.window != null) {
+                ready.connect (() => {
+                    progress = start_progress;
                     start_progress = 0.0;
                 });
             }
@@ -196,14 +195,14 @@ namespace niki {
             }
         }
         private void flip_chage () {
-            var start_progress = this.progress;
+            var start_progress = progress;
             pipeline.set_state (Gst.State.PAUSED);
             videomix.flip_filter["method"] = NikiApp.settings.get_int ("flip-options");
             pipeline.set_state (Gst.State.NULL);
-            if (window != null) {
-                pipeline.set_state (Gst.State.PLAYING);
-                this.ready.connect (() => {
-                    this.progress = start_progress;
+            pipeline.set_state (Gst.State.PLAYING);
+            if (NikiApp.window != null) {
+                ready.connect (() => {
+                    progress = start_progress;
                     start_progress = 0.0;
                 });
             }

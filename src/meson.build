@@ -30,7 +30,8 @@ executable(
     'RightBar.vala',
     'VolumeWiget.vala',
     'SettingsPopover.vala',
-    'DiskManager.vala',
+    'ACDManager.vala',
+    'DVDManager.vala',
     'Inhibitor.vala',
     'MprisPlayer.vala',
     'MprisRoot.vala',
@@ -91,6 +92,7 @@ executable(
     'MakeLyric.vala',
     'CircularGrid.vala',
     'CircularProgressBar.vala',
+    'KeyboardInfo.vala',
 
     c_args: c_args,
     dependencies: [

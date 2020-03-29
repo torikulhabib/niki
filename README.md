@@ -47,29 +47,6 @@ To install, use `ninja install`, then execute with `com.github.torikulhabib.niki
 ## Support
 If you like Niki and you want to support its development,consider supporting via [PayPal](https://paypal.me/TorikulHabib?locale.x=id_ID), [Patreon](https://www.patreon.com/nikiplayer) or  [LiberPay](https://liberapay.com/Torikul_habib)
 
-## Keyboard keys
-* F = Fullscreen
-* ESC = Exit Fullscreen && Quit;
-* Q = Quit
-* M = Muted
-* page Up = vol +
-* page Down = vol -
-* Arrow Up = seek +5
-* Arrow Down = seek -5
-* Arrow Right = seek +30
-* Arrow Left = seek -30
-* Shift + Arrow Up = seek +10
-* Shift + Arrow Down = seek -10
-* Shift + Arrow Right = seek +60
-* Shift + Arrow Left = seek -60
-* N = Next
-* B = Previous
-* P = Playlist
-* i = Info
-* L = Lyric
-* S = Settings
-* H = Home
-
 ### Roadmap
 #### v0.5
 - [x] Movie player.

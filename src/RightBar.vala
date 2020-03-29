@@ -62,7 +62,7 @@ namespace niki {
                 return false;
             });
             motion_notify_event.connect (() => {
-                if (window.is_active) {
+                if (NikiApp.window.is_active) {
                     reveal_control (false);
                     hovered = true;
                 }
@@ -80,17 +80,17 @@ namespace niki {
             open_button.get_style_context ().add_class ("button_action");
             open_button.set_tooltip_text (StringPot.Open_File);
             open_button.clicked.connect ( () => {
-                window.run_open_file (false, false);
+                NikiApp.window.run_open_file (false, false);
             });
             var add_folder = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.folder-symbolic", Gtk.IconSize.BUTTON);
             add_folder.get_style_context ().add_class ("button_action");
             add_folder.set_tooltip_text (StringPot.Open_Folder);
             add_folder.clicked.connect ( () => {
-                if (window.run_open_folder (0)) {
-                    window.welcome_page.scanfolder.remove_all ();
-                    window.welcome_page.scanfolder.scanning (NikiApp.settings.get_string ("folder-location"), 0);
-                    window.welcome_page.scanfolder.signal_succes.connect ((file_list)=>{
-                        window.welcome_page.circulargrid.count_uri (file_list);
+                if (NikiApp.window.run_open_folder (0)) {
+                    NikiApp.window.welcome_page.scanfolder.remove_all ();
+                    NikiApp.window.welcome_page.scanfolder.scanning (NikiApp.settings.get_string ("folder-location"), 0);
+                    NikiApp.window.welcome_page.scanfolder.signal_succes.connect ((file_list)=>{
+                        NikiApp.window.welcome_page.circulargrid.count_uri (file_list);
                     });
                 }
             });
@@ -154,7 +154,7 @@ namespace niki {
                 return cursor_hand_mode(2);
             });
 
-            header_label = new Gtk.Label ("");
+            header_label = new Gtk.Label (null);
             header_label.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
             header_label.ellipsize = Pango.EllipsizeMode.END;
             var focus_button = new Gtk.Button.from_icon_name ("mail-read-symbolic", Gtk.IconSize.BUTTON);

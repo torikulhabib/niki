@@ -20,7 +20,6 @@ namespace niki {
             videoscale = Gst.ElementFactory.make("videoscale","videoscale");
             videoscale["sharpen"] = 1.0;
             videoscale["sharpness"] = 1.5;
-            videoscale["method"] = 4;
             flip_filter = Gst.ElementFactory.make ("videoflip", "videoflip");
             gamma = Gst.ElementFactory.make ("gamma","gamma");
             color_balance = Gst.ElementFactory.make ("videobalance","videobalance");

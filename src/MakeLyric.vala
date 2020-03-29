@@ -132,9 +132,9 @@ namespace niki {
                     	save_to_file (lrc_file);
                         break;
                     case 2 :
-                        if (window.run_open_folder (2)) {
+                        if (NikiApp.window.run_open_folder (2)) {
                             var lrc_file = Path.build_filename (NikiApp.settings.get_string ("ask-lyric"), get_name_noext (uri_this) + ".lrc");
-                    	save_to_file (lrc_file);
+                    	    save_to_file (lrc_file);
                         }
                         break;
                 }
@@ -146,10 +146,10 @@ namespace niki {
             get_fol_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             get_fol_rev.transition_duration = 500;
             get_fol_rev.clicked.connect (() => {
-                window.run_open_folder (1);
+                NikiApp.window.run_open_folder (1);
             });
             var label_make = new Gtk.Label (StringPot.Niki_Lyric_Maker);
-            label_make.get_style_context ().add_class ("transparantbg");
+            label_make.get_style_context ().add_class ("selectedlabel");
             label_make.ellipsize = Pango.EllipsizeMode.END;
             label_make.selectable = true;
 
@@ -243,7 +243,7 @@ namespace niki {
         public void resize_scr () {
             if (NikiApp.settings.get_boolean("audio-video")) {
                 int height;
-                window.get_size (null, out height);
+                NikiApp.window.get_size (null, out height);
                 lrc_scr.height_request = height - 170;
                 lrc_text.height_request = height - 170;
             }
@@ -319,7 +319,7 @@ namespace niki {
         }
         private void run_open_file () {
             var file = new Gtk.FileChooserDialog (
-            StringPot.Open, window, Gtk.FileChooserAction.OPEN,
+            StringPot.Open, NikiApp.window, Gtk.FileChooserAction.OPEN,
             StringPot.Cancel, Gtk.ResponseType.CANCEL,
             StringPot.Open, Gtk.ResponseType.ACCEPT);
 

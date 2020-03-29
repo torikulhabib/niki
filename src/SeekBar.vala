@@ -85,7 +85,7 @@ namespace niki {
             });
 
             scale.enter_notify_event.connect (() => {
-                if (window.is_active) {
+                if (NikiApp.window.is_active) {
                     cursor_hand_mode (0);
                     preview_popover.schedule_show ();
                 }

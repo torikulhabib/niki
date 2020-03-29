@@ -90,7 +90,7 @@ namespace niki {
                 return false;
             });
             motion_notify_event.connect (() => {
-                if (window.is_active) {
+                if (NikiApp.window.is_active) {
                     reveal_control ();
                     hovered = true;
                 }

@@ -120,7 +120,7 @@ namespace niki {
             playback.notify["playing"].connect (start_anime);
         }
         private void start_anime () {
-            if (remove_time > 0 && NikiApp.settings.get_boolean("audio-video") && window.main_stack.visible_child_name == "player") {
+            if (remove_time > 0 && NikiApp.settings.get_boolean("audio-video") && NikiApp.window.main_stack.visible_child_name == "player") {
                 Source.remove (remove_time);
             }
             remove_time = Timeout.add (35, animation_timer);
@@ -248,7 +248,7 @@ namespace niki {
                 remove_time = Timeout.add (timeout, animation_timer);
                 return false;
             }
-            return NikiApp.settings.get_boolean("audio-video") && window.main_stack.visible_child_name == "player";
+            return NikiApp.settings.get_boolean("audio-video") && NikiApp.window.main_stack.visible_child_name == "player";
         }
     }
 }

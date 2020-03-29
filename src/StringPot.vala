@@ -244,5 +244,22 @@ namespace niki {
         public abstract const string Loading_Files              = _("Loading Files");
         public abstract const string Make_Lyric                 = _("Make Lyric");
         public abstract const string Set_Time_Lyric             = _("Set Time Lyric");
+        public abstract const string Audio_Cd                   = _("Audio CD");
+        public abstract const string DVD                        = _("DVD");
+        public abstract const string Browse                     = _("Browse");
+        public abstract const string Quit                       = _("Quit");
+        public abstract const string Volume_UP                  = _("Volume +");
+        public abstract const string Volume_DOWN                = _("Volume -");
+        public abstract const string Seek_U5                    = _("Seek +5");
+        public abstract const string Seek_M5                    = _("Seek -5");
+        public abstract const string Seek_U30                   = _("Seek +30");
+        public abstract const string Seek_M30                   = _("Seek -30");
+        public abstract const string Seek_U10                   = _("Seek +10");
+        public abstract const string Seek_M10                   = _("Seek -10");
+        public abstract const string Seek_U60                   = _("Seek +60");
+        public abstract const string Seek_M60                   = _("Seek -60");
+        public abstract const string Niki_Keys                  = _("Niki Keys");
+        public abstract const string Type_Keys                  = _("Typing Keys");
+        public abstract const string Control_Keys               = _("Control Keys");
     }
 }

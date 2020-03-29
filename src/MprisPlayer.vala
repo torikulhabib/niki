@@ -192,9 +192,9 @@ namespace niki {
 
         public void previous () throws GLib.Error {
             if (NikiApp.settings.get_boolean ("previous-status")) {
-                window.player_page.previous ();
+                NikiApp.window.player_page.previous ();
                 GLib.Timeout.add (250, () => {
-                    window.player_page.string_notify (StringPot.Previous);
+                    NikiApp.window.player_page.string_notify (StringPot.Previous);
                     return Source.REMOVE;
                 });
             }
@@ -202,9 +202,9 @@ namespace niki {
 
         public void next () throws GLib.Error {
             if (NikiApp.settings.get_boolean("next-status")) {
-                window.player_page.next ();
+                NikiApp.window.player_page.next ();
                 GLib.Timeout.add (250, () => {
-                    window.player_page.string_notify (StringPot.Next);
+                    NikiApp.window.player_page.string_notify (StringPot.Next);
                     return Source.REMOVE;
                 });
             }
@@ -212,23 +212,23 @@ namespace niki {
 
         public void pause () throws GLib.Error {
             playback.playing = false;
-            window.player_page.string_notify (StringPot.Pause);
+            NikiApp.window.player_page.string_notify (StringPot.Pause);
         }
 
         public void play () throws GLib.Error {
             playback.playing = true;
-            window.player_page.string_notify (StringPot.Play);
+            NikiApp.window.player_page.string_notify (StringPot.Play);
         }
 
         public void stop () throws GLib.Error {
             playback.playing = false;
             playback.progress = 0.0;
-            window.player_page.string_notify (StringPot.Stop);
+            NikiApp.window.player_page.string_notify (StringPot.Stop);
         }
 
         public void PlayPause () throws GLib.Error {
             playback.playing = playback.playing? false : true;
-            window.player_page.string_notify (playback.playing? StringPot.Play : StringPot.Pause);
+            NikiApp.window.player_page.string_notify (playback.playing? StringPot.Play : StringPot.Pause);
         }
 
         public void seek (int64 offset) throws GLib.Error {

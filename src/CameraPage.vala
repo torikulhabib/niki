@@ -15,7 +15,7 @@ namespace niki {
         public CameraBottomBar? camerabottombar;
         private GtkClutter.Actor bottom_actor;
 
-        public CameraPage (Window window) {
+        construct {
             events |= Gdk.EventMask.POINTER_MOTION_MASK;
             cameraplayer = new CameraPlayer (this);
             stage = this.get_stage () as Clutter.Stage;
@@ -74,31 +74,13 @@ namespace niki {
             bottom_actor.add_constraint (new Clutter.BindConstraint (stage, Clutter.BindCoordinate.WIDTH, 1));
             stage.add_child (bottom_actor); 
             show_all ();
-            bool mouse_primary_down = false;
-            motion_notify_event.connect ((event) => {
-                if (mouse_primary_down) {
-                    mouse_primary_down = false;
-                    window.begin_move_drag (Gdk.BUTTON_PRIMARY, (int)event.x_root, (int)event.y_root, event.time);
-                }
-                return false;
-            });
-
             button_press_event.connect ((event) => {
-                if (event.button == Gdk.BUTTON_PRIMARY) {
-                    mouse_primary_down = true;
-                }
                 if (event.button == Gdk.BUTTON_PRIMARY && event.type == Gdk.EventType.2BUTTON_PRESS && !cameraleftbar.hovered && !camerarightbar.hovered && !cameratopbar.hovered && !camerabottombar.hovered) {
                     NikiApp.settings.set_boolean ("fullscreen", !NikiApp.settings.get_boolean ("fullscreen"));
                 }
                 return Gdk.EVENT_PROPAGATE;
             });
 
-            button_release_event.connect ((event) => {
-                if (event.button == Gdk.BUTTON_PRIMARY) {
-                    mouse_primary_down = false;
-                }
-                return false;
-            });
             transition = new Clutter.PropertyTransition ("translation_z");
             notify_center.transition_stopped.connect (transition_stoped);
             size_allocate.connect (reposition);
@@ -112,7 +94,7 @@ namespace niki {
             });
         }
         public void string_notify (string notify_string) {
-            notify_text.text = "\n     " + notify_string + "     \n";
+            notify_text.text = @"\n     $(notify_string)     \n";
             notify_control ();
         }
 

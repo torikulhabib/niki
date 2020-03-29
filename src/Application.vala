@@ -20,13 +20,7 @@
 */
 
 namespace niki {
-    private Window window = null;
     public class NikiApp : Gtk.Application {
-        public static GLib.Settings settings = new GLib.Settings ("com.github.torikulhabib.niki");
-        public static GLib.Settings settingsEq = new GLib.Settings ("com.github.torikulhabib.equalizer");
-        public static GLib.Settings settingsVf = new GLib.Settings ("com.github.torikulhabib.videofilter");
-        public static GLib.Settings settingsCv = new GLib.Settings ("com.github.torikulhabib.videocamera");
-
         private static NikiApp _instance = null;
         public static NikiApp instance {
             get {
@@ -44,6 +38,14 @@ namespace niki {
             startup.connect (on_startup);
             shutdown.connect (on_shutdown);
         }
+
+        public static Window? window;
+        public static KeyboardInfo? keyboardinfo;
+        public static GLib.Settings settings = new GLib.Settings ("com.github.torikulhabib.niki");
+        public static GLib.Settings settingsEq = new GLib.Settings ("com.github.torikulhabib.equalizer");
+        public static GLib.Settings settingsVf = new GLib.Settings ("com.github.torikulhabib.videofilter");
+        public static GLib.Settings settingsCv = new GLib.Settings ("com.github.torikulhabib.videocamera");
+
         construct {
             Unix.signal_add ( Posix.Signal.HUP, on_sigint, Priority.DEFAULT );
             Unix.signal_add ( Posix.Signal.TERM, on_sigint, Priority.DEFAULT );
@@ -75,17 +77,29 @@ namespace niki {
                 }
             }
         }
-
+        public void keyboard_keys () {
+            if (keyboardinfo == null) {
+                keyboardinfo = new KeyboardInfo ();
+                keyboardinfo.application = this;
+                add_window (keyboardinfo);
+                keyboardinfo.show_all ();
+                keyboardinfo.destroy.connect (() => {
+                    keyboardinfo = null;
+                });
+            }
+        }
         [CCode (array_length = false, array_null_terminated = true)]
         private string []? arg_files = {};
         public override int command_line (ApplicationCommandLine command) {
             string [] args_cmd = command.get_arguments ();
             unowned string [] args = args_cmd;
             bool playlist = false;
-            GLib.OptionEntry [] options = new OptionEntry [3];
+            bool showkey = false;
+            GLib.OptionEntry [] options = new OptionEntry [4];
             options [0] = { "playlist", 0, 0, OptionArg.NONE, ref playlist, "playlist", null };
-            options [1] = { "", 0, 0, OptionArg.STRING_ARRAY, ref arg_files, null, null };
-            options [2] = { null };
+            options [1] = { "showkey", 0, 0, OptionArg.NONE, ref showkey, "showkey", null };
+            options [2] = { "", 0, 0, OptionArg.STRING_ARRAY, ref arg_files, null, null };
+            options [3] = { null };
             var opt_context = new OptionContext (null);
             opt_context.add_main_entries (options, null);
             try {
@@ -103,6 +117,9 @@ namespace niki {
             if (playlist) {
                 window.open_files (files, false, false);
                 arg_files = {};
+                return 0;
+            } else if (showkey) {
+                keyboard_keys ();
                 return 0;
             } else {
                 active ();

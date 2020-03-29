@@ -34,7 +34,7 @@ namespace niki {
                 selectable_text: false,
                 deletable: false,
                 resizable: false,
-                transient_for: window,
+                transient_for: NikiApp.window,
                 destroy_with_parent: true
             );
         }

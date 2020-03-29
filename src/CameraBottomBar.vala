@@ -66,7 +66,7 @@ namespace niki {
             ((Gtk.TreeSortable)img_store).set_sort_column_id (1, Gtk.SortType.DESCENDING);
             ((Gtk.TreeSortable)vid_store).set_sort_column_id (1, Gtk.SortType.DESCENDING);
             enter_notify_event.connect ((event) => {
-                if (window.is_active) {
+                if (NikiApp.window.is_active) {
                     if (event.window == get_window ()) {
                         hovered = true;
                     }
@@ -75,7 +75,7 @@ namespace niki {
             });
 
             motion_notify_event.connect (() => {
-                if (window.is_active) {
+                if (NikiApp.window.is_active) {
                     hovered = true;
                 }
                 return false;
@@ -90,7 +90,7 @@ namespace niki {
                 return false;
             });
             leave_notify_event.connect ((event) => {
-                if (window.is_active) {
+                if (NikiApp.window.is_active) {
                     if (event.window == get_window ()) {
                         hovered = false;
                     }

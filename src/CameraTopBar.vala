@@ -40,7 +40,7 @@ namespace niki {
             events |= Gdk.EventMask.ENTER_NOTIFY_MASK;
 
             enter_notify_event.connect ((event) => {
-              if (window.is_active) {
+              if (NikiApp.window.is_active) {
                     if (event.window == get_window ()) {
                         hovered = true;
                     }
@@ -48,7 +48,7 @@ namespace niki {
                 return false;
             });
             motion_notify_event.connect (() => {
-                if (window.is_active) {
+                if (NikiApp.window.is_active) {
                     hovered = true;
                 }
                 return false;
@@ -63,7 +63,7 @@ namespace niki {
                 return false;
             });
             leave_notify_event.connect ((event) => {
-              if (window.is_active) {
+              if (NikiApp.window.is_active) {
                     if (event.window == get_window ()) {
                         hovered = false;
                     }
@@ -99,8 +99,8 @@ namespace niki {
             home_button.get_style_context ().add_class ("button_action");
             home_button.tooltip_text = StringPot.Home;
             home_button.clicked.connect (() => {
-                window.main_stack.visible_child_name = "welcome";
-		        window.camera_page.cameraplayer.set_null ();
+                NikiApp.window.main_stack.visible_child_name = "welcome";
+		        NikiApp.window.camera_page.cameraplayer.set_null ();
             });
 
             my_app = new Gtk.Label (null);

@@ -27,7 +27,7 @@ namespace niki {
 
         construct {
             previewvideo = new PreviewVideo (this);
-            pipeline = this.get_pipeline ();
+            pipeline = get_pipeline ();
             pipeline["video-sink"] = previewvideo;
             var iter = ((Gst.Bin)pipeline).iterate_sinks ();
             Value value;
@@ -47,14 +47,13 @@ namespace niki {
             NikiApp.settings.changed["flip-options"].connect (flip_chage);
         }
         private void flip_chage () {
-            var start_progress = this.progress;
+            var start_progress = progress;
             pipeline.set_state (Gst.State.PAUSED);
             previewvideo.flip_filter["method"] = NikiApp.settings.get_int ("flip-options");
             pipeline.set_state (Gst.State.NULL);
-            if (window != null) {
-                pipeline.set_state (Gst.State.PLAYING);
-                this.ready.connect (() => {
-                    this.progress = start_progress;
+            if (NikiApp.window != null) {
+                ready.connect (() => {
+                    progress = start_progress;
                     start_progress = 0.0;
                 });
             }

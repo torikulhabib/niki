@@ -59,7 +59,7 @@ namespace niki {
             events |= Gdk.EventMask.ENTER_NOTIFY_MASK;
 
             enter_notify_event.connect ((event) => {
-              if (window.is_active) {
+              if (NikiApp.window.is_active) {
                     if (event.window == get_window ()) {
                         reveal_control ();
                         hovered = true;
@@ -68,7 +68,7 @@ namespace niki {
                 return false;
             });
             motion_notify_event.connect (() => {
-                if (window.is_active) {
+                if (NikiApp.window.is_active) {
                     reveal_control ();
                     hovered = true;
                 }
@@ -84,7 +84,7 @@ namespace niki {
                 return false;
             });
             leave_notify_event.connect ((event) => {
-              if (window.is_active) {
+              if (NikiApp.window.is_active) {
                     if (event.window == get_window ()) {
                         hovered = false;
                     }
@@ -202,6 +202,7 @@ namespace niki {
             info_button ();
             stack_fulscreen ();
             revealer_menu ();
+            maximized_button ();
         }
         private void blured_button () {
             blur_button.change_icon (NikiApp.settings.get_boolean ("blur-mode")? "applications-graphics-symbolic" : "com.github.torikulhabib.niki.color-symbolic");

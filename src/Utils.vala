@@ -390,19 +390,19 @@ namespace niki {
             Gdk.CursorType.ARROW,
             Gdk.CursorType.HAND1
         };
-        var display = window.get_display ();
+        var display = NikiApp.window.get_display ();
         var cursor = new Gdk.Cursor.for_display (display, cursors [cursor_mode]);
-        window.get_window().set_cursor (cursor);
+        NikiApp.window.get_window().set_cursor (cursor);
         return false;
     }
 
     private bool destroy_mode () {
-        if (window.player_page.playback.playing && NikiApp.settings.get_boolean ("audio-video")) {
-            return window.hide_on_delete ();
+        if (NikiApp.window.player_page.playback.playing && NikiApp.settings.get_boolean ("audio-video")) {
+            return NikiApp.window.hide_on_delete ();
         } else {
-            window.player_page.save_destroy ();
-            window.player_page.playback.dispose ();
-            window.destroy ();
+            NikiApp.window.player_page.save_destroy ();
+            NikiApp.window.player_page.playback.dispose ();
+            NikiApp.window.destroy ();
             return false;
         }
     }
@@ -558,7 +558,29 @@ namespace niki {
         var notification = new GLib.Notification ("");
         notification.set_title (message);
         notification.set_body (msg_bd);
-        window.application.send_notification ("notify.app", notification);
+        NikiApp.window.application.send_notification ("notify.app", notification);
+    }
+    private void move_widget (Gtk.Widget widget, Gtk.Window windows) {
+        bool mouse_primary_down = false;
+        widget.motion_notify_event.connect ((event) => {
+            if (mouse_primary_down) {
+                mouse_primary_down = false;
+                windows.begin_move_drag (Gdk.BUTTON_PRIMARY, (int)event.x_root, (int)event.y_root, event.time);
+            }
+            return false;
+        });
+        widget.button_press_event.connect ((event) => {
+            if (event.button == Gdk.BUTTON_PRIMARY) {
+                mouse_primary_down = true;
+            }
+            return Gdk.EVENT_PROPAGATE;
+        });
+        widget.button_release_event.connect ((event) => {
+            if (event.button == Gdk.BUTTON_PRIMARY) {
+                mouse_primary_down = false;
+            }
+            return false;
+        });
     }
     private Gdk.Pixbuf? unknown_cover () {
 	    Cairo.ImageSurface surface = new Cairo.ImageSurface (Cairo.Format.RGB30, 256, 256);

@@ -69,12 +69,11 @@ namespace niki {
         }
 
         public void quit () throws GLib.Error {
-            window.destroy ();
+            NikiApp.window.destroy ();
         }
 
         public void raise () throws GLib.Error {
-            new NikiApp ().instance.active ();
-            window.show ();
+            NikiApp.instance.active ();
         }
     }
 }

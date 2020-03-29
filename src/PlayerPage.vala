@@ -51,14 +51,11 @@ namespace niki {
             stage.background_color = Clutter.Color.from_string ("black");
             aspect_ratio = new ClutterGst.Aspectratio ();
             aspect_ratio.player = playback;
+            stage.content = aspect_ratio;
             playback.size_change.connect ((width, height) => {
                 if (!NikiApp.settings.get_boolean ("audio-video")) {
                     resize_player_page (width, height);
-                    if (width < 300 && height < 700 || height < 300 && width < 700) {
-                        set_size_request (width, height);
-                    } else {
-                        set_size_request (100, 150);
-                    }
+                    set_size_request (width < 300 && height < 700 || height < 300 && width < 700? width : 100, width < 300 && height < 700 || height < 300 && width < 700? height : 150);
                 }
             });
             NikiApp.settings.changed["activate-subtitle"].connect (() => {
@@ -66,7 +63,6 @@ namespace niki {
             });
             mpris = new MPRIS ();
             mpris.bus_acive (playback);
-            stage.content = aspect_ratio;
 
             Clutter.LayoutManager layout_manager = new Clutter.BoxLayout ();
             ((Clutter.BoxLayout)layout_manager).set_orientation (Clutter.Orientation.VERTICAL);
@@ -163,21 +159,13 @@ namespace niki {
             stage.add_child (bottom_actor);
             show_all ();
 
-            bool mouse_primary_down = false;
-            motion_notify_event.connect ((event) => {
+            motion_notify_event.connect (() => {
                 mouse_hovered = window.main_stack.visible_child_name == "welcome"? false : true;
-                if (mouse_primary_down) {
-                    mouse_primary_down = false;
-                    window.begin_move_drag (Gdk.BUTTON_PRIMARY, (int)event.x_root, (int)event.y_root, event.time);
-                }
                 return false;
             });
 
             button_press_event.connect ((event) => {
                 mouse_hovered = false;
-                if (event.button == Gdk.BUTTON_PRIMARY) {
-                    mouse_primary_down = true;
-                }
                 if (event.button == Gdk.BUTTON_PRIMARY && event.type == Gdk.EventType.2BUTTON_PRESS && !right_bar.hovered && !top_bar.hovered && !bottom_bar.hovered) {
                     NikiApp.settings.set_boolean ("fullscreen", !NikiApp.settings.get_boolean ("fullscreen"));
                 }
@@ -189,12 +177,8 @@ namespace niki {
                 return Gdk.EVENT_PROPAGATE;
             });
 
-            button_release_event.connect ((event) => {
-                mouse_hovered = false;
-                if (event.button == Gdk.BUTTON_PRIMARY) {
-                    mouse_primary_down = false;
-                }
-                return false;
+            button_release_event.connect (() => {
+                return mouse_hovered = false;
             });
             playlist_widget ().play.connect ((file, size_path, mediatype, playnow) => {
                 play_file (file, size_path, mediatype, playnow);
@@ -273,7 +257,7 @@ namespace niki {
                 resize_player_page (570, 430);
                 if (!NikiApp.settings.get_boolean("home-signal")) {
                     NikiApp.settings.set_boolean("home-signal", true);
-                    window.main_stack.visible_child_name = "welcome";
+                    NikiApp.window.main_stack.visible_child_name = "welcome";
                 }
                 NikiApp.settings.set_string("last-played", " ");
                 NikiApp.settings.set_string("uri-video", " ");
@@ -315,7 +299,7 @@ namespace niki {
             }
         }
         public void load_current_list () {
-            if (window.main_stack.visible_child_name == "player" && !NikiApp.settings.get_boolean("home-signal") && playback.uri != null) {
+            if (NikiApp.window.main_stack.visible_child_name == "player" && !NikiApp.settings.get_boolean("home-signal") && playback.uri != null) {
                 playlist_widget ().set_current (playback.uri);
             }
         }
@@ -324,11 +308,10 @@ namespace niki {
         }
         public bool starting () {
             if (!playback.playing) {
-                if (window.is_privacy_mode_enabled () && !NikiApp.settings.get_boolean("home-signal")) {
+                if (NikiApp.window.is_privacy_mode_enabled () && !NikiApp.settings.get_boolean("home-signal")) {
                     if (file_exists (NikiApp.settings.get_string("last-played"))) {
-                        window.welcome_page.index_but = 3;
-                        window.welcome_page.stack.visible_child_name = "circular";
-                        restore_file ();
+                        NikiApp.window.welcome_page.index_but = 3;
+                        NikiApp.window.welcome_page.stack.visible_child_name = "circular";
                     } else {
                         gohome ();
                     }
@@ -336,7 +319,7 @@ namespace niki {
                     gohome ();
                 }
             } else {
-                window.main_stack.visible_child_name = "player";
+                NikiApp.window.main_stack.visible_child_name = "player";
             }
             return false;
         }
@@ -377,7 +360,7 @@ namespace niki {
                 NikiApp.settings.set_boolean("home-signal", true);
             }
             playlist_widget ().clear_items ();
-            window.main_stack.visible_child_name = "welcome";
+            NikiApp.window.main_stack.visible_child_name = "welcome";
         }
         public void scroll_actor (int index_in) {
             Clutter.Actor item;
@@ -440,7 +423,7 @@ namespace niki {
         public void signal_window () {
             if (NikiApp.settings.get_boolean("audio-video")) {
                 int height;
-                window.get_size (null, out height);
+                NikiApp.window.get_size (null, out height);
                 menu_actor.height = height - 150;
                 update_position_cover ();
             }
@@ -514,7 +497,7 @@ namespace niki {
         }
 
         public void resize_player_page (int width, int height) {
-            window.resize (width, height);
+            NikiApp.window.resize (width, height);
         }
 
         private void font_option () {
@@ -529,7 +512,7 @@ namespace niki {
                 Source.remove (mouse_timer);
             }
             mouse_timer = GLib.Timeout.add (500, () => {
-                if (mouse_hovered || window.main_stack.visible_child_name == "welcome") {
+                if (mouse_hovered || NikiApp.window.main_stack.visible_child_name == "welcome") {
                     mouse_timer = 0;
                     return false;
                 }
@@ -542,7 +525,7 @@ namespace niki {
         public void mouse_blank () {
             if (bottom_bar.child_revealed || right_bar.child_revealed || top_bar.child_revealed) {
                 cursor_hand_mode (2);
-            } else if (window.main_stack.visible_child_name == "player"){
+            } else if (NikiApp.window.main_stack.visible_child_name == "player"){
                 cursor_hand_mode (1);
             } else {
                 cursor_hand_mode (2);
@@ -603,7 +586,7 @@ namespace niki {
             }
             if (NikiApp.settings.get_boolean("home-signal")) {
                 NikiApp.settings.set_boolean("home-signal", false);
-                window.main_stack.visible_child_name = "player";
+                NikiApp.window.main_stack.visible_child_name = "player";
             }
         }
         private void check_lr_sub () {
