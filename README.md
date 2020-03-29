@@ -98,7 +98,7 @@ If you like Niki and you want to support its development,consider supporting via
 - [ ] Video Library View. (Inprogress)
 - [ ] Audio Tag. (Inprogress)
 - [ ] DLNA Player. (Inprogress)
-- [ ] Video Crop. (Inprogress)
+- [x] Video Crop.
 - [ ] DLNA Media Export. (Inprogress)
 - [x] Scrowled lyric mode.
 - [x] lyric Maker.
