@@ -11,6 +11,7 @@ namespace niki {
         public void circular_clear () {
             circularprogressbar.percentage = 0.0;
             circularprogressbar.count_file = 0;
+            circularprogressbar.total_file = 0;
         }
         public void count_uri (Gtk.ListStore liststore) {
             int n_child = liststore.iter_n_children (null);
@@ -29,6 +30,7 @@ namespace niki {
                 count_to = 100000 / (double) n_child;
                 pers_to = 100000;
             }
+            circularprogressbar.total_file = n_child;
             int count = 1;
             double count_pro = count_to;
             Timeout.add (50,()=> {

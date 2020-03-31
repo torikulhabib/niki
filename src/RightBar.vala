@@ -24,7 +24,7 @@ namespace niki {
         public Playlist? playlist;
         private Gtk.Label header_label;
         private Gtk.Button edit_button;
-        private RepeatButton repeat_button;
+        private RepeatButton? repeat_button;
         private Gtk.ScrolledWindow playlist_scrolled;
         private Gtk.Grid content_box;
         private Gtk.Adjustment adjustment;

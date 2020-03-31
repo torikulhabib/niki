@@ -94,6 +94,8 @@ executable(
     'CircularProgressBar.vala',
     'KeyboardInfo.vala',
     'AccelLabel.vala',
+    'VideoCrop.vala',
+    'LabelEntry.vala',
 
     c_args: c_args,
     dependencies: [

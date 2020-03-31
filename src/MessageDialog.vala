@@ -75,11 +75,10 @@ namespace niki {
             grid_combine.add (custom_bin);
             grid_combine.show_all ();
 
-            get_content_area ().add (grid_combine);
-
             var action_area = get_content_area ();
             action_area.margin = 3;
             action_area.margin_top = 3;
+            action_area.add (grid_combine);
             move_widget (this, this);
         }
     }

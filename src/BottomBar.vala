@@ -22,7 +22,7 @@
 namespace niki {
     public class BottomBar : Gtk.Revealer {
         private Gtk.Button menu_settings;
-        public MakeLyric make_grid_lrc;
+        public MakeLyric? make_grid_lrc;
         public OtherGrid? othergrid;
         public SettingsPopover? menu_popover;
         private EqualizerGrid? equalizer_grid;
@@ -36,21 +36,21 @@ namespace niki {
         private Gtk.Revealer action_box_rev;
         private Gtk.Revealer box_action_revealer;
         private Gtk.Revealer box_set_list_rev;
-        public ButtonRevealer previous_revealer;
-        public ButtonRevealer next_revealer;
-        public ButtonRevealer subtitle_revealer;
-        private ButtonRevealer playlist_revealer;
+        public ButtonRevealer? previous_revealer;
+        public ButtonRevealer? next_revealer;
+        public ButtonRevealer? subtitle_revealer;
+        private ButtonRevealer? playlist_revealer;
         private Gtk.Button fullscreen_button;
         private Gtk.Button next_button_center;
-        public VolumeButton volume_button;
+        public VolumeButton? volume_button;
         private Gtk.Button font_button;
         private Gtk.Button previous_button_center;
-        public ButtonRevealer stop_revealer;
-        private ButtonRevealer lyric_revealer;
+        public ButtonRevealer? stop_revealer;
+        private ButtonRevealer? lyric_revealer;
         private Gtk.Revealer font_but_rev;
         private Gtk.Revealer no_rep_rev;
-        private RepeatButton repeat_button;
-        private RepeatButton no_plylist_repeat;
+        private RepeatButton? repeat_button;
+        private RepeatButton? no_plylist_repeat;
         private Gtk.Button shuffle_button;
         private Gtk.Button setting_niki;
         private Gtk.Button settings_prev_button;

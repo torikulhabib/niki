@@ -95,13 +95,13 @@ namespace niki {
         private void do_step () {
             switch (NikiApp.settings.get_int ("speed-playing")) {
                 case 0 :
-                    pipeline.send_event (new Gst.Event.step (Gst.Format.TIME, 600 * Gst.MSECOND, 0.25, false, false));
+                    pipeline.send_event (new Gst.Event.step (Gst.Format.TIME, 1000 * Gst.MSECOND, 0.25, false, false));
                     break;
                 case 1 :
-                    pipeline.send_event (new Gst.Event.step (Gst.Format.TIME, 400 * Gst.MSECOND, 0.5, false, false));
+                    pipeline.send_event (new Gst.Event.step (Gst.Format.TIME, 600 * Gst.MSECOND, 0.5, false, false));
                     break;
                 case 2 :
-                    pipeline.send_event (new Gst.Event.step (Gst.Format.TIME, 200 * Gst.MSECOND, 0.75, false, false));
+                    pipeline.send_event (new Gst.Event.step (Gst.Format.TIME, 400 * Gst.MSECOND, 0.75, false, false));
                     break;
                 case 3 :
                     pipeline.send_event (new Gst.Event.step (Gst.Format.TIME, 100 * Gst.MSECOND, 0.90, false, false));

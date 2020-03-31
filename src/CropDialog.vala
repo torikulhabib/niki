@@ -23,7 +23,7 @@ namespace niki {
     public class CropDialog : MessageDialog {
         public signal void request_avatar_change (Gdk.Pixbuf pixbuf);
         public string pixbuf_path { get; construct; }
-        private CropView cropview;
+        private CropView? cropview;
 
         public CropDialog (string pixbuf_path) {
             Object (
@@ -35,7 +35,8 @@ namespace niki {
                 deletable: false,
                 resizable: false,
                 transient_for: NikiApp.window,
-                destroy_with_parent: true
+                destroy_with_parent: true,
+                window_position: Gtk.WindowPosition.CENTER_ON_PARENT
             );
         }
 
@@ -68,6 +69,7 @@ namespace niki {
                 set_keep_above (true);
                 return false;
             });
+            show_all ();
         }
 
         private void on_response (Gtk.Dialog source, int response_id) {

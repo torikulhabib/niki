@@ -1,7 +1,7 @@
 namespace niki {
     public class SettingsPopover : Gtk.Popover {
-        private ComboxImage languages;
-        private ComboxImage subtitles;
+        private ComboxImage? languages;
+        private ComboxImage? subtitles;
         private ComboxImage? combox_font;
         private PlayerPage? playerpage;
         private Gtk.Revealer label_audio_revealer;

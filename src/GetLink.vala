@@ -65,10 +65,7 @@ namespace niki {
                 spawn_args = {"youtube-dl", "--get-thumbnail", "--get-filename", "-o", "%(title)s.%(ext)s", "--skip-download", "--get-url", url};
             }
             try {
-                int standard_input;
-                int standard_output;
-                int standard_error;
-
+                int standard_input, standard_output, standard_error;
                 Process.spawn_async_with_pipes ( cache_folder (), spawn_args, Environ.get (), SpawnFlags.SEARCH_PATH | SpawnFlags.DO_NOT_REAP_CHILD, null, out child_pid, out standard_input, out standard_output, out standard_error);
                 IOChannel output = new IOChannel.unix_new (standard_output);
                 output.add_watch (IOCondition.IN | IOCondition.HUP, (channel, condition) => {

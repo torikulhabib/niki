@@ -31,7 +31,7 @@ namespace niki {
         public Gtk.Button option_button;
         private Gtk.ListStore img_store;
         private Gtk.ListStore vid_store;
-        private AsyncImage asyncimage;
+        private AsyncImage? asyncimage;
         private uint video_timer = 0;
         private uint image_timer = 0;
         private bool _hovered = false;

@@ -27,7 +27,7 @@ namespace niki {
         private Gtk.Button next_button;
         private Gtk.Button previous_button;
         private DLNAVolumeButton? volume_button;
-        public ButtonRevealer stop_revealer;
+        public ButtonRevealer? stop_revealer;
         public Gtk.Scale scale_range;
         private uint volume_hiding_timer = 0;
         private uint show_timer_id = 0;

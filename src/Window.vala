@@ -22,8 +22,8 @@
 namespace niki {
     public class Window : Gtk.Window {
 	    private static Gtk.TargetEntry [] target_list;
-        public PlayerPage player_page;
-        public CameraPage camera_page;
+        public PlayerPage? player_page;
+        public CameraPage? camera_page;
         public WelcomePage? welcome_page;
         public Gtk.Stack main_stack;
         private Gtk.HeaderBar headerbar;

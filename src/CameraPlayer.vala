@@ -12,8 +12,7 @@ namespace niki {
         private dynamic Gst.Element gaussianblur;
         private dynamic Gst.Element coloreffects;
         private dynamic Gst.Element filter;
-        private CameraPage camerapage;
-        private CameraFlash cameraflash;
+        private CameraPage? camerapage;
         public signal bool was_capture ();
 
         private Gst.PbUtils.EncodingProfile create_ogg_profile () {
@@ -58,7 +57,6 @@ namespace niki {
 
         public CameraPlayer (CameraPage camerapage) {
             this.camerapage = camerapage;
-            cameraflash = new CameraFlash ();
             camerabin = Gst.ElementFactory.make ("camerabin", "camerabin");
             videosink = ClutterGst.create_video_sink ();
             camerabin["viewfinder-sink"] = videosink;
@@ -105,6 +103,7 @@ namespace niki {
                 camerabin["mode"] = 1;
                 play_sound ("camera-shutter");
                 if (!NikiApp.settings.get_boolean ("flash-camera")) {
+                    var cameraflash = new CameraFlash ();
                     cameraflash.flash_now ();
                     cameraflash.capture_now.connect (()=> {
                         GLib.Signal.emit_by_name (camerabin, "start-capture");

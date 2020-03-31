@@ -18,7 +18,7 @@ namespace niki {
         construct {
             events |= Gdk.EventMask.POINTER_MOTION_MASK;
             cameraplayer = new CameraPlayer (this);
-            stage = this.get_stage () as Clutter.Stage;
+            stage = get_stage () as Clutter.Stage;
             stage.background_color = Clutter.Color.from_string ("black");
             aspect_ratio = new ClutterGst.Aspectratio ();
             aspect_ratio.sink = cameraplayer.videosink as ClutterGst.VideoSink;

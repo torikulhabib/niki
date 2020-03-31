@@ -27,7 +27,8 @@ namespace niki {
         private Gtk.Button close_botton;
         private Gtk.Revealer menu_revealer;
         private Gtk.Stack stack;
-        public ButtonRevealer blur_button;
+        public ButtonRevealer? blur_button;
+        public ButtonRevealer? crop_button;
         public Gtk.Label label_info;
         public Gtk.Label info_label_full;
         private Gtk.Label my_app;
@@ -51,7 +52,7 @@ namespace niki {
             }
         }
 
-        construct {
+        public TopBar (PlayerPage playerpage) {
             transition_type = Gtk.RevealerTransitionType.CROSSFADE;
             transition_duration = 500;
             events |= Gdk.EventMask.POINTER_MOTION_MASK;
@@ -124,11 +125,21 @@ namespace niki {
                 NikiApp.settings.set_boolean ("information-button", !NikiApp.settings.get_boolean ("information-button"));
                 info_button ();
             });
-            blur_button = new ButtonRevealer ("view-paged-symbolic-symbolic");
+            blur_button = new ButtonRevealer ("view-paged-symbolic");
             blur_button.revealer_button.get_style_context ().add_class ("button_action");
+            blur_button.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
+            blur_button.transition_duration = 500;
             blur_button.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("blur-mode", !NikiApp.settings.get_boolean ("blur-mode"));
                 blured_button ();
+            });
+            crop_button = new ButtonRevealer ("image-crop-symbolic");
+            crop_button.revealer_button.get_style_context ().add_class ("button_action");
+            crop_button.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
+            crop_button.transition_duration = 500;
+            crop_button.clicked.connect (() => {
+                var videocrop = new VideoCrop (playerpage);
+                videocrop.show_all ();
             });
             my_app = new Gtk.Label (null);
             my_app.get_style_context ().add_class ("button_action");
@@ -146,6 +157,7 @@ namespace niki {
             main_actionbar.set_center_widget (my_app);
             main_actionbar.pack_end (maximize_button);
             main_actionbar.pack_end (blur_button);
+            main_actionbar.pack_end (crop_button);
             main_actionbar.show_all ();
 
             label_info = new Gtk.Label (null);
@@ -225,6 +237,7 @@ namespace niki {
         }
         private void revealer_menu () {
             blur_button.set_reveal_child (NikiApp.settings.get_boolean ("audio-video"));
+            crop_button.set_reveal_child (!NikiApp.settings.get_boolean ("audio-video"));
             menu_revealer.set_reveal_child (!NikiApp.settings.get_boolean ("audio-video") && NikiApp.settings.get_boolean ("information-button")? true : false);
         }
         private void maximized_button () {

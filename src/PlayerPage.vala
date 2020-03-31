@@ -24,6 +24,8 @@ namespace niki {
         public Clutter.Actor menu_actor;
         public Clutter.Point point;
         public MPRIS? mpris;
+        public int video_height;
+        public int video_width;
         private uint mouse_timer = 0;
         private bool _mouse_hovered = false;
         private bool mouse_hovered {
@@ -47,12 +49,14 @@ namespace niki {
             events |= Gdk.EventMask.POINTER_MOTION_MASK;
             playback = new PlaybackPlayer ();
             playback.set_seek_flags (ClutterGst.SeekFlags.ACCURATE);
-            stage = this.get_stage () as Clutter.Stage;
+            stage = get_stage () as Clutter.Stage;
             stage.background_color = Clutter.Color.from_string ("black");
             aspect_ratio = new ClutterGst.Aspectratio ();
             aspect_ratio.player = playback;
             stage.content = aspect_ratio;
             playback.size_change.connect ((width, height) => {
+                video_width = width;
+                video_height = height;
                 if (!NikiApp.settings.get_boolean ("audio-video")) {
                     resize_player_page (width, height);
                     set_size_request (width < 300 && height < 700 || height < 300 && width < 700? width : 100, width < 300 && height < 700 || height < 300 && width < 700? height : 150);
@@ -65,8 +69,8 @@ namespace niki {
             mpris.bus_acive (playback);
 
             Clutter.LayoutManager layout_manager = new Clutter.BoxLayout ();
-            ((Clutter.BoxLayout)layout_manager).set_orientation (Clutter.Orientation.VERTICAL);
-            ((Clutter.BoxLayout)layout_manager).set_spacing (0);
+            ((Clutter.BoxLayout) layout_manager).set_orientation (Clutter.Orientation.VERTICAL);
+            ((Clutter.BoxLayout) layout_manager).set_spacing (0);
             menu_actor = new Clutter.Actor ();
             menu_actor.set_layout_manager (layout_manager);
             scroll = new Clutter.ScrollActor ();
@@ -134,7 +138,7 @@ namespace niki {
             right_actor.add_constraint (new Clutter.BindConstraint (stage, Clutter.BindCoordinate.HEIGHT, 1));
             stage.add_child (right_actor);
 
-            top_bar = new TopBar ();
+            top_bar = new TopBar (this);
             top_actor = new GtkClutter.Actor ();
             top_actor.contents = top_bar;
             top_actor.opacity = 255;

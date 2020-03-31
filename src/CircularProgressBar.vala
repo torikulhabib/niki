@@ -13,6 +13,15 @@ namespace niki {
                 _count_file = value;
             }
         }
+        private int _total_file;
+        public int total_file {
+            get {
+                return _total_file;
+            }
+            set {
+                _total_file = value;
+            }
+        }
         private double _percentage = 0;
         public double percentage {
             get {
@@ -78,7 +87,7 @@ namespace niki {
                 Gdk.cairo_set_source_rgba (cr, color);
 
                 Pango.Layout layout = Pango.cairo_create_layout (cr);
-                layout.set_text (@"$(count_file)", -1);
+                layout.set_text (@"$(count_file)/$(total_file)", -1);
                 Pango.FontDescription desc = Pango.FontDescription.from_string ("Bitstream Vera Sans 24");
                 layout.set_font_description (desc);
                 Pango.cairo_update_layout (cr, layout);
