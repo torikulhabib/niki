@@ -367,12 +367,11 @@ namespace niki {
             NikiApp.window.main_stack.visible_child_name = "welcome";
         }
         public void scroll_actor (int index_in) {
-            Clutter.Actor item;
             Clutter.Actor menu = scroll.get_first_child ();
             if (index_in > 0) {
                 seek_music ();
             }
-            item = menu.get_child_at_index (index_in);
+            Clutter.Actor item = menu.get_child_at_index (index_in);
             item.get_position (out point.x, out point.y);
             point.y = point.y - ((menu_actor.height / 2) - (((Clutter.Text)item).height / 2));
             scroll.save_easing_state ();

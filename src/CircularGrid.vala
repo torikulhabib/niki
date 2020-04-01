@@ -4,6 +4,7 @@ namespace niki {
 
         construct {
             circularprogressbar = new CircularProgressBar ();
+            circularprogressbar.radius_filled = true;
             valign = Gtk.Align.CENTER;
             halign = Gtk.Align.CENTER;
             add (circularprogressbar);

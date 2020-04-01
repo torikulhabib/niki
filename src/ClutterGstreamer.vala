@@ -33,6 +33,7 @@ namespace niki {
             audiomix = new AudioMix ();
             pipeline = get_pipeline ();
             pipeline["video-sink"] = videomix;
+            pipeline["audio-sink"] = audiomix;
             var iter = ((Gst.Bin)pipeline).iterate_sinks ();
             Value value;
             while (iter.next (out value) == Gst.Iterator.OK) {
@@ -43,7 +44,6 @@ namespace niki {
                     break;
                 }
             }
-            playsink["audio-sink"] = audiomix;
             Gst.Bus bus = ((Gst.Pipeline)pipeline).get_bus ();
             bus.add_signal_watch ();
             bus.message.connect (handle_message);

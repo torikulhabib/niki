@@ -46,8 +46,6 @@ namespace niki {
                         Source.remove (hiding_timer);
                         hiding_timer = 0;
                     }
-                } else {
-                    reveal_control ();
                 }
             }
         }
@@ -75,18 +73,11 @@ namespace niki {
                 }
                 return false;
             });
-            button_press_event.connect (() => {
-                hovered = true;
-                return Gdk.EVENT_PROPAGATE;
-            });
 
-            button_release_event.connect (() => {
-                hovered = true;
-                return false;
-            });
             leave_notify_event.connect ((event) => {
               if (NikiApp.window.is_active) {
                     if (event.window == get_window ()) {
+                        reveal_control ();
                         hovered = false;
                     }
                 }
@@ -140,6 +131,12 @@ namespace niki {
             crop_button.clicked.connect (() => {
                 var videocrop = new VideoCrop (playerpage);
                 videocrop.show_all ();
+                set_reveal_child (false);
+            });
+            notify["child-revealed"].connect (() => {
+                if (!child_revealed) {
+                    hovered = child_revealed;
+                }
             });
             my_app = new Gtk.Label (null);
             my_app.get_style_context ().add_class ("button_action");

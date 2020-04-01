@@ -60,10 +60,10 @@ namespace niki {
             button_change.get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
             response.connect ((source, response_id)=>{
                 if (response_id == Gtk.ResponseType.OK) {
-                    int top_value = (int) top_label.number_entry.value > 1000? 1000 : (int) top_label.number_entry.value;
-                    int bottom_value = (int) bottom_label.number_entry.value;
-                    int left_value = (int) left_label.number_entry.value;
-                    int right_value = (int) right_label.number_entry.value;
+                    int top_value = (int) top_label.number_entry.get_value ();
+                    int bottom_value = (int) bottom_label.number_entry.get_value ();
+                    int left_value = (int) left_label.number_entry.get_value ();
+                    int right_value = (int) right_label.number_entry.get_value ();
                     NikiApp.window.player_page.playback.videomix.set_videocrp (top_value, bottom_value, left_value, right_value);
                 } else if (response_id == Gtk.ResponseType.CLOSE) {
                     destroy ();

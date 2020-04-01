@@ -263,7 +263,7 @@ namespace niki {
         public abstract const string Control_Keys               = _("Control Keys");
         public abstract const string Video_Crop                 = _("Video Crop");
         public abstract const string Choose_Crop                = _("Choose the part of the video to crop.");
-        public abstract const string Set_Crop                   = _("Set Crop.");
+        public abstract const string Set_Crop                   = _("Set Crop");
         public abstract const string Top                        = _("Top :");
         public abstract const string Bottom                     = _("Bottom :");
         public abstract const string Left                       = _("Left :");
