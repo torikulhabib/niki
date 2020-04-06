@@ -30,7 +30,7 @@ namespace niki {
         public Gtk.ListStore liststore;
 
         construct {
-            liststore = new Gtk.ListStore (1, typeof (string));
+            liststore = new Gtk.ListStore (ColumnScanF.N_COLUMNS, typeof (string));
         }
 
         public void scanning (string path, int mode_scan) {
@@ -138,7 +138,7 @@ namespace niki {
             Gtk.TreeIter iter;
             liststore.append (out iter);
             var found_path = GLib.File.new_build_filename (path, info.get_name ());
-            liststore.set (iter, 0, found_path.get_uri ());
+            liststore.set (iter, ColumnScanF.FILENAME, found_path.get_uri ());
         }
         public void remove_all () {
             if (liststore.iter_n_children (null) > 0) {

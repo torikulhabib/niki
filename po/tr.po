@@ -95,8 +95,8 @@ msgid "Optical Library"
 msgstr "Optik Kütüphanesi"
 
 #: src/StringPot.vala:43
-msgid "Disk Drive Is Empty\n"
-msgstr "Disk Sürücüsü Boş\n"
+msgid "Disk Drive Is Empty"
+msgstr "Disk Sürücüsü Boş"
 
 #: src/StringPot.vala:44
 msgid "Muted"
@@ -243,12 +243,12 @@ msgid "Track"
 msgstr "Parça"
 
 #: src/StringPot.vala:80
-msgid "Nothing Video in Library\n"
-msgstr "Kütüphanede Video Yok\n"
+msgid "Nothing Video in Library"
+msgstr "Kütüphanede Video Yok"
 
 #: src/StringPot.vala:81
-msgid "Nothing Music in Library\n"
-msgstr "Kütüphanede Müzik Yok\n"
+msgid "Nothing Music in Library"
+msgstr "Kütüphanede Müzik Yok"
 
 #: src/StringPot.vala:82
 msgid "Playlist"
@@ -809,20 +809,20 @@ msgid "Image"
 msgstr "Resim"
 
 #: src/StringPot.vala:222
-msgid "Folder is Empty\n"
-msgstr "Klasör Boş\n"
+msgid "Folder is Empty"
+msgstr "Klasör Boş"
 
 #: src/StringPot.vala:223
-msgid "Nothing Video And Music in Folder\n"
-msgstr "Klasörde Video ve Müzik Yok\n"
+msgid "Nothing Video And Music in Folder"
+msgstr "Klasörde Video ve Müzik Yok"
 
 #: src/StringPot.vala:224
-msgid "Library Music is Empty\n"
-msgstr "Kütüphanede Müzik Yok\n"
+msgid "Library Music is Empty"
+msgstr "Kütüphanede Müzik Yok"
 
 #: src/StringPot.vala:225
-msgid "Library Video is Empty\n"
-msgstr "Kütüphanede Video Yok\n"
+msgid "Library Video is Empty"
+msgstr "Kütüphanede Video Yok"
 
 #: src/StringPot.vala:226
 msgid "Custom"

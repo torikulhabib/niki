@@ -1,3 +1,24 @@
+/*
+* Copyright (c) {2019} torikulhabib (https://github.com/torikulhabib)
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public
+* License as published by the Free Software Foundation; either
+* version 2 of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* General Public License for more details.
+*
+* You should have received a copy of the GNU General Public
+* License along with this program; if not, write to the
+* Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1301 USA
+*
+* Authored by: torikulhabib <torik.habib@Gmail.com>
+*/
+
 namespace niki {
     public class CameraPlayer : GLib.Object {
         public dynamic Gst.Element videosink;
@@ -12,6 +33,7 @@ namespace niki {
         private dynamic Gst.Element gaussianblur;
         private dynamic Gst.Element coloreffects;
         private dynamic Gst.Element filter;
+        private Gst.Element videosrc;
         private CameraPage? camerapage;
         public signal bool was_capture ();
 
@@ -58,16 +80,23 @@ namespace niki {
         public CameraPlayer (CameraPage camerapage) {
             this.camerapage = camerapage;
             camerabin = Gst.ElementFactory.make ("camerabin", "camerabin");
+            camerabin.set_state (Gst.State.NULL);
             videosink = ClutterGst.create_video_sink ();
             camerabin["viewfinder-sink"] = videosink;
             camera_source = Gst.ElementFactory.make ("wrappercamerabinsrc", "wrappercamerabinsrc");
             camerabin["camera-source"] = camera_source;
+            camera_source.get ("video-source", out videosrc);
             camera_source["video-source-filter"] = setup_video_filter_bin ();
             Gst.Bus bus = camerabin.get_bus ();
             bus.add_signal_watch ();
             bus.message.connect (bus_message_cb);
-            camerabin.set_state (Gst.State.NULL);
         }
+        public void video_source (string device_name) {
+            if (videosrc != null && device_name != null && ((ObjectClass)videosrc).find_property ("device") != null) {
+                videosrc["device"] = device_name;
+            }
+        }
+
         private Gst.Element setup_video_filter_bin () {
             queue = Gst.ElementFactory.make ("queue", "queue");
             queue["flush-on-eos"] = true;
@@ -79,13 +108,15 @@ namespace niki {
             gaussianblur = Gst.ElementFactory.make("gaussianblur","gaussianblur");
             coloreffects = Gst.ElementFactory.make ("coloreffects","coloreffects");
             filter = Gst.ElementFactory.make ("capsfilter", "capsfilter");
-            Gst.Util.set_object_arg ((GLib.Object) filter, "caps", "video/x-raw, format={ RGBA, RGB, I420, YV12, YUY2, UYVY, AYUV, Y41B, Y42B, YVYU, Y444, v210, v216, NV12, NV21, UYVP, A420, YUV9, YVU9, IYU1 }");
             Gst.Element bin = new Gst.Bin ("video_filter");
             ((Gst.Bin) bin).add_many (queue, filter, coloreffects, flip_filter, gamma,  videobalance, gaussianblur, videoconvert);
             bin.add_pad (new Gst.GhostPad ("sink", queue.get_static_pad ("sink")));
             bin.add_pad (new Gst.GhostPad ("src", videoconvert.get_static_pad ("src")));
             queue.link_many (filter, coloreffects, flip_filter, gamma,  videobalance, gaussianblur, videoconvert);
             return bin;
+        }
+        public void size_camera (int width, int height) {
+            Gst.Util.set_object_arg ((GLib.Object) filter, "caps", @"video/x-raw, width=(int)$(width), height=(int)$(height), format={ RGBA, RGB, I420, YV12, YUY2, UYVY, AYUV, Y41B, Y42B, YVYU, Y444, v210, v216, NV12, NV21, UYVP, A420, YUV9, YVU9, IYU1 }");
         }
         private void coloreffect () {
             coloreffects["preset"] = NikiApp.settings.get_int ("coloreffect-mode");
@@ -157,9 +188,6 @@ namespace niki {
             camerabin.set_state (Gst.State.NULL);
         }
 
-        public void set_playing () {
-            camerabin.set_state (Gst.State.PLAYING);
-        }
         public void input_zoom (double input) {
             camerabin["zoom"] = input;
         }
@@ -215,15 +243,9 @@ namespace niki {
         }
 
         public Gee.Collection<CameraPreset> get_presets () {
-            var presets_data = new Gee.TreeSet<string> ();
-            if (NikiApp.settingsCv.get_strv ("custom-presets") != null) {
-                foreach (string preset in NikiApp.settingsCv.get_strv ("custom-presets")) {
-                    presets_data.add (preset);
-                }
-            }
             var camera_preset = new Gee.TreeSet<CameraPreset> ();
-            foreach (var preset_str in presets_data) {
-                camera_preset.add (new CameraPreset.from_string (preset_str));
+            foreach (string preset in NikiApp.settingsCv.get_strv ("custom-presets")) {
+                camera_preset.add (new CameraPreset.from_string (preset));
             }
             return camera_preset;
         }
@@ -232,7 +254,6 @@ namespace niki {
             if (default_presets != null) {
                 return default_presets;
             }
-
             default_presets = new Gee.TreeSet<CameraPreset> ();
             default_presets.add (new CameraPreset.with_value (StringPot.Normal, {0, 0, 0, 0, 0, 0}));
             default_presets.add (new CameraPreset.with_value (StringPot.Vivid, {15, 5, 5, 35, 0, 0}));

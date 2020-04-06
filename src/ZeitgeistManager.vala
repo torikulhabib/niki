@@ -40,7 +40,7 @@ namespace niki {
                 foreach(Variant key in apps.get_templates ()) {
                     VariantIter iter = key.iterator ();
                     string template_id = iter.next_value ().get_string ();
-                    if (template_id == "app-" + app_name + ".desktop") {
+                    if (template_id == @"app-$(app_name).desktop") {
                         return true;
                     }
                 }

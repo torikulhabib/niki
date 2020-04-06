@@ -86,17 +86,15 @@ namespace niki {
             if (!NikiApp.settings.get_boolean ("fullscreen")) {
                 NikiApp.settings.set_boolean ("fullscreen", true);
             }
-            NikiApp.settings.changed["fullscreen"].connect (() => {
-                maximize_button.sensitive = NikiApp.settings.get_boolean ("fullscreen")? true : false;
-                stack_fulscreen ();
-            });
-
             maximize_button = new Gtk.Button.from_icon_name ("view-fullscreen-symbolic", Gtk.IconSize.BUTTON);
             maximize_button.get_style_context ().add_class ("button_action");
             maximize_button.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("maximize", !NikiApp.settings.get_boolean ("maximize"));
             });
-
+            NikiApp.settings.changed["fullscreen"].connect (() => {
+                maximize_button.sensitive = NikiApp.settings.get_boolean ("fullscreen")? true : false;
+                stack_fulscreen ();
+            });
             close_botton = new Gtk.Button.from_icon_name ("window-close-symbolic", Gtk.IconSize.BUTTON);
             close_botton.tooltip_text = StringPot.Close;
             close_botton.get_style_context ().add_class ("button_action");

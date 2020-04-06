@@ -160,12 +160,12 @@ namespace niki {
         private void on_eq_switch () {
             in_transition = false;
             if (NikiApp.settingsEq.get_boolean ("equalizer-enabled")) {
-                    var selected_preset = equalizer_preset_list.get_selected_preset ();
-                    if (selected_preset != null) {
-                        for (int i = 0; i < scales.size; ++i) {
-                            playerpage.playback.audiomix.setgain (i, selected_preset.get_gain (i));
-                        }
+                var selected_preset = equalizer_preset_list.get_selected_preset ();
+                if (selected_preset != null) {
+                    for (int i = 0; i < scales.size; ++i) {
+                        playerpage.playback.audiomix.setgain (i, selected_preset.get_gain (i));
                     }
+                }
             } else {
                 for (int i = 0; i < scales.size; ++i) {
                     playerpage.playback.audiomix.setgain (i, 0);

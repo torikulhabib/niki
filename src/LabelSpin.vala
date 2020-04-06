@@ -20,12 +20,12 @@
 */
 
 namespace niki {
-    private class LabelEntry : Gtk.Grid {
+    private class LabelSpin : Gtk.Grid {
         public string slabel {get; construct;}
         public int max_spin {get; construct;}
         public Gtk.SpinButton number_entry {get; construct;}
 
-        public LabelEntry (string slabel, int max_spin) {
+        public LabelSpin (string slabel, int max_spin) {
             Object (
                 slabel: slabel,
                 max_spin: max_spin

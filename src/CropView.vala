@@ -399,18 +399,6 @@ namespace niki {
             });
         }
 
-        public CropView.from_pixbuf (Gdk.Pixbuf pixbuf) {
-            this.add_events (Gdk.EventMask.POINTER_MOTION_MASK | Gdk.EventMask.BUTTON_MOTION_MASK);
-            this.pixbuf = pixbuf;
-            if (pixbuf.get_width () > pixbuf.get_height ()) {
-                area = { 5, 5, _pixbuf.get_height () / 2, _pixbuf.get_height () / 2};
-            } else if (pixbuf.get_width () < pixbuf.get_height ()) {
-                area = { 5, 5, pixbuf.get_width () / 2, pixbuf.get_width () / 2};
-            } else {
-                area = { 5, 5, pixbuf.get_width () / 2, pixbuf.get_height () / 2};
-            }
-        }
-
         public CropView.from_pixbuf_with_size (Gdk.Pixbuf pixbuf, int x, int y, bool quadratic_selection = false) {
             this.add_events (Gdk.EventMask.POINTER_MOTION_MASK | Gdk.EventMask.BUTTON_MOTION_MASK);
             this.pixbuf = pixbuf;

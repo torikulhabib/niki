@@ -162,12 +162,12 @@ namespace niki {
         private void video_switch () {
             in_transition = false;
             if (NikiApp.settingsCv.get_boolean ("videocamera-enabled")) {
-                    var selected_preset = camera_preset_list.get_selected_preset ();
-                    if (selected_preset != null) {
-                        for (int i = 0; i < scales.size; ++i) {
-                            camerapage.cameraplayer.setvalue (i, selected_preset.getvalue (i));
-                        }
+                var selected_preset = camera_preset_list.get_selected_preset ();
+                if (selected_preset != null) {
+                    for (int i = 0; i < scales.size; ++i) {
+                        camerapage.cameraplayer.setvalue (i, selected_preset.getvalue (i));
                     }
+                }
             } else {
                 for (int i = 0; i < scales.size; ++i) {
                     camerapage.cameraplayer.setvalue (i, 0);

@@ -14,7 +14,7 @@ namespace niki {
             get_style_context ().add_class ("combox");
             ncustompresets = 0;
             modifying_list = false;
-            store = new Gtk.ListStore (3, typeof (GLib.Object), typeof (string), typeof (Icon));
+            store = new Gtk.ListStore (ComboColumns.N_COLUMNS, typeof (GLib.Object), typeof (string), typeof (Icon));
             model = store;
             set_id_column (1);
             set_row_separator_func ((model, iter) => {
@@ -35,14 +35,14 @@ namespace niki {
 
             Gtk.TreeIter iter;
             store.append (out iter);
-            store.set (iter, 0, null, 1, OFF_MODE, 2, new ThemedIcon ("system-shutdown-symbolic"));
+            store.set (iter, ComboColumns.OBJECT, null, ComboColumns.STRING, OFF_MODE, ComboColumns.ICON, new ThemedIcon ("system-shutdown-symbolic"));
             add_separator ();
         }
 
         public void add_separator () {
             Gtk.TreeIter iter;
             store.append (out iter);
-            store.set (iter, 0, null, 1, SEPARATOR_NAME, 2, null);
+            store.set (iter, ComboColumns.OBJECT, null, ComboColumns.STRING, SEPARATOR_NAME, ComboColumns.ICON, null);
         }
 
         public void add_preset (VideoPreset ep) {
@@ -56,9 +56,9 @@ namespace niki {
             Gtk.TreeIter iter;
             store.append (out iter);
             if (verify_preset_name (ep.name)) {
-                store.set (iter, 0, ep, 1, ep.name, 2, new ThemedIcon ("com.github.torikulhabib.niki.video-filter-on-symbolic"));
+                store.set (iter, ComboColumns.OBJECT, ep, ComboColumns.STRING, ep.name, ComboColumns.ICON, new ThemedIcon ("com.github.torikulhabib.niki.video-filter-on-symbolic"));
             } else {
-                store.set (iter, 0, ep, 1, ep.name, 2, new ThemedIcon ("document-save-symbolic"));
+                store.set (iter, ComboColumns.OBJECT, ep, ComboColumns.STRING, ep.name, ComboColumns.ICON, new ThemedIcon ("document-save-symbolic"));
             }
             modifying_list = false;
             set_active_iter (iter);
@@ -80,7 +80,7 @@ namespace niki {
             Gtk.TreeIter iter;
             for (int i = 0; store.get_iter_from_string (out iter, i.to_string ()); ++i) {
                 GLib.Object o;
-                store.get (iter, 0, out o);
+                store.get (iter, ComboColumns.OBJECT, out o);
 
                 if (o != null && o is VideoPreset && ((VideoPreset)o) == video_preset) {
                     if (!((VideoPreset)o).is_default) {
@@ -110,7 +110,7 @@ namespace niki {
             get_active_iter (out it);
 
             GLib.Object o;
-            store.get (it, 0, out o);
+            store.get (it, ComboColumns.OBJECT, out o);
             if (o != null && o is VideoPreset) {
                 video_preset = o as VideoPreset;
                 if (!(o as VideoPreset).is_default) {
@@ -123,7 +123,7 @@ namespace niki {
             }
 
             string option;
-            store.get (it, 1, out option);
+            store.get (it, ComboColumns.STRING, out option);
 
             if (option == OFF_MODE) {
                 NikiApp.settingsVf.set_boolean ("videofilter-enabled", false);
@@ -142,7 +142,7 @@ namespace niki {
                 Gtk.TreeIter iter;
                 for (int i = 0; store.get_iter_from_string (out iter, i.to_string ()); ++i) {
                     GLib.Object o;
-                    store.get (iter, 0, out o);
+                    store.get (iter, ComboColumns.OBJECT, out o);
                     if (o != null && o is VideoPreset && (o as VideoPreset).name == preset_name) {
                         set_active_iter (iter);
                         preset_selected (o as VideoPreset);
@@ -158,7 +158,7 @@ namespace niki {
             get_active_iter (out it);
 
             GLib.Object o;
-            store.get (it, 0, out o);
+            store.get (it, ComboColumns.OBJECT, out o);
 
             if (o != null && o is VideoPreset) {
                 return o as VideoPreset;
@@ -172,7 +172,7 @@ namespace niki {
             Gtk.TreeIter iter;
             for (int i = 0; store.get_iter_from_string (out iter, i.to_string ()); ++i) {
                 GLib.Object o;
-                store.get (iter, 0, out o);
+                store.get (iter, ComboColumns.OBJECT, out o);
 
                 if (o != null && o is VideoPreset) {
                     rv.add (o as VideoPreset);
@@ -185,7 +185,7 @@ namespace niki {
             Gtk.TreeIter iter;
             for (int i = 0; store.get_iter_from_string (out iter, i.to_string ()); ++i) {
                 string text;
-                store.get (iter, 1, out text);
+                store.get (iter, ComboColumns.STRING, out text);
 
                 if (text != null && text == DELETE_PRESET) {
                     store.remove (ref iter);
@@ -201,7 +201,7 @@ namespace niki {
             for (int i = nitems - 1; store.get_iter_from_string (out iter, i.to_string ()); --i) {
                 count++;
                 string text;
-                store.get (iter, 1, out text);
+                store.get (iter, ComboColumns.STRING, out text);
 
                 if ((nitems - index == count || index == -1) && text != null && text == SEPARATOR_NAME) {
                     store.remove (ref iter);
@@ -216,13 +216,13 @@ namespace niki {
 
             for (int i = 0; store.get_iter_from_string (out last_iter, i.to_string ()); ++i) {
                 string text;
-                store.get (last_iter, 1, out text);
+                store.get (last_iter, ComboColumns.STRING, out text);
 
                 if (text != null && text == SEPARATOR_NAME) {
                     new_iter = last_iter;
 
                     if (store.iter_next (ref new_iter)) {
-                        store.get (new_iter, 1, out text);
+                        store.get (new_iter, ComboColumns.STRING, out text);
                         already_added = (text == DELETE_PRESET);
                     }
                     break;
@@ -233,10 +233,10 @@ namespace niki {
                 return;
             }
             store.insert_after (out new_iter, last_iter);
-            store.set (new_iter, 0, null, 1, DELETE_PRESET, 2, new ThemedIcon ("edit-delete-symbolic"));
+            store.set (new_iter, ComboColumns.OBJECT, null, ComboColumns.STRING, DELETE_PRESET, ComboColumns.ICON, new ThemedIcon ("edit-delete-symbolic"));
             last_iter = new_iter;
             store.insert_after (out new_iter, last_iter);
-            store.set (new_iter, 0, null, 1, SEPARATOR_NAME, 2, null);
+            store.set (new_iter, ComboColumns.OBJECT, null, ComboColumns.STRING, SEPARATOR_NAME, ComboColumns.ICON, null);
         }
     }
 }

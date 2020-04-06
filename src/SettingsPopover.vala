@@ -1,3 +1,24 @@
+/*
+* Copyright (c) {2019} torikulhabib (https://github.com/torikulhabib)
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public
+* License as published by the Free Software Foundation; either
+* version 2 of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* General Public License for more details.
+*
+* You should have received a copy of the GNU General Public
+* License along with this program; if not, write to the
+* Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1301 USA
+*
+* Authored by: torikulhabib <torik.habib@Gmail.com>
+*/
+
 namespace niki {
     public class SettingsPopover : Gtk.Popover {
         private ComboxImage? languages;
@@ -220,7 +241,7 @@ namespace niki {
             foreach (var subtitle_stream in subtitles_streams) {
                 unowned string language_code = (subtitle_stream as Gst.PbUtils.DiscovererSubtitleInfo).get_language ();
                 if (language_code == null) {
-                    return subtitle_languages;
+                    continue;
                 }
                 var language_name = Gst.Tag.get_language_name (language_code);
                 subtitle_languages.append (language_name);
@@ -274,7 +295,7 @@ namespace niki {
             foreach (var audio_stream in audio_streams) {
                 unowned string language_code = (audio_stream as Gst.PbUtils.DiscovererAudioInfo).get_language ();
                 if (language_code == null) {
-                    return audio_languages;
+                    continue;
                 }
                 var language_name = Gst.Tag.get_language_name (language_code);
                 audio_languages.append (language_name);

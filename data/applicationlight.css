@@ -183,6 +183,11 @@
     border-color: @transparancyColor;
     color: @SolidWhite;
 }
+.combox arrow {
+    background-color: @transparancyColor;
+    border-color: @transparancyColor;
+    color: @transparancyColor;
+}
 .transparantbg {
     background: @transparancyColor;
 }

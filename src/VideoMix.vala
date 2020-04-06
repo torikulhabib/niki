@@ -1,3 +1,24 @@
+/*
+* Copyright (c) {2019} torikulhabib (https://github.com/torikulhabib)
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public
+* License as published by the Free Software Foundation; either
+* version 2 of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* General Public License for more details.
+*
+* You should have received a copy of the GNU General Public
+* License along with this program; if not, write to the
+* Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1301 USA
+*
+* Authored by: torikulhabib <torik.habib@Gmail.com>
+*/
+
 namespace niki {
     public class VideoMix : Gst.Bin {
         private dynamic Gst.Element videoqueue;
@@ -68,15 +89,9 @@ namespace niki {
         }
 
         public Gee.Collection<VideoPreset> get_presets () {
-            var presets_data = new Gee.TreeSet<string> ();
-            if (NikiApp.settingsVf.get_strv ("custom-presets") != null) {
-                foreach (string preset in NikiApp.settingsVf.get_strv ("custom-presets")) {
-                    presets_data.add (preset);
-                }
-            }
             var video_preset = new Gee.TreeSet<VideoPreset> ();
-            foreach (var preset_str in presets_data) {
-                video_preset.add (new VideoPreset.from_string (preset_str));
+            foreach (string preset in NikiApp.settingsVf.get_strv ("custom-presets")) {
+                video_preset.add (new VideoPreset.from_string (preset));
             }
             return video_preset;
         }

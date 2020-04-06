@@ -1,3 +1,24 @@
+/*
+* Copyright (c) {2019} torikulhabib (https://github.com/torikulhabib)
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public
+* License as published by the Free Software Foundation; either
+* version 2 of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* General Public License for more details.
+*
+* You should have received a copy of the GNU General Public
+* License along with this program; if not, write to the
+* Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1301 USA
+*
+* Authored by: torikulhabib <torik.habib@Gmail.com>
+*/
+
 namespace niki {
     public class EqualizerPresetList : Gtk.ComboBox {
         public signal void preset_selected (EqualizerPreset preset);
@@ -14,7 +35,7 @@ namespace niki {
             get_style_context ().add_class ("combox");
             ncustompresets = 0;
             modifying_list = false;
-            store = new Gtk.ListStore (3, typeof (GLib.Object), typeof (string), typeof (Icon));
+            store = new Gtk.ListStore (ComboColumns.N_COLUMNS, typeof (GLib.Object), typeof (string), typeof (Icon));
             model = store;
             set_id_column (1);
             set_row_separator_func ((model, iter) => {
@@ -35,7 +56,7 @@ namespace niki {
 
             Gtk.TreeIter iter;
             store.append (out iter);
-            store.set (iter, 0, null, 1, OFF_MODE, 2, new ThemedIcon ("system-shutdown-symbolic"));
+            store.set (iter, ComboColumns.OBJECT, null, ComboColumns.STRING, OFF_MODE, ComboColumns.ICON, new ThemedIcon ("system-shutdown-symbolic"));
 
             add_separator ();
         }
@@ -43,7 +64,7 @@ namespace niki {
         public void add_separator () {
             Gtk.TreeIter iter;
             store.append (out iter);
-            store.set (iter, 0, null, 1, SEPARATOR_NAME, 2, null);
+            store.set (iter, ComboColumns.OBJECT, null, ComboColumns.STRING, SEPARATOR_NAME, ComboColumns.ICON, null);
         }
 
         public void add_preset (EqualizerPreset ep) {
@@ -59,9 +80,9 @@ namespace niki {
             Gtk.TreeIter iter;
             store.append (out iter);
             if (verify_preset_name (ep.name)) {
-                store.set (iter, 0, ep, 1, ep.name, 2, new ThemedIcon ("com.github.torikulhabib.niki.equalizer-on-symbolic"));
+                store.set (iter, ComboColumns.OBJECT, ep, ComboColumns.STRING, ep.name, ComboColumns.ICON, new ThemedIcon ("com.github.torikulhabib.niki.equalizer-on-symbolic"));
             } else {
-                store.set (iter, 0, ep, 1, ep.name, 2, new ThemedIcon ("document-save-symbolic"));
+                store.set (iter, ComboColumns.OBJECT, ep, ComboColumns.STRING, ep.name, ComboColumns.ICON, new ThemedIcon ("document-save-symbolic"));
             }
             modifying_list = false;
             set_active_iter (iter);
@@ -83,7 +104,7 @@ namespace niki {
             Gtk.TreeIter iter;
             for (int i = 0; store.get_iter_from_string (out iter, i.to_string ()); ++i) {
                 GLib.Object objets;
-                store.get (iter, 0, out objets);
+                store.get (iter, ComboColumns.OBJECT, out objets);
 
                 if (objets != null && objets is EqualizerPreset && ((EqualizerPreset)objets) == equalizer_preset) {
                     if (!((EqualizerPreset)objets).is_default) {
@@ -113,7 +134,7 @@ namespace niki {
             get_active_iter (out it);
 
             GLib.Object objets;
-            store.get (it, 0, out objets);
+            store.get (it, ComboColumns.OBJECT, out objets);
             if (objets != null && objets is EqualizerPreset) {
                 equalizer_preset = objets as EqualizerPreset;
                 if (!(objets as EqualizerPreset).is_default) {
@@ -126,7 +147,7 @@ namespace niki {
             }
 
             string option;
-            store.get (it, 1, out option);
+            store.get (it, ComboColumns.STRING, out option);
 
             if (option == OFF_MODE) {
                 NikiApp.settingsEq.set_boolean ("equalizer-enabled", false);
@@ -145,7 +166,7 @@ namespace niki {
                 Gtk.TreeIter iter;
                 for (int i = 0; store.get_iter_from_string (out iter, i.to_string ()); ++i) {
                     GLib.Object objets;
-                    store.get (iter, 0, out objets);
+                    store.get (iter, ComboColumns.OBJECT, out objets);
                     if (objets != null && objets is EqualizerPreset && (objets as EqualizerPreset).name == preset_name) {
                         set_active_iter (iter);
                         preset_selected (objets as EqualizerPreset);
@@ -161,7 +182,7 @@ namespace niki {
             get_active_iter (out it);
 
             GLib.Object objets;
-            store.get (it, 0, out objets);
+            store.get (it, ComboColumns.OBJECT, out objets);
 
             if (objets != null && objets is EqualizerPreset) {
                 return objets as EqualizerPreset;
@@ -175,7 +196,7 @@ namespace niki {
             Gtk.TreeIter iter;
             for (int i = 0; store.get_iter_from_string (out iter, i.to_string ()); ++i) {
                 GLib.Object objets;
-                store.get (iter, 0, out objets);
+                store.get (iter, ComboColumns.OBJECT, out objets);
 
                 if (objets != null && objets is EqualizerPreset) {
                     rv.add (objets as EqualizerPreset);
@@ -188,7 +209,7 @@ namespace niki {
             Gtk.TreeIter iter;
             for (int i = 0; store.get_iter_from_string (out iter, i.to_string ()); ++i) {
                 string text;
-                store.get (iter, 1, out text);
+                store.get (iter, ComboColumns.STRING, out text);
 
                 if (text != null && text == DELETE_PRESET) {
                     store.remove (ref iter);
@@ -204,7 +225,7 @@ namespace niki {
             for (int i = nitems - 1; store.get_iter_from_string (out iter, i.to_string ()); --i) {
                 count++;
                 string text;
-                store.get (iter, 1, out text);
+                store.get (iter, ComboColumns.STRING, out text);
 
                 if ((nitems - index == count || index == -1) && text != null && text == SEPARATOR_NAME) {
                     store.remove (ref iter);
@@ -219,13 +240,11 @@ namespace niki {
 
             for (int i = 0; store.get_iter_from_string (out last_iter, i.to_string ()); ++i) {
                 string text;
-                store.get (last_iter, 1, out text);
-
+                store.get (last_iter, ComboColumns.STRING, out text);
                 if (text != null && text == SEPARATOR_NAME) {
                     new_iter = last_iter;
-
                     if (store.iter_next (ref new_iter)) {
-                        store.get (new_iter, 1, out text);
+                        store.get (new_iter, ComboColumns.STRING, out text);
                         already_added = (text == DELETE_PRESET);
                     }
                     break;
@@ -236,10 +255,10 @@ namespace niki {
                 return;
             }
             store.insert_after (out new_iter, last_iter);
-            store.set (new_iter, 0, null, 1, DELETE_PRESET, 2, new ThemedIcon ("edit-delete-symbolic"));
+            store.set (new_iter, ComboColumns.OBJECT, null, ComboColumns.STRING, DELETE_PRESET, ComboColumns.ICON, new ThemedIcon ("edit-delete-symbolic"));
             last_iter = new_iter;
             store.insert_after (out new_iter, last_iter);
-            store.set (new_iter, 0, null, 1, SEPARATOR_NAME, 2, null);
+            store.set (new_iter, ComboColumns.OBJECT, null, ComboColumns.STRING, SEPARATOR_NAME, ComboColumns.ICON, null);
         }
     }
 }

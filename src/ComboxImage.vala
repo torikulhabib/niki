@@ -24,7 +24,7 @@ namespace niki {
         private Gtk.ListStore store;
 
         construct {
-            store = new Gtk.ListStore (2, typeof (Icon), typeof (string));
+            store = new Gtk.ListStore (ComboIcon.N_COLUMNS, typeof (Icon), typeof (string));
             model = store;
 		    var cell = new Gtk.CellRendererText ();
 		    cell.ellipsize = Pango.EllipsizeMode.END;
@@ -37,7 +37,7 @@ namespace niki {
         public void appending (string image_icon, string label_text) {
             Gtk.TreeIter iter;
             store.append (out iter);
-            store.set (iter, 0, new ThemedIcon (image_icon), 1, label_text);
+            store.set (iter, ComboIcon.ICON, new ThemedIcon (image_icon), ComboIcon.STRING, label_text);
         }
         public int get_active_int () {
             return active;
@@ -48,7 +48,7 @@ namespace niki {
             if (!get_active_iter (out iter)) {
                 return name_col;
             }
-            store.get (iter, 1, out name_col);
+            store.get (iter, ComboIcon.STRING, out name_col);
             if (name_col == null) {
                 return name_col;
             }

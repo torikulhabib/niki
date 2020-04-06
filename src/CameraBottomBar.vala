@@ -29,8 +29,7 @@ namespace niki {
         public CameraGrid? cameragrid;
         public Gtk.Button setting_button;
         public Gtk.Button option_button;
-        private Gtk.ListStore img_store;
-        private Gtk.ListStore vid_store;
+        private Gtk.ListStore liststrore;
         private AsyncImage? asyncimage;
         private uint video_timer = 0;
         private uint image_timer = 0;
@@ -61,10 +60,8 @@ namespace niki {
             events |= Gdk.EventMask.LEAVE_NOTIFY_MASK;
             events |= Gdk.EventMask.ENTER_NOTIFY_MASK;
 
-            img_store = new Gtk.ListStore (2, typeof (string), typeof (string));
-            vid_store = new Gtk.ListStore (2, typeof (string), typeof (string));
-            ((Gtk.TreeSortable)img_store).set_sort_column_id (1, Gtk.SortType.DESCENDING);
-            ((Gtk.TreeSortable)vid_store).set_sort_column_id (1, Gtk.SortType.DESCENDING);
+            liststrore = new Gtk.ListStore (ColumnCamPre.N_COLUMNS, typeof (string), typeof (string));
+            ((Gtk.TreeSortable)liststrore).set_sort_column_id (1, Gtk.SortType.DESCENDING);
             enter_notify_event.connect ((event) => {
                 if (NikiApp.window.is_active) {
                     if (event.window == get_window ()) {
@@ -188,29 +185,20 @@ namespace niki {
             NikiApp.settings.changed["camera-video"].connect (camera_video);
             bind_property ("playing", option_button, "sensitive", BindingFlags.INVERT_BOOLEAN);
             camera_video ();
-            img_store.row_inserted.connect (open_image);
-            vid_store.row_inserted.connect (open_video);
+            liststrore.row_inserted.connect (open_prev);
             camerapage.cameraplayer.was_capture.connect (load_all);
         }
         public bool load_all () {
             load_image ();
-            open_video ();
-            open_image ();
+            open_prev ();
             return false;
         }
         public void load_image () {
-            int vid_s = vid_store.iter_n_children (null);
-            for (int i = 0; i < vid_s; i++) {
-                Gtk.TreeIter iter;
-                if (vid_store.get_iter_first (out iter)){
-                    vid_store.remove (ref iter);
-                }
-            }
-            int img_s = img_store.iter_n_children (null);
+            int img_s = liststrore.iter_n_children (null);
             for (int i = 0; i < img_s; i++) {
                 Gtk.TreeIter iter;
-                if (img_store.get_iter_first (out iter)){
-                    img_store.remove (ref iter);
+                if (liststrore.get_iter_first (out iter)){
+                    liststrore.remove (ref iter);
                 }
             }
 	        File file = File.new_for_path (get_media_directory ());
@@ -219,13 +207,13 @@ namespace niki {
 			        FileEnumerator enumerator = file.enumerate_children_async.end (res);
 			        FileInfo info;
 			        while ((info = enumerator.next_file (null)) != null) {
-                        if (info.get_content_type ().has_prefix ("video/")) {
+                        if (info.get_content_type ().has_prefix ("video/") && NikiApp.settings.get_boolean ("camera-video")) {
                             var found_path = GLib.File.new_build_filename (file.get_path (), info.get_name ());
-                            video_liststore (found_path.get_uri (), found_path.get_basename ());
+                            prev_liststore (found_path.get_uri (), found_path.get_basename ());
                         }
-                        if (info.get_content_type ().has_prefix ("image/")) {
+                        if (info.get_content_type ().has_prefix ("image/") && !NikiApp.settings.get_boolean ("camera-video")) {
                             var found_path = GLib.File.new_build_filename (file.get_path (), info.get_name ());
-                            image_liststore (found_path.get_uri (), found_path.get_basename ());
+                            prev_liststore (found_path.get_uri (), found_path.get_basename ());
                         }
 			        }
 		        } catch (Error e) {
@@ -233,9 +221,9 @@ namespace niki {
 		        }
         	});
         }
-        private void image_liststore (string file_name, string title_name) {
+        private void prev_liststore (string file_name, string title_name) {
             bool exist = false;
-            img_store.foreach ((model, path, iter) => {
+            liststrore.foreach ((model, path, iter) => {
                 string filename;
                 model.get (iter, 0, out filename);
                 if (filename == file_name) {
@@ -247,80 +235,68 @@ namespace niki {
                 return;
             }
             Gtk.TreeIter iter;
-            img_store.append (out iter);
-            img_store.set (iter, 0, file_name, 1, title_name);
+            liststrore.append (out iter);
+            liststrore.set (iter, ColumnCamPre.FILENAME, file_name, ColumnCamPre.TITLE, title_name);
         }
-        private void open_image () {
-            if (NikiApp.settings.get_boolean ("camera-video")) {
-                return;
-            }
-            if (image_timer != 0) {
-                Source.remove (image_timer);
-            }
-            image_timer = GLib.Timeout.add (50, () => {
-                if (image_latest () != null) {
-                    pix_loader (pix_file (File.new_for_uri (image_latest ()).get_path ()));
-                } else {
-                    asyncimage.set_from_pixbuf (new ObjectPixbuf().from_theme_icon ("avatar-default-symbolic", 128, 48));
-                    asyncimage.show ();
-                }
-                image_timer = 0;
-                return Source.REMOVE;
-            });
-        }
-        private void video_liststore (string file_name, string title_name) {
-            bool exist = false;
-            vid_store.foreach ((model, path, iter) => {
-                string filename;
-                model.get (iter, 0, out filename);
-                if (filename == file_name) {
-                    exist = true;
-                }
-                return false;
-            });
-            if (exist) {
-                return;
-            }
-            Gtk.TreeIter iter;
-            vid_store.append (out iter);
-            vid_store.set (iter, 0, file_name, 1, title_name);
-        }
-
-        private void open_video () {
+        private void open_prev () {
             if (!NikiApp.settings.get_boolean ("camera-video")) {
-                return;
-            }
-            if (video_timer != 0) {
-                Source.remove (video_timer);
-            }
-            video_timer = GLib.Timeout.add (50, () => {
-                if (video_latest () != null) {
-                    var video_file = File.new_for_uri (video_latest ());
-                    if (!FileUtils.test (normal_thumb (video_file), FileTest.EXISTS)) {
-                        var dbus_Thum = new DbusThumbnailer ().instance;
-                        dbus_Thum.instand_thumbler (video_file, "normal");
-                        dbus_Thum.load_finished.connect (()=>{
+                if (image_timer != 0) {
+                    Source.remove (image_timer);
+                }
+                image_timer = GLib.Timeout.add (50, () => {
+                    if (file_stored () != null) {
+                        pix_loader (pix_file (File.new_for_uri (file_stored ()).get_path ()));
+                    } else {
+                        asyncimage.set_from_pixbuf (new ObjectPixbuf().from_theme_icon ("avatar-default-symbolic", 128, 48));
+                        asyncimage.show ();
+                    }
+                    image_timer = 0;
+                    return Source.REMOVE;
+                });
+            } else {
+                if (video_timer != 0) {
+                    Source.remove (video_timer);
+                }
+                video_timer = GLib.Timeout.add (50, () => {
+                    if (file_stored () != null) {
+                        var video_file = File.new_for_uri (file_stored ());
+                        if (!FileUtils.test (normal_thumb (video_file), FileTest.EXISTS)) {
+                            var dbus_Thum = new DbusThumbnailer ().instance;
+                            dbus_Thum.instand_thumbler (video_file, "normal");
+                            dbus_Thum.load_finished.connect (()=>{
+                                if (pix_file (normal_thumb (video_file)) != null) {
+                                    pix_loader (pix_file (normal_thumb (video_file)));
+                                }
+                            });
+                        } else {
                             if (pix_file (normal_thumb (video_file)) != null) {
                                 pix_loader (pix_file (normal_thumb (video_file)));
                             }
-                        });
-                    } else {
-                        if (pix_file (normal_thumb (video_file)) != null) {
-                            pix_loader (pix_file (normal_thumb (video_file)));
                         }
+                    } else {
+                        asyncimage.set_from_pixbuf (new ObjectPixbuf().from_theme_icon ("avatar-default-symbolic", 128, 48));
+                        asyncimage.show ();
                     }
-                } else {
-                    asyncimage.set_from_pixbuf (new ObjectPixbuf().from_theme_icon ("avatar-default-symbolic", 128, 48));
-                    asyncimage.show ();
-                }
-                video_timer = 0;
-                return Source.REMOVE;
-            });
+                    video_timer = 0;
+                    return Source.REMOVE;
+                });
+            }
+        }
+
+        public string? file_stored () {
+            Gtk.TreeIter iter;
+            if (liststrore.get_iter_first (out iter)){
+                string filename;
+                liststrore.get (iter, ColumnCamPre.FILENAME, out filename);
+                return filename;
+            }
+            return null;
         }
 
         private void pix_loader (Gdk.Pixbuf pixbuf) {
 	        int min_size = int.min (pixbuf.get_width (), pixbuf.get_height ());
-	        Gdk.Pixbuf new_pix = new Gdk.Pixbuf.subpixbuf (pixbuf, min_size == pixbuf.get_width ()? 0 : (int) (min_size / 2.2), pixbuf.get_height () == min_size? 0 : min_size / 2, min_size, min_size);
+	        int max_size = int.max (pixbuf.get_width (), pixbuf.get_height ());
+	        Gdk.Pixbuf new_pix = new Gdk.Pixbuf.subpixbuf (pixbuf, min_size == pixbuf.get_width ()? 0 : (int) (max_size / 2) - (min_size / 2), pixbuf.get_height () == min_size? 0 : (int) (max_size / 2) - (min_size / 2), min_size, min_size);
             var draw_surface = new Granite.Drawing.BufferSurface ((int)min_size, (int)min_size);
             Gdk.cairo_set_source_pixbuf (draw_surface.context, new_pix, 0, 0);
             draw_surface.context.paint ();
@@ -337,24 +313,7 @@ namespace niki {
             asyncimage.set_from_pixbuf (align_and_scale_pixbuf (Gdk.pixbuf_get_from_surface (surface, 0, 0, min_size, min_size), 48));
             asyncimage.show ();
         }
-        public string? image_latest () {
-            Gtk.TreeIter iter;
-            if (img_store.get_iter_first (out iter)){
-                string filename;
-                img_store.get (iter, 0, out filename);
-                return filename;
-            }
-            return null;
-        }
-        public string? video_latest () {
-            Gtk.TreeIter iter;
-            if (vid_store.get_iter_first (out iter)){
-                string filename;
-                vid_store.get (iter, 0, out filename);
-                return filename;
-            }
-            return null;
-        }
+
         private void camera_video () {
             ((Gtk.Image) option_button.image).icon_name = (NikiApp.settings.get_boolean ("camera-video")? "com.github.torikulhabib.niki.capture-symbolic" : "com.github.torikulhabib.niki.record-symbolic");
             option_button.tooltip_text = NikiApp.settings.get_boolean ("camera-video")? StringPot.Camera : StringPot.Video;

@@ -166,12 +166,12 @@ namespace niki {
         private void video_switch () {
             in_transition = false;
             if (NikiApp.settingsVf.get_boolean ("videofilter-enabled")) {
-                    var selected_preset = video_preset_list.get_selected_preset ();
-                    if (selected_preset != null) {
-                        for (int i = 0; i < scales.size; ++i) {
-                            playerpage.playback.videomix.setvalue (i, selected_preset.getvalue (i));
-                        }
+                var selected_preset = video_preset_list.get_selected_preset ();
+                if (selected_preset != null) {
+                    for (int i = 0; i < scales.size; ++i) {
+                        playerpage.playback.videomix.setvalue (i, selected_preset.getvalue (i));
                     }
+                }
             } else {
                 for (int i = 0; i < scales.size; ++i) {
                     playerpage.playback.videomix.setvalue (i, 0);

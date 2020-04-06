@@ -78,7 +78,7 @@ namespace niki {
             show_all ();
 
             welcome_page.stack.notify["visible-child"].connect (() => {
-                home_revealer.set_reveal_child (welcome_page.stack.visible_child_name == "dlna" || welcome_page.stack.visible_child_name == "dvd"? true : false);
+                home_revealer.set_reveal_child (welcome_page.stack.visible_child_name == "dlna" || welcome_page.stack.visible_child_name == "dvd" || welcome_page.stack.visible_child_name == "device"? true : false);
                 headerbar.title = welcome_page.stack.visible_child_name == "dlna"? StringPot.Niki_DLNA_Browser : StringPot.Niki;
             });
             main_stack.notify["visible-child"].connect (() => {
@@ -86,7 +86,7 @@ namespace niki {
                 if (welcome_page.stack.visible_child_name == "circular") {
                     welcome_page.stack.visible_child_name = "home";
                 }
-                home_revealer.set_reveal_child (welcome_page.stack.visible_child_name == "dlna" || welcome_page.stack.visible_child_name == "dvd"? true : false);
+                home_revealer.set_reveal_child (welcome_page.stack.visible_child_name == "dlna" || welcome_page.stack.visible_child_name == "dvd" || welcome_page.stack.visible_child_name == "device"? true : false);
                 headerbar.title = welcome_page.stack.visible_child_name == "dlna"? StringPot.Niki_DLNA_Browser : StringPot.Niki;
             });
 

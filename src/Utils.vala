@@ -152,7 +152,22 @@ namespace niki {
         STREAMAUD = 2,
         STREAMVID = 3
     }
-
+	private enum ColumnCamPre {
+		FILENAME,
+		TITLE,
+		N_COLUMNS
+	}
+	private enum ColumnResolution {
+	    ICON,
+	    NAME,
+		WIDTH,
+		HEIGHT,
+		N_COLUMNS
+	}
+	private enum ColumnScanF {
+		FILENAME,
+		N_COLUMNS
+	}
 	private enum Target {
 		STRING,
 		URILIST
@@ -170,6 +185,24 @@ namespace niki {
         PLAYNOW,
         MEDIATYPE,
         INPUTMODE,
+        N_COLUMNS
+    }
+    private enum DeviceColumns {
+        NAME,
+        CLASS,
+        RESOLUTION,
+        DEVICEPATH,
+        N_COLUMNS
+    }
+    private enum ComboColumns {
+        OBJECT,
+        STRING,
+        ICON,
+        N_COLUMNS
+    }
+    private enum ComboIcon {
+        ICON,
+        STRING,
         N_COLUMNS
     }
     private enum LyricColumns {
@@ -202,10 +235,6 @@ namespace niki {
         PAUSED = 3,
         PLAYING = 4
     }
-
-    private const string [] SUBTITLE_EXTENSIONS = {
-        "sub", "srt", "smi", "ssa", "ass", "asc"
-    };
 
 	private string get_song_info (File path) {
 	    string output = null;
@@ -265,7 +294,7 @@ namespace niki {
                 GLib.warning (e.message);
 	        }
 	    }
-	    return 0;
+	    return -1;
     }
     private static string get_info_file (File fileinput) {
         string file_info = null;
@@ -310,6 +339,8 @@ namespace niki {
         }
         return file_info;
     }
+
+    private const string [] SUBTITLE_EXTENSIONS = {"sub", "srt", "smi", "ssa", "ass", "asc"};
     private string? get_subtitle_for_uri (string uri) {
         string without_ext;
         int last_dot = uri.last_index_of (".", 0);
@@ -548,8 +579,7 @@ namespace niki {
         context.play_full (0, props, null);
     }
     private Gdk.Pixbuf? align_and_scale_pixbuf (Gdk.Pixbuf input_pixbuf, int sizew, int sizeh = 0) {
-        Gdk.Pixbuf pixbuf_scale = input_pixbuf.scale_simple (sizew, sizeh == 0? sizew : sizeh, Gdk.InterpType.BILINEAR);
-        return pixbuf_scale;
+        return input_pixbuf.scale_simple (sizew, sizeh == 0? sizew : sizeh, Gdk.InterpType.BILINEAR);
     }
     private Lyric file_lyric (string lyric_file) {
         return new LyricParser ().parse (File.new_for_uri (lyric_file));
@@ -616,8 +646,7 @@ namespace niki {
 	    context.set_source (arc4);
 	    context.arc (128.0, 128.0, 10.8, 0, 2 * Math.PI);
 	    context.fill ();
-        Gdk.Pixbuf pixbuf_unknown = Gdk.pixbuf_get_from_surface (surface, 0, 0, 256, 256);
-        return pixbuf_unknown;
+        return Gdk.pixbuf_get_from_surface (surface, 0, 0, 256, 256);
     }
 
     private string? niki_mime_type () {

@@ -1,3 +1,24 @@
+/*
+* Copyright (c) {2019} torikulhabib (https://github.com/torikulhabib)
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public
+* License as published by the Free Software Foundation; either
+* version 2 of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* General Public License for more details.
+*
+* You should have received a copy of the GNU General Public
+* License along with this program; if not, write to the
+* Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1301 USA
+*
+* Authored by: torikulhabib <torik.habib@Gmail.com>
+*/
+
 namespace niki {
     public class CircularGrid : Gtk.Grid {
         private CircularProgressBar circularprogressbar;
@@ -41,7 +62,7 @@ namespace niki {
                 Gtk.TreeIter iter;
                 liststore.get_iter_from_string (out iter, (count - 1).to_string ());
                 if (liststore.iter_is_valid (iter)) {
-                    liststore.get (iter, 0, out filename);
+                    liststore.get (iter, ColumnScanF.FILENAME, out filename);
                     if (filename != null) {
                         NikiApp.window.player_page.playlist_widget ().add_item (File.new_for_uri (filename));
                     }

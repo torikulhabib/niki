@@ -94,8 +94,8 @@ msgid "Optical Library"
 msgstr "Disque optique"
 
 #: src/StringPot.vala:43
-msgid "Disk Drive Is Empty\n"
-msgstr "Le disque est vide\n"
+msgid "Disk Drive Is Empty"
+msgstr "Le disque est vide"
 
 #: src/StringPot.vala:44
 msgid "Muted"
@@ -610,16 +610,16 @@ msgid "Image"
 msgstr "Image"
 
 #: src/StringPot.vala:219
-msgid "Empty Music Library\n"
-msgstr "Bibliothèque musicale vide\n"
+msgid "Empty Music Library"
+msgstr "Bibliothèque musicale vide"
 
 #: src/StringPot.vala:220
-msgid "Empty Video Library\n"
-msgstr "Bibliothèqe vidéo vide\n"
+msgid "Empty Video Library"
+msgstr "Bibliothèqe vidéo vide"
 
 #: src/StringPot.vala:221
-msgid "Folder is Empty\n"
-msgstr "Le dossier est vide\n"
+msgid "Folder is Empty"
+msgstr "Le dossier est vide"
 
 #: src/StringPot.vala:222
 msgid "Custom"

@@ -42,10 +42,10 @@ namespace niki {
                 		break;
                 }
             } catch (IOChannelError e) {
-                print ("%s %s\n", stream_name, e.message);
+                warning ("%s %s\n", stream_name, e.message);
                 return false;
             } catch (ConvertError e) {
-                print ("%s %s\n", stream_name, e.message);
+                warning ("%s %s\n", stream_name, e.message);
                 return false;
             }
             return true;
@@ -75,12 +75,8 @@ namespace niki {
                 error.add_watch (IOCondition.IN | IOCondition.HUP, (channel, condition) => {
                     return process_line (channel, condition, "stderr");
                 });
-
-                ChildWatch.add (child_pid, (pid, status) => {
-                    Process.close_pid (pid);
-                });
             } catch (SpawnError e) {
-                print ("Error: %s\n", e.message);
+                warning ("Error: %s\n", e.message);
             }
         }
 

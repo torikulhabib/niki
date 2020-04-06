@@ -40,7 +40,7 @@ namespace niki {
         public abstract const string Music_Library              = _("Music Library");
         public abstract const string DLNA_Library               = _("DLNA Library");
         public abstract const string Optical_Library            = _("Optical Library");
-        public abstract const string Disk_Empty                 = _("Disk Drive Is Empty\n");
+        public abstract const string Disk_Empty                 = _("Disk Drive Is Empty");
         public abstract const string Muted                      = _("Muted");
         public abstract const string Volume                     = _("Volume");
         public abstract const string Normal                     = _("Normal");
@@ -216,9 +216,9 @@ namespace niki {
         public abstract const string NTrack                     = _("Track:");
         public abstract const string NDate                      = _("Date:");
         public abstract const string Image                      = _("Image");
-        public abstract const string Empty_Audio                = _("Empty Music Library\n");
-        public abstract const string Empty_Video                = _("Empty Video Library\n");
-        public abstract const string Empty_Folder               = _("Folder is Empty\n");
+        public abstract const string Empty_Audio                = _("Empty Music Library");
+        public abstract const string Empty_Video                = _("Empty Video Library");
+        public abstract const string Empty_Folder               = _("Folder is Empty");
         public abstract const string Custom                     = _("Custom");
         public abstract const string Time                       = _("Time");
         public abstract const string Lyric                      = _("Lyric");
@@ -268,5 +268,6 @@ namespace niki {
         public abstract const string Bottom                     = _("Bottom :");
         public abstract const string Left                       = _("Left :");
         public abstract const string Right                      = _("Right :");
+        public abstract const string Resolution                 = _("Resolution");
     }
 }

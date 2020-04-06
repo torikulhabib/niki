@@ -79,19 +79,16 @@ namespace niki {
         }
         private static GUPnP.ServiceProxy get_connection_manager (GUPnP.DeviceInfo proxy) {
             GUPnP.ServiceInfo cm = proxy.get_service ("urn:schemas-upnp-org:service:ConnectionManager");
-            connection_manager = ((GUPnP.ServiceProxy)cm);
-            return connection_manager;
+            return ((GUPnP.ServiceProxy)cm);
         }
         private static GUPnP.ServiceProxy get_av_transport (GUPnP.DeviceInfo proxy) {
             GUPnP.ServiceInfo info = proxy.get_service ("urn:schemas-upnp-org:service:AVTransport");
-            GUPnP.ServiceProxy at = ((GUPnP.ServiceProxy)info);
-            return at;
+            return ((GUPnP.ServiceProxy)info);
         }
 
         private static GUPnP.ServiceProxy get_rendering_control (GUPnP.DeviceInfo proxy) {
             GUPnP.ServiceInfo info = proxy.get_service ("urn:schemas-upnp-org:service:RenderingControl");
-            GUPnP.ServiceProxy rc = ((GUPnP.ServiceProxy)info);
-            return rc;
+            return ((GUPnP.ServiceProxy)info);
         }
 
         private void set_state_playback (int state) {

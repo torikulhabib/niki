@@ -37,10 +37,10 @@ namespace niki {
                 window_position: Gtk.WindowPosition.CENTER_ON_PARENT
             );
             this.playerpage = playerpage;
-            var top_label = new LabelEntry (StringPot.Top, playerpage.video_height / 2);
-            var bottom_label = new LabelEntry (StringPot.Bottom, playerpage.video_height / 2);
-            var left_label = new LabelEntry (StringPot.Left, playerpage.video_width / 2);
-            var right_label = new LabelEntry (StringPot.Right, playerpage.video_width / 2);
+            var top_label = new LabelSpin (StringPot.Top, playerpage.video_height / 2);
+            var bottom_label = new LabelSpin (StringPot.Bottom, playerpage.video_height / 2);
+            var left_label = new LabelSpin (StringPot.Left, playerpage.video_width / 2);
+            var right_label = new LabelSpin (StringPot.Right, playerpage.video_width / 2);
 
             var frame = new Gtk.Grid ();
             frame.orientation = Gtk.Orientation.VERTICAL;

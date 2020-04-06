@@ -95,7 +95,8 @@ executable(
     'KeyboardInfo.vala',
     'AccelLabel.vala',
     'VideoCrop.vala',
-    'LabelEntry.vala',
+    'LabelSpin.vala',
+    'DeviceMonitor.vala',
 
     c_args: c_args,
     dependencies: [

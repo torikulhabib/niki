@@ -578,19 +578,13 @@ namespace niki {
         }
 
         public void save_playlist () {
-            var list = new List<string> ();
+            string [] videos = {};
             liststore.foreach ((model, path, iter) => {
                 string filename;
                 model.get (iter, PlaylistColumns.FILENAME, out filename);
-                list.append (filename);
+                videos += filename;
                 return false;
             });
-            uint i = 0;
-            var videos = new string[list.length ()];
-            foreach (var filename in list) {
-                videos[i] = filename;
-                i++;
-            }
             NikiApp.settings.set_strv ("last-played-videos", videos);
         }
     }

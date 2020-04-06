@@ -73,7 +73,7 @@ namespace niki {
             welcome_rigth.append ("applications-multimedia", StringPot.Open_File, StringPot.Open_File);
             welcome_rigth.append ("edit-paste", StringPot.Paste_URL, StringPot.Play_Stream);
             welcome_rigth.append ("document-open", StringPot.Open_Folder, StringPot.Open_Folder);
-            welcome_rigth.append ("camera-web", StringPot.Open_Camera, StringPot.Camera_Device);
+            welcome_rigth.append ("camera-photo", StringPot.Open_Camera, StringPot.Camera_Device);
 
             welcome_left = new Welcome ();
             welcome_left.append ("folder-videos", StringPot.Browse_Library, StringPot.Movie_Library);
@@ -102,31 +102,35 @@ namespace niki {
             dlna_scrolled.add (treview);
             dlna_scrolled.show_all ();
 
-            var dvd_drive = new Welcome ();
-            dvd_drive.append ("media-optical", StringPot.Browse, StringPot.DVD);
-            var cd_drive = new Welcome ();
-            cd_drive.append ("media-optical", StringPot.Browse, StringPot.Audio_Cd);
-            var grid_drive = new Gtk.Grid ();
-            grid_drive.get_style_context ().add_class ("widget_background");
-            grid_drive.orientation = Gtk.Orientation.HORIZONTAL;
-            grid_drive.valign = Gtk.Align.CENTER;
-            grid_drive.margin_bottom = 30;
-            grid_drive.add (dvd_drive);
-            grid_drive.add (cd_drive);
+            var welcome_drive = new Welcome ();
+            welcome_drive.append ("media-optical", StringPot.Browse, StringPot.DVD);
+            welcome_drive.append ("media-optical", StringPot.Browse, StringPot.Audio_Cd);
+            welcome_drive.valign = Gtk.Align.CENTER;
+            welcome_drive.get_style_context ().add_class ("widget_background");
+            welcome_drive.margin_bottom = 30;
+
             var dlna_grid = new Gtk.Grid ();
             dlna_grid.orientation = Gtk.Orientation.VERTICAL;
             dlna_grid.margin = 10;
             dlna_grid.add (dlna_scrolled);
             dlna_grid.add (dlnaaction);
             dlna_grid.add (dlnarendercontrol);
+
             circulargrid = new CircularGrid ();
+
+            var devicegrid = new DeviceMonitor ();
+            devicegrid.orientation = Gtk.Orientation.VERTICAL;
+            devicegrid.valign = Gtk.Align.CENTER;
+            devicegrid.margin_bottom = 30;
+
             stack = new Gtk.Stack ();
             stack.transition_type = Gtk.StackTransitionType.SLIDE_LEFT_RIGHT;
             stack.transition_duration = 500;
             stack.add_named (vertical_grid, "home");
             stack.add_named (dlna_grid, "dlna");
             stack.add_named (circulargrid, "circular");
-            stack.add_named (grid_drive, "dvd");
+            stack.add_named (welcome_drive, "dvd");
+            stack.add_named (devicegrid, "device");
             stack.visible_child = vertical_grid;
             stack.vhomogeneous = false;
             stack.show_all ();
@@ -222,8 +226,7 @@ namespace niki {
                         }
                         break;
                     case 3:
-		                NikiApp.window.main_stack.visible_child_name = "camera";
-		                NikiApp.window.camera_page.ready_play ();
+                        stack.visible_child_name = "device";
                         break;
                 }
             });
@@ -247,17 +250,13 @@ namespace niki {
                         break;
                 }
             });
-            cd_drive.activated.connect ((index) => {
+            welcome_drive.activated.connect ((index) => {
                 switch (index) {
                     case 0:
                         read_dvd.begin ();
                         break;
-                }
-            });
-            dvd_drive.activated.connect ((index) => {
-                switch (index) {
-                    case 0:
-                        read_acd.begin ();
+                    case 1:
+                        read_acd ();
                         break;
                 }
             });
@@ -287,7 +286,7 @@ namespace niki {
                 NikiApp.window.player_page.play_first_in_playlist ();
             }
         }
-        private async void read_acd () {
+        private void read_acd () {
             var acdmanager = new ACDManager ().instance;
             if (!acdmanager.has_media_volumes ()) {
                 infobar.title = StringPot.Disk_Empty;

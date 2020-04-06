@@ -1,3 +1,24 @@
+/*
+* Copyright (c) {2019} torikulhabib (https://github.com/torikulhabib)
+*
+* This program is free software; you can redistribute it and/or
+* modify it under the terms of the GNU General Public
+* License as published by the Free Software Foundation; either
+* version 2 of the License, or (at your option) any later version.
+*
+* This program is distributed in the hope that it will be useful,
+* but WITHOUT ANY WARRANTY; without even the implied warranty of
+* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+* General Public License for more details.
+*
+* You should have received a copy of the GNU General Public
+* License along with this program; if not, write to the
+* Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+* Boston, MA 02110-1301 USA
+*
+* Authored by: torikulhabib <torik.habib@Gmail.com>
+*/
+
 namespace niki {
     public class MediaEditor : Gtk.Dialog {
         private MediaEntry title_entry;
@@ -509,9 +530,7 @@ namespace niki {
                 Gst.Caps caps = stream_info.get_caps ();
                 container.label = "%s: %s".printf(stream_info.get_stream_type_nick (), caps.is_fixed () == true? Gst.PbUtils.get_codec_description (caps) : caps.to_string ());
                 container.tooltip_text = "%s: %s".printf(stream_info.get_stream_type_nick (), caps.is_fixed () == true? Gst.PbUtils.get_codec_description (caps) : caps.to_string ());
-                var list_stream =  new GLib.List<Gst.PbUtils.DiscovererStreamInfo> ();
-                list_stream = ((Gst.PbUtils.DiscovererContainerInfo) stream_info).get_streams ();
-                foreach (var list in list_stream) {
+                ((Gst.PbUtils.DiscovererContainerInfo) stream_info).get_streams ().foreach ((list)=> {
                     if (list.get_stream_type_nick () == "audio") {
                         Gst.Caps acaps = list.get_caps ();
                         container_audio.label = "%s: %s".printf(list.get_stream_type_nick (), acaps.is_fixed () == true? Gst.PbUtils.get_codec_description (acaps) : acaps.to_string ());
@@ -522,12 +541,10 @@ namespace niki {
                         container_video.label = "%s: %s".printf(list.get_stream_type_nick (), vcaps.is_fixed () == true? Gst.PbUtils.get_codec_description (vcaps) : vcaps.to_string ());
                         container_video.tooltip_text = "%s: %s".printf(list.get_stream_type_nick (), vcaps.is_fixed () == true? Gst.PbUtils.get_codec_description (vcaps) : vcaps.to_string ());
                     }
-                }
+                });
                 duration_video.text = seconds_to_time ((int)(info.get_duration ()/1000000000));
                 sekable_video.text = info.get_seekable ()? "Yes" : "No";
-                var list_vstream =  new GLib.List<Gst.PbUtils.DiscovererStreamInfo> ();
-                list_vstream = info.get_video_streams ();
-                foreach (var list in list_vstream) {
+                info.get_video_streams ().foreach ((list)=> {
                     var stream_video = (Gst.PbUtils.DiscovererVideoInfo)list;
                     video_height.text = "%u".printf (stream_video.get_height ());
                     video_width.text = "%u".printf (stream_video.get_width ());
@@ -537,10 +554,8 @@ namespace niki {
                     video_bitrate_max.text = "%u".printf (stream_video.get_max_bitrate ());
                     video_depth.text = "%u".printf (stream_video.get_depth ());
                     frame_rate.text = "%u/%u".printf (stream_video.get_framerate_num (), stream_video.get_framerate_denom ());
-                }
-                var list_astream =  new GLib.List<Gst.PbUtils.DiscovererStreamInfo> ();
-                list_astream = info.get_audio_streams ();
-                foreach (var list in list_astream) {
+                });
+                info.get_audio_streams ().foreach ((list)=> {
                     var stream_audio = (Gst.PbUtils.DiscovererAudioInfo)list;
                     audio_language.text = "%s".printf (stream_audio.get_language ());
                     audio_samplerate.text = "%u".printf (stream_audio.get_sample_rate ());
@@ -548,7 +563,7 @@ namespace niki {
                     audio_bitrate_max.text = "%u".printf (stream_audio.get_max_bitrate ());
                     audio_depth.text = "%u".printf (stream_audio.get_depth ());
                     audio_chanel.text = "%u (%s )".printf (stream_audio.get_channels (), format_channel_mask (stream_audio));
-                }
+                });
                 var tag_list = info.get_tags ();
                 string container_fmt;
                 if (tag_list.get_string (Gst.Tags.CONTAINER_FORMAT, out container_fmt)) {

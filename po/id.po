@@ -95,8 +95,8 @@ msgid "Optical Library"
 msgstr "Pustaka Optik"
 
 #: src/StringPot.vala:43
-msgid "Disk Drive Is Empty\n"
-msgstr "Diska Piring Kosong\n"
+msgid "Disk Drive Is Empty"
+msgstr "Diska Piring Kosong"
 
 #: src/StringPot.vala:44
 msgid "Muted"
@@ -243,12 +243,12 @@ msgid "Track"
 msgstr "Trak"
 
 #: src/StringPot.vala:80
-msgid "Nothing Video in Library\n"
-msgstr "TIdak ada video dalam pustaka\n"
+msgid "Nothing Video in Library"
+msgstr "TIdak ada video dalam pustaka"
 
 #: src/StringPot.vala:81
-msgid "Nothing Music in Library\n"
-msgstr "TIdak ada Musik dalam pustaka\n"
+msgid "Nothing Music in Library"
+msgstr "TIdak ada Musik dalam pustaka"
 
 #: src/StringPot.vala:82
 msgid "Playlist"
@@ -809,20 +809,20 @@ msgid "Image"
 msgstr "Gamabar"
 
 #: src/StringPot.vala:222
-msgid "Folder is Empty\n"
-msgstr "Folder Kosong\n"
+msgid "Folder is Empty"
+msgstr "Folder Kosong"
 
 #: src/StringPot.vala:223
-msgid "Nothing Video And Music in Folder\n"
-msgstr "Tidak ada vidio dan musik dalam folder\n"
+msgid "Nothing Video And Music in Folder"
+msgstr "Tidak ada vidio dan musik dalam folder"
 
 #: src/StringPot.vala:224
-msgid "Library Music is Empty\n"
-msgstr "Pustaka musi kosong\n"
+msgid "Library Music is Empty"
+msgstr "Pustaka musi kosong"
 
 #: src/StringPot.vala:225
-msgid "Library Video is Empty\n"
-msgstr "Pustaka video kosong\n"
+msgid "Library Video is Empty"
+msgstr "Pustaka video kosong"
 
 #: src/StringPot.vala:226
 msgid "Custom"

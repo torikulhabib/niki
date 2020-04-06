@@ -123,7 +123,7 @@ namespace niki {
             if (remove_time > 0 && NikiApp.settings.get_boolean("audio-video") && NikiApp.window.main_stack.visible_child_name == "player") {
                 Source.remove (remove_time);
             }
-            remove_time = Timeout.add (35, animation_timer);
+            remove_time = Timeout.add (50, animation_timer);
         }
         private bool anim_draw (Cairo.Context cr) {
             if (!visible_text) {
@@ -146,7 +146,7 @@ namespace niki {
             int height, y;
             layout.get_pixel_size (null, out height);
             y = (allocation.height - height) / 2;
-            cr.move_to (0, y);
+            cr.move_to (-1, y);
             cr.push_group ();
             Pango.cairo_show_layout (cr, layout);
             cr.pop_group_to_source ();
@@ -158,7 +158,7 @@ namespace niki {
             string text = layout.get_text ();
             int width;
             layout.get_pixel_size (out width, null);
-            anim_area.width_request = (int) (width * 1.112);
+            anim_area.width_request = width;
             Pango.AttrList attrlist = new Pango.AttrList ();
 
             switch (anim_type) {

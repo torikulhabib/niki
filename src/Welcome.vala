@@ -21,7 +21,13 @@ namespace niki {
             vexpand = false;
             add (content);
         }
-
+        public void remove_item (uint index) {
+            if (index < children.length () && children.nth_data (index) is Gtk.Widget) {
+                var item = children.nth_data (index);
+                item.destroy ();
+                children.remove (item);
+            }
+        }
         public int append (string icon_name, string option_text, string description_text) {
             var button = new WelcomeButton (icon_name, option_text, description_text);
             children.append (button);
