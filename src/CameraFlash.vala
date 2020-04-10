@@ -100,8 +100,8 @@ namespace niki {
             if (lid_detect ()) {
                 start_brighnest = brightness_settings.brightness;
             }
-            flash_timeout = Timeout.add (400, flash_start_fade);
             Idle.add (bright_now);
+            flash_timeout = Timeout.add (400, flash_start_fade);
         }
         private static bool lid_detect () {
             var interface_path = File.new_for_path ("/proc/acpi/button/lid/");

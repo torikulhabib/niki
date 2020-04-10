@@ -23,8 +23,6 @@ namespace niki {
     public class MediaEditor : Gtk.Dialog {
         private MediaEntry title_entry;
         private MediaEntry artist_entry;
-        private MediaEntry composer_entry;
-        private MediaEntry group_entry;
         private MediaEntry album_entry;
         private MediaEntry genre_entry;
         private Gtk.TextView comment_textview;
@@ -61,15 +59,6 @@ namespace niki {
         private MediaEntry audio_samplerate;
         private MediaEntry audio_depth;
         private Gtk.Stack stack;
-        private Gst.Pipeline pipeline;
-        private dynamic Gst.Element id3v2mux;
-        private dynamic Gst.Element id3demux;
-        private dynamic Gst.Element filesrc;
-        private dynamic Gst.Element fakesrc;
-        private dynamic Gst.Element fakesink;
-        private dynamic Gst.Element identity;
-        private dynamic Gst.Element apev2mux;
-        private dynamic Gst.Element id3mux;
         private Playlist? playlist;
 
         public MediaEditor (Playlist playlist) {
@@ -86,8 +75,6 @@ namespace niki {
             get_style_context ().add_class ("niki");
             title_entry = new MediaEntry ("com.github.torikulhabib.niki.title-symbolic","edit-paste-symbolic");
             artist_entry = new MediaEntry ("avatar-default-symbolic", "edit-paste-symbolic");
-            group_entry = new MediaEntry ("mail-attachment-symbolic", "edit-paste-symbolic");
-            composer_entry = new MediaEntry ("multimedia-player-symbolic", "edit-paste-symbolic");
             album_entry = new MediaEntry ("media-optical-symbolic", "edit-paste-symbolic");
             genre_entry = new MediaEntry ("audio-x-generic-symbolic", "edit-paste-symbolic");
             comment_textview = new Gtk.TextView ();
@@ -166,14 +153,10 @@ namespace niki {
             grid.attach (album_entry, 0, 5, 1, 1);
             grid.attach (new HeaderLabel (StringPot.NGenre, 200), 1, 4, 1, 1);
             grid.attach (genre_entry, 1, 5, 1, 1);
-            grid.attach (new HeaderLabel (StringPot.NComposer, 200), 0, 6, 1, 1);
-            grid.attach (composer_entry, 0, 7, 1, 1);
-            grid.attach (new HeaderLabel (StringPot.NGroup, 200), 1, 6, 1, 1);
-            grid.attach (group_entry, 1, 7, 1, 1);
-            grid.attach (new HeaderLabel (StringPot.NTrack, 200), 0, 8, 1, 1);
-            grid.attach (track_spinbutton, 0, 9, 1, 1);
-            grid.attach (new HeaderLabel (StringPot.NDate, 200), 1, 8, 1, 1);
-            grid.attach (date_spinbutton, 1, 9, 1, 1);
+            grid.attach (new HeaderLabel (StringPot.NTrack, 200), 0, 6, 1, 1);
+            grid.attach (track_spinbutton, 0, 7, 1, 1);
+            grid.attach (new HeaderLabel (StringPot.NDate, 200), 1, 6, 1, 1);
+            grid.attach (date_spinbutton, 1, 7, 1, 1);
 
             label_name = new Gtk.Label (null);
             label_name.hexpand = true;
@@ -382,131 +365,36 @@ namespace niki {
             set_media (file_name);
         }
 
-        private void bus_message_cb (Gst.Bus bus, Gst.Message message) {
-            switch (message.type) {
-                case Gst.MessageType.ERROR :
-                    GLib.Error err;
-                    string debug;
-                    message.parse_error (out err, out debug);
-                    print (":\n%s\n\n[%s]".printf (err.message, debug));
-                    stderr.printf ("Error: %s\n", debug);
-                    pipeline.set_state (Gst.State.NULL);
-                    break;
-                case Gst.MessageType.EOS :
-                    pipeline.set_state (Gst.State.PAUSED);
-                    break;
-                case Gst.MessageType.TAG:
-//                    unowned Gst.Structure structure = message.get_structure ();
-                    break;
-                default :
-                    break;
-            }
-        }
-
-        private Gst.TagList create_tags (int mask) {
-            Gst.TagList tags = new Gst.TagList.empty ();
-            if (mask == 0) {
-                tags.add (Gst.TagMergeMode.KEEP, Gst.Tags.ARTIST, artist_entry.text);
-            }
-            if (mask == 1) {
-                tags.add (Gst.TagMergeMode.KEEP, Gst.Tags.TITLE, title_entry.text);
-            }
-            if (mask == 2) {
-                tags.add (Gst.TagMergeMode.KEEP, Gst.Tags.ALBUM, album_entry.text);
-           }
-  /*          if (mask = (1 << 3)) {
-                if (date_spinbutton.value > 0) {
-                    Gst.DateTime date_time = new Gst.DateTime.y ((int)date_spinbutton.value);
-                    tags.add (Gst.TagMergeMode.REPLACE, Gst.Tags.DATE_TIME, date_time);
-                }
-            }
-            if (mask == (1 << 4)) {
-                tags.add (Gst.TagMergeMode.KEEP, Gst.Tags.TRACK_NUMBER, track_spinbutton.value);
-            }
-            if (mask == (1 << 5)) {
-                tags.add (Gst.TagMergeMode.REPLACE, Gst.Tags.COMPOSER, composer_entry.text);
-            }
-            if (mask == (1 << 6)) {
-                tags.add (Gst.TagMergeMode.REPLACE, Gst.Tags.GENRE, genre_entry.text);
-            }
-            if (mask == (1 << 7)) {
-                tags.add (Gst.TagMergeMode.REPLACE, Gst.Tags.COMMENT, comment_textview.buffer.text);
-            }
-            if (mask == (1 << 8)) {
-                tags.add (Gst.TagMergeMode.REPLACE, Gst.Tags.GROUPING, group_entry.text);
-            }
-            if (mask & (1 << 9)) {
-                tags.add (Gst.TagMergeMode.REPLACE, Gst.Tags.ALBUM_GAIN, TEST_ALBUM_GAIN, NULL);
-            }
-            if (mask & (1 << 10)) {
-                tags.add (Gst.TagMergeMode.REPLACE, Gst.Tags.TRACK_PEAK, TEST_TRACK_PEAK, NULL);
-            }
-            if (mask & (1 << 11)) {
-                tags.add (Gst.TagMergeMode.REPLACE, Gst.Tags.ALBUM_PEAK, TEST_ALBUM_PEAK, NULL);
-            }
-            if (mask & (1 << 12)) {
-                tags.add (Gst.TagMergeMode.REPLACE, Gst.Tags.BEATS_PER_MINUTE, TEST_BPM, NULL);
-            } */
-            return tags;
-        }
         private void save_to_file () {
             string file_name;
             playlist.liststore.get (playlist.selected_iter (), PlaylistColumns.FILENAME, out file_name);
-            pipeline.set_state (Gst.State.NULL);
-            for (int i = 0; i < 3; ++i) {
-       //         int mask = (int)Random.next_int ();
-                Gst.TagList tags = create_tags (i);
-                taglib_gst_tags (tags, i, file_name);
+            var file = File.new_for_uri (file_name);
+            if (get_mime_type (file).has_prefix ("audio/")) {
+                var tagfile = new TagLib.File (file.get_path ());
+                tagfile.tag.title = title_entry.text;
+                tagfile.tag.artist = artist_entry.text;
+                tagfile.tag.album = album_entry.text;
+                tagfile.tag.genre = genre_entry.text;
+                tagfile.tag.comment = comment_textview.buffer.text;
+                tagfile.tag.year = (uint) date_spinbutton.value;
+                tagfile.tag.track = (uint) track_spinbutton.value;
+                tagfile.save ();
             }
-        }
-
-        private void taglib_gst_tags (Gst.TagList tags, int mask, string file_name) {
-            pipeline = new Gst.Pipeline ("pipeline");
-            filesrc = Gst.ElementFactory.make ("filesrc", "filesrc");
-            fakesrc =  Gst.ElementFactory.make ("fakesrc", "fakesrc");
-            apev2mux =  Gst.ElementFactory.make ("apev2mux", "apev2mux");
-            id3v2mux =  Gst.ElementFactory.make ("id3v2mux", "id3v2mux");
-            identity =  Gst.ElementFactory.make ("identity", "identity");
-            id3demux =  Gst.ElementFactory.make ("id3demux", "id3demux");
-            id3mux =  Gst.ElementFactory.make ("id3mux", "id3mux");
-            fakesink =  Gst.ElementFactory.make ("fakesink", "fakesink");
-            filesrc["location"] = File.new_for_uri (file_name).get_path ();
-            ((Gst.Bin)pipeline).add_many (filesrc, apev2mux, fakesink);
-            ((Gst.TagSetter)apev2mux).merge_tags (tags, Gst.TagMergeMode.APPEND);
-            filesrc.link_many (apev2mux, fakesink);
-            Gst.Bus bus = pipeline.get_bus ();
-            bus.add_signal_watch ();
-            bus.message.connect (bus_message_cb);
-            uint move_stoped = 0;
-            if (move_stoped != 0) {
-                Source.remove (move_stoped);
-            }
-            move_stoped = GLib.Timeout.add (100,() => {
-                pipeline.set_state (Gst.State.PLAYING);
-                pipeline.set_state (Gst.State.PAUSED);
-                move_stoped = 0;
-                return Source.REMOVE;
-            });
         }
 
         private void set_media (string file_name) {
             if (file_name.has_prefix ("http")) {
                 return;
             }
-	        try {
-		        FileInfo infos = File.new_for_uri (file_name).query_info ("standard::*",0);
-                string mime_types = infos.get_content_type ();
-                if (mime_types.has_prefix ("video/")) {
-		            stack.visible_child_name = "video_info";
-                    video_info (file_name);
-                }
-                if (mime_types.has_prefix ("audio/")) {
-                    stack.visible_child_name = "audio_info";
-                    audio_info (file_name);
-                }
-	        } catch (Error e) {
-                GLib.warning (e.message);
-	        }
+            var file = File.new_for_uri (file_name);
+            if (get_mime_type (file).has_prefix ("video/")) {
+		        stack.visible_child_name = "video_info";
+                video_info (file_name);
+            }
+            if (get_mime_type (file).has_prefix ("audio/")) {
+                stack.visible_child_name = "audio_info";
+                audio_info (file_name);
+            }
         }
         private void video_info (string file_name) {
             File path = File.new_for_uri (file_name);
@@ -655,12 +543,6 @@ namespace niki {
                 } else {
                     artist_entry.text = "";
                 }
-                string composer;
-                if (tag_list.get_string (Gst.Tags.COMPOSER, out composer)) {
-                    composer_entry.text = composer;
-                } else {
-                    composer_entry.text = "";
-                }
                 string album;
                 if (tag_list.get_string (Gst.Tags.ALBUM, out album)) {
                     album_entry.text = album;
@@ -678,12 +560,6 @@ namespace niki {
                     comment_textview.buffer.text = comment;
                 } else {
                     comment_textview.buffer.text = "";
-                }
-                string group;
-                if (tag_list.get_string (Gst.Tags.GROUPING, out group)) {
-                    group_entry.text = group;
-                } else {
-                    group_entry.text = "";
                 }
                 uint track_num;
                 if (tag_list.get_uint (Gst.Tags.TRACK_NUMBER, out track_num)) {

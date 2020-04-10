@@ -108,9 +108,10 @@ namespace niki {
             NikiApp.settings.changed["camera-video"].connect (camera_record);
             NikiApp.settings.changed["fullscreen"].connect (() => {
                 if (!NikiApp.settings.get_boolean("fullscreen")) {
-                    notify_fullscreen ();
+                    string_notify (StringPot.Press_Esc);
                 } else {
                     notify_blank ();
+                    notify_timer = 0;
                 }
             });
         }
@@ -143,6 +144,10 @@ namespace niki {
         private void reposition () {
             notify_blank ();
             transition.set_to_value(stage.height - notify_center.width);
+            if (notify_timer > 0 ) {
+                notify_text.x = (stage.width / 2) - (notify_text.width / 2);
+                notify_text.y = ((stage.height / 8) - (notify_text.height / 2));
+            }
         }
         private bool animation_on = false;
         public void notify_center_text (string text_in) {
@@ -215,16 +220,6 @@ namespace niki {
         public void zoom_in_out (double zoom) {
             string_notify ("%s %2.1f".printf (StringPot.Zoom_X, zoom));
             cameraplayer.input_zoom (zoom);
-        }
-
-        private void notify_fullscreen () {
-            GLib.Timeout.add (500, () => {
-                if (NikiApp.settings.get_boolean("fullscreen")) {
-                    return Source.REMOVE;
-                }
-                string_notify (StringPot.Press_Esc);
-                return Source.REMOVE;
-            });
         }
     }
 }

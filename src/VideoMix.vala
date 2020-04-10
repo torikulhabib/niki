@@ -60,10 +60,12 @@ namespace niki {
             NikiApp.settings.changed["coloreffects-options"].connect (coloreffect);
         }
         public void set_videocrp (int top, int bottom, int left, int right) {
+            videocrop.set_state (Gst.State.PAUSED);
             videocrop["top"] = top;
             videocrop["bottom"] = bottom;
             videocrop["left"] = left;
             videocrop["right"] = right;
+            videocrop.set_state (Gst.State.PLAYING);
         }
         private void coloreffect () {
             coloreffects["preset"] = NikiApp.settings.get_int ("coloreffects-options");

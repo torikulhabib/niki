@@ -85,7 +85,7 @@ namespace niki {
                     file_save = GLib.Environment.get_user_special_dir (UserDirectory.PICTURES);
                     break;
             }
-            top_label.label = "Save... " + secondary_text + " to " + file_save;
+            top_label.label = @"Save... $(secondary_text) to $(file_save)";
             string without_ext = primary_text.substring (primary_text.last_index_of ("."));
             string file_out = file_save + "/" + secondary_text + without_ext;
             show.connect (() => {

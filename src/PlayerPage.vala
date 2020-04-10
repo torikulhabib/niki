@@ -264,9 +264,10 @@ namespace niki {
 
             NikiApp.settings.changed["fullscreen"].connect (() => {
                 if (!NikiApp.settings.get_boolean("fullscreen")) {
-                    notify_fullscreen ();
+                    string_notify (StringPot.Press_Esc);
                 } else {
                     notify_blank ();
+                    notify_timer = 0;
                 }
             });
             NikiApp.settings.changed["blur-mode"].connect (update_bg);
@@ -450,6 +451,10 @@ namespace niki {
                 NikiApp.window.get_size (null, out height);
                 menu_actor.height = height - 150;
                 update_position_cover ();
+            }
+            if (notify_timer > 0 ) {
+                notify_text.x = (stage.width / 2) - (notify_text.width / 2);
+                notify_text.y = ((stage.height / 8) - (notify_text.height / 2));
             }
         }
 
@@ -716,16 +721,6 @@ namespace niki {
         public void string_notify (string notify_string) {
             notify_text.text = @"\n     $(notify_string)     \n";
             notify_control ();
-        }
-
-        private void notify_fullscreen () {
-            GLib.Timeout.add (500, () => {
-                if (NikiApp.settings.get_boolean("fullscreen")) {
-                    return Source.REMOVE;
-                }
-                string_notify (StringPot.Press_Esc);
-                return Source.REMOVE;
-            });
         }
     }
 }

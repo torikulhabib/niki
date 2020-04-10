@@ -193,20 +193,14 @@ namespace niki {
         public void previous () throws GLib.Error {
             if (NikiApp.settings.get_boolean ("previous-status")) {
                 NikiApp.window.player_page.previous ();
-                GLib.Timeout.add (250, () => {
-                    NikiApp.window.player_page.string_notify (StringPot.Previous);
-                    return Source.REMOVE;
-                });
+                NikiApp.window.player_page.string_notify (StringPot.Previous);
             }
         }
 
         public void next () throws GLib.Error {
             if (NikiApp.settings.get_boolean("next-status")) {
                 NikiApp.window.player_page.next ();
-                GLib.Timeout.add (250, () => {
-                    NikiApp.window.player_page.string_notify (StringPot.Next);
-                    return Source.REMOVE;
-                });
+                NikiApp.window.player_page.string_notify (StringPot.Next);
             }
         }
 

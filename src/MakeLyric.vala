@@ -149,9 +149,8 @@ namespace niki {
                 NikiApp.window.run_open_folder (1);
             });
             var label_make = new Gtk.Label (StringPot.Niki_Lyric_Maker);
-            label_make.get_style_context ().add_class ("selectedlabel");
+            label_make.get_style_context ().add_class ("button_action");
             label_make.ellipsize = Pango.EllipsizeMode.END;
-            label_make.selectable = true;
 
             var main_actionbar = new Gtk.ActionBar ();
             main_actionbar.get_style_context ().add_class ("transbgborder");

@@ -41,7 +41,9 @@ namespace niki {
             Gst.Caps caps = new Gst.Caps.empty_simple ("application/ogg");
             Gst.PbUtils.EncodingContainerProfile container = new Gst.PbUtils.EncodingContainerProfile ("Ogg audio/video", "Standard Ogg/Theora/Vorbis", caps, null);
             caps = new Gst.Caps.empty_simple ("video/x-theora");
-            container.add_profile ((Gst.PbUtils.EncodingProfile) new Gst.PbUtils.EncodingVideoProfile (caps, null, null, 0));
+            var video_profile = new Gst.PbUtils.EncodingVideoProfile (caps, null, null, 0);
+            video_profile.set_variableframerate (true);
+            container.add_profile ((Gst.PbUtils.EncodingProfile) video_profile);
             caps = new Gst.Caps.empty_simple ("audio/x-vorbis");
             container.add_profile ((Gst.PbUtils.EncodingProfile) new Gst.PbUtils.EncodingAudioProfile (caps, null, null, 0));
             return (Gst.PbUtils.EncodingProfile) container;
@@ -51,9 +53,11 @@ namespace niki {
             Gst.Caps caps = new Gst.Caps.empty_simple ("video/webm");
             Gst.PbUtils.EncodingContainerProfile container = new Gst.PbUtils.EncodingContainerProfile ("webm", null, caps, null);
             caps = new Gst.Caps.empty_simple ("video/x-vp8");
-            container.add_profile ((Gst.PbUtils.EncodingProfile) new Gst.PbUtils.EncodingVideoProfile (caps, null, null, 1));
+            var video_profile = new Gst.PbUtils.EncodingVideoProfile (caps, null, null, 0);
+            video_profile.set_variableframerate (true);
+            container.add_profile ((Gst.PbUtils.EncodingProfile) video_profile);
             caps = new Gst.Caps.empty_simple ("audio/x-vorbis");
-            container.add_profile ((Gst.PbUtils.EncodingProfile) new Gst.PbUtils.EncodingAudioProfile (caps, null, null, 1));
+            container.add_profile ((Gst.PbUtils.EncodingProfile) new Gst.PbUtils.EncodingAudioProfile (caps, null, null, 0));
             return (Gst.PbUtils.EncodingProfile) container;
         }
 
@@ -61,7 +65,9 @@ namespace niki {
             Gst.Caps caps = new Gst.Caps.empty_simple ("video/x-matroska");
             Gst.PbUtils.EncodingContainerProfile container = new Gst.PbUtils.EncodingContainerProfile ("mkv", null, caps, null);
             caps = new Gst.Caps.empty_simple ("video/x-h264");
-            container.add_profile ((Gst.PbUtils.EncodingProfile) new Gst.PbUtils.EncodingVideoProfile (caps, null, null, 1));
+            var video_profile = new Gst.PbUtils.EncodingVideoProfile (caps, null, null, 1);
+            video_profile.set_variableframerate (true);
+            container.add_profile ((Gst.PbUtils.EncodingProfile) video_profile);
             caps = new Gst.Caps.empty_simple ("audio/x-opus");
             container.add_profile ((Gst.PbUtils.EncodingProfile) new Gst.PbUtils.EncodingAudioProfile (caps, null, null, 1));
             return (Gst.PbUtils.EncodingProfile) container;

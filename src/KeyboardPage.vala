@@ -55,18 +55,12 @@ namespace niki {
             } else if (match_keycode (Gdk.Key.n, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
                 if (NikiApp.settings.get_boolean("next-status")) {
                     window.player_page.next ();
-                    GLib.Timeout.add (250, () => {
-                        window.player_page.string_notify (StringPot.Next);
-                        return Source.REMOVE;
-                    });
+                    window.player_page.string_notify (StringPot.Next);
                 }
             } else if (match_keycode (Gdk.Key.b, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
                 if (NikiApp.settings.get_boolean ("previous-status")) {
                     window.player_page.previous ();
-                    GLib.Timeout.add (250, () => {
-                        window.player_page.string_notify (StringPot.Previous);
-                        return Source.REMOVE;
-                    });
+                    window.player_page.string_notify (StringPot.Previous);
                 }
             } else if (match_keycode (Gdk.Key.p, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
                 window.player_page.right_bar.reveal_control ();
@@ -83,9 +77,13 @@ namespace niki {
                     window.player_page.top_bar.button_home ();
                 } else if (window.welcome_page.stack.visible_child_name == "dlna" && window.main_stack.visible_child_name != "player") {
                     window.welcome_page.stack.visible_child_name = "home";
-                } else if (window.main_stack.visible_child_name == "camera") {
+                } else if (window.welcome_page.stack.visible_child_name == "dvd" && window.main_stack.visible_child_name != "player") {
+                    window.welcome_page.stack.visible_child_name = "home";
+                } else if (window.welcome_page.stack.visible_child_name == "device" && window.main_stack.visible_child_name == "camera") {
                     window.main_stack.visible_child_name = "welcome";
 		            window.camera_page.cameraplayer.set_null ();
+                } else if (window.welcome_page.stack.visible_child_name == "device") {
+                    window.welcome_page.stack.visible_child_name = "home";
                 }
             }
 

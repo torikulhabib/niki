@@ -51,7 +51,7 @@ namespace niki {
             notify["idle"].connect (do_step);
             NikiApp.settings.changed["speed-playing"].connect (() => {
                 pipeline.set_state (Gst.State.PAUSED);
-                var new_progress = ((duration * progress) + (double)0)/duration;
+                var new_progress = ((duration * progress) + 0.0)/ duration;
                 progress = new_progress.clamp (0.0, 1.0);
                 do_step ();
                 pipeline.set_state (Gst.State.PLAYING);
@@ -61,11 +61,11 @@ namespace niki {
                 var start_progress = progress;
                 pipeline.set_state (Gst.State.NULL);
                 subtitle_uri = NikiApp.settings.get_string ("subtitle-choose");
-                pipeline.set_state (Gst.State.PLAYING);
                 ready.connect (() => {
                     progress = start_progress;
                     start_progress = 0.0;
                 });
+                pipeline.set_state (Gst.State.PLAYING);
             });
 
             flip_chage ();
@@ -123,7 +123,6 @@ namespace niki {
             }
         }
         private void visualisationsink () {
-            var start_progress = progress;
             pipeline.set_state (Gst.State.PAUSED);
             switch (NikiApp.settings.get_int ("visualisation-options")) {
                 case 0 :
@@ -131,7 +130,6 @@ namespace niki {
                     playsink.get ("flags", out stopsink);
                     stopsink &= ~(1 << 3);
                     playsink["flags"] = stopsink;
-                    pipeline.set_state (Gst.State.NULL);
                     break;
                 case 1 :
                     visualmode = Gst.ElementFactory.make(VISUALMODE [NikiApp.settings.get_int ("visualmode-options")], VISUALMODE [NikiApp.settings.get_int ("visualmode-options")]);
@@ -148,20 +146,19 @@ namespace niki {
                     startsink |= (1 << 3);
                     playsink["flags"] = startsink;
                     playsink["vis-plugin"] = visualmode;
+                    var start_progress = progress;
                     pipeline.set_state (Gst.State.NULL);
+                    if (NikiApp.window != null) {
+                        ready.connect (() => {
+                            progress = start_progress;
+                            start_progress = 0.0;
+                        });
+                    }
                     break;
             }
-
             pipeline.set_state (Gst.State.PLAYING);
-            if (NikiApp.window != null) {
-                ready.connect (() => {
-                    progress = start_progress;
-                    start_progress = 0.0;
-                });
-            }
         }
         private void shader_chage () {
-            pipeline.set_state (Gst.State.NULL);
             switch (NikiApp.settings.get_int ("shader-options")) {
                 case 0 :
                     visualmode["shader"] = Gst.PbUtils.AudioVisualizerShader.NONE;
@@ -195,17 +192,9 @@ namespace niki {
             }
         }
         private void flip_chage () {
-            var start_progress = progress;
             pipeline.set_state (Gst.State.PAUSED);
             videomix.flip_filter["method"] = NikiApp.settings.get_int ("flip-options");
-            pipeline.set_state (Gst.State.NULL);
             pipeline.set_state (Gst.State.PLAYING);
-            if (NikiApp.window != null) {
-                ready.connect (() => {
-                    progress = start_progress;
-                    start_progress = 0.0;
-                });
-            }
         }
     }
 }

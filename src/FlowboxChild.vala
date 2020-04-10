@@ -21,20 +21,11 @@
 
 namespace niki {
     public class EffectColor : Gtk.FlowBoxChild  {
-        private Gtk.Grid content;
-        private Gtk.Label title;
         public ColorEffects coloreffects;
-
-        construct {
-            content = new Gtk.Grid ();
-            content.row_spacing = 12;
-            content.valign = Gtk.Align.CENTER;
-            this.add (content);
-        }
 
         public EffectColor (ColorEffects coloreffects) {
             this.coloreffects = coloreffects;
-            title = new Gtk.Label (coloreffects.get_effect ());
+            var title = new Gtk.Label (coloreffects.get_effect ());
             title.margin_top = 6;
             title.margin_bottom = 6;
             title.margin_start = 6;
@@ -42,25 +33,20 @@ namespace niki {
             var image_menu = new Gtk.Image ();
             image_menu.margin_start = 4;
             image_menu.set_from_gicon (new ThemedIcon ("applications-graphics-symbolic"), Gtk.IconSize.BUTTON);
+            var content = new Gtk.Grid ();
+            content.row_spacing = 12;
+            content.valign = Gtk.Align.CENTER;
             content.add (image_menu);
             content.add (title);
+            add (content);
         }
     }
     public class ProfileCamera : Gtk.FlowBoxChild  {
-        private Gtk.Grid content;
-        private Gtk.Label title;
         public CameraProfile cameraprofile;
-
-        construct {
-            content = new Gtk.Grid ();
-            content.row_spacing = 12;
-            content.valign = Gtk.Align.CENTER;
-            this.add (content);
-        }
 
         public ProfileCamera (CameraProfile cameraprofile) {
             this.cameraprofile = cameraprofile;
-            title = new Gtk.Label (cameraprofile.get_profile ());
+            var title = new Gtk.Label (cameraprofile.get_profile ());
             title.margin_top = 6;
             title.margin_bottom = 6;
             title.margin_start = 6;
@@ -68,8 +54,12 @@ namespace niki {
             var image_menu = new Gtk.Image ();
             image_menu.margin_start = 4;
             image_menu.set_from_gicon (new ThemedIcon ("document-save-symbolic"), Gtk.IconSize.BUTTON);
+            var content = new Gtk.Grid ();
+            content.row_spacing = 12;
+            content.valign = Gtk.Align.CENTER;
             content.add (image_menu);
             content.add (title);
+            add (content);
         }
     }
 }

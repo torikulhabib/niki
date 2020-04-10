@@ -31,7 +31,7 @@ namespace niki {
         private uint remove_time = 0;
         private int animstep = 0;
         private int state = 0;
-        private bool visible_text = false;
+
         private double _playback_duration;
         public double playback_duration {
             get {
@@ -123,18 +123,15 @@ namespace niki {
             if (remove_time > 0 && NikiApp.settings.get_boolean("audio-video") && NikiApp.window.main_stack.visible_child_name == "player") {
                 Source.remove (remove_time);
             }
-            remove_time = Timeout.add (50, animation_timer);
+            remove_time = Timeout.add (40, animation_timer);
         }
         private bool anim_draw (Cairo.Context cr) {
-            if (!visible_text) {
-                return false;
-            }
             double alpha = 0;
             if (animstep < 16) {
                 alpha = animstep / 15.0;
             } else if (animstep < 18) {
                 alpha = 1.0;
-            } else if (animstep < 33) {
+            } else if (animstep < 35) {
                 alpha = 1.0 - (animstep - 17) / 15.0;
             }
 
@@ -183,10 +180,9 @@ namespace niki {
             int timeout = 0;
             if (animstep == 0) {
                 string text = null;
-                visible_text = true;
                 switch (state) {
                     case 0:
-                        remove_time = Timeout.add (35, animation_timer);
+                        remove_time = Timeout.add (40, animation_timer);
                         state += 1;
                         return false;
                     case 1:
@@ -222,7 +218,7 @@ namespace niki {
                         state = 0;
                         break;
                 }
-                layout.set_text (text, -1);
+                layout.set_text (NikiApp.settings.get_boolean("audio-video")? text : "", -1);
                 layout.set_attributes (null);
             }
 
@@ -231,16 +227,14 @@ namespace niki {
             } else if (animstep == 16) {
                 timeout = 900;
             } else if (animstep == 17) {
-                timeout = 35;
-            } else if (animstep < 33) {
+                timeout = 40;
+            } else if (animstep < 35) {
                 decorate_text (1, 1.0 - (animstep - 17) / 15.0);
-            } else if (animstep == 33) {
-                visible_text = false;
+            } else if (animstep == 35) {
                 timeout = 300;
             } else {
-                visible_text  = false;
                 animstep = -1;
-                timeout = 35;
+                timeout = 40;
             }
             animstep++;
             anim_area.queue_draw ();

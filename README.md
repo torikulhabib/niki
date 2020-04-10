@@ -96,7 +96,7 @@ If you like Niki and you want to support its development,consider supporting via
 - [ ] Input Camera device. (Inprogress)
 - [ ] Music Library View. (Inprogress)
 - [ ] Video Library View. (Inprogress)
-- [ ] Audio Tag. (Inprogress)
+- [x] Audio Tag. (Inprogress)
 - [ ] DLNA Player. (Inprogress)
 - [x] Video Crop.
 - [ ] DLNA Media Export. (Inprogress)
