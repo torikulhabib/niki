@@ -238,27 +238,23 @@ namespace niki {
 
 	private string get_song_info (File path) {
 	    string output = null;
-        switch (file_type (path)) {
-            case 0 :
-		        output = get_info_file (path);
-                break;
-            case 1 :
-		        string name = path.get_path ();
-		        var info =  new TagLib.File(name);
-		        output = info.tag.title.char_count () < 1? get_info_file (path) : info.tag.title + "";
-                break;
+        if (get_mime_type (path).has_prefix ("video/")) {
+		    output = get_info_file (path);
+        } else if (get_mime_type (path).has_prefix ("audio/")) {
+		    var info = new TagLib.File(path.get_path ());
+		    output = info.tag.title.char_count () < 1? get_info_file (path) : info.tag.title;
         }
 		return output;
 	}
 
     private string get_artist_music (string inputfile) {
         string inputstring = File.new_for_uri (inputfile).get_path ();
-		var info =  new TagLib.File(inputstring);
+		var info = new TagLib.File(inputstring);
 		return info.tag.artist.char_count () < 1? StringPot.Unknown : info.tag.artist;
     }
     private string get_album_music (string inputfile) {
         string inputstring = File.new_for_uri (inputfile).get_path ();
-		var info =  new TagLib.File(inputstring);
+		var info = new TagLib.File(inputstring);
 		return info.tag.album.char_count () < 1? StringPot.Unknown : info.tag.album;
     }
 
@@ -281,18 +277,12 @@ namespace niki {
             return 3;
         }
         if (filein.get_uri ().char_count () > 1 && filein.query_exists ()) {
-	        try {
-		        FileInfo infos = filein.query_info ("standard::*",0);
-                string mime_type = infos.get_content_type ();
-                if (mime_type.has_prefix ("video/")) {
-                    return 0;
-                }
-                if (mime_type.has_prefix ("audio/")) {
-                    return 1;
-                }
-	        } catch (Error e) {
-                GLib.warning (e.message);
-	        }
+            if (get_mime_type (filein).has_prefix ("video/")) {
+                return 0;
+            }
+            if (get_mime_type (filein).has_prefix ("audio/")) {
+                return 1;
+            }
 	    }
 	    return -1;
     }
@@ -426,9 +416,11 @@ namespace niki {
         NikiApp.window.get_window().set_cursor (cursor);
         return false;
     }
-
+    private bool return_hide_mode = false;
     private bool destroy_mode () {
         if (NikiApp.window.player_page.playback.playing && NikiApp.settings.get_boolean ("audio-video")) {
+            return_hide_mode = true;
+            NikiApp.window.player_page.signal_playing ();
             return NikiApp.window.hide_on_delete ();
         } else {
             NikiApp.window.player_page.save_destroy ();
@@ -506,37 +498,7 @@ namespace niki {
         string hash_file = GLib.Checksum.compute_for_string (ChecksumType.MD5, thum_file.get_uri (), thum_file.get_uri ().length);
         return Path.build_filename (GLib.Environment.get_user_cache_dir (), "thumbnails", "large", hash_file + ".png");
     }
-    private Gdk.Pixbuf pix_scale (string input, int size) {
-        Gdk.Pixbuf pixbuf = null;
-        if (!FileUtils.test (input, FileTest.EXISTS)) {
-            return pixbuf;
-        }
-        try {
-            pixbuf = new Gdk.Pixbuf.from_file_at_scale (input, size, size, true);
-        } catch (Error e) {
-            GLib.warning (e.message);
-        }
-        return pixbuf;
-    }
-    private Gdk.Pixbuf pix_file (string input) {
-        Gdk.Pixbuf pixbuf = null;
-        if (!FileUtils.test (input, FileTest.EXISTS)) {
-            return pixbuf;
-        }
-        try {
-            pixbuf = new Gdk.Pixbuf.from_file (input);
-        } catch (Error e) {
-            GLib.warning (e.message);
-        }
-        return pixbuf;
-    }
-    private void pix_to_file (Gdk.Pixbuf pixbuf, string input) {
-        try {
-            pixbuf.save (input, "jpeg", "quality", "100");
-        } catch (Error err) {
-            warning (err.message);
-        }
-    }
+
     private string set_filename_media () {
         string time = new GLib.DateTime.now_local ().format ("%F%H:%M:%S");
         int file_id = 0;
@@ -578,8 +540,143 @@ namespace niki {
         props.sets (Canberra.PROP_MEDIA_ROLE, "event");
         context.play_full (0, props, null);
     }
+    private Gst.Sample? get_cover_sample (Gst.TagList tag_list) {
+        Gst.Sample sample;
+        for (int i = 0; tag_list.get_sample_index (Gst.Tags.IMAGE, i, out sample); i++) {
+            unowned Gst.Structure caps_struct = sample.get_info ();
+            int image_type = Gst.Tag.ImageType.UNDEFINED;
+            caps_struct.get_enum ("image-type", typeof (Gst.Tag.ImageType), out image_type);
+            if (image_type == Gst.Tag.ImageType.FRONT_COVER) {
+                return sample;
+            }
+        }
+        return sample;
+    }
+    private void pix_to_file (Gdk.Pixbuf pixbuf, string input) {
+        try {
+            pixbuf.save (input, "jpeg", "quality", "100");
+        } catch (Error err) {
+            warning (err.message);
+        }
+    }
+    private Gdk.Pixbuf pix_scale (string input, int size) {
+        Gdk.Pixbuf pixbuf = null;
+        if (!FileUtils.test (input, FileTest.EXISTS)) {
+            return pixbuf;
+        }
+        try {
+            pixbuf = new Gdk.Pixbuf.from_file_at_scale (input, size, size, true);
+        } catch (Error e) {
+            GLib.warning (e.message);
+        }
+        return pixbuf;
+    }
+    private Gdk.Pixbuf pix_file (string input) {
+        Gdk.Pixbuf pixbuf = null;
+        if (!FileUtils.test (input, FileTest.EXISTS)) {
+            return pixbuf;
+        }
+        try {
+            pixbuf = new Gdk.Pixbuf.from_file (input);
+        } catch (Error e) {
+            GLib.warning (e.message);
+        }
+        return pixbuf;
+    }
     private Gdk.Pixbuf? align_and_scale_pixbuf (Gdk.Pixbuf input_pixbuf, int sizew, int sizeh = 0) {
         return input_pixbuf.scale_simple (sizew, sizeh == 0? sizew : sizeh, Gdk.InterpType.BILINEAR);
+    }
+    private Gdk.Pixbuf? get_pixbuf_from_buffer (Gst.Buffer buffer) {
+        Gst.MapInfo map_info;
+        if (!buffer.map (out map_info, Gst.MapFlags.READ)) {
+            return null;
+        }
+        Gdk.Pixbuf pixbuf_loader = null;
+        try {
+            var loader = new Gdk.PixbufLoader ();
+            if (loader.write (map_info.data) && loader.close ()) {
+                pixbuf_loader = loader.get_pixbuf ();
+            }
+        } catch (Error err) {
+            warning ("%s", err.message);
+        }
+        buffer.unmap (map_info);
+        return pixbuf_loader;
+    }
+    private Gdk.Pixbuf get_pixbuf_device_info (GUPnP.DeviceInfo info) {
+        string udn = info.get_udn ();
+        string icon_url = info.get_icon_url (null, 32, 25, 25, true, null, null, null, null);
+        Gdk.Pixbuf? return_value = get_pixbuf_from_url (icon_url, udn);
+        return return_value;
+    }
+    private Gdk.Pixbuf? get_pixbuf_from_url (string url, string filename) {
+        Gdk.Pixbuf? return_value = null;
+        var session = new Soup.Session.with_options ("user_agent", "Niki/0.9.0");
+        var msg = new Soup.Message ("GET", url);
+        session.send_message (msg);
+        if (msg.status_code == 200) {
+            string tmp_file = cache_image (filename);
+            var file_stream = FileStream.open (tmp_file, "w");
+            file_stream.write (msg.response_body.data, (size_t)msg.response_body.length);
+            return_value = pix_file (tmp_file);
+            File deleteunuse = File.new_for_path (tmp_file);
+            deleteunuse.delete_async.begin ();
+            Gdk.Pixbuf pixbuf = align_and_scale_pixbuf (return_value, return_value.get_width (), return_value.get_height ());
+            pix_to_file (pixbuf, tmp_file);
+        }
+        return return_value;
+    }
+
+    private Gdk.Pixbuf icon_from_type (string icon_type, int size) {
+        Gdk.Pixbuf pixbuf = null;
+        Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default ();
+        try {
+            if (icon_type == "object.item.videoItem") {
+                pixbuf = align_and_scale_pixbuf (icon_theme.load_icon ("video-x-generic", 128, 0), size);
+            } else if (icon_type == "object.item.audioItem.musicTrack") {
+                pixbuf = align_and_scale_pixbuf (icon_theme.load_icon ("audio-x-generic", 128, 0), size);
+            } else if (icon_type == "object.item.imageItem.photo") {
+                pixbuf = align_and_scale_pixbuf (icon_theme.load_icon ("image-x-generic", 128, 0), size);
+            } else {
+                pixbuf = align_and_scale_pixbuf (icon_theme.load_icon ("folder-remote", 128, 0), size);
+            }
+	    } catch (Error e) {
+            GLib.warning (e.message);
+	    }
+        return pixbuf;
+    }
+    private Gdk.Pixbuf icon_from_mediatype (int icon_type) {
+        Gdk.Pixbuf pixbuf = null;
+        Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default ();
+        try {
+            switch (icon_type) {
+                case PlayerMode.VIDEO :
+                    pixbuf = align_and_scale_pixbuf (icon_theme.load_icon ("video-x-generic", 128, 0), 48);
+                    break;
+                case PlayerMode.AUDIO :
+                    pixbuf = align_and_scale_pixbuf (icon_theme.load_icon ("audio-x-generic", 128, 0), 48);
+                    break;
+                case PlayerMode.STREAMAUD :
+                    pixbuf = align_and_scale_pixbuf (icon_theme.load_icon ("audio-x-generic", 128, 0), 48);
+                    break;
+                case PlayerMode.STREAMVID :
+                    pixbuf = align_and_scale_pixbuf (icon_theme.load_icon ("video-x-generic", 128, 0), 48);
+                    break;
+            }
+	    } catch (Error e) {
+            GLib.warning (e.message);
+	    }
+        return pixbuf;
+    }
+    private Gdk.Pixbuf from_theme_icon (string gicon_name, int resolution, int size) {
+        Gdk.Pixbuf pixbuf = null;
+        Gtk.IconTheme icon_theme = Gtk.IconTheme.get_default ();
+        try {
+            pixbuf = align_and_scale_pixbuf (icon_theme.load_icon (gicon_name, resolution, 0), size);
+	    } catch (Error e) {
+            GLib.warning (e.message);
+	    }
+        return pixbuf;
     }
     private Lyric file_lyric (string lyric_file) {
         return new LyricParser ().parse (File.new_for_uri (lyric_file));
@@ -611,6 +708,24 @@ namespace niki {
             }
             return false;
         });
+    }
+    private Gst.PbUtils.DiscovererInfo get_discoverer_info (string uri_video) {
+        Gst.PbUtils.DiscovererInfo discoverer_info = null;
+        try {
+            Gst.PbUtils.Discoverer discoverer = new Gst.PbUtils.Discoverer ((Gst.ClockTime) (5 * Gst.SECOND));
+            discoverer_info = discoverer.discover_uri (uri_video);
+        } catch (Error e) {
+            warning (e.message);
+        }
+        return discoverer_info;
+    }
+    private string get_string_tag (string tags, Gst.TagList tag_list) {
+        string string_tags;
+        if (tag_list.get_string (tags, out string_tags)) {
+            return string_tags;
+        } else {
+            return "";
+        }
     }
     private Gdk.Pixbuf? unknown_cover () {
 	    Cairo.ImageSurface surface = new Cairo.ImageSurface (Cairo.Format.RGB30, 256, 256);

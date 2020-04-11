@@ -201,6 +201,7 @@ namespace niki {
             label.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
             label.ellipsize = Pango.EllipsizeMode.END;
             label.max_width_chars = 20;
+            label.margin_end = 10;
 
             var grid = new Gtk.Grid ();
             grid.orientation = Gtk.Orientation.VERTICAL;
@@ -236,12 +237,17 @@ namespace niki {
                         var audiocover = new AudioCover();
                         audiocover.import (file_pre.get_uri ());
                         pixbuf = audiocover.pixbuf_albumart;
+                    } else if (get_mime_type (file_pre).has_prefix ("image/")) {
+                        pixbuf = pix_scale (file_pre.get_path (), 256);
                     }
                     if (pixbuf != null) {
                         label.label = get_info_file (file_pre);
                         preview_area.set_from_pixbuf (pixbuf);
                         preview_area.show ();
                         file.set_preview_widget_active (true);
+                    } else {
+                        preview_area.hide ();
+                        file.set_preview_widget_active (false);
                     }
                 } else {
                     preview_area.hide ();

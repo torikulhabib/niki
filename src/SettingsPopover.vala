@@ -33,7 +33,6 @@ namespace niki {
         private Gtk.Revealer combox_font_revealer;
         private Gtk.Revealer font_selection_label_revealer;
         private Gtk.Revealer font_selection_btn_revealer;
-        private Gst.PbUtils.DiscovererInfo discoverer_info;
         private Gtk.Grid grid;
         public signal void font_button ();
 
@@ -186,7 +185,6 @@ namespace niki {
             }
             remove_timer = GLib.Timeout.add_seconds (1, () => {
                 if (!NikiApp.settings.get_boolean ("audio-video") && playerpage.playback.uri != null) {
-                    get_discoverer_info (playerpage.playback.uri);
                     revealer_view ();
                     subtitles_track ();
                     audio_track ();
@@ -236,7 +234,7 @@ namespace niki {
         }
 
         private GLib.List<string> get_subtitle_track_names () {
-            var subtitles_streams = discoverer_info.get_subtitle_streams ();
+            var subtitles_streams = get_discoverer_info (playerpage.playback.uri).get_subtitle_streams ();
             GLib.List<string> subtitle_languages = null;
             foreach (var subtitle_stream in subtitles_streams) {
                 unowned string language_code = (subtitle_stream as Gst.PbUtils.DiscovererSubtitleInfo).get_language ();
@@ -290,7 +288,7 @@ namespace niki {
             languages.changed.connect (on_languages_changed);
         }
         private GLib.List<string> get_audio_track_names () {
-            var audio_streams = discoverer_info.get_audio_streams ();
+            var audio_streams = get_discoverer_info (playerpage.playback.uri).get_audio_streams ();
             GLib.List<string> audio_languages = null;
             foreach (var audio_stream in audio_streams) {
                 unowned string language_code = (audio_stream as Gst.PbUtils.DiscovererAudioInfo).get_language ();
@@ -302,15 +300,6 @@ namespace niki {
             }
             audio_languages.reverse ();
             return audio_languages;
-        }
-
-        private void get_discoverer_info (string uri_video) {
-            try {
-                Gst.PbUtils.Discoverer discoverer = new Gst.PbUtils.Discoverer ((Gst.ClockTime) (5 * Gst.SECOND));
-                discoverer_info = discoverer.discover_uri (uri_video);
-            } catch (Error e) {
-                warning (e.message);
-            }
         }
     }
 }

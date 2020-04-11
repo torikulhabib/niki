@@ -23,7 +23,6 @@ namespace niki {
     public class DLNATreeView : Gtk.TreeView {
         private WelcomePage? welcompage;
         public DLNAServer? serverdlna;
-        private ObjectPixbuf? objectpixbuf;
         private GUPnP.DeviceInfo device_all;
         private Gtk.TreeStore treestore;
         private Gtk.TreeIter active_iter;
@@ -39,7 +38,6 @@ namespace niki {
             get_style_context ().add_class ("dlnaplaylist");
             this.welcompage = welcompage;
             serverdlna = new DLNAServer ();
-            objectpixbuf = new ObjectPixbuf ();
             treestore = new Gtk.TreeStore (DlnaTreeColumns.N_COLUMNS, typeof (Gdk.Pixbuf), typeof (string), typeof (GUPnP.DeviceInfo), typeof (GUPnP.ServiceProxy), typeof (string), typeof (int), typeof (string));
             insert_column_with_attributes (-1, "pixbuf", new Gtk.CellRendererPixbuf (), "pixbuf", DlnaTreeColumns.ICON);
             insert_column_with_attributes (-1, "text", new Gtk.CellRendererText (), "text", DlnaTreeColumns.TITLE);
@@ -201,7 +199,7 @@ namespace niki {
             string title = object.get_title ();
             string upnp_class = object.get_upnp_class ();
 
-            Gdk.Pixbuf icon = objectpixbuf.icon_from_type (upnp_class, 30);
+            Gdk.Pixbuf icon = icon_from_type (upnp_class, 30);
             if (id == null || title == null) {
                 return;
             }
@@ -356,6 +354,9 @@ namespace niki {
             treestore.foreach ((model, path, iter) => {
                 GUPnP.DeviceInfo proxys;
                 model.get (iter, DlnaTreeColumns.DEVICEINFO, out proxys);
+                if (proxys == null) {
+                    return false;
+                }
                 if (proxy.get_udn () == proxys.get_udn ()) {
                     exist = true;
                 }
@@ -370,7 +371,7 @@ namespace niki {
             Gdk.Pixbuf icon = null;
             string nameimage = cache_image (proxy.get_udn ());
             if (!FileUtils.test (nameimage, FileTest.EXISTS)) {
-                icon = align_and_scale_pixbuf (objectpixbuf.get_pixbuf_device_info (info), 30);
+                icon = align_and_scale_pixbuf (get_pixbuf_device_info (info), 30);
             } else {
                 icon = pix_scale (nameimage, 30);
 	        }
@@ -384,6 +385,9 @@ namespace niki {
         }
 
         public void remove_media_server (GUPnP.DeviceProxy proxy) {
+            if (proxy == null) {
+                return;
+            }
             string udn = proxy.get_udn ();
             Gtk.TreeIter iter;
             for (int i = 0; treestore.get_iter_from_string (out iter, i.to_string ()); ++i) {
@@ -392,8 +396,10 @@ namespace niki {
                 }
                 GUPnP.DeviceInfo proxys;
                 treestore.get (iter, DlnaTreeColumns.DEVICEINFO, out proxys);
-                if (udn == proxys.get_udn ()) {
-                    treestore.remove (ref iter);
+                if (proxys != null) {
+                    if (udn == proxys.get_udn ()) {
+                        treestore.remove (ref iter);
+                    }
                 }
             }
         }

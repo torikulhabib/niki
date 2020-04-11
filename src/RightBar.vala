@@ -133,6 +133,7 @@ namespace niki {
             playlist_scrolled.get_style_context ().add_class ("scrollbar");
             adjustment = playlist_scrolled.vadjustment;
             playlist_scrolled.set_policy (Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC);
+            playlist_scrolled.vexpand = true;
             playlist_scrolled.add (playlist);
             playlist_scrolled.show_all ();
             notify["child-revealed"].connect (() => {
@@ -186,6 +187,7 @@ namespace niki {
             content_box.get_style_context ().add_class ("playlist");
             content_box.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             content_box.orientation = Gtk.Orientation.VERTICAL;
+            content_box.vexpand = true;
             content_box.add (header);
             content_box.add (playlist_scrolled);
             content_box.add (main_actionbar);

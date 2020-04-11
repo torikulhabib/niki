@@ -198,6 +198,7 @@ namespace niki {
             show_all ();
             NikiApp.settings.changed["information-button"].connect (revealer_menu);
             NikiApp.settings.changed["title-playing"].connect (label_my_app);
+            NikiApp.settings.changed["artist-music"].connect (label_my_app);
             NikiApp.settings.changed["album-music"].connect (label_my_app);
             NikiApp.settings.changed["maximize"].connect (maximized_button);
             NikiApp.settings.changed["audio-video"].connect (() => {

@@ -16,7 +16,6 @@ executable(
     'Playlist.vala',
     'AsyncImage.vala',
     'DLNAMain.vala',
-    'ObjectPixbuf.vala',
     'DLNATreeView.vala',
     'DLNAServer.vala',
     'DLNARenderControl.vala',

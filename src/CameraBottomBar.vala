@@ -247,7 +247,7 @@ namespace niki {
                     if (file_stored () != null) {
                         pix_loader (pix_file (File.new_for_uri (file_stored ()).get_path ()));
                     } else {
-                        asyncimage.set_from_pixbuf (new ObjectPixbuf().from_theme_icon ("avatar-default-symbolic", 128, 48));
+                        asyncimage.set_from_pixbuf (from_theme_icon ("avatar-default-symbolic", 128, 48));
                         asyncimage.show ();
                     }
                     image_timer = 0;
@@ -274,7 +274,7 @@ namespace niki {
                             }
                         }
                     } else {
-                        asyncimage.set_from_pixbuf (new ObjectPixbuf().from_theme_icon ("avatar-default-symbolic", 128, 48));
+                        asyncimage.set_from_pixbuf (from_theme_icon ("avatar-default-symbolic", 128, 48));
                         asyncimage.show ();
                     }
                     video_timer = 0;

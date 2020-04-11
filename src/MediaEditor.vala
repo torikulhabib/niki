@@ -21,15 +21,11 @@
 
 namespace niki {
     public class MediaEditor : Gtk.Dialog {
-        private MediaEntry title_entry;
-        private MediaEntry artist_entry;
-        private MediaEntry album_entry;
-        private MediaEntry genre_entry;
         private Gtk.TextView comment_textview;
         private Gtk.SpinButton date_spinbutton;
         private Gtk.SpinButton track_spinbutton;
-        private AsyncImage asyncimage;
-        private AsyncImage video_asyncimage;
+        private AsyncImage? asyncimage;
+        private AsyncImage? video_asyncimage;
         private Gtk.Label label_duration;
         private Gtk.Label label_bitrate;
         private Gtk.Label label_chanel;
@@ -38,28 +34,34 @@ namespace niki {
         private Gtk.Label container;
         private Gtk.Label container_video;
         private Gtk.Label container_audio;
-        private MediaEntry duration_video;
-        private MediaEntry pixel_ratio;
-        private MediaEntry sekable_video;
-        private MediaEntry audio_codec;
-        private MediaEntry video_codec;
-        private MediaEntry date_time_video;
-        private MediaEntry interlaced;
-        private MediaEntry container_format;
-        private MediaEntry video_height;
-        private MediaEntry video_width;
-        private MediaEntry video_bitrate;
-        private MediaEntry video_bitrate_max;
-        private MediaEntry frame_rate;
-        private MediaEntry video_depth;
-        private MediaEntry audio_bitrate;
-        private MediaEntry audio_bitrate_max;
-        private MediaEntry audio_language;
-        private MediaEntry audio_chanel;
-        private MediaEntry audio_samplerate;
-        private MediaEntry audio_depth;
+        private MediaEntry? title_entry;
+        private MediaEntry? artist_entry;
+        private MediaEntry? album_entry;
+        private MediaEntry? genre_entry;
+        private MediaEntry? duration_video;
+        private MediaEntry? pixel_ratio;
+        private MediaEntry? sekable_video;
+        private MediaEntry? audio_codec;
+        private MediaEntry? video_codec;
+        private MediaEntry? date_time_video;
+        private MediaEntry? interlaced;
+        private MediaEntry? container_format;
+        private MediaEntry? video_height;
+        private MediaEntry? video_width;
+        private MediaEntry? video_bitrate;
+        private MediaEntry? video_bitrate_max;
+        private MediaEntry? frame_rate;
+        private MediaEntry? video_depth;
+        private MediaEntry? audio_bitrate;
+        private MediaEntry? audio_bitrate_max;
+        private MediaEntry? audio_language;
+        private MediaEntry? audio_chanel;
+        private MediaEntry? audio_samplerate;
+        private MediaEntry? audio_depth;
         private Gtk.Stack stack;
         private Playlist? playlist;
+        private InfoBar? infobar;
+        public signal void update_file (string file_name);
 
         public MediaEditor (Playlist playlist) {
             Object (
@@ -70,6 +72,7 @@ namespace niki {
                 destroy_with_parent: true
             );
             this.playlist = playlist;
+            infobar = new InfoBar ();
             resize (425, 380);
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             get_style_context ().add_class ("niki");
@@ -313,8 +316,10 @@ namespace niki {
             grid_combine.add (arrows_grid);
             grid_combine.add (stack);
             grid_combine.show_all ();
-
-            get_content_area ().add (grid_combine);
+            var overlay = new Gtk.Overlay ();
+            overlay.add (grid_combine);
+            overlay.add_overlay (infobar);
+            get_content_area ().add (overlay);
 
             add_button (StringPot.Close, Gtk.ResponseType.CLOSE);
 
@@ -379,6 +384,9 @@ namespace niki {
                 tagfile.tag.year = (uint) date_spinbutton.value;
                 tagfile.tag.track = (uint) track_spinbutton.value;
                 tagfile.save ();
+                update_file (file_name);
+                infobar.title = @"$(StringPot.Taged) $(file.get_basename ())";
+                infobar.send_notification ();
             }
         }
 
@@ -398,7 +406,8 @@ namespace niki {
         }
         private void video_info (string file_name) {
             File path = File.new_for_uri (file_name);
-            label_name.label = path.get_path ();
+            label_name.label = path.get_basename ();
+            label_name.tooltip_text = path.get_path ();
             if (!FileUtils.test (large_thumb (path), FileTest.EXISTS)) {
                 var dbus_Thum = new DbusThumbnailer ().instance;
                 dbus_Thum.instand_thumbler (path, "large");
@@ -410,78 +419,57 @@ namespace niki {
                 video_asyncimage.set_from_pixbuf (pix_scale (large_thumb (path), 128));
                 video_asyncimage.show ();
             }
-
-            try {
-                Gst.PbUtils.Discoverer discoverer = new Gst.PbUtils.Discoverer ((Gst.ClockTime) (5 * Gst.SECOND));
-                var info = discoverer.discover_uri (file_name);
-                var stream_info = info.get_stream_info ();
-                Gst.Caps caps = stream_info.get_caps ();
-                container.label = "%s: %s".printf(stream_info.get_stream_type_nick (), caps.is_fixed () == true? Gst.PbUtils.get_codec_description (caps) : caps.to_string ());
-                container.tooltip_text = "%s: %s".printf(stream_info.get_stream_type_nick (), caps.is_fixed () == true? Gst.PbUtils.get_codec_description (caps) : caps.to_string ());
-                ((Gst.PbUtils.DiscovererContainerInfo) stream_info).get_streams ().foreach ((list)=> {
-                    if (list.get_stream_type_nick () == "audio") {
-                        Gst.Caps acaps = list.get_caps ();
-                        container_audio.label = "%s: %s".printf(list.get_stream_type_nick (), acaps.is_fixed () == true? Gst.PbUtils.get_codec_description (acaps) : acaps.to_string ());
-                        container_audio.tooltip_text = "%s: %s".printf(list.get_stream_type_nick (), acaps.is_fixed () == true? Gst.PbUtils.get_codec_description (acaps) : acaps.to_string ());
-                    }
-                    if (list.get_stream_type_nick () == "video") {
-                        Gst.Caps vcaps = list.get_caps ();
-                        container_video.label = "%s: %s".printf(list.get_stream_type_nick (), vcaps.is_fixed () == true? Gst.PbUtils.get_codec_description (vcaps) : vcaps.to_string ());
-                        container_video.tooltip_text = "%s: %s".printf(list.get_stream_type_nick (), vcaps.is_fixed () == true? Gst.PbUtils.get_codec_description (vcaps) : vcaps.to_string ());
-                    }
-                });
-                duration_video.text = seconds_to_time ((int)(info.get_duration ()/1000000000));
-                sekable_video.text = info.get_seekable ()? "Yes" : "No";
-                info.get_video_streams ().foreach ((list)=> {
-                    var stream_video = (Gst.PbUtils.DiscovererVideoInfo)list;
-                    video_height.text = "%u".printf (stream_video.get_height ());
-                    video_width.text = "%u".printf (stream_video.get_width ());
-                    interlaced.text = "%s".printf (stream_video.is_interlaced ()? "Yes" : "No");
-                    pixel_ratio.text = "%u/%u".printf (stream_video.get_par_num (), stream_video.get_par_denom ());
-                    video_bitrate.text = "%u".printf (stream_video.get_bitrate ());
-                    video_bitrate_max.text = "%u".printf (stream_video.get_max_bitrate ());
-                    video_depth.text = "%u".printf (stream_video.get_depth ());
-                    frame_rate.text = "%u/%u".printf (stream_video.get_framerate_num (), stream_video.get_framerate_denom ());
-                });
-                info.get_audio_streams ().foreach ((list)=> {
-                    var stream_audio = (Gst.PbUtils.DiscovererAudioInfo)list;
-                    audio_language.text = "%s".printf (stream_audio.get_language ());
-                    audio_samplerate.text = "%u".printf (stream_audio.get_sample_rate ());
-                    audio_bitrate.text = "%u".printf (stream_audio.get_bitrate ());
-                    audio_bitrate_max.text = "%u".printf (stream_audio.get_max_bitrate ());
-                    audio_depth.text = "%u".printf (stream_audio.get_depth ());
-                    audio_chanel.text = "%u (%s )".printf (stream_audio.get_channels (), format_channel_mask (stream_audio));
-                });
-                var tag_list = info.get_tags ();
-                string container_fmt;
-                if (tag_list.get_string (Gst.Tags.CONTAINER_FORMAT, out container_fmt)) {
-                    container_format.text = container_fmt;
-                } else {
-                    container_format.text = "";
+            var info = get_discoverer_info (file_name);
+            var stream_info = info.get_stream_info ();
+            Gst.Caps caps = stream_info.get_caps ();
+            container.label = "%s: %s".printf(stream_info.get_stream_type_nick (), caps.is_fixed () == true? Gst.PbUtils.get_codec_description (caps) : caps.to_string ());
+            container.tooltip_text = "%s: %s".printf(stream_info.get_stream_type_nick (), caps.is_fixed () == true? Gst.PbUtils.get_codec_description (caps) : caps.to_string ());
+            ((Gst.PbUtils.DiscovererContainerInfo) stream_info).get_streams ().foreach ((list)=> {
+                if (list.get_stream_type_nick () == "audio") {
+                    Gst.Caps acaps = list.get_caps ();
+                    container_audio.label = "%s: %s".printf(list.get_stream_type_nick (), acaps.is_fixed () == true? Gst.PbUtils.get_codec_description (acaps) : acaps.to_string ());
+                    container_audio.tooltip_text = "%s: %s".printf(list.get_stream_type_nick (), acaps.is_fixed () == true? Gst.PbUtils.get_codec_description (acaps) : acaps.to_string ());
                 }
-                string audio_cod;
-                if (tag_list.get_string (Gst.Tags.AUDIO_CODEC, out audio_cod)) {
-                    audio_codec.text = audio_cod;
-                } else {
-                    audio_codec.text = "";
+                if (list.get_stream_type_nick () == "video") {
+                    Gst.Caps vcaps = list.get_caps ();
+                    container_video.label = "%s: %s".printf(list.get_stream_type_nick (), vcaps.is_fixed () == true? Gst.PbUtils.get_codec_description (vcaps) : vcaps.to_string ());
+                    container_video.tooltip_text = "%s: %s".printf(list.get_stream_type_nick (), vcaps.is_fixed () == true? Gst.PbUtils.get_codec_description (vcaps) : vcaps.to_string ());
                 }
-                string video_cod;
-                if (tag_list.get_string (Gst.Tags.VIDEO_CODEC, out video_cod)) {
-                    video_codec.text = video_cod;
-                } else {
-                    video_codec.text = "";
-                }
-                Gst.DateTime? date_time;
-                GLib.Date? time_date;
-                if (tag_list.get_date_time (Gst.Tags.DATE_TIME, out date_time)) {
-                    date_time_video.text = date_time.to_iso8601_string ();
-                } else if (tag_list.get_date (Gst.Tags.DATE, out time_date)) {
-                    date_time_video.text = time_date.get_year ().to_string ();
-                } else {
-                    date_time_video.text = "";
-                }
-            } catch (Error err) {
-                critical ("%s", err.message);
+            });
+            duration_video.text = seconds_to_time ((int)(info.get_duration ()/1000000000));
+            sekable_video.text = info.get_seekable ()? "Yes" : "No";
+            info.get_video_streams ().foreach ((list)=> {
+                var stream_video = (Gst.PbUtils.DiscovererVideoInfo)list;
+                video_height.text = "%u".printf (stream_video.get_height ());
+                video_width.text = "%u".printf (stream_video.get_width ());
+                interlaced.text = "%s".printf (stream_video.is_interlaced ()? "Yes" : "No");
+                pixel_ratio.text = "%u/%u".printf (stream_video.get_par_num (), stream_video.get_par_denom ());
+                video_bitrate.text = "%u".printf (stream_video.get_bitrate ());
+                video_bitrate_max.text = "%u".printf (stream_video.get_max_bitrate ());
+                video_depth.text = "%u".printf (stream_video.get_depth ());
+                frame_rate.text = "%u/%u".printf (stream_video.get_framerate_num (), stream_video.get_framerate_denom ());
+            });
+            info.get_audio_streams ().foreach ((list)=> {
+                var stream_audio = (Gst.PbUtils.DiscovererAudioInfo)list;
+                audio_language.text = "%s".printf (stream_audio.get_language ());
+                audio_samplerate.text = "%u".printf (stream_audio.get_sample_rate ());
+                audio_bitrate.text = "%u".printf (stream_audio.get_bitrate ());
+                audio_bitrate_max.text = "%u".printf (stream_audio.get_max_bitrate ());
+                audio_depth.text = "%u".printf (stream_audio.get_depth ());
+                audio_chanel.text = "%u (%s )".printf (stream_audio.get_channels (), format_channel_mask (stream_audio));
+            });
+            var tag_list = info.get_tags ();
+            container_format.text = get_string_tag (Gst.Tags.CONTAINER_FORMAT, tag_list);
+            audio_codec.text = get_string_tag (Gst.Tags.AUDIO_CODEC, tag_list);
+            video_codec.text = get_string_tag (Gst.Tags.VIDEO_CODEC, tag_list);
+            Gst.DateTime? date_time;
+            GLib.Date? time_date;
+            if (tag_list.get_date_time (Gst.Tags.DATE_TIME, out date_time)) {
+                date_time_video.text = date_time.to_iso8601_string ();
+            } else if (tag_list.get_date (Gst.Tags.DATE, out time_date)) {
+                date_time_video.text = date_time.to_iso8601_string ();
+            } else {
+                date_time_video.text = "";
             }
         }
 
@@ -504,112 +492,41 @@ namespace niki {
         }
 
         private void audio_info (string file_name) {
-            label_name.label = File.new_for_uri (file_name).get_path ();
-            var file = new TagLib.File (File.new_for_uri (file_name).get_path ());
-            label_bitrate.label = file.audioproperties.bitrate.to_string () + _(" kHz");
-            label_sample.label = file.audioproperties.samplerate.to_string () + _(" bps");
-            label_chanel.label = file.audioproperties.channels == 2? _("Stereo") : _("Mono");
+            label_name.label = File.new_for_uri (file_name).get_basename ();
+            label_name.tooltip_text = File.new_for_uri (file_name).get_path ();
+            var tagfile = new TagLib.File (File.new_for_uri (file_name).get_path ());
+            label_bitrate.label = tagfile.audioproperties.bitrate.to_string () + _(" kHz");
+            label_sample.label = tagfile.audioproperties.samplerate.to_string () + _(" bps");
+            label_chanel.label = tagfile.audioproperties.channels == 2? _("Stereo") : _("Mono");
 
-            try {
-                Gst.PbUtils.Discoverer discoverer = new Gst.PbUtils.Discoverer ((Gst.ClockTime) (10 * Gst.SECOND));
-                var info = discoverer.discover_uri (file_name);
-                label_duration.label = seconds_to_time ((int)(info.get_duration ()/1000000000));
-                Gdk.Pixbuf pixbuf_sample = null;
-                var tag_list = info.get_tags ();
-                var sample = get_cover_sample (tag_list); 
-                if (sample == null) {
-                    tag_list.get_sample (Gst.Tags.IMAGE, out sample);
-                }
-                if (sample != null) {
-                    var buffer = sample.get_buffer ();
-                    if (buffer != null) {
-                        pixbuf_sample = get_pixbuf_from_buffer (buffer);
-                        if (pixbuf_sample != null) {
-                            apply_cover_pixbuf (pixbuf_sample);
-                        }
+            var info = get_discoverer_info (file_name);
+            label_duration.label = seconds_to_time ((int)(info.get_duration ()/1000000000));
+            Gdk.Pixbuf pixbuf_sample = null;
+            var tag_list = info.get_tags ();
+            var sample = get_cover_sample (tag_list); 
+            if (sample == null) {
+                tag_list.get_sample (Gst.Tags.IMAGE, out sample);
+            }
+            if (sample != null) {
+                var buffer = sample.get_buffer ();
+                if (buffer != null) {
+                    pixbuf_sample = get_pixbuf_from_buffer (buffer);
+                    if (pixbuf_sample != null) {
+                        apply_cover_pixbuf (pixbuf_sample);
                     }
-                } else {
-                    apply_cover_pixbuf (new ObjectPixbuf().from_theme_icon ("avatar-default-symbolic", 128, 85));
                 }
-                string title;
-                if (tag_list.get_string (Gst.Tags.TITLE, out title)) {
-                    title_entry.text = title;
-                } else {
-                    title_entry.text = "";
-                }
-                string artist;
-                if (tag_list.get_string (Gst.Tags.ARTIST, out artist)) {
-                    artist_entry.text = artist;
-                } else {
-                    artist_entry.text = "";
-                }
-                string album;
-                if (tag_list.get_string (Gst.Tags.ALBUM, out album)) {
-                    album_entry.text = album;
-                } else {
-                    album_entry.text = "";
-                }
-                string genre;
-                if (tag_list.get_string (Gst.Tags.GENRE, out genre)) {
-                    genre_entry.text = genre;
-                } else {
-                    genre_entry.text = "";
-                }
-                string comment;
-                if (tag_list.get_string (Gst.Tags.COMMENT, out comment)) {
-                    comment_textview.buffer.text = comment;
-                } else {
-                    comment_textview.buffer.text = "";
-                }
-                uint track_num;
-                if (tag_list.get_uint (Gst.Tags.TRACK_NUMBER, out track_num)) {
-                    track_spinbutton.value = track_num;
-                } else {
-                    track_spinbutton.value = 0;
-                }
-                Gst.DateTime? date_time;
-                GLib.Date? time_date;
-                if (tag_list.get_date_time (Gst.Tags.DATE_TIME, out date_time)) {
-                    date_spinbutton.value = date_time.get_year ();
-                } else if (tag_list.get_date (Gst.Tags.DATE, out time_date)) {
-                    date_spinbutton.value = time_date.get_year ();
-                } else {
-                    date_spinbutton.value = 0;
-                }
-            } catch (Error err) {
-                critical ("%s", err.message);
+            } else {
+                apply_cover_pixbuf (from_theme_icon ("avatar-default-symbolic", 128, 85));
             }
-        }
-        private Gst.Sample? get_cover_sample (Gst.TagList tag_list) {
-            Gst.Sample sample;
-            for (int i = 0; tag_list.get_sample_index (Gst.Tags.IMAGE, i, out sample); i++) {
-                unowned Gst.Structure caps_struct = sample.get_info ();
-                int image_type = Gst.Tag.ImageType.UNDEFINED;
-                caps_struct.get_enum ("image-type", typeof (Gst.Tag.ImageType), out image_type);
-                if (image_type == Gst.Tag.ImageType.FRONT_COVER) {
-                    return sample;
-                }
-            }
-            return sample;
+            title_entry.text = tagfile.tag.title;
+            artist_entry.text = tagfile.tag.artist;
+            album_entry.text = tagfile.tag.album;
+            genre_entry.text = tagfile.tag.genre;
+            comment_textview.buffer.text = tagfile.tag.comment;
+            track_spinbutton.value = tagfile.tag.track;
+            date_spinbutton.value = tagfile.tag.year;
         }
 
-        private Gdk.Pixbuf? get_pixbuf_from_buffer (Gst.Buffer buffer) {
-            Gst.MapInfo map_info;
-            if (!buffer.map (out map_info, Gst.MapFlags.READ)) {
-                return null;
-            }
-            Gdk.Pixbuf pixbuf_loader = null;
-            try {
-                var loader = new Gdk.PixbufLoader ();
-                if (loader.write (map_info.data) && loader.close ()) {
-                    pixbuf_loader = loader.get_pixbuf ();
-                }
-            } catch (Error err) {
-                warning ("%s", err.message);
-            }
-            buffer.unmap (map_info);
-            return pixbuf_loader;
-        }
         private void apply_cover_pixbuf (Gdk.Pixbuf save_pixbuf) {
             asyncimage.set_from_pixbuf (align_and_scale_pixbuf (save_pixbuf, 85));
             asyncimage.show ();
@@ -646,6 +563,9 @@ namespace niki {
                         preview_area.set_from_pixbuf (pixbuf);
                         preview_area.show ();
                         file.set_preview_widget_active (true);
+                    } else {
+                        preview_area.hide ();
+                        file.set_preview_widget_active (false);
                     }
                 } else {
                     preview_area.hide ();

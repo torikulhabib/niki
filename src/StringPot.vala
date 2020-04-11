@@ -269,5 +269,6 @@ namespace niki {
         public abstract const string Left                       = _("Left :");
         public abstract const string Right                      = _("Right :");
         public abstract const string Resolution                 = _("Resolution");
+        public abstract const string Taged                      = _("Taged");
     }
 }

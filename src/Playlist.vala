@@ -23,7 +23,6 @@ namespace niki {
     public class Playlist : Gtk.TreeView {
         public signal void play (string path, string size, int mediatype, bool playnow);
         public signal void item_added ();
-        private ObjectPixbuf? objectpixbuf;
         public Gtk.ListStore liststore;
         public int current = 0;
         public int total = 0;
@@ -31,7 +30,6 @@ namespace niki {
 
         construct {
             get_style_context ().add_class ("playlist");
-            objectpixbuf = new ObjectPixbuf ();
             liststore = new Gtk.ListStore (PlaylistColumns.N_COLUMNS, typeof (Icon), typeof (Gdk.Pixbuf), typeof (string), typeof (string), typeof (string), typeof (string), typeof (string), typeof (string), typeof (bool), typeof (int), typeof (int));
             model = liststore;
             expand = true;
@@ -308,6 +306,32 @@ namespace niki {
         private void edit_info () {
             var mediaeditor = new MediaEditor (this);
             mediaeditor.show_all ();
+            mediaeditor.update_file.connect ((file_name)=> {
+                Gtk.TreeIter iter;
+                for (int i = 0; liststore.get_iter_from_string (out iter, i.to_string ()); ++i) {
+                    if (!liststore.iter_is_valid (iter)) {
+                        return;
+                    }
+                    string filename;
+                    liststore.get (iter, PlaylistColumns.FILENAME, out filename);
+                    if (file_name == filename) {
+                        var path = File.new_for_uri (filename);
+                        Gdk.Pixbuf preview = null;
+                        string info_songs = get_song_info (path);
+                        string album_music = get_album_music (file_name);
+                        string artist_music = get_artist_music (file_name);
+                        string nameimage = cache_image (info_songs + " " + artist_music);
+                        if (!FileUtils.test (nameimage, FileTest.EXISTS)) {
+                            var audiocover = new AudioCover();
+                            audiocover.import (path.get_uri ());
+                            preview = audiocover.pixbuf_playlist;
+                        } else {
+                            preview = pix_scale (nameimage, 48);
+	                    }
+                        liststore.set (iter, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, info_songs, PlaylistColumns.ARTISTTITLE, file_type (path) == 0? Markup.escape_text (info_songs) : @"<b>$(Markup.escape_text (info_songs))</b>\n$(Markup.escape_text (artist_music)) - $(Markup.escape_text (album_music))", PlaylistColumns.ALBUMMUSIC, album_music, PlaylistColumns.ARTISTMUSIC, artist_music);
+                    }
+                }
+            });
         }
 
         public void add_stream (string [] inputstream) {
@@ -326,9 +350,9 @@ namespace niki {
             if (exist) {
                 return;
             }
-            Gdk.Pixbuf preview = align_and_scale_pixbuf (objectpixbuf.get_pixbuf_from_url (inputstream [1], inputstream [2]), 48);
+            Gdk.Pixbuf preview = align_and_scale_pixbuf (get_pixbuf_from_url (inputstream [1], inputstream [2]), 48);
             if (preview != null) {
-                preview = objectpixbuf.icon_from_mediatype (mediatype);
+                preview = icon_from_mediatype (mediatype);
             }
             liststore.append (out iter);
             liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, inputstream [2], PlaylistColumns.ARTISTTITLE, Markup.escape_text (inputstream [2]), PlaylistColumns.FILENAME, inputstream [0], PlaylistColumns.MEDIATYPE, mediatype, PlaylistColumns.FILESIZE, "", PlaylistColumns.ALBUMMUSIC, "", PlaylistColumns.ARTISTMUSIC, "", PlaylistColumns.PLAYNOW, true, PlaylistColumns.INPUTMODE, 1);
@@ -353,7 +377,7 @@ namespace niki {
                 return;
             }
 
-            Gdk.Pixbuf preview = objectpixbuf.icon_from_type (upnp_class, 48);
+            Gdk.Pixbuf preview = icon_from_type (upnp_class, 48);
             liststore.append (out iter);
             liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, input_title, PlaylistColumns.ARTISTTITLE, mediatype == 2? @"<b>$(Markup.escape_text (input_title))</b>\n$(Markup.escape_text (input_artist)) - $(Markup.escape_text (input_album))" : Markup.escape_text (input_title), PlaylistColumns.FILENAME, input_url, PlaylistColumns.FILESIZE, size_file, PlaylistColumns.MEDIATYPE, mediatype, PlaylistColumns.ALBUMMUSIC, input_album, PlaylistColumns.ARTISTMUSIC, input_artist, PlaylistColumns.PLAYNOW, playnow, PlaylistColumns.INPUTMODE, 2);
             update_playlist (50);
@@ -409,7 +433,7 @@ namespace niki {
                 }
                 preview = pix_scale (normal_thumb (path), 48);
                 if (preview == null) {
-                    preview = objectpixbuf.icon_from_mediatype (0);
+                    preview = icon_from_mediatype (0);
                 }
             } else if (get_mime_type (path).has_prefix ("audio/")) {
                 album_music = get_album_music (file_name);

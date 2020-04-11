@@ -111,6 +111,9 @@ namespace niki {
                     string_notify (StringPot.Press_Esc);
                 } else {
                     notify_blank ();
+                    if (notify_timer != 0) {
+                        Source.remove (notify_timer);
+                    }
                     notify_timer = 0;
                 }
             });

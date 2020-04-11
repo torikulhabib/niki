@@ -71,6 +71,7 @@ namespace niki {
             } else {
                 window.show ();
                 if (NikiApp.settings.get_boolean ("audio-video") && window.main_stack.visible_child_name == "player") {
+                    return_hide_mode = false;
                     if (NikiApp.settings.get_int ("window-x") != -1 && NikiApp.settings.get_int ("window-y") != -1) {
                         window.move (NikiApp.settings.get_int ("window-x"), NikiApp.settings.get_int ("window-y"));
                     }

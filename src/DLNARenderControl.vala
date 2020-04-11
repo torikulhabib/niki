@@ -41,7 +41,7 @@ namespace niki {
 		    show_all ();
             Gtk.TreeIter iter;
             liststore.append (out iter);
-            liststore.set (iter, DlnaComboColumns.PIXBUF, new ObjectPixbuf ().from_theme_icon ("com.github.torikulhabib.niki", 64, 16), DlnaComboColumns.DEVICENAME, NIKI_MODE);
+            liststore.set (iter, DlnaComboColumns.PIXBUF, from_theme_icon ("com.github.torikulhabib.niki", 64, 16), DlnaComboColumns.DEVICENAME, NIKI_MODE);
             set_row_separator_func ((model, iter) => {
                 string content;
                 model.get (iter, DlnaComboColumns.DEVICENAME, out content);
@@ -164,7 +164,7 @@ namespace niki {
             Gdk.Pixbuf icon = null;
             string nameimage = cache_image (udn);
             if (!FileUtils.test (nameimage, FileTest.EXISTS)) {
-                icon = align_and_scale_pixbuf (new ObjectPixbuf ().get_pixbuf_device_info (info), 16);
+                icon = align_and_scale_pixbuf (get_pixbuf_device_info (info), 16);
             } else {
                 icon = pix_scale (nameimage, 16);
 	        }
@@ -181,10 +181,10 @@ namespace niki {
         }
 
         public void add_media_renderer (GUPnP.DeviceProxy proxy) {
-            string udn = proxy.get_udn ();
-            if (udn == null) {
+            if (proxy == null) {
                 return;
             }
+            string udn = proxy.get_udn ();
             GUPnP.DeviceInfo info = (GUPnP.DeviceInfo)proxy;
             GUPnP.ServiceProxy av_transport = get_av_transport (info);
             if (av_transport == null) {
@@ -227,10 +227,10 @@ namespace niki {
         }
 
         public void remove_media_renderer (GUPnP.DeviceProxy proxy) {
-            string udn = proxy.get_udn ();
-            if (udn == null) {
+            if (proxy == null) {
                 return;
             }
+            string udn = proxy.get_udn ();
             Gtk.TreeIter iter;
             for (int i = 0; liststore.get_iter_from_string (out iter, i.to_string ()); ++i) {
                 if (!liststore.iter_is_valid (iter)) {
@@ -238,9 +238,11 @@ namespace niki {
                 }
                 GUPnP.DeviceProxy proxyit;
                 liststore.get (iter, DlnaComboColumns.DEVICEPROXY, out proxyit);
-                if (udn == proxyit.get_udn ()) {
-                    liststore.remove (ref iter);
-                    set_active (0);
+                if (proxyit != null) {
+                    if (udn == proxyit.get_udn ()) {
+                        liststore.remove (ref iter);
+                        set_active (0);
+                    }
                 }
             }
 

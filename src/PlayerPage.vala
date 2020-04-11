@@ -267,6 +267,9 @@ namespace niki {
                     string_notify (StringPot.Press_Esc);
                 } else {
                     notify_blank ();
+                    if (notify_timer != 0) {
+                        Source.remove (notify_timer);
+                    }
                     notify_timer = 0;
                 }
             });
@@ -659,7 +662,7 @@ namespace niki {
                 if (!NikiApp.settings.get_boolean("audio-video")) {
                     NikiApp.settings.set_boolean("audio-video", true);
                 }
-                if (NikiApp.settings.get_boolean ("lyric-button") && NikiApp.settings.get_boolean ("lyric-available") && playback.playing) {
+                if (NikiApp.settings.get_boolean ("lyric-button") && NikiApp.settings.get_boolean ("lyric-available") && playback.playing && !return_hide_mode) {
                     Inhibitor.instance.inhibit ();
                 } else {
                     Inhibitor.instance.uninhibit ();
