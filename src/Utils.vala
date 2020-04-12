@@ -540,6 +540,27 @@ namespace niki {
         props.sets (Canberra.PROP_MEDIA_ROLE, "event");
         context.play_full (0, props, null);
     }
+    private Gdk.Pixbuf pix_from_tag (Gst.TagList tag_list) {
+        var sample = get_cover_sample (tag_list);
+        if (sample == null) {
+            tag_list.get_sample (Gst.Tags.IMAGE, out sample);
+        }
+        if (sample != null) {
+            var buffer = sample.get_buffer ();
+            if (buffer != null) {
+                return get_pixbuf_from_buffer (buffer);
+            }
+        }
+        return unknown_cover ();
+    }
+    private Gdk.Pixbuf pix_mode_blur (Gdk.Pixbuf pixbuf) {
+        var surface = new Granite.Drawing.BufferSurface ((int)pixbuf.get_width (), (int)pixbuf.get_height ());
+        Gdk.cairo_set_source_pixbuf (surface.context, pixbuf, 0, 0);
+        surface.context.paint ();
+        surface.exponential_blur (15);
+        surface.context.paint ();
+        return Gdk.pixbuf_get_from_surface (surface.surface, 0, 0, pixbuf.get_width (), pixbuf.get_height ());
+    }
     private Gst.Sample? get_cover_sample (Gst.TagList tag_list) {
         Gst.Sample sample;
         for (int i = 0; tag_list.get_sample_index (Gst.Tags.IMAGE, i, out sample); i++) {
@@ -606,8 +627,7 @@ namespace niki {
     private Gdk.Pixbuf get_pixbuf_device_info (GUPnP.DeviceInfo info) {
         string udn = info.get_udn ();
         string icon_url = info.get_icon_url (null, 32, 25, 25, true, null, null, null, null);
-        Gdk.Pixbuf? return_value = get_pixbuf_from_url (icon_url, udn);
-        return return_value;
+        return get_pixbuf_from_url (icon_url, udn);
     }
     private Gdk.Pixbuf? get_pixbuf_from_url (string url, string filename) {
         Gdk.Pixbuf? return_value = null;

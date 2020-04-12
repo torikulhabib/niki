@@ -320,11 +320,10 @@ namespace niki {
                         string info_songs = get_song_info (path);
                         string album_music = get_album_music (file_name);
                         string artist_music = get_artist_music (file_name);
-                        string nameimage = cache_image (info_songs + " " + artist_music);
+                        string nameimage = cache_image (@"$(info_songs) $(artist_music)");
                         if (!FileUtils.test (nameimage, FileTest.EXISTS)) {
-                            var audiocover = new AudioCover();
-                            audiocover.import (path.get_uri ());
-                            preview = audiocover.pixbuf_playlist;
+                            preview = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (path.get_uri ()).get_tags ()), 48);
+                            pix_to_file (preview, nameimage);
                         } else {
                             preview = pix_scale (nameimage, 48);
 	                    }
@@ -438,11 +437,10 @@ namespace niki {
             } else if (get_mime_type (path).has_prefix ("audio/")) {
                 album_music = get_album_music (file_name);
                 artist_music = get_artist_music (file_name);
-                string nameimage = cache_image (info_songs + " " + artist_music);
+                string nameimage = cache_image (@"$(info_songs) $(artist_music)");
                 if (!FileUtils.test (nameimage, FileTest.EXISTS)) {
-                    var audiocover = new AudioCover();
-                    audiocover.import (path.get_uri ());
-                    preview = audiocover.pixbuf_playlist;
+                    preview = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (path.get_uri ()).get_tags ()), 48);
+                    pix_to_file (preview, nameimage);
                 } else {
                     preview = pix_scale (nameimage, 48);
 	            }

@@ -41,7 +41,6 @@ executable(
     'WelcomeButton.vala',
     'ScanFolder.vala',
     'DbusThumbnailer.vala',
-    'AudioCover.vala',
     'EqualizerPreset.vala',
     'AudioMix.vala',
     'VideoMix.vala',

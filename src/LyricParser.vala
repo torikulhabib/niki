@@ -28,11 +28,11 @@ namespace niki {
                 string lrc_str, tag1, tag2;
                 int64 time_lrc;
                 model.get (iter, 0, out time_lrc, 1, out lrc_str, 2, out tag1, 3, out tag2);
-                if (time_lrc != -1 && lrc_str != "-1") {
-                    lyric.add_line (time_lrc, lrc_str);
-                }
                 if (tag1.char_count () > 0 && tag2.char_count () > 0) {
                     lyric.add_metadata (tag1, tag2);
+                }
+                if (time_lrc != -1 && lrc_str != "-1") {
+                    lyric.add_line (time_lrc, lrc_str);
                 }
                 return false;
             });

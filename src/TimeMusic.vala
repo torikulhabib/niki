@@ -162,6 +162,10 @@ namespace niki {
                 case 0:
                     break;
                 case 1:
+                    for (int i = 0; i < text.char_count (); i++) {
+                        attr = Pango.attr_rise_new ((int)((1.0 -time) * 60000));
+                        attrlist.change ((owned) attr);
+                    }
                     break;
                 case 2:
                     int letter_count = 0;

@@ -18,7 +18,7 @@ namespace niki {
         }
 
         public void add_line (int64 time, string text) {
-            set (time, text);
+            set (time + offset, text);
         }
 
         private Gee.BidirMapIterator<int64?, string> iterator_get () {
@@ -30,8 +30,7 @@ namespace niki {
         }
 
         public int64 get_lyric_timestamp (int64 time_in_us, bool cur_pos = true) {
-            var time_with_offset = time_in_us + offset;
-            return iterator_lyric (time_with_offset, cur_pos).get_key ();
+            return iterator_lyric (time_in_us, cur_pos).get_key ();
         }
 
         private Gee.BidirMapIterator<int64?, string> iterator_lyric (int64 time_in_us, bool cur_pos = true) {

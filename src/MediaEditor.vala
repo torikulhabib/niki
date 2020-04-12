@@ -437,12 +437,12 @@ namespace niki {
                 }
             });
             duration_video.text = seconds_to_time ((int)(info.get_duration ()/1000000000));
-            sekable_video.text = info.get_seekable ()? "Yes" : "No";
+            sekable_video.text = info.get_seekable ()? StringPot.Yes : StringPot.No;
             info.get_video_streams ().foreach ((list)=> {
                 var stream_video = (Gst.PbUtils.DiscovererVideoInfo)list;
                 video_height.text = "%u".printf (stream_video.get_height ());
                 video_width.text = "%u".printf (stream_video.get_width ());
-                interlaced.text = "%s".printf (stream_video.is_interlaced ()? "Yes" : "No");
+                interlaced.text = "%s".printf (stream_video.is_interlaced ()? StringPot.Yes : StringPot.No);
                 pixel_ratio.text = "%u/%u".printf (stream_video.get_par_num (), stream_video.get_par_denom ());
                 video_bitrate.text = "%u".printf (stream_video.get_bitrate ());
                 video_bitrate_max.text = "%u".printf (stream_video.get_max_bitrate ());
@@ -486,7 +486,7 @@ namespace niki {
                     astring.append_printf ("%s%s", value.value_nick, i + 1 == channels ? "" : ", ");
                 }
             } else {
-                astring.append ("unknown layout");
+                astring.append (StringPot.Unknown_Layout);
             }
             return astring.str;
         }
@@ -498,26 +498,9 @@ namespace niki {
             label_bitrate.label = tagfile.audioproperties.bitrate.to_string () + _(" kHz");
             label_sample.label = tagfile.audioproperties.samplerate.to_string () + _(" bps");
             label_chanel.label = tagfile.audioproperties.channels == 2? _("Stereo") : _("Mono");
-
             var info = get_discoverer_info (file_name);
             label_duration.label = seconds_to_time ((int)(info.get_duration ()/1000000000));
-            Gdk.Pixbuf pixbuf_sample = null;
-            var tag_list = info.get_tags ();
-            var sample = get_cover_sample (tag_list); 
-            if (sample == null) {
-                tag_list.get_sample (Gst.Tags.IMAGE, out sample);
-            }
-            if (sample != null) {
-                var buffer = sample.get_buffer ();
-                if (buffer != null) {
-                    pixbuf_sample = get_pixbuf_from_buffer (buffer);
-                    if (pixbuf_sample != null) {
-                        apply_cover_pixbuf (pixbuf_sample);
-                    }
-                }
-            } else {
-                apply_cover_pixbuf (from_theme_icon ("avatar-default-symbolic", 128, 85));
-            }
+            apply_cover_pixbuf (align_and_scale_pixbuf (pix_from_tag (info.get_tags ()), 256));
             title_entry.text = tagfile.tag.title;
             artist_entry.text = tagfile.tag.artist;
             album_entry.text = tagfile.tag.album;
@@ -582,12 +565,7 @@ namespace niki {
         private void select_image (string inpu_data) {
             var crop_dialog = new CropDialog (inpu_data);
             crop_dialog.show_all ();
-            crop_dialog.request_avatar_change.connect (pixbuf_crop);
-        }
-
-        private void pixbuf_crop (Gdk.Pixbuf pixbuf) {
-            asyncimage.set_from_pixbuf (align_and_scale_pixbuf (pixbuf, 85));
-            asyncimage.show ();
+            crop_dialog.request_avatar_change.connect (apply_cover_pixbuf);
         }
     }
 }

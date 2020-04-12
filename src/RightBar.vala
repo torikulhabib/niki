@@ -139,6 +139,8 @@ namespace niki {
             notify["child-revealed"].connect (() => {
                 if (!child_revealed) {
                     hovered = child_revealed;
+                } else {
+                    playlist.show ();
                 }
                 size_flexible ();
             });

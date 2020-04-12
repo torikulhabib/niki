@@ -270,5 +270,8 @@ namespace niki {
         public abstract const string Right                      = _("Right :");
         public abstract const string Resolution                 = _("Resolution");
         public abstract const string Taged                      = _("Taged");
+        public abstract const string Yes                        = _("Yes");
+        public abstract const string No                         = _("No");
+        public abstract const string Unknown_Layout             = _("unknown layout");
     }
 }

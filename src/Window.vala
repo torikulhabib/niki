@@ -101,10 +101,8 @@ namespace niki {
             NikiApp.settings.changed["fullscreen"].connect (() => {
                 if (NikiApp.settings.get_boolean ("fullscreen")) {
                     unfullscreen ();
-                    player_page.stage.set_fullscreen (false);
                 } else {
                     fullscreen ();
-                    player_page.stage.set_fullscreen (true);
                 }
             });
             NikiApp.settings.changed["maximize"].connect (() => {
@@ -234,9 +232,7 @@ namespace niki {
                             pixbuf = pix_scale (large_thumb (file_pre), 256);
                         }
                     } else if (get_mime_type (file_pre).has_prefix ("audio/")) {
-                        var audiocover = new AudioCover();
-                        audiocover.import (file_pre.get_uri ());
-                        pixbuf = audiocover.pixbuf_albumart;
+                        pixbuf = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (file_pre.get_uri ()).get_tags ()), 256);
                     } else if (get_mime_type (file_pre).has_prefix ("image/")) {
                         pixbuf = pix_scale (file_pre.get_path (), 256);
                     }

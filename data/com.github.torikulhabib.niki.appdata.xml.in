@@ -17,6 +17,7 @@
       <li>Equalizer.</li>
       <li>Video Balance.</li>
       <li>Album art as background.</li>
+      <li>Audio Tag.</li>
       <li>Blurred background.</li>
       <li>DLNA Explorer.</li>
       <li>DLNA Controller.</li>
@@ -31,7 +32,7 @@
     <binary>com.github.torikulhabib.niki</binary>
   </provides>
 ​  <releases>
-    <release version="0.7.35" date="2020-4-6">
+    <release version="0.7.36" date="2020-4-6">
       <description>
         <p>Fix and add Features!</p>
         <p>Lyric Maker!</p>

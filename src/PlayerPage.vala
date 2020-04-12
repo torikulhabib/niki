@@ -464,17 +464,17 @@ namespace niki {
         private bool audio_banner () {
             Gdk.Pixbuf preview = null;
             Gdk.Pixbuf preview_blur = null;
-            var audiocover = new AudioCover();
             switch (NikiApp.settings.get_enum ("player-mode")) {
                 case PlayerMode.AUDIO :
-                    audiocover.import (NikiApp.settings.get_string("uri-video"));
-                    preview = audiocover.pixbuf_albumart;
-                    preview_blur = audiocover.pixbuf_blur;
+                    if (file_exists (NikiApp.settings.get_string("uri-video"))) {
+                        Gdk.Pixbuf pixt = pix_from_tag (get_discoverer_info (NikiApp.settings.get_string("uri-video")).get_tags ());
+                        preview = align_and_scale_pixbuf (pixt, 764);
+                        preview_blur = align_and_scale_pixbuf (pix_mode_blur (pixt), 764);
+                    }
                     break;
                 case PlayerMode.STREAMAUD :
-                    audiocover.create_background (unknown_cover ());
-                    preview = audiocover.pixbuf_albumart;
-                    preview_blur = audiocover.pixbuf_blur;
+                    preview = align_and_scale_pixbuf (unknown_cover (), 764);
+                    preview_blur = align_and_scale_pixbuf (pix_mode_blur (unknown_cover ()), 764);
                     break;
             }
             if (preview_blur != null && preview != null) {
