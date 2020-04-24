@@ -24,7 +24,6 @@
 * libclutter-gst-3.0-dev
 * libgirepository1.0-dev
 * libtag1-dev
-* libtagc0-dev
 * libcanberra-dev
 * libgstreamer-plugins-good1.0-dev,
 * libgstreamer-plugins-bad1.0-dev,
