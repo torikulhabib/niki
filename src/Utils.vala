@@ -415,7 +415,7 @@ namespace niki {
             return NikiApp.window.hide_on_delete ();
         } else {
             NikiApp.window.player_page.save_destroy ();
-   //         NikiApp.window.player_page.playback.dispose ();
+            NikiApp.window.player_page.playback.dispose ();
             NikiApp.window.destroy ();
             return false;
         }

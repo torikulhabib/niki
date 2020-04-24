@@ -185,7 +185,7 @@ parts:
     plugin: meson
     meson-parameters:
       - --prefix=/usr
-    source: https://github.com/torikulhabib/InyTag.git
+    source: https://github.com/torikulhabib/InyTag/commits/master.git
     override-build: |
       snapcraftctl build
     build-packages:
