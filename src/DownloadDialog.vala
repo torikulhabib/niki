@@ -87,19 +87,14 @@ namespace niki {
             }
             top_label.label = @"Save... $(secondary_text) to $(file_save)";
             string without_ext = primary_text.substring (primary_text.last_index_of ("."));
-            string file_out = file_save + "/" + secondary_text + without_ext;
+            string file_out = @"$(file_save)/$(secondary_text)$(without_ext)";
             show.connect (() => {
                 download_dlna (primary_text, file_out);
             });
             stop_button.clicked.connect (() => {
 				cancellable.cancel ();
                 if (loop_run) {
-	                try {
-		                File file = File.new_for_uri ("file://" + file_out);
-		                file.delete ();
-	                } catch (Error e) {
-		                print ("Error: %s\n", e.message);
-	                }
+                    permanent_delete (File.new_for_path (file_out));
 		        }
 		        destroy ();
             });
@@ -116,13 +111,13 @@ namespace niki {
                 loop_run = true;
                 progress = (double) current_num_bytes / total_num_bytes;
                 progress_bar.set_fraction (progress);
-                bottom_label.label = int64_to_size (current_num_bytes, false) + " / " + int64_to_size (total_num_bytes, false);
+                bottom_label.label = @"$(int64_to_size (current_num_bytes, false)) / $(int64_to_size (total_num_bytes, false))";
 	        }, (obj, res) => {
 	            loop_run = false;
 		        try {
 			        file_from_uri.copy_async.end (res);
 		        } catch (Error e) {
-			        print ("%s\n", e.message);
+			        notify_app (StringPot.Niki_DLNA_Browser, e.message);
 		        }
 		        destroy ();
 		    });

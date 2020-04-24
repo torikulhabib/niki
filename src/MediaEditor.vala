@@ -61,6 +61,8 @@ namespace niki {
         private Gtk.Stack stack;
         private Playlist? playlist;
         private InfoBar? infobar;
+        private Gtk.Button save_button;
+        private Gtk.Button clear_button;
         public signal void update_file (string file_name);
 
         public MediaEditor (Playlist playlist) {
@@ -321,25 +323,31 @@ namespace niki {
             overlay.add_overlay (infobar);
             get_content_area ().add (overlay);
 
-            add_button (StringPot.Close, Gtk.ResponseType.CLOSE);
-
-            var save_button = (Gtk.Button) add_button (StringPot.Save, Gtk.ResponseType.APPLY);
-            save_button.has_default = true;
-            save_button.margin_end = 5;
+            save_button = new Gtk.Button.with_label (StringPot.Save);
             save_button.get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
+            save_button.clicked.connect (save_to_file);
 
-            response.connect ((response_id) => {
-                if (response_id == Gtk.ResponseType.APPLY) {
-                    save_to_file ();
-                }
-                if (response_id == Gtk.ResponseType.CLOSE) {
-                    destroy ();
-                }
+            var close_button = new Gtk.Button.with_label (StringPot.Close);
+            close_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FRAME);
+            close_button.clicked.connect (()=>{
+                destroy();
             });
+            clear_button = new Gtk.Button.with_label (StringPot.Clear);
+            clear_button.get_style_context ().add_class (Gtk.STYLE_CLASS_DESTRUCTIVE_ACTION);
+            clear_button.clicked.connect (clear_tags);
+
             move_widget (this, this);
-            string file_name;
-            playlist.liststore.get (playlist.selected_iter (), PlaylistColumns.FILENAME, out file_name);
-            set_media (file_name);
+            add_action_widget (clear_button, 0);
+            add_action_widget (save_button, 0);
+            add_action_widget (close_button, 0);
+            show.connect(()=>{
+                string file_name;
+                playlist.liststore.get (playlist.selected_iter (), PlaylistColumns.FILENAME, out file_name);
+                set_media (file_name);
+            });
+            destroy.connect(()=>{
+                permanent_delete (File.new_for_path (cache_image ("setcover")));
+            });
         }
 
         private void previous_track () {
@@ -354,6 +362,7 @@ namespace niki {
             playlist.liststore.get (iter, PlaylistColumns.FILENAME, out file_name);
             stack.transition_type = Gtk.StackTransitionType.SLIDE_RIGHT;
             set_media (file_name);
+            permanent_delete (File.new_for_path (cache_image ("setcover")));
         }
 
         private void next_track () {
@@ -368,28 +377,108 @@ namespace niki {
             playlist.liststore.get (iter, PlaylistColumns.FILENAME, out file_name);
             stack.transition_type = Gtk.StackTransitionType.SLIDE_LEFT;
             set_media (file_name);
+            permanent_delete (File.new_for_path (cache_image ("setcover")));
         }
 
         private void save_to_file () {
             string file_name;
             playlist.liststore.get (playlist.selected_iter (), PlaylistColumns.FILENAME, out file_name);
             var file = File.new_for_uri (file_name);
+            string nameimage = cache_image ("setcover");
             if (get_mime_type (file).has_prefix ("audio/")) {
-                var tagfile = new TagLib.File (file.get_path ());
-                tagfile.tag.title = title_entry.text;
-                tagfile.tag.artist = artist_entry.text;
-                tagfile.tag.album = album_entry.text;
-                tagfile.tag.genre = genre_entry.text;
-                tagfile.tag.comment = comment_textview.buffer.text;
-                tagfile.tag.year = (uint) date_spinbutton.value;
-                tagfile.tag.track = (uint) track_spinbutton.value;
-                tagfile.save ();
-                update_file (file_name);
+                if (file.get_uri ().down ().has_suffix ("mp3")) {
+                    var file_mpg = new InyTag.Mpeg_File (file.get_path ());
+                    file_mpg.mpeg_tag.title = title_entry.text;
+                    file_mpg.mpeg_tag.artist = artist_entry.text;
+                    file_mpg.mpeg_tag.album = album_entry.text;
+                    file_mpg.mpeg_tag.genre = genre_entry.text;
+                    file_mpg.mpeg_tag.comment = comment_textview.buffer.text;
+                    file_mpg.mpeg_tag.year = (uint) date_spinbutton.value;
+                    file_mpg.mpeg_tag.track = (uint) track_spinbutton.value;
+                    var frampic = new InyTag.ID3v2_Attached_Picture_Frame ();
+                    if (FileUtils.test (nameimage, FileTest.EXISTS)) { 
+                        if (!file_mpg.id3v2_tag.is_frame_empty (InyTag.Frame_ID.PICTURE)) {
+                            file_mpg.id3v2_tag.remove_frame (InyTag.Frame_ID.PICTURE);
+                        }
+                        file_mpg.id3v2_tag.add_picture_frame (frampic);
+                        frampic.set_mime_type (get_mime_type (File.new_for_path (nameimage)));
+                        frampic.set_type (InyTag.Img_Type.FrontCover);
+                        frampic.set_picture (nameimage);
+                    }
+                    file_mpg.save ();
+                } else if (file.get_uri ().down ().has_suffix ("m4a")) {
+                    var file_mp4 = new InyTag.Mp4_File (file.get_path ());
+                    file_mp4.mp4_tag.title = title_entry.text;
+                    file_mp4.mp4_tag.artist = artist_entry.text;
+                    file_mp4.mp4_tag.album = album_entry.text;
+                    file_mp4.mp4_tag.genre = genre_entry.text;
+                    file_mp4.mp4_tag.comment = comment_textview.buffer.text;
+                    file_mp4.mp4_tag.year = (uint) date_spinbutton.value;
+                    file_mp4.mp4_tag.track = (uint) track_spinbutton.value;
+                    if (FileUtils.test (nameimage, FileTest.EXISTS)) {
+                        file_mp4.set_picture (InyTag.Format_Type.JPEG, nameimage);
+                    }
+                    file_mp4.save ();
+                } else if (file.get_uri ().down ().has_suffix ("flac")) {
+                    var file_flac = new InyTag.Flac_File (file.get_path ());
+                    file_flac.flac_tag.title = title_entry.text;
+                    file_flac.flac_tag.artist = artist_entry.text;
+                    file_flac.flac_tag.album = album_entry.text;
+                    file_flac.flac_tag.genre = genre_entry.text;
+                    file_flac.flac_tag.comment = comment_textview.buffer.text;
+                    file_flac.flac_tag.year = (uint) date_spinbutton.value;
+                    file_flac.flac_tag.track = (uint) track_spinbutton.value;
+                    if (FileUtils.test (nameimage, FileTest.EXISTS)) {
+                        InyTag.Flac_Picture picture_flac = new InyTag.Flac_Picture ();
+                        picture_flac.set_description ("desc");
+                        picture_flac.set_mime_type (get_mime_type (File.new_for_path (nameimage)));
+                        picture_flac.set_type (InyTag.Img_Type.FrontCover);
+                        picture_flac.set_picture (nameimage);
+                        file_flac.remove_picture ();
+                        file_flac.add_picture (picture_flac);
+                    }
+                    file_flac.save ();
+                }
                 infobar.title = @"$(StringPot.Taged) $(file.get_basename ())";
                 infobar.send_notification ();
+                update_file (file_name);
             }
         }
-
+        private void clear_tags () {
+            string file_name;
+            playlist.liststore.get (playlist.selected_iter (), PlaylistColumns.FILENAME, out file_name);
+            var file = File.new_for_uri (file_name);
+            if (get_mime_type (file).has_prefix ("audio/")) {
+                var tagfile = new InyTag.File (file.get_path ());
+                tagfile.tag.title = "";
+                tagfile.tag.artist ="";
+                tagfile.tag.album = "";
+                tagfile.tag.genre = "";
+                tagfile.tag.comment = "";
+                tagfile.tag.year = 0;
+                tagfile.tag.track = 0;
+                tagfile.save ();
+                if (file.get_uri ().down ().has_suffix ("mp3")) {
+                    var file_mpg = new InyTag.Mpeg_File (file.get_path ());
+                    if (!file_mpg.id3v2_tag.is_frame_empty (InyTag.Frame_ID.PICTURE)) {
+                        file_mpg.id3v2_tag.remove_frame (InyTag.Frame_ID.PICTURE);
+                    }
+                    file_mpg.save ();
+                } else if (file.get_uri ().down ().has_suffix ("m4a")) {
+                    var file_mp4 = new InyTag.Mp4_File (file.get_path ());
+                    file_mp4.remove_picture ();
+                    file_mp4.save ();
+                } else if (file.get_uri ().down ().has_suffix ("flac")) {
+                    var file_flac = new InyTag.Flac_File (file.get_path ());
+                    file_flac.remove_picture ();
+                    file_flac.save ();
+                }
+                update_file (file_name);
+                infobar.title = @"$(StringPot.Clear) $(file.get_basename ())";
+                infobar.send_notification ();
+                audio_info (file_name);
+            }
+        }
         private void set_media (string file_name) {
             if (file_name.has_prefix ("http")) {
                 return;
@@ -398,10 +487,14 @@ namespace niki {
             if (get_mime_type (file).has_prefix ("video/")) {
 		        stack.visible_child_name = "video_info";
                 video_info (file_name);
+                clear_button.hide ();
+                save_button.hide ();
             }
             if (get_mime_type (file).has_prefix ("audio/")) {
                 stack.visible_child_name = "audio_info";
                 audio_info (file_name);
+                clear_button.show ();
+                save_button.show ();
             }
         }
         private void video_info (string file_name) {
@@ -494,13 +587,12 @@ namespace niki {
         private void audio_info (string file_name) {
             label_name.label = File.new_for_uri (file_name).get_basename ();
             label_name.tooltip_text = File.new_for_uri (file_name).get_path ();
-            var tagfile = new TagLib.File (File.new_for_uri (file_name).get_path ());
+            var tagfile = new InyTag.File (File.new_for_uri (file_name).get_path ());
             label_bitrate.label = tagfile.audioproperties.bitrate.to_string () + _(" kHz");
             label_sample.label = tagfile.audioproperties.samplerate.to_string () + _(" bps");
             label_chanel.label = tagfile.audioproperties.channels == 2? _("Stereo") : _("Mono");
-            var info = get_discoverer_info (file_name);
-            label_duration.label = seconds_to_time ((int)(info.get_duration ()/1000000000));
-            apply_cover_pixbuf (align_and_scale_pixbuf (pix_from_tag (info.get_tags ()), 256));
+            label_duration.label = seconds_to_time (tagfile.audioproperties.length);
+            apply_cover_pixbuf (align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (file_name).get_tags ()), 256));
             title_entry.text = tagfile.tag.title;
             artist_entry.text = tagfile.tag.artist;
             album_entry.text = tagfile.tag.album;
@@ -563,9 +655,14 @@ namespace niki {
         }
 
         private void select_image (string inpu_data) {
-            var crop_dialog = new CropDialog (inpu_data);
-            crop_dialog.show_all ();
-            crop_dialog.request_avatar_change.connect (apply_cover_pixbuf);
+            var crop_dialog = new CropDialog (inpu_data, this);
+            crop_dialog.show ();
+            crop_dialog.request_avatar_change.connect ((pixbuf)=> {
+                apply_cover_pixbuf (pixbuf);
+                string nameimage = cache_image ("setcover");
+                permanent_delete (File.new_for_path (nameimage));
+                pix_to_file (pixbuf, nameimage);
+            });
         }
     }
 }

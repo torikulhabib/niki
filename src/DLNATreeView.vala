@@ -199,7 +199,7 @@ namespace niki {
             string title = object.get_title ();
             string upnp_class = object.get_upnp_class ();
 
-            Gdk.Pixbuf icon = icon_from_type (upnp_class, 30);
+            Gdk.Pixbuf icon = icon_from_type (upnp_class, 28);
             if (id == null || title == null) {
                 return;
             }
@@ -371,9 +371,9 @@ namespace niki {
             Gdk.Pixbuf icon = null;
             string nameimage = cache_image (proxy.get_udn ());
             if (!FileUtils.test (nameimage, FileTest.EXISTS)) {
-                icon = align_and_scale_pixbuf (get_pixbuf_device_info (info), 30);
+                icon = align_and_scale_pixbuf (get_pixbuf_device_info (info), 28);
             } else {
-                icon = pix_scale (nameimage, 30);
+                icon = pix_scale (nameimage, 28);
 	        }
             if (friendly_name != null && content_dir != null) {
                 inseted = true;

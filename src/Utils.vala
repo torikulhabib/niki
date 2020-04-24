@@ -239,22 +239,22 @@ namespace niki {
 	private string get_song_info (File path) {
 	    string output = null;
         if (get_mime_type (path).has_prefix ("video/")) {
-		    output = get_info_file (path);
+		    output = path.get_basename ();
         } else if (get_mime_type (path).has_prefix ("audio/")) {
-		    var info = new TagLib.File(path.get_path ());
-		    output = info.tag.title.char_count () < 1? get_info_file (path) : info.tag.title;
+		    var info = new InyTag.File(path.get_path ());
+		    output = info.tag.title.char_count () < 1? path.get_basename () : info.tag.title;
         }
 		return output;
 	}
 
     private string get_artist_music (string inputfile) {
         string inputstring = File.new_for_uri (inputfile).get_path ();
-		var info = new TagLib.File(inputstring);
+		var info = new InyTag.File(inputstring);
 		return info.tag.artist.char_count () < 1? StringPot.Unknown : info.tag.artist;
     }
     private string get_album_music (string inputfile) {
         string inputstring = File.new_for_uri (inputfile).get_path ();
-		var info = new TagLib.File(inputstring);
+		var info = new InyTag.File(inputstring);
 		return info.tag.album.char_count () < 1? StringPot.Unknown : info.tag.album;
     }
 
@@ -286,16 +286,7 @@ namespace niki {
 	    }
 	    return -1;
     }
-    private static string get_info_file (File fileinput) {
-        string file_info = null;
-	    try {
-		    FileInfo info = fileinput.query_info ("standard::*",0);
-            file_info = info.get_display_name ();
-	    } catch (Error e) {
-            GLib.warning (e.message);
-	    }
-        return file_info;
-    }
+
     private static string get_info_size (string fileinput) {
         string file_info = null;
         if (!File.new_for_uri (fileinput).query_exists ()) {
@@ -424,7 +415,7 @@ namespace niki {
             return NikiApp.window.hide_on_delete ();
         } else {
             NikiApp.window.player_page.save_destroy ();
-            NikiApp.window.player_page.playback.dispose ();
+   //         NikiApp.window.player_page.playback.dispose ();
             NikiApp.window.destroy ();
             return false;
         }
@@ -745,6 +736,24 @@ namespace niki {
             return string_tags;
         } else {
             return "";
+        }
+    }
+    private void permanent_delete (File file) {
+        try {
+            if (file.query_exists ()) {
+                file.delete ();
+            }
+        } catch (Error e) {
+            warning ("Error: %s\n", e.message);
+        }
+    }
+    private void delete_trash (File file) {
+        try {
+            if (file.query_exists ()) {
+		        file.trash ();
+            }
+        } catch (Error e) {
+            warning ("Error: %s\n", e.message);
         }
     }
     private Gdk.Pixbuf? unknown_cover () {

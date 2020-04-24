@@ -25,7 +25,7 @@ namespace niki {
         public string pixbuf_path { get; construct; }
         private CropView? cropview;
 
-        public CropDialog (string pixbuf_path) {
+        public CropDialog (string pixbuf_path, Gtk.Window window) {
             Object (
                 text_image: "image-crop",
                 primary_text: StringPot.Crop_Position,
@@ -34,7 +34,7 @@ namespace niki {
                 selectable_text: false,
                 deletable: false,
                 resizable: false,
-                transient_for: NikiApp.window,
+                transient_for: window,
                 destroy_with_parent: true,
                 window_position: Gtk.WindowPosition.CENTER_ON_PARENT
             );
@@ -61,22 +61,18 @@ namespace niki {
                 frame.halign = Gtk.Align.CENTER;
                 frame.add (cropview);
                 custom_bin.add (frame);
+                custom_bin.show_all ();
             } catch (Error e) {
                 critical (e.message);
                 button_change.set_sensitive (false);
             }
-            Idle.add (()=> {
-                set_keep_above (true);
-                return false;
-            });
-            show_all ();
         }
 
         private void on_response (Gtk.Dialog source, int response_id) {
             if (response_id == Gtk.ResponseType.OK) {
                 var pixbuf = cropview.get_selection ();
                 if (pixbuf.get_width () > 200) {
-                    request_avatar_change (pixbuf.scale_simple (300, 300, Gdk.InterpType.BILINEAR));
+                    request_avatar_change (pixbuf.scale_simple (1024, 1024, Gdk.InterpType.BILINEAR));
                 } else {
                     request_avatar_change (pixbuf);
                 }

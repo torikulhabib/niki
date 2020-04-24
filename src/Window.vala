@@ -224,7 +224,7 @@ namespace niki {
                             dbus_Thum.instand_thumbler (file_pre, "large");
                             dbus_Thum.load_finished.connect (()=>{
                                 preview_area.set_from_pixbuf (pix_scale (large_thumb (file_pre), 256));
-                                label.label = get_info_file (file_pre);
+                                label.label = file_pre.get_basename ();
                                 preview_area.show ();
                                 file.set_preview_widget_active (true);
                             });
@@ -237,7 +237,7 @@ namespace niki {
                         pixbuf = pix_scale (file_pre.get_path (), 256);
                     }
                     if (pixbuf != null) {
-                        label.label = get_info_file (file_pre);
+                        label.label = file_pre.get_basename ();
                         preview_area.set_from_pixbuf (pixbuf);
                         preview_area.show ();
                         file.set_preview_widget_active (true);

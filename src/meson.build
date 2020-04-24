@@ -120,12 +120,12 @@ executable(
         dependency('gstreamer-audio-1.0'),
         dependency('gstreamer-pbutils-1.0'),
         dependency('gstreamer-tag-1.0'),
-        dependency('taglib_c'),
         dependency('gupnp-1.0'),
         dependency('gupnp-av-1.0'),
         dependency('gssdp-1.0'),
         dependency('libxml-2.0'),
         dependency('libcanberra'),
+        dependency('inytag'),
 
         meson.get_compiler('vala').find_library('posix'),
         meson.get_compiler('c').find_library('m', required : false)

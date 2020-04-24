@@ -36,10 +36,10 @@ namespace niki {
         public RightBar? right_bar;
         private GtkClutter.Actor right_actor;
         public TopBar? top_bar;
-        private GtkClutter.Actor top_actor;
+        public GtkClutter.Actor top_actor;
         public BottomBar? bottom_bar;
         public NotifyBottomBar? notifybottombar;
-        private GtkClutter.Actor bottom_actor;
+        public GtkClutter.Actor bottom_actor;
         private GtkClutter.Actor bottom_actor_notif;
         public Clutter.ScrollActor scroll;
         public Clutter.Actor menu_actor;
@@ -98,7 +98,8 @@ namespace niki {
             scroll.set_scroll_mode (Clutter.ScrollMode.VERTICALLY);
             scroll.add_child (menu_actor);
             stage.add_child (scroll);
-
+            blur_image = new Clutter.Image ();
+            oriimage = new Clutter.Image ();
             cover_center = new Clutter.Actor ();
             cover_center.width = 250;
             cover_center.height = 250;
@@ -274,7 +275,9 @@ namespace niki {
                 }
             });
             NikiApp.settings.changed["blur-mode"].connect (update_bg);
-            NikiApp.settings.changed["information-button"].connect (update_bg);
+            NikiApp.settings.changed["information-button"].connect (()=> {
+                update_position_cover ();
+            });
 
             bottom_bar.notify["child-revealed"].connect (() => {
                 notifybottombar.set_reveal_child (false);
@@ -300,13 +303,13 @@ namespace niki {
             NikiApp.settings.changed["home-signal"].connect (() => {
                 if (!NikiApp.settings.get_boolean("home-signal")) {
                     if (NikiApp.settings.get_boolean("audio-video")) {
-                        resize_player_page (460, 460);
+                        resize_player_page (450, 450);
                     }
                 }
             });
             NikiApp.settings.changed["audio-video"].connect (() => {
                 if (NikiApp.settings.get_boolean("audio-video")) {
-                    resize_player_page (460, 460);
+                    resize_player_page (450, 450);
                 }
                 audiovisualisation ();
             });
@@ -322,7 +325,6 @@ namespace niki {
             return right_bar.playlist;
         }
         private void update_bg () {
-            Idle.add (update_position_cover);
             if (NikiApp.settings.get_boolean("audio-video")) {
                 audio_banner ();
             }
@@ -366,7 +368,7 @@ namespace niki {
         public void get_first () {
             if (NikiApp.settings.get_boolean("audio-video")){
                 audio_banner ();
-                resize_player_page (460, 460);
+                resize_player_page (450, 450);
             }
             if (!NikiApp.settings.get_string("last-played").has_prefix ("http")) {
                 playback.uri = NikiApp.settings.get_string("last-played");
@@ -479,10 +481,8 @@ namespace niki {
             }
             if (preview_blur != null && preview != null) {
                 try {
-                    oriimage = new Clutter.Image ();
                     oriimage.set_data (preview.get_pixels (), Cogl.PixelFormat.RGB_888, preview.width, preview.height, preview.rowstride);
                     cover_center.content = oriimage;
-                    blur_image = new Clutter.Image ();
                     blur_image.set_data (preview_blur.get_pixels (), Cogl.PixelFormat.RGBA_8888_PRE, preview_blur.width, preview_blur.height, preview_blur.rowstride);
                     audiovisualisation ();
 	            } catch (Error e) {
@@ -493,7 +493,7 @@ namespace niki {
         }
         private void audiovisualisation () {
             if (NikiApp.settings.get_boolean ("audio-video")) {
-                set_size_request (460, 460);
+                set_size_request (450, 450);
             } else {
                 set_size_request (100, 150);
             }
@@ -667,9 +667,12 @@ namespace niki {
                 } else {
                     Inhibitor.instance.uninhibit ();
                 }
-                audio_banner ();
                 title_music.text = @" $(NikiApp.settings.get_string ("title-playing")) ";
                 artist_music.text = @" $(NikiApp.settings.get_string ("artist-music")) ";
+                Idle.add (()=>{
+                    audio_banner ();
+                    return false;
+                });
             }
             update_position_cover ();
         }

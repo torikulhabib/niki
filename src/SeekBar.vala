@@ -71,7 +71,7 @@ namespace niki {
             scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, 0.0, 1.0, 0.01);
             scale.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             scale.get_style_context ().add_class ("label");
-            scale.vexpand = scale.hexpand = true;
+            scale.expand = true;
             scale.draw_value = false;
             preview_popover = new PreviewPopover ();
             preview_popover.relative_to = scale;

@@ -40,7 +40,7 @@ namespace niki {
             bus.message.connect (bus_msg_handler);
             monitor.set_show_all_devices (true);
             if (!monitor.start ()) {
-                notify_app ("Camera","Failed to start device monitor!");
+                notify_app (StringPot.Niki_Camera, StringPot.Failed_device_monitor);
             }
             monitor.get_devices ().foreach (device_added);
             add (devibut);

@@ -22,6 +22,7 @@
 namespace niki {
     public class RightBar : Gtk.Revealer {
         public Playlist? playlist;
+        public PlayerPage? player_page;
         private Gtk.Label header_label;
         private Gtk.Button edit_button;
         private RepeatButton? repeat_button;
@@ -48,7 +49,8 @@ namespace niki {
             }
         }
 
-        public RightBar (PlayerPage player_page) {
+        public RightBar (PlayerPage? player_page) {
+            this.player_page = player_page;
             transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             transition_duration = 500;
             events |= Gdk.EventMask.POINTER_MOTION_MASK;
@@ -224,9 +226,9 @@ namespace niki {
             if (button) {
                 set_reveal_child (!child_revealed? true : false);
             }
-            content_box.margin = 5;
-            margin_top = NikiApp.settings.get_boolean ("audio-video")? 25 : 47;
-            margin_bottom = NikiApp.settings.get_boolean ("audio-video")? 110 : 56;
+            content_box.margin = 4;
+            margin_top = (int)player_page.top_actor.height;
+            margin_bottom = (int)player_page.bottom_actor.height;
             if (hiding_timer != 0) {
                 Source.remove (hiding_timer);
             }

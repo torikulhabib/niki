@@ -27,12 +27,13 @@ namespace niki {
         public int current = 0;
         public int total = 0;
         public Gtk.Menu menu;
+        private MediaEditor mediaeditor;
 
         construct {
             get_style_context ().add_class ("playlist");
             liststore = new Gtk.ListStore (PlaylistColumns.N_COLUMNS, typeof (Icon), typeof (Gdk.Pixbuf), typeof (string), typeof (string), typeof (string), typeof (string), typeof (string), typeof (string), typeof (bool), typeof (int), typeof (int));
             model = liststore;
-            expand = true;
+            vexpand = true;
             headers_visible = activate_on_single_click = false;
 
             var text_render = new Gtk.CellRendererText ();
@@ -269,21 +270,11 @@ namespace niki {
             move_trash.show_all ();
             delete_permanent.show_all ();
             delete_permanent.clicked.connect (() => {
-	            try {
-		            File file = File.new_for_uri (file_name);
-		            file.delete ();
-	            } catch (Error e) {
-		            warning ("%s\n", e.message);
-	            }
+		        permanent_delete (File.new_for_uri (file_name));
                 liststore.remove (ref iter_select);
             });
             move_trash.clicked.connect (() => {
-	            try {
-		            File file = File.new_for_uri (file_name);
-		            file.trash ();
-	            } catch (Error e) {
-		            warning ("%s\n", e.message);
-	            }
+		        delete_trash (File.new_for_uri (file_name));
                 liststore.remove (ref iter_select);
             });
             message_dialog.add_action_widget (move_trash, 0);
@@ -304,33 +295,35 @@ namespace niki {
         }
 
         private void edit_info () {
-            var mediaeditor = new MediaEditor (this);
-            mediaeditor.show_all ();
-            mediaeditor.update_file.connect ((file_name)=> {
-                Gtk.TreeIter iter;
-                for (int i = 0; liststore.get_iter_from_string (out iter, i.to_string ()); ++i) {
-                    if (!liststore.iter_is_valid (iter)) {
-                        return;
-                    }
-                    string filename;
-                    liststore.get (iter, PlaylistColumns.FILENAME, out filename);
-                    if (file_name == filename) {
-                        var path = File.new_for_uri (filename);
-                        Gdk.Pixbuf preview = null;
-                        string info_songs = get_song_info (path);
-                        string album_music = get_album_music (file_name);
-                        string artist_music = get_artist_music (file_name);
-                        string nameimage = cache_image (@"$(info_songs) $(artist_music)");
-                        if (!FileUtils.test (nameimage, FileTest.EXISTS)) {
-                            preview = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (path.get_uri ()).get_tags ()), 48);
+            if (mediaeditor == null) {
+                mediaeditor = new MediaEditor (this);
+                mediaeditor.show_all ();
+                mediaeditor.update_file.connect ((file_name)=> {
+                    Gtk.TreeIter iter;
+                    for (int i = 0; liststore.get_iter_from_string (out iter, i.to_string ()); ++i) {
+                        if (!liststore.iter_is_valid (iter)) {
+                            return;
+                        }
+                        string filename;
+                        liststore.get (iter, PlaylistColumns.FILENAME, out filename);
+                        if (file_name == filename) {
+                            var path = File.new_for_uri (filename);
+                            string info_songs = get_song_info (path);
+                            string album_music = get_album_music (file_name);
+                            string artist_music = get_artist_music (file_name);
+                            string nameimage = cache_image (@"$(info_songs) $(artist_music) $(path.get_basename ())");
+                            permanent_delete (File.new_for_path (nameimage));
+                            permanent_delete (File.new_for_path (cache_image (info_songs)));
+                            Gdk.Pixbuf preview = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (path.get_uri ()).get_tags ()), 48);
                             pix_to_file (preview, nameimage);
-                        } else {
-                            preview = pix_scale (nameimage, 48);
-	                    }
-                        liststore.set (iter, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, info_songs, PlaylistColumns.ARTISTTITLE, file_type (path) == 0? Markup.escape_text (info_songs) : @"<b>$(Markup.escape_text (info_songs))</b>\n$(Markup.escape_text (artist_music)) - $(Markup.escape_text (album_music))", PlaylistColumns.ALBUMMUSIC, album_music, PlaylistColumns.ARTISTMUSIC, artist_music);
+                            liststore.set (iter, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, info_songs, PlaylistColumns.ARTISTTITLE, file_type (path) == 0? Markup.escape_text (info_songs) : @"<b>$(Markup.escape_text (info_songs))</b>\n$(Markup.escape_text (artist_music)) - $(Markup.escape_text (album_music))", PlaylistColumns.ALBUMMUSIC, album_music, PlaylistColumns.ARTISTMUSIC, artist_music);
+                        }
                     }
-                }
-            });
+                });
+                mediaeditor.destroy.connect (()=> {
+                    mediaeditor = null;
+                });
+            }
         }
 
         public void add_stream (string [] inputstream) {
@@ -437,7 +430,7 @@ namespace niki {
             } else if (get_mime_type (path).has_prefix ("audio/")) {
                 album_music = get_album_music (file_name);
                 artist_music = get_artist_music (file_name);
-                string nameimage = cache_image (@"$(info_songs) $(artist_music)");
+                string nameimage = cache_image (@"$(info_songs) $(artist_music) $(path.get_basename ())");
                 if (!FileUtils.test (nameimage, FileTest.EXISTS)) {
                     preview = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (path.get_uri ()).get_tags ()), 48);
                     pix_to_file (preview, nameimage);

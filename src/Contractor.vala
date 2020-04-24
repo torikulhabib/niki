@@ -34,7 +34,7 @@ namespace niki {
         public static void create_contract () {
             try {
                 File file = file_contr ();
-                remove_contract ();
+                permanent_delete (file);
         		FileOutputStream out_stream = file.create (FileCreateFlags.PRIVATE);
                 string str_name=@"Name=$(StringPot.Add_Niki_Playlist)\n";
                 string str_desc=@"Description=$(StringPot.Add_Niki_Playlist)\n";
@@ -50,14 +50,7 @@ namespace niki {
         }
 
         public static void remove_contract () {
-            try {
-                File file = file_contr ();
-                if (file.query_exists ()) {
-                    file.delete ();
-                }
-            } catch (Error e) {
-        		warning ("Error: %s\n", e.message);
-        	}
+            permanent_delete (file_contr ());
         }
     }
 }
