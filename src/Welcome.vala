@@ -28,6 +28,9 @@ namespace niki {
                 children.remove (item);
             }
         }
+        public uint get_item () {
+            return children.length ();
+        }
         public int append (string icon_name, string option_text, string description_text) {
             var button = new WelcomeButton (icon_name, option_text, description_text);
             children.append (button);

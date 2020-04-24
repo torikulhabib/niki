@@ -20,9 +20,10 @@
 */
 
 namespace niki {
-    public class DeviceMonitor : Gtk.Grid {
+    public class DeviceMonitor : Gtk.Stack {
         public Gtk.ListStore liststore;
         public Welcome devibut;
+        private Gst.DeviceMonitor monitor;
 
         construct {
             liststore = new Gtk.ListStore (DeviceColumns.N_COLUMNS, typeof (string), typeof (string), typeof (Gtk.ListStore), typeof (string));
@@ -34,16 +35,45 @@ namespace niki {
 		        NikiApp.window.camera_page.cameratopbar.menu_res (get_model (index));
 		        NikiApp.window.camera_page.ready_play ();
             });
-            var monitor = new Gst.DeviceMonitor ();
+            monitor = new Gst.DeviceMonitor ();
             Gst.Bus bus = monitor.get_bus ();
             bus.add_signal_watch ();
             bus.message.connect (bus_msg_handler);
             monitor.set_show_all_devices (true);
+            monitor.get_devices ().foreach (device_added);
+            var title_label = new Gtk.Label (StringPot.No_Device);
+            title_label.justify = Gtk.Justification.CENTER;
+            title_label.hexpand = true;
+            title_label.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
+
+            var subtitle_label = new Gtk.Label (StringPot.Plug_And_Play);
+            subtitle_label.get_style_context ().add_class (Gtk.STYLE_CLASS_DIM_LABEL);
+            subtitle_label.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
+            subtitle_label.justify = Gtk.Justification.CENTER;
+            subtitle_label.hexpand = true;
+            subtitle_label.wrap = true;
+            subtitle_label.wrap_mode = Pango.WrapMode.WORD;
+            subtitle_label.margin_bottom = 10;
+            var image_menu = new Gtk.Image ();
+            image_menu.set_from_pixbuf (align_and_scale_pixbuf (from_theme_icon ("face-sad-symbolic", 128, 128), 128));
+            var not_found = new Gtk.Grid ();
+            not_found.orientation = Gtk.Orientation.VERTICAL;
+            not_found.valign = Gtk.Align.CENTER;
+            not_found.add (title_label);
+            not_found.add (subtitle_label);
+            not_found.add (image_menu);
+            transition_type = Gtk.StackTransitionType.SLIDE_LEFT_RIGHT;
+            homogeneous = false;
+            transition_duration = 500;
+            add_named (not_found, "not_found");
+            add_named (devibut, "devibut");
+        }
+        public void start_init () {
             if (!monitor.start ()) {
                 notify_app (StringPot.Niki_Camera, StringPot.Failed_device_monitor);
             }
             monitor.get_devices ().foreach (device_added);
-            add (devibut);
+            devibut.show_all ();
         }
         private Gtk.ListStore get_model (int index) {
             Gtk.ListStore model;
@@ -62,6 +92,9 @@ namespace niki {
 
         private void device_added (Gst.Device device) {
             string device_class = device.get_device_class ();
+            if (devibut.get_item () < 0) {
+                visible_child_name = "not_found";
+            }
             if (device_class != "Video/Source") {
                 return;
             }
@@ -121,6 +154,7 @@ namespace niki {
                 });
             }
             devibut.append ("camera-web", name, @"$(device_class) $(device_path)");
+            visible_child = devibut;
         }
         private void device_removed (Gst.Device device) {
             string name = device.get_display_name ();
@@ -135,6 +169,9 @@ namespace niki {
                     liststore.remove (ref iter);
                     devibut.remove_item (i);
                 }
+            }
+            if (devibut.get_item () < 0) {
+                visible_child_name = "not_found";
             }
         }
         private void bus_msg_handler (Gst.Bus bus, Gst.Message msg) {

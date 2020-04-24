@@ -275,5 +275,7 @@ namespace niki {
         public abstract const string Unknown_Layout             = _("unknown layout");
         public abstract const string Failed_device_monitor      = _("Failed to start device monitor!");
         public abstract const string Clear                      = _("Clear");
+        public abstract const string No_Device                  = _("No Device");
+        public abstract const string Plug_And_Play              = _("Plug And Play");
     }
 }

@@ -119,7 +119,6 @@ namespace niki {
             circulargrid = new CircularGrid ();
 
             var devicegrid = new DeviceMonitor ();
-            devicegrid.orientation = Gtk.Orientation.VERTICAL;
             devicegrid.valign = Gtk.Align.CENTER;
             devicegrid.margin_bottom = 30;
 
@@ -226,6 +225,7 @@ namespace niki {
                         }
                         break;
                     case 3:
+                        devicegrid.start_init ();
                         stack.visible_child_name = "device";
                         break;
                 }

@@ -50,7 +50,6 @@ parts:
         - libgupnp-av-1.0-dev
         - libgssdp-1.0-dev
         - libcairo2-dev
-        - inytag
     stage-packages:
         - libx11-dev
         - libxau-dev
