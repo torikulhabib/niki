@@ -71,10 +71,10 @@ namespace niki {
                     metadata.insert ("xesam:url", NikiApp.settings.get_string ("uri-video"));
                     break;
                 case PlayerMode.AUDIO :
-                    string album_path_music = cache_image (NikiApp.settings.get_string("title-playing") + " " + NikiApp.settings.get_string ("artist-music"));
+                    string imagep = cache_image (@"$(NikiApp.settings.get_string("title-playing")) $(NikiApp.settings.get_string ("artist-music")) $(File.new_for_uri (NikiApp.settings.get_string ("uri-video")).get_basename())");
                     metadata = new HashTable<string, Variant> (null, null);
                     metadata.insert ("mpris:length", playback.duration * 1000000);
-                    metadata.insert ("mpris:artUrl", "file://" + album_path_music);
+                    metadata.insert ("mpris:artUrl", "file://" + imagep);
                     metadata.insert ("xesam:title", NikiApp.settings.get_string ("title-playing"));
                     metadata.insert ("xesam:album", NikiApp.settings.get_string ("album-music"));
                     metadata.insert ("xesam:artist", get_simple_string_array (NikiApp.settings.get_string ("artist-music")));
