@@ -194,6 +194,7 @@ parts:
         - gobject-introspection
         - libtag1-dev
         - libtagc0-dev
+        - libtag1v5-vanilla
         - gettext
     stage-packages:
         - libx11-dev
