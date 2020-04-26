@@ -111,7 +111,7 @@ namespace niki {
         }
 
         public BottomBar (PlayerPage playerpage) {
-            transition_type = Gtk.RevealerTransitionType.CROSSFADE;
+            transition_type = Gtk.RevealerTransitionType.SLIDE_UP;
             transition_duration = 500;
             events |= Gdk.EventMask.POINTER_MOTION_MASK;
             events |= Gdk.EventMask.LEAVE_NOTIFY_MASK;
@@ -345,7 +345,9 @@ namespace niki {
             NikiApp.settings.changed["settings-button"].connect (() => {
                 settings_revealer.set_reveal_child (NikiApp.settings.get_boolean ("settings-button"));
             });
-
+            settings_revealer.notify["child-revealed"].connect (() => {
+                playerpage.right_bar.reveal_control (false);
+            });
             make_grid_lrc = new MakeLyric (this, playerpage);
             time_music.position_sec.connect (make_grid_lrc.set_time_sec);
             var make_lrc_rev = new Gtk.Revealer ();
@@ -430,6 +432,9 @@ namespace niki {
             playlist_revealer.notify["child-revealed"].connect (() => {
                 view_player ();
                 signal_playlist ();
+            });
+            notify["child-revealed"].connect (() => {
+                playerpage.right_bar.reveal_control (false);
             });
             NikiApp.settings.changed["make-lrc"].connect (make_grid_lrc.resize_scr);
             NikiApp.settings.changed["tooltip-equalizer"].connect (settings_icon);

@@ -51,7 +51,7 @@ namespace niki {
         }
 
         public TopBar (PlayerPage playerpage) {
-            transition_type = Gtk.RevealerTransitionType.CROSSFADE;
+            transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN;
             transition_duration = 500;
             events |= Gdk.EventMask.POINTER_MOTION_MASK;
             events |= Gdk.EventMask.LEAVE_NOTIFY_MASK;
@@ -132,6 +132,7 @@ namespace niki {
                 set_reveal_child (false);
             });
             notify["child-revealed"].connect (() => {
+                playerpage.right_bar.reveal_control (false);
                 if (!child_revealed) {
                     hovered = child_revealed;
                 }
@@ -168,7 +169,9 @@ namespace niki {
             menu_revealer.transition_duration = 500;
             menu_revealer.hexpand = true;
             menu_revealer.reveal_child = false;
-
+            menu_revealer.notify["child-revealed"].connect (() => {
+                playerpage.right_bar.reveal_control (false);
+            });
 		    var grid = new Gtk.Grid ();
             grid.orientation = Gtk.Orientation.VERTICAL;
             grid.get_style_context ().add_class ("topbar");

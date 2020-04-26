@@ -185,12 +185,25 @@ namespace niki {
             stage.add_child (bottom_actor);
             show_all ();
 
+            stage.motion_event.connect ((event) => {
+                if (!bottom_bar.child_revealed) {
+                    if (event.y > (stage.height - 30)) {
+                        bottom_bar.reveal_control ();
+                    }
+                }
+                if (!top_bar.child_revealed) {
+                    if (event.y < 20) {
+                        top_bar.reveal_control ();
+                    }
+                }
+                return Gdk.EVENT_PROPAGATE;
+            });
             motion_notify_event.connect (() => {
                 mouse_hovered = window.main_stack.visible_child_name == "welcome"? false : true;
                 return false;
             });
-
             button_press_event.connect ((event) => {
+                stage.grab_key_focus ();
                 mouse_hovered = false;
                 if (event.button == Gdk.BUTTON_PRIMARY && event.type == Gdk.EventType.2BUTTON_PRESS && !right_bar.hovered && !top_bar.hovered && !bottom_bar.hovered) {
                     NikiApp.settings.set_boolean ("fullscreen", !NikiApp.settings.get_boolean ("fullscreen"));
