@@ -4,8 +4,8 @@ project('com.github.torikulhabib.niki', 'vala', 'c', version: '1.0.0')
 gnome = import('gnome')
 i18n = import('i18n')
 add_project_arguments(['--vapidir', join_paths(meson.current_source_dir(), 'vapi')], language: 'vala')
-add_project_arguments(['-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name())], language: 'c',)
-add_global_arguments('-DGETTEXT_PACKAGE="@0@"'.format (meson.project_name()), language:'c')
+add_project_arguments(['-DGETTEXT_PACKAGE="' + meson.project_name() + '"'.format(meson.project_name())], language: 'c',)
+add_global_arguments('-DGETTEXT_PACKAGE="' + meson.project_name() + '"'.format (meson.project_name()), language:'c')
 
 conf = configuration_data()
 conf.set('EXEC_NAME', meson.project_name())
@@ -28,7 +28,6 @@ configure_file(
   output: 'config.h',
   configuration: conf
 )
-config_h_dir = include_directories('src')
 
 c_args = [
   '-include', 'config.h',

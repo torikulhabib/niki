@@ -116,8 +116,6 @@ executable(
         dependency('cairo'),
         dependency('gstreamer-1.0'),
         dependency('gstreamer-base-1.0'),
-        dependency('gstreamer-video-1.0'),
-        dependency('gstreamer-audio-1.0'),
         dependency('gstreamer-pbutils-1.0'),
         dependency('gstreamer-tag-1.0'),
         dependency('gupnp-1.0'),

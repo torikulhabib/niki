@@ -396,7 +396,7 @@ namespace niki {
                     file_mpg.mpeg_tag.year = (uint) date_spinbutton.value;
                     file_mpg.mpeg_tag.track = (uint) track_spinbutton.value;
                     var frampic = new InyTag.ID3v2_Attached_Picture_Frame ();
-                    if (FileUtils.test (nameimage, FileTest.EXISTS)) { 
+                    if (FileUtils.test (nameimage, FileTest.EXISTS)) {
                         if (!file_mpg.id3v2_tag.is_frame_empty (InyTag.Frame_ID.PICTURE)) {
                             file_mpg.id3v2_tag.remove_frame (InyTag.Frame_ID.PICTURE);
                         }
@@ -430,7 +430,6 @@ namespace niki {
                     file_flac.flac_tag.track = (uint) track_spinbutton.value;
                     if (FileUtils.test (nameimage, FileTest.EXISTS)) {
                         InyTag.Flac_Picture picture_flac = new InyTag.Flac_Picture ();
-                        picture_flac.set_description ("desc");
                         picture_flac.set_mime_type (get_mime_type (File.new_for_path (nameimage)));
                         picture_flac.set_type (InyTag.Img_Type.FrontCover);
                         picture_flac.set_picture (nameimage);
@@ -438,6 +437,16 @@ namespace niki {
                         file_flac.add_picture (picture_flac);
                     }
                     file_flac.save ();
+                } else {
+                    var tagfile = new InyTag.File (file.get_path ());
+                    tagfile.tag.title = title_entry.text;
+                    tagfile.tag.artist = artist_entry.text;
+                    tagfile.tag.album = album_entry.text;
+                    tagfile.tag.genre = genre_entry.text;
+                    tagfile.tag.comment = comment_textview.buffer.text;
+                    tagfile.tag.year = (uint) date_spinbutton.value;
+                    tagfile.tag.track = (uint) track_spinbutton.value;
+                    tagfile.save ();
                 }
                 infobar.title = @"$(StringPot.Taged) $(file.get_basename ())";
                 infobar.send_notification ();
