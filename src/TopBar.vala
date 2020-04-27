@@ -226,7 +226,7 @@ namespace niki {
 
         private void label_my_app () {
             if (NikiApp.settings.get_boolean ("audio-video")) {
-                my_app.label = Markup.escape_text (NikiApp.settings.get_string ("title-playing")) + " <b> "+ StringPot.Artist + " </b> " + Markup.escape_text (NikiApp.settings.get_string ("artist-music")) + " <b> "+ StringPot.Album +" </b> " + Markup.escape_text (NikiApp.settings.get_string ("album-music"));
+                my_app.label = @"$(Markup.escape_text (NikiApp.settings.get_string ("title-playing"))) <b> $(StringPot.Artist) </b> $(Markup.escape_text (NikiApp.settings.get_string ("artist-music"))) <b> $(StringPot.Album) </b> <i>$(Markup.escape_text (NikiApp.settings.get_string ("album-music")))</i>";
             } else {
                 my_app.label = StringPot.Niki_Video;
             }

@@ -343,6 +343,7 @@ namespace niki {
             settings_revealer.transition_duration = 500;
             settings_revealer.set_reveal_child (NikiApp.settings.get_boolean ("settings-button"));
             NikiApp.settings.changed["settings-button"].connect (() => {
+                reveal_control ();
                 settings_revealer.set_reveal_child (NikiApp.settings.get_boolean ("settings-button"));
             });
             settings_revealer.notify["child-revealed"].connect (() => {

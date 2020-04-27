@@ -294,23 +294,7 @@ namespace niki {
         }
 
         private void pix_loader (Gdk.Pixbuf pixbuf) {
-	        int min_size = int.min (pixbuf.get_width (), pixbuf.get_height ());
-	        int max_size = int.max (pixbuf.get_width (), pixbuf.get_height ());
-	        Gdk.Pixbuf new_pix = new Gdk.Pixbuf.subpixbuf (pixbuf, min_size == pixbuf.get_width ()? 0 : (int) (max_size / 2) - (min_size / 2), pixbuf.get_height () == min_size? 0 : (int) (max_size / 2) - (min_size / 2), min_size, min_size);
-            var draw_surface = new Granite.Drawing.BufferSurface ((int)min_size, (int)min_size);
-            Gdk.cairo_set_source_pixbuf (draw_surface.context, new_pix, 0, 0);
-            draw_surface.context.paint ();
-	        Cairo.ImageSurface surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, min_size, min_size);
-	        Cairo.Context context = new Cairo.Context (surface);
-	        context.arc (min_size / 2, min_size / 2, min_size / 2, 0, 2 * Math.PI);
-	        context.clip ();
-	        context.new_path ();
-	        int w = new_pix.get_width ();
-	        int h = new_pix.get_height ();
-            context.scale (min_size / w, min_size / h);
-	        context.set_source_surface (draw_surface.surface, 0, 0);
-	        context.paint ();
-            asyncimage.set_from_pixbuf (align_and_scale_pixbuf (Gdk.pixbuf_get_from_surface (surface, 0, 0, min_size, min_size), 48));
+            asyncimage.set_from_pixbuf (align_and_scale_pixbuf (circle_pix (pixbuf), 48));
             asyncimage.show ();
         }
 

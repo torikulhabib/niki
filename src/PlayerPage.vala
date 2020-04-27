@@ -682,10 +682,7 @@ namespace niki {
                 }
                 title_music.text = @" $(NikiApp.settings.get_string ("title-playing")) ";
                 artist_music.text = @" $(NikiApp.settings.get_string ("artist-music")) ";
-                Idle.add (()=>{
-                    audio_banner ();
-                    return false;
-                });
+                Idle.add (audio_banner);
             }
             update_position_cover ();
         }

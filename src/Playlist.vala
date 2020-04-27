@@ -316,7 +316,7 @@ namespace niki {
                             permanent_delete (File.new_for_path (cache_image (info_songs)));
                             Gdk.Pixbuf preview = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (path.get_uri ()).get_tags ()), 48);
                             pix_to_file (preview, nameimage);
-                            liststore.set (iter, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, info_songs, PlaylistColumns.ARTISTTITLE, file_type (path) == 0? Markup.escape_text (info_songs) : @"<b>$(Markup.escape_text (info_songs))</b>\n$(Markup.escape_text (artist_music)) - $(Markup.escape_text (album_music))", PlaylistColumns.ALBUMMUSIC, album_music, PlaylistColumns.ARTISTMUSIC, artist_music);
+                            liststore.set (iter, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, info_songs, PlaylistColumns.ARTISTTITLE, file_type (path) == 0? Markup.escape_text (info_songs) : @"<b>$(Markup.escape_text (info_songs))</b>\n$(Markup.escape_text (artist_music)) - <i>$(Markup.escape_text (album_music))</i>", PlaylistColumns.ALBUMMUSIC, album_music, PlaylistColumns.ARTISTMUSIC, artist_music);
                         }
                     }
                 });
@@ -371,7 +371,7 @@ namespace niki {
 
             Gdk.Pixbuf preview = icon_from_type (upnp_class, 48);
             liststore.append (out iter);
-            liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, input_title, PlaylistColumns.ARTISTTITLE, mediatype == 2? @"<b>$(Markup.escape_text (input_title))</b>\n$(Markup.escape_text (input_artist)) - $(Markup.escape_text (input_album))" : Markup.escape_text (input_title), PlaylistColumns.FILENAME, input_url, PlaylistColumns.FILESIZE, size_file, PlaylistColumns.MEDIATYPE, mediatype, PlaylistColumns.ALBUMMUSIC, input_album, PlaylistColumns.ARTISTMUSIC, input_artist, PlaylistColumns.PLAYNOW, playnow, PlaylistColumns.INPUTMODE, 2);
+            liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, input_title, PlaylistColumns.ARTISTTITLE, mediatype == 2? @"<b>$(Markup.escape_text (input_title))</b>\n$(Markup.escape_text (input_artist)) - <i>$(Markup.escape_text (input_album))</i>" : Markup.escape_text (input_title), PlaylistColumns.FILENAME, input_url, PlaylistColumns.FILESIZE, size_file, PlaylistColumns.MEDIATYPE, mediatype, PlaylistColumns.ALBUMMUSIC, input_album, PlaylistColumns.ARTISTMUSIC, input_artist, PlaylistColumns.PLAYNOW, playnow, PlaylistColumns.INPUTMODE, 2);
             update_playlist (50);
         }
         public void add_acd (string input_uri, string input_title, string input_album, string input_artist) {
@@ -392,7 +392,7 @@ namespace niki {
 
             Gdk.Pixbuf preview = unknown_cover ();
             liststore.append (out iter);
-            liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, input_title, PlaylistColumns.ARTISTTITLE, @"<b>$(Markup.escape_text (input_title))</b>\n$(Markup.escape_text (input_artist)) - $(Markup.escape_text (input_album))", PlaylistColumns.FILENAME, input_uri, PlaylistColumns.FILESIZE, "", PlaylistColumns.MEDIATYPE, 1, PlaylistColumns.ALBUMMUSIC, input_album, PlaylistColumns.ARTISTMUSIC, input_artist, PlaylistColumns.PLAYNOW, true, PlaylistColumns.INPUTMODE, 2);
+            liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, input_title, PlaylistColumns.ARTISTTITLE, @"<b>$(Markup.escape_text (input_title))</b>\n$(Markup.escape_text (input_artist)) - <i>$(Markup.escape_text (input_album))</i>", PlaylistColumns.FILENAME, input_uri, PlaylistColumns.FILESIZE, "", PlaylistColumns.MEDIATYPE, 1, PlaylistColumns.ALBUMMUSIC, input_album, PlaylistColumns.ARTISTMUSIC, input_artist, PlaylistColumns.PLAYNOW, true, PlaylistColumns.INPUTMODE, 2);
             update_playlist (50);
         }
         public void add_item (File path) {
@@ -432,14 +432,15 @@ namespace niki {
                 artist_music = get_artist_music (file_name);
                 string nameimage = cache_image (@"$(info_songs) $(artist_music) $(path.get_basename ())");
                 if (!FileUtils.test (nameimage, FileTest.EXISTS)) {
-                    preview = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (path.get_uri ()).get_tags ()), 48);
-                    pix_to_file (preview, nameimage);
+                    Gdk.Pixbuf pixbuf = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (path.get_uri ()).get_tags ()), 48);
+                    preview = circle_pix (pixbuf);
+                    pix_to_file (pixbuf, nameimage);
                 } else {
-                    preview = pix_scale (nameimage, 48);
+                    preview = circle_pix (pix_scale (nameimage, 48));
 	            }
 	        }
             liststore.append (out iter);
-            liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE,  info_songs, PlaylistColumns.ARTISTTITLE, file_type (path) == 0? Markup.escape_text (info_songs) : @"<b>$(Markup.escape_text (info_songs))</b>\n$(Markup.escape_text (artist_music)) - $(Markup.escape_text (album_music))", PlaylistColumns.FILENAME, path.get_uri (), PlaylistColumns.FILESIZE, get_info_size (path.get_uri ()), PlaylistColumns.MEDIATYPE, file_type (path), PlaylistColumns.ALBUMMUSIC, album_music, PlaylistColumns.ARTISTMUSIC, artist_music, PlaylistColumns.PLAYNOW, true, PlaylistColumns.INPUTMODE, 0);
+            liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE,  info_songs, PlaylistColumns.ARTISTTITLE, file_type (path) == 0? Markup.escape_text (info_songs) : @"<b>$(Markup.escape_text (info_songs))</b>\n$(Markup.escape_text (artist_music)) - <i>$(Markup.escape_text (album_music))</i>", PlaylistColumns.FILENAME, path.get_uri (), PlaylistColumns.FILESIZE, get_info_size (path.get_uri ()), PlaylistColumns.MEDIATYPE, file_type (path), PlaylistColumns.ALBUMMUSIC, album_music, PlaylistColumns.ARTISTMUSIC, artist_music, PlaylistColumns.PLAYNOW, true, PlaylistColumns.INPUTMODE, 0);
         }
         private uint finish_timer = 0;
         private void update_playlist (uint timeout) {
