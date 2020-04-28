@@ -38,7 +38,6 @@ namespace niki {
 
             var text_render = new Gtk.CellRendererText ();
             text_render.ellipsize = Pango.EllipsizeMode.END;
-            text_render.text = null;
 
             insert_column_with_attributes (-1, "Playing", new Gtk.CellRendererPixbuf (), "gicon", PlaylistColumns.PLAYING);
             insert_column_with_attributes (-1, "Preview", new Gtk.CellRendererPixbuf (), "pixbuf", PlaylistColumns.PREVIEW);
@@ -309,13 +308,14 @@ namespace niki {
                         if (file_name == filename) {
                             var path = File.new_for_uri (filename);
                             string info_songs = get_song_info (path);
-                            string album_music = get_album_music (file_name);
-                            string artist_music = get_artist_music (file_name);
+                            string album_music = get_album_music (path);
+                            string artist_music = get_artist_music (path);
                             string nameimage = cache_image (@"$(info_songs) $(artist_music) $(path.get_basename ())");
                             permanent_delete (File.new_for_path (nameimage));
                             permanent_delete (File.new_for_path (cache_image (info_songs)));
-                            Gdk.Pixbuf preview = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (path.get_uri ()).get_tags ()), 48);
-                            pix_to_file (preview, nameimage);
+                            Gdk.Pixbuf pixbuf = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (path.get_uri ()).get_tags ()), 48);
+                            pix_to_file (pixbuf, nameimage);
+                            Gdk.Pixbuf preview = circle_pix (pixbuf);
                             liststore.set (iter, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, info_songs, PlaylistColumns.ARTISTTITLE, file_type (path) == 0? Markup.escape_text (info_songs) : @"<b>$(Markup.escape_text (info_songs))</b>\n$(Markup.escape_text (artist_music)) - <i>$(Markup.escape_text (album_music))</i>", PlaylistColumns.ALBUMMUSIC, album_music, PlaylistColumns.ARTISTMUSIC, artist_music);
                         }
                     }
@@ -428,15 +428,15 @@ namespace niki {
                     preview = icon_from_mediatype (0);
                 }
             } else if (get_mime_type (path).has_prefix ("audio/")) {
-                album_music = get_album_music (file_name);
-                artist_music = get_artist_music (file_name);
+                album_music = get_album_music (path);
+                artist_music = get_artist_music (path);
                 string nameimage = cache_image (@"$(info_songs) $(artist_music) $(path.get_basename ())");
                 if (!FileUtils.test (nameimage, FileTest.EXISTS)) {
                     Gdk.Pixbuf pixbuf = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (path.get_uri ()).get_tags ()), 48);
-                    preview = circle_pix (pixbuf);
                     pix_to_file (pixbuf, nameimage);
+                    preview = circle_pix (pixbuf);
                 } else {
-                    preview = circle_pix (pix_scale (nameimage, 48));
+                    preview = circle_pix (pix_file(nameimage));
 	            }
 	        }
             liststore.append (out iter);
@@ -459,94 +459,20 @@ namespace niki {
             liststore.clear ();
             NikiApp.settings.set_strv ("last-played-videos", {});
         }
-
-        public string? first_filename () {
+        public void play_first () {
             Gtk.TreeIter iter;
             if (liststore.get_iter_first (out iter)){
-                string filename, titlename, album, artist;
-                liststore.get (iter, PlaylistColumns.FILENAME, out filename, PlaylistColumns.TITLE, out titlename, PlaylistColumns.ALBUMMUSIC, out album, PlaylistColumns.ARTISTMUSIC, out artist);
-                NikiApp.settings.set_string ("title-playing", titlename);
-                NikiApp.settings.set_string ("album-music", album);
-                NikiApp.settings.set_string ("artist-music", artist);
-                return filename;
+                send_iter_to (iter);
             }
-            return null;
         }
-
-        public string? first_filesize () {
-            Gtk.TreeIter iter;
-            if (liststore.get_iter_first (out iter)){
-                string filesize;
-                liststore.get (iter, PlaylistColumns.FILESIZE, out filesize);
-                return filesize;
-            }
-            return null;
-        }
-
-        public int? first_mediatype () {
-            Gtk.TreeIter iter;
-            if (liststore.get_iter_first (out iter)){
-                int mediatype;
-                liststore.get (iter, PlaylistColumns.MEDIATYPE, out mediatype);
-                return mediatype;
-            }
-            return 0;
-        }
-
-        public bool? first_playnow () {
-            Gtk.TreeIter iter;
-            if (liststore.get_iter_first (out iter)){
-                bool playnow;
-                liststore.get (iter, PlaylistColumns.PLAYNOW, out playnow);
-                return playnow;
-            }
-            return false;
-        }
-
-        public string? end_filename () {
+        public void play_end () {
             Gtk.TreeIter iter;
             if (liststore.get_iter_from_string (out iter, (total - 1).to_string ())){
-                string filename, titlename, album, artist;
-                liststore.get (iter, PlaylistColumns.FILENAME, out filename, PlaylistColumns.TITLE, out titlename, PlaylistColumns.ALBUMMUSIC, out album, PlaylistColumns.ARTISTMUSIC, out artist);
-                NikiApp.settings.set_string ("title-playing", titlename);
-                NikiApp.settings.set_string ("album-music", album);
-                NikiApp.settings.set_string ("artist-music", artist);
-                return filename;
+                send_iter_to (iter);
             }
-            return null;
         }
 
-        public string? end_filesize () {
-            Gtk.TreeIter iter;
-            if (liststore.get_iter_from_string (out iter, (total - 1).to_string ())){
-                string filesize;
-                liststore.get (iter, PlaylistColumns.FILESIZE, out filesize);
-                return filesize;
-            }
-            return null;
-        }
-
-        public int? end_mediatype () {
-            Gtk.TreeIter iter;
-            if (liststore.get_iter_from_string (out iter, (total - 1).to_string ())){
-                int mediatype;
-                liststore.get (iter, PlaylistColumns.MEDIATYPE, out mediatype);
-                return mediatype;
-            }
-            return 0;
-        }
-
-        public bool? end_playnow () {
-            Gtk.TreeIter iter;
-            if (liststore.get_iter_from_string (out iter, (total - 1).to_string ())){
-                bool playnow;
-                liststore.get (iter, PlaylistColumns.PLAYNOW, out playnow);
-                return playnow;
-            }
-            return false;
-        }
-
-        public void set_current (string current_file) {
+        public Gtk.TreePath set_current (string current_file) {
             total = 0;
             int current_played = 0;
             liststore.foreach ((model, path, iter) => {
@@ -562,10 +488,14 @@ namespace niki {
 
             Gtk.TreeIter new_iter;
             liststore.get_iter_from_string (out new_iter, current_played.to_string ());
-            liststore.set (new_iter, PlaylistColumns.PLAYING, new ThemedIcon ("media-playback-start-symbolic"));
+            if (liststore.iter_is_valid (new_iter)) {
+                liststore.set (new_iter, PlaylistColumns.PLAYING, new ThemedIcon ("media-playback-start-symbolic"));
+            }
             current = current_played;
             get_status_list ();
+            return liststore.get_path (new_iter);
         }
+
         public bool get_has_previous () {
             return current > 0;
         }

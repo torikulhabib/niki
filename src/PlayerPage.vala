@@ -234,8 +234,7 @@ namespace niki {
                 switch (NikiApp.settings.get_enum ("repeat-mode")) {
                     case RepeatMode.ALL :
                         if (!playlist_widget ().next ()) {
-                            play_first_in_playlist (playlist_widget ().first_playnow ());
-                            load_current_list ();
+                            playlist_widget ().play_first ();
                         }
                         break;
                     case RepeatMode.ONE :
@@ -599,12 +598,6 @@ namespace niki {
             playback.audio_volume = NikiApp.settings.get_double ("volume-adjust");
         }
 
-        public void play_first_in_playlist (bool playnow = true) {
-            play_file (playlist_widget ().first_filename (), playlist_widget ().first_filesize (), playlist_widget ().first_mediatype (), playnow);
-        }
-        public void play_end_in_playlist (bool playnow = true) {
-            play_file (playlist_widget ().end_filename (), playlist_widget ().end_filesize (), playlist_widget ().end_mediatype (), playlist_widget ().end_playnow ());
-        }
         public void play_file (string uri, string filesize, int mediatype, bool from_beginning = true) {
             NikiApp.settings.set_enum ("player-mode", mediatype);
             top_bar.label_info.set_label (NikiApp.settings.get_string("title-playing") + filesize);
@@ -689,8 +682,7 @@ namespace niki {
 
         public void next () {
             if (!playlist_widget ().get_has_next () && NikiApp.settings.get_enum ("repeat-mode") == 1) {
-                play_first_in_playlist (playlist_widget ().first_playnow ());
-                load_current_list ();
+                playlist_widget ().play_first ();
             } else {
                 playlist_widget ().next ();
             }
@@ -698,8 +690,7 @@ namespace niki {
 
         public void previous () {
             if (!playlist_widget ().get_has_previous () && NikiApp.settings.get_enum ("repeat-mode") == 1) {
-                play_end_in_playlist ();
-                load_current_list ();
+                playlist_widget ().play_end ();
             } else {
                 playlist_widget ().previous ();
             }

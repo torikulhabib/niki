@@ -68,6 +68,7 @@ namespace niki {
                 window.application = this;
                 add_window (window);
                 window.show_all ();
+                window.unref ();
             } else {
                 window.show ();
                 if (NikiApp.settings.get_boolean ("audio-video") && window.main_stack.visible_child_name == "player") {

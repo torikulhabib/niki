@@ -188,7 +188,7 @@ namespace niki {
                 welcome_rigth.sensitive = true;
                 NikiApp.settings.set_boolean ("spinner-wait", true);
 		        if (NikiApp.window.main_stack.visible_child_name == "welcome") {
-                    NikiApp.window.player_page.play_first_in_playlist ();
+                    NikiApp.window.player_page.playlist_widget ().play_first ();
                 }
             });
             scanfolder.signal_notify.connect((notif)=> {
@@ -283,7 +283,7 @@ namespace niki {
             string uri_file = root.get_uri ().replace ("file:///", "dvd:///");
             NikiApp.window.player_page.playlist_widget ().add_item (File.new_for_uri (uri_file));
 		    if (NikiApp.window.main_stack.visible_child_name == "welcome") {
-                NikiApp.window.player_page.play_first_in_playlist ();
+                NikiApp.window.player_page.playlist_widget ().play_first ();
             }
         }
         private void read_acd () {

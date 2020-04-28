@@ -30,7 +30,6 @@ namespace niki {
         private Gtk.Button new_lrc_blk;
         private Gtk.Button load_but;
         private ButtonRevealer get_fol_rev;
-        private Gtk.Adjustment adjustment;
         private string uri_this;
 
         public MakeLyric (BottomBar bottombar, PlayerPage playerpage) {
@@ -174,7 +173,6 @@ namespace niki {
             lrc_scr.size_allocate.connect (resize_scr);
             lrc_scr.margin_start = 5;
             lrc_scr.margin_end = 5;
-            adjustment = lrc_scr.vadjustment;
             lrc_scr.add (tree_view);
 
             text_lrc = new Gtk.TextView ();
@@ -236,8 +234,8 @@ namespace niki {
 
             if (listmodel.iter_next (ref iter)) {
                 tree_view.get_selection ().select_iter (iter);
+                tree_view.scroll_to_cell (listmodel.get_path (iter), null, true, (float) 0.5, 0);
             }
-            adjustment.value = adjustment.get_value () + (adjustment.get_upper () / listmodel.iter_n_children (null));
         }
         public void resize_scr () {
             if (NikiApp.settings.get_boolean("audio-video")) {

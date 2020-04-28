@@ -75,7 +75,7 @@ namespace niki {
                             NikiApp.window.main_stack.visible_child_name = "player";
                             NikiApp.window.player_page.get_first ();
                         } else {
-                            NikiApp.window.player_page.play_first_in_playlist ();
+                            NikiApp.window.player_page.playlist_widget ().play_first ();
                         }
                     }
                     return false;

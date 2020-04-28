@@ -247,14 +247,12 @@ namespace niki {
 		return output;
 	}
 
-    private string get_artist_music (string inputfile) {
-        string inputstring = File.new_for_uri (inputfile).get_path ();
-		var info = new InyTag.File(inputstring);
+    private string get_artist_music (File path) {
+		var info = new InyTag.File(path.get_path ());
 		return info.tag.artist.char_count () < 1? StringPot.Unknown : info.tag.artist;
     }
-    private string get_album_music (string inputfile) {
-        string inputstring = File.new_for_uri (inputfile).get_path ();
-		var info = new InyTag.File(inputstring);
+    private string get_album_music (File path) {
+		var info = new InyTag.File(path.get_path ());
 		return info.tag.album.char_count () < 1? StringPot.Unknown : info.tag.album;
     }
 

@@ -118,7 +118,7 @@ namespace niki {
                 }
             });
 		    if (NikiApp.window.player_page.playlist_widget ().liststore.iter_n_children (null) > 0 && NikiApp.window.main_stack.visible_child_name == "welcome") {
-                NikiApp.window.player_page.play_first_in_playlist ();
+                NikiApp.window.player_page.playlist_widget ().play_first ();
             }
         }
 

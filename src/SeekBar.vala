@@ -86,14 +86,18 @@ namespace niki {
 
             scale.enter_notify_event.connect (() => {
                 if (NikiApp.window.is_active) {
-                    cursor_hand_mode (0);
-                    preview_popover.schedule_show ();
+                    if (playerpage.bottom_bar.child_revealed) {
+                        cursor_hand_mode (0);
+                        preview_popover.schedule_show ();
+                    }
                 }
                 return false;
             });
             scale.leave_notify_event.connect (() => {
-                cursor_hand_mode (2);
-                preview_popover.schedule_hide ();
+                if (playerpage.bottom_bar.child_revealed) {
+                    cursor_hand_mode (2);
+                    preview_popover.schedule_hide ();
+                }
                 return false;
             });
             scale.motion_notify_event.connect ((event) => {

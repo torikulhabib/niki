@@ -294,7 +294,11 @@ namespace niki {
                 NikiApp.settings.set_boolean ("status-muted", !NikiApp.settings.get_boolean ("status-muted"));
             });
             volume_widget = new VolumeWiget ();
+            volume_widget.notify["child-revealed"].connect (() => {
+                lyric_revealer.set_reveal_child (!volume_widget.child_revealed && NikiApp.settings.get_boolean ("audio-video"));
+            });
             volume_button.enter_notify_event.connect (() => {
+                lyric_revealer.set_reveal_child (false);
                 if (!volume_widget.child_revealed) {
                     schedule_show ();
                     volume_bool = true;
@@ -304,8 +308,7 @@ namespace niki {
 
             volume_button.leave_notify_event.connect (() => {
                 schedule_hide ();
-                volume_bool = false;
-                return false;
+                return volume_bool = false;
             });
             settings_prev_button = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.equalizer-on-symbolic", Gtk.IconSize.BUTTON);
             settings_prev_button.get_style_context ().add_class ("button_action");

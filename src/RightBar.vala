@@ -28,7 +28,6 @@ namespace niki {
         private RepeatButton? repeat_button;
         private Gtk.ScrolledWindow playlist_scrolled;
         private Gtk.Grid content_box;
-        private Gtk.Adjustment adjustment;
         private uint hiding_timer = 0;
 
         private bool _hovered = false;
@@ -130,56 +129,35 @@ namespace niki {
                 font_button_revealer.set_reveal_child (NikiApp.settings.get_boolean ("audio-video") && NikiApp.settings.get_boolean ("lyric-available"));
             });
 
-            playlist = new Playlist();
-            playlist_scrolled = new Gtk.ScrolledWindow (null, null);
-            playlist_scrolled.get_style_context ().add_class ("scrollbar");
-            adjustment = playlist_scrolled.vadjustment;
-            playlist_scrolled.set_policy (Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC);
-            playlist_scrolled.vexpand = true;
-            playlist_scrolled.add (playlist);
-            playlist_scrolled.show_all ();
-            notify["child-revealed"].connect (() => {
-                if (!child_revealed) {
-                    hovered = child_revealed;
-                } else {
-                    playlist.show ();
-                }
-                size_flexible ();
-            });
-            playlist.enter_notify_event.connect (() => {
-                return cursor_hand_mode(0);
-            });
-
-            playlist.motion_notify_event.connect (() => {
-                size_flexible ();
-                return cursor_hand_mode(0);
-            });
-
-            playlist.leave_notify_event.connect (() => {
-                return cursor_hand_mode(2);
-            });
-
             header_label = new Gtk.Label (null);
             header_label.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
             header_label.ellipsize = Pango.EllipsizeMode.END;
-            var focus_button = new Gtk.Button.from_icon_name ("mail-read-symbolic", Gtk.IconSize.BUTTON);
+            var focus_button = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.play-symbolic", Gtk.IconSize.BUTTON);
             focus_button.get_style_context ().add_class ("button_action");
-            focus_button.set_tooltip_text (StringPot.Track);
-            focus_button.clicked.connect ( () => {
-
-            });
+            focus_button.set_tooltip_text (StringPot.Go_to_Play);
 
             var header = new Gtk.ActionBar ();
             header.get_style_context ().add_class ("playlist");
             header.hexpand = true;
-            header.set_center_widget (header_label);
             header.pack_start (focus_button);
+            header.set_center_widget (header_label);
 
 		    var box_action = new Gtk.Grid ();
             box_action.orientation = Gtk.Orientation.HORIZONTAL;
 		    box_action.add (open_button);
 		    box_action.add (add_folder);
 		    box_action.add (edit_button);
+
+            playlist = new Playlist();
+            playlist_scrolled = new Gtk.ScrolledWindow (null, null);
+            playlist_scrolled.get_style_context ().add_class ("scrollbar");
+            playlist_scrolled.set_policy (Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC);
+            playlist_scrolled.vexpand = true;
+            playlist_scrolled.add (playlist);
+            playlist_scrolled.show_all ();
+            focus_button.clicked.connect ( () => {
+                playlist.scroll_to_cell (playlist.set_current (player_page.playback.uri), null, true, (float) 0.5, 0);
+            });
 
             var main_actionbar = new Gtk.ActionBar ();
             main_actionbar.get_style_context ().add_class ("playlist");
@@ -195,8 +173,8 @@ namespace niki {
             content_box.add (header);
             content_box.add (playlist_scrolled);
             content_box.add (main_actionbar);
+            content_box.show_all ();
             add (content_box);
-            show_all ();
             uint remove_time = 0;
             size_allocate.connect (()=> {
                 if (remove_time != 0) {
@@ -210,6 +188,24 @@ namespace niki {
             });
             NikiApp.settings.changed["edit-playlist"].connect (playlist_edit);
             playlist_edit ();
+            notify["child-revealed"].connect (() => {
+                if (!child_revealed) {
+                    hovered = child_revealed;
+                }
+                size_flexible ();
+            });
+            playlist.enter_notify_event.connect (() => {
+                return cursor_hand_mode(0);
+            });
+
+            playlist.motion_notify_event.connect (() => {
+                size_flexible ();
+                return cursor_hand_mode(0);
+            });
+
+            playlist.leave_notify_event.connect (() => {
+                return cursor_hand_mode(2);
+            });
         }
 
         private void playlist_edit () {
@@ -233,7 +229,7 @@ namespace niki {
                 Source.remove (hiding_timer);
             }
 
-            hiding_timer = GLib.Timeout.add_seconds (2, () => {
+            hiding_timer = GLib.Timeout.add_seconds (3, () => {
                 if (hovered || playlist.menu.visible) {
                     hiding_timer = 0;
                     return false;

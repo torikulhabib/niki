@@ -75,7 +75,6 @@ namespace niki {
             main_stack.add_named (camera_page, "camera");
             main_stack.show_all ();
             add (main_stack);
-            show_all ();
 
             welcome_page.stack.notify["visible-child"].connect (() => {
                 home_revealer.set_reveal_child (welcome_page.stack.visible_child_name == "dlna" || welcome_page.stack.visible_child_name == "dvd" || welcome_page.stack.visible_child_name == "device"? true : false);
@@ -297,7 +296,7 @@ namespace niki {
                 player_page.playlist_widget ().add_item (file);
             }
             if (force_play) {
-                player_page.play_first_in_playlist ();
+                player_page.playlist_widget ().play_first ();
             }
         }
 
@@ -335,7 +334,7 @@ namespace niki {
                         }
                     };
 		            if (main_stack.visible_child_name == "welcome" && audio_video_media) {
-                        player_page.play_first_in_playlist ();
+                        player_page.playlist_widget ().play_first ();
                     }
 			        break;
 		    }

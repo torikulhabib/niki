@@ -169,9 +169,7 @@ namespace niki {
             menu_revealer.transition_duration = 500;
             menu_revealer.hexpand = true;
             menu_revealer.reveal_child = false;
-            menu_revealer.notify["child-revealed"].connect (() => {
-                playerpage.right_bar.reveal_control (false);
-            });
+
 		    var grid = new Gtk.Grid ();
             grid.orientation = Gtk.Orientation.VERTICAL;
             grid.get_style_context ().add_class ("topbar");
@@ -214,6 +212,11 @@ namespace niki {
             stack_fulscreen ();
             revealer_menu ();
             maximized_button ();
+            menu_revealer.notify["child-revealed"].connect (() => {
+		        if (NikiApp.window.main_stack.visible_child_name == "player") {
+                    playerpage.right_bar.reveal_control (false);
+                }
+            });
         }
         private void blured_button () {
             blur_button.change_icon (NikiApp.settings.get_boolean ("blur-mode")? "applications-graphics-symbolic" : "com.github.torikulhabib.niki.color-symbolic");

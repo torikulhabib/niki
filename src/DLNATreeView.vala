@@ -326,7 +326,7 @@ namespace niki {
                 } else {
                     NikiApp.window.player_page.playlist_widget ().add_dlna (uri, title, get_album, artist, mediatype, playnow, upnp_class, size_file);
 		            if (NikiApp.window.main_stack.visible_child_name == "welcome" && welcompage.dlnarendercontrol.get_selected_device ()) {
-                        NikiApp.window.player_page.play_first_in_playlist ();
+                        NikiApp.window.player_page.playlist_widget ().play_first ();
                     }
                     time_outs = GLib.Timeout.add (100, () => {
                         if (NikiApp.settings.get_boolean("home-signal")) {
