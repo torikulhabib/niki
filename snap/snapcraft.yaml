@@ -194,7 +194,6 @@ parts:
         - gobject-introspection
         - libtag1-dev
         - libtagc0-dev
-        - libtag1v5-vanilla
         - gettext
     stage-packages:
         - libx11-dev
@@ -237,6 +236,7 @@ parts:
         - libxcb-shm0-dev
         - libxcb1-dev
         - libxkbcommon-dev
+        - libtag1v5-vanilla
   desktop-gnome-platform:
     source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
     source-subdir: gtk
