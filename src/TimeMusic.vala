@@ -86,12 +86,14 @@ namespace niki {
             duration_label.width_request = 50;
 
             make_lrc_but = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.make-lrc-symbolic", Gtk.IconSize.BUTTON);
+            make_lrc_but.focus_on_click = false;
             make_lrc_but.get_style_context ().add_class ("button_action");
             make_lrc_but.tooltip_text = StringPot.Make_Lyric;
             make_lrc_but.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("make-lrc", !NikiApp.settings.get_boolean ("make-lrc"));
             });
             set_time_lrc = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.time-lrc-symbolic", Gtk.IconSize.BUTTON);
+            set_time_lrc.focus_on_click = false;
             set_time_lrc.get_style_context ().add_class ("button_action");
             set_time_lrc.tooltip_text = StringPot.Set_Time_Lyric;
             set_time_lrc.clicked.connect (() => {

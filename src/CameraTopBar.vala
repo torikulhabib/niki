@@ -75,6 +75,7 @@ namespace niki {
             });
 
             maximize_button = new Gtk.Button.from_icon_name ("view-fullscreen-symbolic", Gtk.IconSize.BUTTON);
+            maximize_button.focus_on_click = false;
             maximize_button.get_style_context ().add_class ("button_action");
             maximize_button.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("maximize", !NikiApp.settings.get_boolean ("maximize"));
@@ -85,6 +86,7 @@ namespace niki {
             });
 
             close_botton = new Gtk.Button.from_icon_name ("window-close-symbolic", Gtk.IconSize.BUTTON);
+            close_botton.focus_on_click = false;
             close_botton.tooltip_text = StringPot.Close;
             close_botton.get_style_context ().add_class ("button_action");
             close_botton.clicked.connect (() => {
@@ -92,6 +94,7 @@ namespace niki {
             });
 
             var home_button = new Gtk.Button.from_icon_name ("go-home-symbolic", Gtk.IconSize.BUTTON);
+            home_button.focus_on_click = false;
             home_button.get_style_context ().add_class ("button_action");
             home_button.tooltip_text = StringPot.Home;
             home_button.clicked.connect (() => {
@@ -122,6 +125,7 @@ namespace niki {
             menu_revealer.transition_duration = 500;
             menu_revealer.add (res_actionbar);
             var reso_button = new Gtk.Button.from_icon_name ("preferences-desktop-display-symbolic", Gtk.IconSize.BUTTON);
+            reso_button.focus_on_click = false;
             reso_button.get_style_context ().add_class ("button_action");
             reso_button.tooltip_text = StringPot.Resolution;
             reso_button.clicked.connect (() => {

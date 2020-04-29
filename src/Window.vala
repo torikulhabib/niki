@@ -39,12 +39,14 @@ namespace niki {
             camera_page = new CameraPage ();
             player_page.playback.notify["playing"].connect (position_window);
             var home_button = new Gtk.Button.from_icon_name ("go-home-symbolic", Gtk.IconSize.BUTTON);
+            home_button.focus_on_click = false;
             home_button.get_style_context ().add_class ("button_action");
             home_button.tooltip_text = StringPot.Home;
             var home_revealer = new Gtk.Revealer ();
             home_revealer.transition_type = Gtk.RevealerTransitionType.CROSSFADE;
             home_revealer.add (home_button);
             var light_dark = new LightDark ();
+            light_dark.focus_on_click = false;
             var spinner = new Gtk.Spinner ();
             var spinner_revealer = new Gtk.Revealer ();
             spinner_revealer.transition_type = Gtk.RevealerTransitionType.CROSSFADE;

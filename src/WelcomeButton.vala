@@ -11,6 +11,7 @@ namespace niki {
         construct {
             get_style_context ().add_class ("widget_background");
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            focus_on_click = false;
             var button_title = new Gtk.Label (title);
             button_title.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
             button_title.halign = Gtk.Align.START;
@@ -44,6 +45,21 @@ namespace niki {
             });
 
             leave_notify_event.connect (() => {
+                if (NikiApp.window.is_active) {
+                    get_style_context ().remove_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
+                    get_style_context ().add_class ("widget_background");
+                }
+                return Gdk.EVENT_PROPAGATE;
+            });
+            focus_in_event.connect (() => {
+                if (NikiApp.window.is_active) {
+                    get_style_context ().remove_class ("widget_background");
+                    get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
+                }
+                return Gdk.EVENT_PROPAGATE;
+            });
+
+            focus_out_event.connect (() => {
                 if (NikiApp.window.is_active) {
                     get_style_context ().remove_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
                     get_style_context ().add_class ("widget_background");

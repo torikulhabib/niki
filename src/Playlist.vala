@@ -33,8 +33,9 @@ namespace niki {
             get_style_context ().add_class ("playlist");
             liststore = new Gtk.ListStore (PlaylistColumns.N_COLUMNS, typeof (Icon), typeof (Gdk.Pixbuf), typeof (string), typeof (string), typeof (string), typeof (string), typeof (string), typeof (string), typeof (bool), typeof (int), typeof (int));
             model = liststore;
-            vexpand = true;
             headers_visible = activate_on_single_click = false;
+            can_focus = visible = receives_default  = is_focus = true;
+            opacity = 1;
 
             var text_render = new Gtk.CellRendererText ();
             text_render.ellipsize = Pango.EllipsizeMode.END;
@@ -218,14 +219,17 @@ namespace niki {
                     case 0:
                         reorderable = false;
                         ((Gtk.TreeSortable)liststore).set_sort_column_id (PlaylistColumns.TITLE, NikiApp.settings.get_boolean ("ascen-descen")? Gtk.SortType.ASCENDING : Gtk.SortType.DESCENDING);
+                        set_search_column (PlaylistColumns.TITLE);
                         break;
                     case 1:
                         reorderable = false;
                         ((Gtk.TreeSortable)liststore).set_sort_column_id (PlaylistColumns.ARTISTMUSIC, NikiApp.settings.get_boolean ("ascen-descen")? Gtk.SortType.ASCENDING : Gtk.SortType.DESCENDING);
+                        set_search_column (PlaylistColumns.ARTISTMUSIC);
                         break;
                     case 2:
                         reorderable = false;
                         ((Gtk.TreeSortable)liststore).set_sort_column_id (PlaylistColumns.ALBUMMUSIC, NikiApp.settings.get_boolean ("ascen-descen")? Gtk.SortType.ASCENDING : Gtk.SortType.DESCENDING);
+                        set_search_column (PlaylistColumns.ALBUMMUSIC);
                         break;
                     case 3:
                         reorderable = true;

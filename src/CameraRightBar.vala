@@ -105,6 +105,7 @@ namespace niki {
             });
 
             profile_button = new Gtk.Button.from_icon_name ("document-save-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+            profile_button.focus_on_click = false;
             profile_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             profile_button.get_style_context ().add_class ("button_action");
             profile_button.clicked.connect (() => {
@@ -139,6 +140,7 @@ namespace niki {
             profile_grid.show_all ();
 
             flip_button = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.flip-on-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+            flip_button.focus_on_click = false;
             flip_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             flip_button.get_style_context ().add_class ("button_action");
             flip_button.clicked.connect (() => {
@@ -146,6 +148,7 @@ namespace niki {
                 camerapage.string_notify (flip_button.tooltip_text);
             });
             coloreffect_button = new Gtk.Button.from_icon_name ("applications-graphics-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+            coloreffect_button.focus_on_click = false;
             coloreffect_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             coloreffect_button.get_style_context ().add_class ("button_action");
             coloreffect_button.clicked.connect (() => {
@@ -179,6 +182,7 @@ namespace niki {
             }
             effect_grid.show_all ();
             flash_button = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.flash-on-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+            flash_button.focus_on_click = false;
             flash_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             flash_button.get_style_context ().add_class ("button_action");
             flash_button.clicked.connect (() => {

@@ -66,16 +66,19 @@ namespace niki {
             subtitle_label.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
             subtitle_label.justify = Gtk.Justification.CENTER;
             subtitle_label.hexpand = true;
+            subtitle_label.can_focus = true;
             subtitle_label.wrap = true;
             subtitle_label.wrap_mode = Pango.WrapMode.WORD;
 
             welcome_rigth = new Welcome ();
+            welcome_rigth.focus_on_click = false;
             welcome_rigth.append ("applications-multimedia", StringPot.Open_File, StringPot.Open_File);
             welcome_rigth.append ("edit-paste", StringPot.Paste_URL, StringPot.Play_Stream);
             welcome_rigth.append ("document-open", StringPot.Open_Folder, StringPot.Open_Folder);
             welcome_rigth.append ("camera-photo", StringPot.Open_Camera, StringPot.Camera_Device);
 
             welcome_left = new Welcome ();
+            welcome_left.focus_on_click = false;
             welcome_left.append ("folder-videos", StringPot.Browse_Library, StringPot.Movie_Library);
             welcome_left.append ("folder-music", StringPot.Browse_Library, StringPot.Music_Library);
             welcome_left.append ("folder-remote", StringPot.Browse_Library, StringPot.DLNA_Library);

@@ -22,12 +22,15 @@
 namespace niki {
     public class RightBar : Gtk.Revealer {
         public Playlist? playlist;
-        public PlayerPage? player_page;
+        public Gtk.Revealer entry_rev;
+        private PlayerPage? player_page;
+        private RepeatButton? repeat_button;
+        public ButtonRevealer? font_button_rev;
         private Gtk.Label header_label;
         private Gtk.Button edit_button;
-        private RepeatButton? repeat_button;
         private Gtk.ScrolledWindow playlist_scrolled;
         private Gtk.Grid content_box;
+        private Gtk.Entry entry;
         private uint hiding_timer = 0;
 
         private bool _hovered = false;
@@ -50,6 +53,7 @@ namespace niki {
 
         public RightBar (PlayerPage? player_page) {
             this.player_page = player_page;
+            get_style_context ().add_class ("playlist");
             transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             transition_duration = 500;
             events |= Gdk.EventMask.POINTER_MOTION_MASK;
@@ -78,12 +82,14 @@ namespace niki {
             });
 
             var open_button = new Gtk.Button.from_icon_name ("list-add-symbolic", Gtk.IconSize.BUTTON);
+            open_button.focus_on_click = false;
             open_button.get_style_context ().add_class ("button_action");
             open_button.set_tooltip_text (StringPot.Open_File);
             open_button.clicked.connect ( () => {
                 NikiApp.window.run_open_file (false, false);
             });
             var add_folder = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.folder-symbolic", Gtk.IconSize.BUTTON);
+            add_folder.focus_on_click = false;
             add_folder.get_style_context ().add_class ("button_action");
             add_folder.set_tooltip_text (StringPot.Open_Folder);
             add_folder.clicked.connect ( () => {
@@ -96,51 +102,64 @@ namespace niki {
                 }
             });
             edit_button = new Gtk.Button.from_icon_name ("list-remove-symbolic", Gtk.IconSize.BUTTON);
+            edit_button.focus_on_click = false;
             edit_button.get_style_context ().add_class ("button_action");
             edit_button.clicked.connect ( () => {
                 NikiApp.settings.set_boolean ("edit-playlist", !NikiApp.settings.get_boolean ("edit-playlist")); 
             });
 
-            var font_button = new Gtk.Button.from_icon_name ("font-x-generic-symbolic", Gtk.IconSize.BUTTON);
-            font_button.get_style_context ().add_class ("button_action");
-            font_button.tooltip_text = NikiApp.settings.get_string ("font");
-            font_button.clicked.connect (() => {
+            font_button_rev = new ButtonRevealer ("font-x-generic-symbolic");
+            font_button_rev.button.get_style_context ().add_class ("button_action");
+            font_button_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
+            font_button_rev.transition_duration = 100;
+            font_button_rev.clicked.connect (() => {
                 player_page.bottom_bar.menu_popover.font_button ();
-                font_button.tooltip_text = NikiApp.settings.get_string ("font");
+                font_button_rev.tooltip_text = NikiApp.settings.get_string ("font");
             });
-            var font_button_revealer = new Gtk.Revealer ();
-            font_button_revealer.add (font_button);
-            font_button_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
-            font_button_revealer.transition_duration = 100;
-
             repeat_button = new RepeatButton ();
             var repeat_button_revealer = new Gtk.Revealer ();
             repeat_button_revealer.add (repeat_button);
             repeat_button_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
             repeat_button_revealer.transition_duration = 100;
             repeat_button_revealer.set_reveal_child (!NikiApp.settings.get_boolean ("audio-video"));
-            font_button_revealer.set_reveal_child (NikiApp.settings.get_boolean ("audio-video") && NikiApp.settings.get_boolean ("lyric-available"));
+            font_button_rev.set_reveal_child (NikiApp.settings.get_boolean ("audio-video") && NikiApp.settings.get_boolean ("lyric-available"));
             NikiApp.settings.changed["audio-video"].connect (() => {
                 repeat_button_revealer.set_reveal_child (!NikiApp.settings.get_boolean ("audio-video"));
-                font_button_revealer.set_reveal_child (NikiApp.settings.get_boolean ("audio-video") && NikiApp.settings.get_boolean ("lyric-available"));
+                font_button_rev.set_reveal_child (NikiApp.settings.get_boolean ("audio-video") && NikiApp.settings.get_boolean ("lyric-available"));
             });
 
             NikiApp.settings.changed["lyric-available"].connect (() => {
-                font_button_revealer.set_reveal_child (NikiApp.settings.get_boolean ("audio-video") && NikiApp.settings.get_boolean ("lyric-available"));
+                font_button_rev.set_reveal_child (NikiApp.settings.get_boolean ("audio-video") && NikiApp.settings.get_boolean ("lyric-available"));
             });
 
             header_label = new Gtk.Label (null);
             header_label.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
             header_label.ellipsize = Pango.EllipsizeMode.END;
             var focus_button = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.play-symbolic", Gtk.IconSize.BUTTON);
+            focus_button.focus_on_click = false;
+            focus_button.get_style_context ().add_class ("button_action");
             focus_button.get_style_context ().add_class ("button_action");
             focus_button.set_tooltip_text (StringPot.Go_to_Play);
 
+            var search_button = new Gtk.Button.from_icon_name ("system-search-symbolic", Gtk.IconSize.BUTTON);
+            search_button.focus_on_click = false;
+            search_button.get_style_context ().add_class ("button_action");
+            search_button.set_tooltip_text (StringPot.Go_to_Play);
+            entry = new Gtk.Entry ();
+            entry_rev = new Gtk.Revealer ();
+            entry_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN;
+            entry_rev.transition_duration = 500;
+            entry_rev.add (entry);
+            search_button.clicked.connect ( () => {
+                entry_rev.set_reveal_child (!entry_rev.child_revealed);
+                entry.grab_focus_without_selecting ();
+            });
             var header = new Gtk.ActionBar ();
             header.get_style_context ().add_class ("playlist");
             header.hexpand = true;
             header.pack_start (focus_button);
             header.set_center_widget (header_label);
+            header.pack_end (search_button);
 
 		    var box_action = new Gtk.Grid ();
             box_action.orientation = Gtk.Orientation.HORIZONTAL;
@@ -149,6 +168,7 @@ namespace niki {
 		    box_action.add (edit_button);
 
             playlist = new Playlist();
+            playlist.set_search_entry (entry);
             playlist_scrolled = new Gtk.ScrolledWindow (null, null);
             playlist_scrolled.get_style_context ().add_class ("scrollbar");
             playlist_scrolled.set_policy (Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC);
@@ -163,7 +183,7 @@ namespace niki {
             main_actionbar.get_style_context ().add_class ("playlist");
             main_actionbar.hexpand = true;
             main_actionbar.pack_start (box_action);
-            main_actionbar.pack_end (font_button_revealer);
+            main_actionbar.pack_end (font_button_rev);
             main_actionbar.pack_end (repeat_button_revealer);
             content_box = new Gtk.Grid ();
             content_box.get_style_context ().add_class ("playlist");
@@ -171,6 +191,7 @@ namespace niki {
             content_box.orientation = Gtk.Orientation.VERTICAL;
             content_box.vexpand = true;
             content_box.add (header);
+            content_box.add (entry_rev);
             content_box.add (playlist_scrolled);
             content_box.add (main_actionbar);
             content_box.show_all ();
@@ -191,6 +212,8 @@ namespace niki {
             notify["child-revealed"].connect (() => {
                 if (!child_revealed) {
                     hovered = child_revealed;
+                    entry_rev.set_reveal_child (false);
+                    entry.text = "";
                 }
                 size_flexible ();
             });
@@ -206,8 +229,30 @@ namespace niki {
             playlist.leave_notify_event.connect (() => {
                 return cursor_hand_mode(2);
             });
+            NikiApp.settings.changed["sort-by"].connect (get_random);
+            NikiApp.settings.changed["ascen-descen"].connect (get_random);
+            get_random ();
         }
-
+        private void get_random () {
+            switch (NikiApp.settings.get_int ("sort-by")) {
+                case 0:
+                    entry.primary_icon_name = "com.github.torikulhabib.niki.title-symbolic";
+                    entry.primary_icon_tooltip_markup = StringPot.Title;
+                    break;
+                case 1:
+                    entry.primary_icon_name = "avatar-default-symbolic";
+                    entry.primary_icon_tooltip_markup = StringPot.Artist;
+                    break;
+                case 2:
+                    entry.primary_icon_name = "media-optical-symbolic";
+                    entry.primary_icon_tooltip_markup = StringPot.Album;
+                    break;
+                case 3:
+                    entry.primary_icon_name = "edit-symbolic";
+                    entry.primary_icon_tooltip_markup = StringPot.Custom;
+                    break;
+            }
+        }
         private void playlist_edit () {
             header_label.label = !NikiApp.settings.get_boolean ("edit-playlist")? StringPot.Playlist : StringPot.Select_Remove;
             ((Gtk.Image) edit_button.image).icon_name = NikiApp.settings.get_boolean ("edit-playlist")? "go-previous-symbolic" : "list-remove-symbolic";

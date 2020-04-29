@@ -29,7 +29,7 @@ namespace niki {
         public Gtk.TextView text_lrc;
         private Gtk.Button new_lrc_blk;
         private Gtk.Button load_but;
-        private ButtonRevealer get_fol_rev;
+        private ButtonRevealer? get_fol_rev;
         private string uri_this;
 
         public MakeLyric (BottomBar bottombar, PlayerPage playerpage) {
@@ -41,6 +41,7 @@ namespace niki {
             text_render.editable = true;
             text_render.text = null;
             tree_view.headers_visible = true;
+            tree_view.set_search_column (LyricColumns.LYRIC);
             tree_view.insert_column_with_attributes (-1, StringPot.Time, new Gtk.CellRendererText (), "markup", LyricColumns.TIMEVIEW);
             tree_view.insert_column_with_attributes (-1, StringPot.Lyric, text_render, "text", LyricColumns.LYRIC);
 
@@ -48,10 +49,12 @@ namespace niki {
                 listmodel.set (selected_iter (), LyricColumns.LYRIC, new_text);
             });
             var add_doc = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.lrc-file-symbolic", Gtk.IconSize.BUTTON);
+            add_doc.focus_on_click = false;
             add_doc.get_style_context ().add_class ("button_action");
             add_doc.tooltip_text = StringPot.Open_Text;
             add_doc.clicked.connect (run_open_file);
             var add_but = new Gtk.Button.from_icon_name ("list-add-symbolic", Gtk.IconSize.BUTTON);
+            add_but.focus_on_click = false;
             add_but.get_style_context ().add_class ("button_action");
             add_but.tooltip_text = StringPot.Add_List;
             add_but.clicked.connect (() => {
@@ -60,6 +63,7 @@ namespace niki {
                 listmodel.set (iter, LyricColumns.TIMEVIEW, "00:00", LyricColumns.LYRIC, "Niki Lyric");
             });
             var insert_aft = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.insert-after-symbolic", Gtk.IconSize.BUTTON);
+            insert_aft.focus_on_click = false;
             insert_aft.get_style_context ().add_class ("button_action");
             insert_aft.tooltip_text = StringPot.Insert_After;
             insert_aft.clicked.connect (() => {
@@ -72,6 +76,7 @@ namespace niki {
                 listmodel.set (iter, LyricColumns.TIMEVIEW, "00:00", LyricColumns.LYRIC, "Niki Lyric");
             });
             var insert_bef = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.insert-before-symbolic", Gtk.IconSize.BUTTON);
+            insert_bef.focus_on_click = false;
             insert_bef.get_style_context ().add_class ("button_action");
             insert_bef.tooltip_text = StringPot.Insert_Before;
             insert_bef.clicked.connect (() => {
@@ -84,6 +89,7 @@ namespace niki {
                 listmodel.set (iter, LyricColumns.TIMEVIEW, "00:00", LyricColumns.LYRIC, "Niki Lyric");
             });
             var remove_but = new Gtk.Button.from_icon_name ("list-remove-symbolic", Gtk.IconSize.BUTTON);
+            remove_but.focus_on_click = false;
             remove_but.get_style_context ().add_class ("button_action");
             remove_but.tooltip_text = StringPot.Remove_List;
             remove_but.clicked.connect (() => {
@@ -95,9 +101,11 @@ namespace niki {
             });
 
             new_lrc_blk = new Gtk.Button.from_icon_name ("document-new-symbolic", Gtk.IconSize.BUTTON);
+            new_lrc_blk.focus_on_click = false;
             new_lrc_blk.get_style_context ().add_class ("button_action");
 
             load_but = new Gtk.Button.from_icon_name ("edit-symbolic", Gtk.IconSize.BUTTON);
+            load_but.focus_on_click = false;
             load_but.get_style_context ().add_class ("button_action");
             load_but.tooltip_text = StringPot.Edit_Exist_Lyric;
             load_but.clicked.connect (() => {
@@ -115,6 +123,7 @@ namespace niki {
             });
 
             var save_but = new Gtk.Button.from_icon_name ("document-save-symbolic", Gtk.IconSize.BUTTON);
+            save_but.focus_on_click = false;
             save_but.get_style_context ().add_class ("button_action");
             save_but.tooltip_text = StringPot.Save_Lyric;
             save_but.clicked.connect (() => {
@@ -140,8 +149,8 @@ namespace niki {
             });
 
             get_fol_rev = new ButtonRevealer ("com.github.torikulhabib.niki.folder-symbolic");
-            get_fol_rev.revealer_button.get_style_context ().add_class ("button_action");
-            get_fol_rev.revealer_button.tooltip_text = StringPot.Folder_Location;
+            get_fol_rev.button.get_style_context ().add_class ("button_action");
+            get_fol_rev.button.tooltip_text = StringPot.Folder_Location;
             get_fol_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             get_fol_rev.transition_duration = 500;
             get_fol_rev.clicked.connect (() => {

@@ -87,6 +87,7 @@ namespace niki {
                 NikiApp.settings.set_boolean ("fullscreen", true);
             }
             maximize_button = new Gtk.Button.from_icon_name ("view-fullscreen-symbolic", Gtk.IconSize.BUTTON);
+            maximize_button.focus_on_click = false;
             maximize_button.get_style_context ().add_class ("button_action");
             maximize_button.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("maximize", !NikiApp.settings.get_boolean ("maximize"));
@@ -96,6 +97,7 @@ namespace niki {
                 stack_fulscreen ();
             });
             close_botton = new Gtk.Button.from_icon_name ("window-close-symbolic", Gtk.IconSize.BUTTON);
+            close_botton.focus_on_click = false;
             close_botton.tooltip_text = StringPot.Close;
             close_botton.get_style_context ().add_class ("button_action");
             close_botton.clicked.connect (() => {
@@ -103,19 +105,21 @@ namespace niki {
             });
 
             var home_button = new Gtk.Button.from_icon_name ("go-home-symbolic", Gtk.IconSize.BUTTON);
+            home_button.focus_on_click = false;
             home_button.get_style_context ().add_class ("button_action");
             home_button.tooltip_text = StringPot.Home;
             home_button.clicked.connect (() => {
                 button_home ();
             });
             info_option = new Gtk.Button.from_icon_name ("dialog-information-symbolic", Gtk.IconSize.BUTTON);
+            info_option.focus_on_click = false;
             info_option.get_style_context ().add_class ("button_action");
             info_option.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("information-button", !NikiApp.settings.get_boolean ("information-button"));
                 info_button ();
             });
             blur_button = new ButtonRevealer ("view-paged-symbolic");
-            blur_button.revealer_button.get_style_context ().add_class ("button_action");
+            blur_button.button.get_style_context ().add_class ("button_action");
             blur_button.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             blur_button.transition_duration = 500;
             blur_button.clicked.connect (() => {
@@ -123,7 +127,7 @@ namespace niki {
                 blured_button ();
             });
             crop_button = new ButtonRevealer ("image-crop-symbolic");
-            crop_button.revealer_button.get_style_context ().add_class ("button_action");
+            crop_button.button.get_style_context ().add_class ("button_action");
             crop_button.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             crop_button.transition_duration = 500;
             crop_button.clicked.connect (() => {
@@ -183,6 +187,7 @@ namespace niki {
             info_label_full.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
             info_label_full.ellipsize = Pango.EllipsizeMode.END;
             info_label_full.selectable = true;
+
             var info_actionbar = new Gtk.ActionBar ();
             info_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             info_actionbar.hexpand = true;

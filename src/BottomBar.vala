@@ -21,40 +21,40 @@
 
 namespace niki {
     public class BottomBar : Gtk.Revealer {
-        private Gtk.Button menu_settings;
         public MakeLyric? make_grid_lrc;
         public OtherGrid? othergrid;
         public SettingsPopover? menu_popover;
+        public SeekBar? seekbar_widget;
         private EqualizerGrid? equalizer_grid;
         private VideoGrid? video_grid;
-        public SeekBar? seekbar_widget;
         private TimeVideo? time_video;
         private TimeMusic? time_music;
         private VolumeWiget? volume_widget;
         public Gtk.Button play_button;
+        private Gtk.Button menu_settings;
         private Gtk.Button play_but_cen;
-        private Gtk.Revealer action_box_rev;
-        private Gtk.Revealer box_action_revealer;
-        private Gtk.Revealer box_set_list_rev;
-        public ButtonRevealer? previous_revealer;
-        public ButtonRevealer? next_revealer;
-        public ButtonRevealer? subtitle_revealer;
-        private ButtonRevealer? playlist_revealer;
         private Gtk.Button fullscreen_button;
         private Gtk.Button next_button_center;
-        public VolumeButton? volume_button;
-        private Gtk.Button font_button;
-        private Gtk.Button previous_button_center;
-        public ButtonRevealer? stop_revealer;
-        private ButtonRevealer? lyric_revealer;
-        private Gtk.Revealer font_but_rev;
-        private Gtk.Revealer no_rep_rev;
-        private RepeatButton? repeat_button;
-        private RepeatButton? no_plylist_repeat;
         private Gtk.Button shuffle_button;
         private Gtk.Button setting_niki;
         private Gtk.Button settings_prev_button;
         private Gtk.Button settings_next_button;
+        private Gtk.Button font_button;
+        private Gtk.Button previous_button_center;
+        private Gtk.Revealer action_box_rev;
+        private Gtk.Revealer box_action_revealer;
+        private Gtk.Revealer box_set_list_rev;
+        private Gtk.Revealer font_but_rev;
+        private Gtk.Revealer no_rep_rev;
+        public ButtonRevealer? previous_revealer;
+        public ButtonRevealer? next_revealer;
+        public ButtonRevealer? subtitle_revealer;
+        public ButtonRevealer? stop_revealer;
+        private ButtonRevealer? playlist_revealer;
+        private ButtonRevealer? lyric_revealer;
+        public VolumeButton? volume_button;
+        private RepeatButton? repeat_button;
+        private RepeatButton? no_plylist_repeat;
         private Gtk.Stack setting_stack;
         private uint hiding_timer = 0;
         private uint volume_hiding_timer = 0;
@@ -145,12 +145,13 @@ namespace niki {
             });
 
             stop_revealer = new ButtonRevealer ("media-playback-stop-symbolic");
-            stop_revealer.revealer_button.get_style_context ().add_class ("button_action");
-            stop_revealer.revealer_button.tooltip_text = StringPot.Stop;
+            stop_revealer.button.get_style_context ().add_class ("button_action");
+            stop_revealer.tooltip_text = StringPot.Stop;
             stop_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
             stop_revealer.transition_duration = 500;
 
             play_button = new Gtk.Button.from_icon_name ("media-playback-start-symbolic", Gtk.IconSize.BUTTON);
+            play_button.focus_on_click = false;
             play_button.get_style_context ().add_class ("button_action");
             play_button.clicked.connect (() => {
                 playing = !playing;
@@ -158,6 +159,7 @@ namespace niki {
 
             play_but_cen = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.play-symbolic", Gtk.IconSize.BUTTON);
             ((Gtk.Image) play_but_cen.image).pixel_size = NikiApp.settings.get_boolean ("audio-video")? 48 : 16;
+            play_but_cen.focus_on_click = false;
             play_but_cen.get_style_context ().add_class ("button_action");
             play_but_cen.clicked.connect (() => {
                 playing = !playing;
@@ -176,6 +178,7 @@ namespace niki {
             no_rep_rev.transition_duration = 100;
 
             shuffle_button = new Gtk.Button.from_icon_name ("media-playlist-no-repeat-symbolic", Gtk.IconSize.BUTTON);
+            shuffle_button.focus_on_click = false;
             shuffle_button.get_style_context ().add_class ("button_action");
             shuffle_button.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("shuffle-button", !NikiApp.settings.get_boolean ("shuffle-button"));
@@ -183,7 +186,7 @@ namespace niki {
             });
 
             playlist_revealer = new ButtonRevealer ("com.github.torikulhabib.niki.playlist-symbolic");
-            playlist_revealer.revealer_button.get_style_context ().add_class ("button_action");
+            playlist_revealer.button.get_style_context ().add_class ("button_action");
             playlist_revealer.tooltip_text = StringPot.Playlist;
             playlist_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             playlist_revealer.transition_duration = 500;
@@ -192,6 +195,7 @@ namespace niki {
             });
 
             font_button = new Gtk.Button.from_icon_name ("font-x-generic-symbolic", Gtk.IconSize.BUTTON);
+            font_button.focus_on_click = false;
             font_button.get_style_context ().add_class ("button_action");
             font_button.tooltip_text = NikiApp.settings.get_string ("font");
             font_button.clicked.connect (() => {
@@ -204,6 +208,7 @@ namespace niki {
             font_but_rev.transition_duration = 100;
 
             menu_settings = new Gtk.Button.from_icon_name ("open-menu-symbolic", Gtk.IconSize.BUTTON);
+            menu_settings.focus_on_click = false;
             menu_settings.get_style_context ().add_class ("button_action");
             menu_settings.tooltip_text = StringPot.Settings;
             menu_settings.clicked.connect (() => {
@@ -215,6 +220,7 @@ namespace niki {
             menu_popover.closed.connect (reveal_control);
 
             next_button_center = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.next-symbolic", Gtk.IconSize.BUTTON);
+            next_button_center.focus_on_click = false;
             next_button_center.tooltip_text = StringPot.Next;
             next_button_center.get_style_context ().add_class ("button_action");
             next_button_center.clicked.connect (() => {
@@ -222,7 +228,7 @@ namespace niki {
             });
 
             next_revealer = new ButtonRevealer ("com.github.torikulhabib.niki.next-symbolic");
-            next_revealer.revealer_button.get_style_context ().add_class ("button_action");
+            next_revealer.button.get_style_context ().add_class ("button_action");
             next_revealer.tooltip_text = StringPot.Next;
             next_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
             next_revealer.transition_duration = 500;
@@ -231,6 +237,7 @@ namespace niki {
             });
 
             previous_button_center = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.previous-symbolic", Gtk.IconSize.BUTTON);
+            previous_button_center.focus_on_click = false;
             previous_button_center.tooltip_text = StringPot.Previous;
             previous_button_center.get_style_context ().add_class ("button_action");
             previous_button_center.clicked.connect (() => {
@@ -238,7 +245,7 @@ namespace niki {
             });
 
             previous_revealer = new ButtonRevealer ("com.github.torikulhabib.niki.previous-symbolic");
-            previous_revealer.revealer_button.get_style_context ().add_class ("button_action");
+            previous_revealer.button.get_style_context ().add_class ("button_action");
             previous_revealer.tooltip_text = StringPot.Previous;
             previous_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             previous_revealer.transition_duration = 500;
@@ -249,7 +256,7 @@ namespace niki {
             NikiApp.settings.changed["previous-status"].connect (signal_playlist);
 
             subtitle_revealer = new ButtonRevealer ("com.github.torikulhabib.niki.previous-symbolic");
-            subtitle_revealer.revealer_button.get_style_context ().add_class ("button_action");
+            subtitle_revealer.button.get_style_context ().add_class ("button_action");
             subtitle_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             subtitle_revealer.transition_duration = 500;
             subtitle_revealer.clicked.connect (() => {
@@ -261,13 +268,14 @@ namespace niki {
             });
 
             fullscreen_button = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.fullscreen-symbolic", Gtk.IconSize.BUTTON);
+            fullscreen_button.focus_on_click = false;
             fullscreen_button.get_style_context ().add_class ("button_action");
             fullscreen_button.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("fullscreen", !NikiApp.settings.get_boolean ("fullscreen"));
             });
 
             lyric_revealer = new ButtonRevealer ("com.github.torikulhabib.niki.lyric-off-symbolic");
-            lyric_revealer.revealer_button.get_style_context ().add_class ("button_action");
+            lyric_revealer.button.get_style_context ().add_class ("button_action");
             lyric_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             lyric_revealer.transition_duration = 500;
             lyric_revealer.clicked.connect ( () => {
@@ -280,6 +288,7 @@ namespace niki {
             equalizer_grid.init ();
 
             setting_niki = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.equalizer-on-symbolic", Gtk.IconSize.BUTTON);
+            setting_niki.focus_on_click = false;
             setting_niki.get_style_context ().add_class ("button_action");
             setting_niki.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("settings-button", !NikiApp.settings.get_boolean ("settings-button"));
@@ -298,7 +307,6 @@ namespace niki {
                 lyric_revealer.set_reveal_child (!volume_widget.child_revealed && NikiApp.settings.get_boolean ("audio-video"));
             });
             volume_button.enter_notify_event.connect (() => {
-                lyric_revealer.set_reveal_child (false);
                 if (!volume_widget.child_revealed) {
                     schedule_show ();
                     volume_bool = true;
@@ -311,9 +319,11 @@ namespace niki {
                 return volume_bool = false;
             });
             settings_prev_button = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.equalizer-on-symbolic", Gtk.IconSize.BUTTON);
+            settings_prev_button.focus_on_click = false;
             settings_prev_button.get_style_context ().add_class ("button_action");
 
             settings_next_button = new Gtk.Button.from_icon_name ("video-display-symbolic", Gtk.IconSize.BUTTON);
+            settings_next_button.focus_on_click = false;
             settings_next_button.get_style_context ().add_class ("button_action");
             othergrid = new OtherGrid ();
 
@@ -558,6 +568,7 @@ namespace niki {
             }
             cancel_timer (ref hide_timer_id);
             show_timer_id = Timeout.add (350, () => {
+                lyric_revealer.set_reveal_child (false);
                 reveal_volume ();
                 show_timer_id = 0;
                 return false;

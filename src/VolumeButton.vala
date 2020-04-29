@@ -26,6 +26,7 @@ namespace niki {
         construct {
             get_style_context ().add_class ("button_action");
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            focus_on_click = false;
             volume_image = new Gtk.Image.from_icon_name ("audio-volume-high-symbolic", Gtk.IconSize.BUTTON);
             volume_image.valign = Gtk.Align.CENTER;
             volume_image.halign = Gtk.Align.CENTER;

@@ -104,12 +104,14 @@ namespace niki {
             camera_actionbar.get_style_context ().add_class ("transbgborder");
 
             option_button = new Gtk.Button.from_icon_name ("camera-photo-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+            option_button.focus_on_click = false;
             option_button.get_style_context ().add_class ("button_action");
             option_button.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("camera-video", !NikiApp.settings.get_boolean ("camera-video"));
             });
 
             capture_button = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.record-symbolic", Gtk.IconSize.DIALOG);
+            capture_button.focus_on_click = false;
             capture_button.get_style_context ().add_class ("button_action");
             capture_button.clicked.connect (() => {
                 if (NikiApp.settings.get_boolean ("camera-video")) {
@@ -142,6 +144,7 @@ namespace niki {
             setting_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_UP;
             setting_revealer.transition_duration = 500;
             setting_button = new Gtk.Button.from_icon_name ("applications-graphics-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+            setting_button.focus_on_click = false;
             setting_button.tooltip_text = StringPot.Setting_Filter;
             setting_button.get_style_context ().add_class ("button_action");
             setting_revealer.set_reveal_child (NikiApp.settings.get_boolean ("setting-camera"));
@@ -155,6 +158,7 @@ namespace niki {
             asyncimage.valign = Gtk.Align.CENTER;
             asyncimage.valign = Gtk.Align.CENTER;
             var openimage = new Gtk.Button ();
+            openimage.focus_on_click = false;
             openimage.tooltip_text = "Photos";
             openimage.valign = Gtk.Align.CENTER;
             openimage.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);

@@ -38,41 +38,41 @@ namespace niki {
             uint keycode = e.hardware_keycode;
             bool ctrl_pressed = (e.state & Gdk.ModifierType.CONTROL_MASK) != 0;
             bool shift_pressed = Gdk.ModifierType.SHIFT_MASK in e.state;
-            if (match_keycode (Gdk.Key.space, keycode) && window.main_stack.visible_child_name == "player" && !NikiApp.settings.get_boolean ("make-lrc")) {
+            if (match_keycode (Gdk.Key.space, keycode) && window.main_stack.visible_child_name == "player" && !NikiApp.settings.get_boolean ("make-lrc") && !window.player_page.right_bar.entry_rev.child_revealed) {
                 window.player_page.playback.playing = !window.player_page.playback.playing;
                 window.player_page.string_notify (window.player_page.playback.playing? StringPot.Play : StringPot.Pause);
-            } else if (match_keycode (Gdk.Key.f, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
+            } else if (match_keycode (Gdk.Key.f, keycode) && !NikiApp.settings.get_boolean ("make-lrc")  && !window.player_page.right_bar.entry_rev.child_revealed) {
                 if (NikiApp.settings.get_boolean ("fullscreen")) {
                     NikiApp.settings.set_boolean ("fullscreen", !NikiApp.settings.get_boolean ("fullscreen"));
                 }
-            } else if (ctrl_pressed && match_keycode (Gdk.Key.o, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
+            } else if (ctrl_pressed && match_keycode (Gdk.Key.o, keycode) && !NikiApp.settings.get_boolean ("make-lrc") && !window.player_page.right_bar.entry_rev.child_revealed) {
                 window.run_open_file ();
-            } else if (match_keycode (Gdk.Key.q, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
+            } else if (match_keycode (Gdk.Key.q, keycode) && !NikiApp.settings.get_boolean ("make-lrc")  && !window.player_page.right_bar.entry_rev.child_revealed) {
                 destroy_mode ();
-            } else if (match_keycode (Gdk.Key.m, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
+            } else if (match_keycode (Gdk.Key.m, keycode) && !NikiApp.settings.get_boolean ("make-lrc")  && !window.player_page.right_bar.entry_rev.child_revealed) {
                 NikiApp.settings.set_boolean ("status-muted", !NikiApp.settings.get_boolean ("status-muted"));
                 window.player_page.string_notify (NikiApp.settings.get_boolean ("status-muted")? StringPot.Muted : double_to_percent (NikiApp.settings.get_double ("volume-adjust")));
-            } else if (match_keycode (Gdk.Key.n, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
+            } else if (match_keycode (Gdk.Key.n, keycode) && !NikiApp.settings.get_boolean ("make-lrc")  && !window.player_page.right_bar.entry_rev.child_revealed) {
                 if (NikiApp.settings.get_boolean("next-status")) {
                     window.player_page.next ();
                     window.player_page.string_notify (StringPot.Next);
                 }
-            } else if (match_keycode (Gdk.Key.b, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
+            } else if (match_keycode (Gdk.Key.b, keycode) && !NikiApp.settings.get_boolean ("make-lrc") && !window.player_page.right_bar.entry_rev.child_revealed) {
                 if (NikiApp.settings.get_boolean ("previous-status")) {
                     window.player_page.previous ();
                     window.player_page.string_notify (StringPot.Previous);
                 }
-            } else if (match_keycode (Gdk.Key.p, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
+            } else if (match_keycode (Gdk.Key.p, keycode) && !NikiApp.settings.get_boolean ("make-lrc")  && !window.player_page.right_bar.entry_rev.child_revealed) {
                 window.player_page.right_bar.reveal_control ();
-            } else if (match_keycode (Gdk.Key.l, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
+            } else if (match_keycode (Gdk.Key.l, keycode) && !NikiApp.settings.get_boolean ("make-lrc")  && !window.player_page.right_bar.entry_rev.child_revealed) {
                 NikiApp.settings.set_boolean ("lyric-button", !NikiApp.settings.get_boolean ("lyric-button"));
-            } else if (match_keycode (Gdk.Key.i, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
+            } else if (match_keycode (Gdk.Key.i, keycode) && !NikiApp.settings.get_boolean ("make-lrc")  && !window.player_page.right_bar.entry_rev.child_revealed) {
                 NikiApp.settings.set_boolean ("information-button", !NikiApp.settings.get_boolean ("information-button"));
-            } else if (match_keycode (Gdk.Key.s, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
+            } else if (match_keycode (Gdk.Key.s, keycode) && !NikiApp.settings.get_boolean ("make-lrc")  && !window.player_page.right_bar.entry_rev.child_revealed) {
                 NikiApp.settings.set_boolean ("settings-button", !NikiApp.settings.get_boolean ("settings-button"));
-            } else if (match_keycode (Gdk.Key.r, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
+            } else if (match_keycode (Gdk.Key.r, keycode) && !NikiApp.settings.get_boolean ("make-lrc")  && !window.player_page.right_bar.entry_rev.child_revealed) {
                 repeatmode.switch_repeat_mode ();
-            } else if (match_keycode (Gdk.Key.h, keycode) && !NikiApp.settings.get_boolean ("make-lrc")) {
+            } else if (match_keycode (Gdk.Key.h, keycode) && !NikiApp.settings.get_boolean ("make-lrc")  && !window.player_page.right_bar.entry_rev.child_revealed) {
 		        if (window.main_stack.visible_child_name == "player") {
                     window.player_page.top_bar.button_home ();
                 } else if (window.welcome_page.stack.visible_child_name == "dlna" && window.main_stack.visible_child_name != "player") {

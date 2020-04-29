@@ -106,6 +106,7 @@ namespace niki {
             asyncimage.pixel_size = 85;
             asyncimage.margin_end = 5;
             var openimage = new Gtk.Button ();
+            openimage.focus_on_click = false;
             openimage.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             openimage.get_style_context ().add_class ("transparantbg");
             openimage.add (asyncimage);
