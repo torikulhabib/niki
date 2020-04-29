@@ -640,30 +640,23 @@ namespace niki {
                 NikiApp.settings.set_boolean("subtitle-available", true);
             }
             var file = File.new_for_uri (check);
+            string? lyric_uri = null;
             switch (NikiApp.settings.get_int ("location-save")) {
                 case 0 :
-                    string? lyric_uri = get_playing_lyric (check);
-                    if (lyric_uri != null && lyric_uri != check) {
-                        bottom_bar.seekbar_widget.on_lyric_update (file_lyric (lyric_uri), this);
-                        NikiApp.settings.set_boolean("lyric-available", true);
-                    }
+                    lyric_uri = get_playing_lyric (check);
                     break;
                 case 1 :
                     var file_uri = File.new_for_path (@"$(NikiApp.settings.get_string ("lyric-location"))/$(file.get_basename ())");
-                    string? lyric_uri = get_playing_lyric (file_uri.get_uri ());
-                    if (lyric_uri != null && lyric_uri != file_uri.get_uri ()) {
-                        bottom_bar.seekbar_widget.on_lyric_update (file_lyric (lyric_uri), this);
-                        NikiApp.settings.set_boolean("lyric-available", true);
-                    }
+                    lyric_uri = get_playing_lyric (file_uri.get_uri ());
                     break;
                 case 2 :
                     var file_uri = File.new_for_path (@"$(NikiApp.settings.get_string ("ask-lyric"))/$(file.get_basename ())");
-                    string? lyric_uri = get_playing_lyric (file_uri.get_uri ());
-                    if (lyric_uri != null && lyric_uri != file_uri.get_uri ()) {
-                        bottom_bar.seekbar_widget.on_lyric_update (file_lyric (lyric_uri), this);
-                        NikiApp.settings.set_boolean("lyric-available", true);
-                    }
+                    lyric_uri = get_playing_lyric (file_uri.get_uri ());
                     break;
+            }
+            if (lyric_uri != null) {
+                bottom_bar.seekbar_widget.on_lyric_update (file_lyric (lyric_uri), this);
+                NikiApp.settings.set_boolean("lyric-available", true);
             }
         }
 
