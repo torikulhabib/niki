@@ -353,18 +353,15 @@ namespace niki {
             get_content_area ().add (overlay);
 
             save_button = new Gtk.Button.with_label (StringPot.Save);
-            save_button.focus_on_click = false;
             save_button.get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
             save_button.clicked.connect (save_to_file);
 
             var close_button = new Gtk.Button.with_label (StringPot.Close);
-            close_button.focus_on_click = false;
             close_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FRAME);
             close_button.clicked.connect (()=>{
                 destroy();
             });
             clear_button = new Gtk.Button.with_label (StringPot.Clear);
-            clear_button.focus_on_click = false;
             clear_button.get_style_context ().add_class (Gtk.STYLE_CLASS_DESTRUCTIVE_ACTION);
             clear_button.clicked.connect (clear_tags);
 
@@ -517,9 +514,9 @@ namespace niki {
                     file_flac.remove_picture ();
                     file_flac.save ();
                 }
-                update_file (file_name);
                 info_send (@"$(StringPot.Clear) $(file.get_basename ())");
                 audio_info (file_name);
+                update_file (file_name);
             }
         }
         private void set_media (string file_name) {

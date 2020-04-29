@@ -249,8 +249,6 @@ namespace niki {
                             bottom_bar.previous_revealer.set_reveal_child (false);
                             bottom_bar.next_revealer.set_reveal_child (false);
                             Inhibitor.instance.uninhibit ();
-                        } else {
-                            playback.playing = true;
                         }
                         break;
                 }
