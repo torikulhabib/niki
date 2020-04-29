@@ -53,7 +53,6 @@ namespace niki {
 
         public RightBar (PlayerPage? player_page) {
             this.player_page = player_page;
-            get_style_context ().add_class ("playlist");
             transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             transition_duration = 500;
             events |= Gdk.EventMask.POINTER_MOTION_MASK;
@@ -155,7 +154,8 @@ namespace niki {
                 entry.grab_focus_without_selecting ();
             });
             var header = new Gtk.ActionBar ();
-            header.get_style_context ().add_class ("playlist");
+            header.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            header.get_style_context ().add_class ("transbgborder");
             header.hexpand = true;
             header.pack_start (focus_button);
             header.set_center_widget (header_label);
@@ -168,6 +168,7 @@ namespace niki {
 		    box_action.add (edit_button);
 
             playlist = new Playlist();
+            playlist.get_style_context ().add_class ("scrollbar");
             playlist.set_search_entry (entry);
             playlist_scrolled = new Gtk.ScrolledWindow (null, null);
             playlist_scrolled.get_style_context ().add_class ("scrollbar");
@@ -180,7 +181,8 @@ namespace niki {
             });
 
             var main_actionbar = new Gtk.ActionBar ();
-            main_actionbar.get_style_context ().add_class ("playlist");
+            main_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            main_actionbar.get_style_context ().add_class ("transbgborder");
             main_actionbar.hexpand = true;
             main_actionbar.pack_start (box_action);
             main_actionbar.pack_end (font_button_rev);
@@ -194,8 +196,8 @@ namespace niki {
             content_box.add (entry_rev);
             content_box.add (playlist_scrolled);
             content_box.add (main_actionbar);
-            content_box.show_all ();
             add (content_box);
+            show_all ();
             uint remove_time = 0;
             size_allocate.connect (()=> {
                 if (remove_time != 0) {

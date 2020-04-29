@@ -173,9 +173,9 @@ namespace niki {
             repeat_button = new RepeatButton ();
             no_plylist_repeat = new RepeatButton ();
             no_rep_rev = new Gtk.Revealer ();
-            no_rep_rev.add (no_plylist_repeat);
             no_rep_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
             no_rep_rev.transition_duration = 100;
+            no_rep_rev.add (no_plylist_repeat);
 
             shuffle_button = new Gtk.Button.from_icon_name ("media-playlist-no-repeat-symbolic", Gtk.IconSize.BUTTON);
             shuffle_button.focus_on_click = false;
@@ -203,9 +203,9 @@ namespace niki {
                 font_button.tooltip_text = NikiApp.settings.get_string ("font");
             });
             font_but_rev = new Gtk.Revealer ();
-            font_but_rev.add (font_button);
             font_but_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
             font_but_rev.transition_duration = 100;
+            font_but_rev.add (font_button);
 
             menu_settings = new Gtk.Button.from_icon_name ("open-menu-symbolic", Gtk.IconSize.BUTTON);
             menu_settings.focus_on_click = false;
@@ -351,9 +351,9 @@ namespace niki {
             setting_actionbar.show_all ();
 
             var settings_revealer = new Gtk.Revealer ();
-            settings_revealer.add (setting_actionbar);
             settings_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_UP;
             settings_revealer.transition_duration = 500;
+            settings_revealer.add (setting_actionbar);
             settings_revealer.set_reveal_child (NikiApp.settings.get_boolean ("settings-button"));
             NikiApp.settings.changed["settings-button"].connect (() => {
                 reveal_control ();
@@ -386,9 +386,9 @@ namespace niki {
 		    box_action.pack_start (stop_revealer, false, false, 0);
 		    box_action.pack_start (next_revealer, false, false, 0);
             box_action_revealer = new Gtk.Revealer ();
-            box_action_revealer.add (box_action);
             box_action_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
             box_action_revealer.transition_duration = 50;
+            box_action_revealer.add (box_action);
 
 		    var action_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
 		    action_box.pack_start (shuffle_button, false, false, 0);
@@ -397,18 +397,18 @@ namespace niki {
 		    action_box.pack_start (next_button_center, false, false, 0);
 		    action_box.pack_start (repeat_button, false, false, 0);
             action_box_rev = new Gtk.Revealer ();
-            action_box_rev.add (action_box);
             action_box_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
             action_box_rev.transition_duration = 50;
+            action_box_rev.add (action_box);
 
 		    var box_set_list = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
 		    box_set_list.pack_start (subtitle_revealer, false, false, 0);
 		    box_set_list.pack_start (menu_settings, false, false, 0);
 		    box_set_list.pack_start (fullscreen_button, false, false, 0);
             box_set_list_rev = new Gtk.Revealer ();
-            box_set_list_rev.add (box_set_list);
             box_set_list_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
             box_set_list_rev.transition_duration = 50;
+            box_set_list_rev.add (box_set_list);
 
             var main_actionbar = new Gtk.ActionBar ();
             main_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
@@ -426,7 +426,6 @@ namespace niki {
             main_actionbar.pack_end (font_but_rev);
             main_actionbar.pack_end (setting_niki);
             main_actionbar.pack_end (no_rep_rev);
-            main_actionbar.show_all ();
 
 		    var grid = new Gtk.Grid ();
             grid.orientation = Gtk.Orientation.VERTICAL;
@@ -438,7 +437,6 @@ namespace niki {
             grid.add (time_music);
             grid.add (main_actionbar);
             grid.add (settings_revealer);
-            grid.show_all ();
             add (grid);
             show_all ();
             volume_widget.leave_scale.connect (reveal_volume);

@@ -66,7 +66,7 @@ namespace niki {
             camerarightbar = new CameraRightBar (this);
             right_actor = new GtkClutter.Actor ();
             right_actor.contents = camerarightbar;
-            right_actor.opacity = 255;
+            right_actor.background_color = Clutter.Color.from_string ("black") { alpha = 0 };
             right_actor.add_constraint (new Clutter.AlignConstraint (stage, Clutter.AlignAxis.X_AXIS, 1));
             right_actor.add_constraint (new Clutter.BindConstraint (stage, Clutter.BindCoordinate.HEIGHT, 1));
             stage.add_child (right_actor);
@@ -74,7 +74,7 @@ namespace niki {
             cameraleftbar = new CameraLeftBar (this);
             left_actor = new GtkClutter.Actor ();
             left_actor.contents = cameraleftbar;
-            left_actor.opacity = 255;
+            left_actor.background_color = Clutter.Color.from_string ("black") { alpha = 0 };
             left_actor.add_constraint (new Clutter.AlignConstraint (stage, Clutter.AlignAxis.X_AXIS, 0));
             left_actor.add_constraint (new Clutter.BindConstraint (stage, Clutter.BindCoordinate.HEIGHT, 1));
             stage.add_child (left_actor);
@@ -82,7 +82,7 @@ namespace niki {
             cameratopbar = new CameraTopBar ();
             top_actor = new GtkClutter.Actor ();
             top_actor.contents = cameratopbar;
-            top_actor.opacity = 255;
+            top_actor.background_color = Clutter.Color.from_string ("black") { alpha = 0 };
             top_actor.add_constraint (new Clutter.AlignConstraint (stage, Clutter.AlignAxis.Y_AXIS, 0));
             top_actor.add_constraint (new Clutter.BindConstraint (stage, Clutter.BindCoordinate.WIDTH, 0));
             stage.add_child (top_actor);
@@ -90,7 +90,7 @@ namespace niki {
             camerabottombar = new CameraBottomBar (this);
             bottom_actor = new GtkClutter.Actor ();
             bottom_actor.contents = camerabottombar;
-            bottom_actor.opacity = 255;
+            bottom_actor.background_color = Clutter.Color.from_string ("black") { alpha = 0 };
             bottom_actor.add_constraint (new Clutter.AlignConstraint (stage, Clutter.AlignAxis.Y_AXIS, 1));
             bottom_actor.add_constraint (new Clutter.BindConstraint (stage, Clutter.BindCoordinate.WIDTH, 1));
             stage.add_child (bottom_actor); 

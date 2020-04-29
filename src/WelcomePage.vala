@@ -127,6 +127,7 @@ namespace niki {
 
             stack = new Gtk.Stack ();
             stack.transition_type = Gtk.StackTransitionType.SLIDE_LEFT_RIGHT;
+            stack.homogeneous = false;
             stack.transition_duration = 500;
             stack.add_named (vertical_grid, "home");
             stack.add_named (dlna_grid, "dlna");
@@ -134,7 +135,6 @@ namespace niki {
             stack.add_named (welcome_drive, "dvd");
             stack.add_named (devicegrid, "device");
             stack.visible_child = vertical_grid;
-            stack.vhomogeneous = false;
             stack.show_all ();
 
             stack.notify["visible-child"].connect (() => {

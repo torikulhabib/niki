@@ -30,7 +30,6 @@ namespace niki {
         private MediaEditor mediaeditor;
 
         construct {
-            get_style_context ().add_class ("playlist");
             liststore = new Gtk.ListStore (PlaylistColumns.N_COLUMNS, typeof (Icon), typeof (Gdk.Pixbuf), typeof (string), typeof (string), typeof (string), typeof (string), typeof (string), typeof (string), typeof (bool), typeof (int), typeof (int));
             model = liststore;
             headers_visible = activate_on_single_click = false;

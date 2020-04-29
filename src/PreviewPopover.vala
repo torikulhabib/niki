@@ -43,7 +43,7 @@ namespace niki {
             clutter = new GtkClutter.Embed ();
             clutter.margin = 1;
             var stage = (Clutter.Stage)clutter.get_stage ();
-            stage.background_color = Clutter.Color.from_string ("black");
+            stage.background_color = Clutter.Color.from_string ("black") { alpha = 0 };
             var aspectratio = new ClutterGst.Aspectratio ();
             aspectratio.player = playback;
             stage.content = aspectratio;
@@ -57,7 +57,6 @@ namespace niki {
             stage.add_child (label_progress_actor);
             modal = false;
             can_focus = false;
-            opacity = 255;
             add (clutter);
             hide ();
             NikiApp.settings.changed["uri-video"].connect (load_playback);

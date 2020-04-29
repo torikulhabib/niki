@@ -71,7 +71,7 @@ namespace niki {
             playback = new PlaybackPlayer ();
             playback.set_seek_flags (ClutterGst.SeekFlags.ACCURATE);
             stage = get_stage () as Clutter.Stage;
-            stage.background_color = Clutter.Color.from_string ("black");
+            stage.background_color = Clutter.Color.from_string ("black") { alpha = 0 };
             aspect_ratio = new ClutterGst.Aspectratio ();
             aspect_ratio.player = playback;
             stage.content = aspect_ratio;
@@ -155,7 +155,7 @@ namespace niki {
             right_bar = new RightBar (this);
             right_actor = new GtkClutter.Actor ();
             right_actor.contents = right_bar;
-            right_actor.opacity = 255;
+            right_actor.background_color = Clutter.Color.from_string ("black") { alpha = 0 };
             right_actor.add_constraint (new Clutter.AlignConstraint (stage, Clutter.AlignAxis.X_AXIS, 1));
             right_actor.add_constraint (new Clutter.BindConstraint (stage, Clutter.BindCoordinate.HEIGHT, 1));
             stage.add_child (right_actor);
@@ -163,7 +163,7 @@ namespace niki {
             top_bar = new TopBar (this);
             top_actor = new GtkClutter.Actor ();
             top_actor.contents = top_bar;
-            top_actor.opacity = 255;
+            top_actor.background_color = Clutter.Color.from_string ("black") { alpha = 0 };
             top_actor.add_constraint (new Clutter.AlignConstraint (stage, Clutter.AlignAxis.Y_AXIS, 0));
             top_actor.add_constraint (new Clutter.BindConstraint (stage, Clutter.BindCoordinate.WIDTH, 0));
             stage.add_child (top_actor);
@@ -171,7 +171,7 @@ namespace niki {
             notifybottombar = new NotifyBottomBar (this);
             bottom_actor_notif = new GtkClutter.Actor ();
             bottom_actor_notif.contents = notifybottombar;
-            bottom_actor_notif.opacity = 255;
+            bottom_actor_notif.background_color = Clutter.Color.from_string ("black") { alpha = 0 };
             bottom_actor_notif.add_constraint (new Clutter.AlignConstraint (stage, Clutter.AlignAxis.Y_AXIS, 1));
             bottom_actor_notif.add_constraint (new Clutter.BindConstraint (stage, Clutter.BindCoordinate.WIDTH, 1));
             stage.add_child (bottom_actor_notif);
@@ -179,7 +179,7 @@ namespace niki {
             bottom_bar.bind_property ("playing", playback, "playing", BindingFlags.BIDIRECTIONAL);
             bottom_actor = new GtkClutter.Actor ();
             bottom_actor.contents = bottom_bar;
-            bottom_actor.opacity = 255;
+            bottom_actor.background_color = Clutter.Color.from_string ("black") { alpha = 0 };
             bottom_actor.add_constraint (new Clutter.AlignConstraint (stage, Clutter.AlignAxis.Y_AXIS, 1));
             bottom_actor.add_constraint (new Clutter.BindConstraint (stage, Clutter.BindCoordinate.WIDTH, 1));
             stage.add_child (bottom_actor);

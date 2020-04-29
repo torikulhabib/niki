@@ -52,14 +52,10 @@
     color: @SolidWhite;
     background: @colorAccent;
 }
-.playlist:selected {
-    color: @SolidWhite;
-    background: @colorAccent;
-}
 
 .playlist {
     color: @SolidWhite;
-    background: rgba (0,0,0,0.2);
+    background: rgba (0,0,0,0.4);
     border-color: @transparancyColor;
 }
 
@@ -154,10 +150,14 @@
 }
 
 .scrollbar {
+    color: @SolidWhite;
     background-color: @transparancyColor;
     border-color: @myColorPrimary;
 }
-
+.scrollbar:selected {
+    color: @SolidWhite;
+    background: @colorAccent;
+}
 .scrollbar trough slider {
     background-color: rgba (200, 200, 200, 1);
     border-color: @transparancyColor;
