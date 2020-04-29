@@ -79,9 +79,13 @@ namespace niki {
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             get_style_context ().add_class ("niki");
             title_entry = new MediaEntry ("com.github.torikulhabib.niki.title-symbolic","edit-paste-symbolic");
+            title_entry.tooltip_notify.connect (info_send);
             artist_entry = new MediaEntry ("avatar-default-symbolic", "edit-paste-symbolic");
+            artist_entry.tooltip_notify.connect (info_send);
             album_entry = new MediaEntry ("media-optical-symbolic", "edit-paste-symbolic");
+            album_entry.tooltip_notify.connect (info_send);
             genre_entry = new MediaEntry ("audio-x-generic-symbolic", "edit-paste-symbolic");
+            genre_entry.tooltip_notify.connect (info_send);
             comment_textview = new Gtk.TextView ();
             comment_textview.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             comment_textview.set_wrap_mode (Gtk.WrapMode.WORD_CHAR);
@@ -91,9 +95,11 @@ namespace niki {
             comment_scr.add (comment_textview);
             var local_time = new DateTime.now_local ();
             date_spinbutton = new Gtk.SpinButton.with_range (0, local_time.get_year (), 1);
+            date_spinbutton.focus_on_click = false;
             date_spinbutton.margin_end = 10;
             date_spinbutton.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             track_spinbutton = new Gtk.SpinButton.with_range (0, 500, 1);
+            track_spinbutton.focus_on_click = false;
             track_spinbutton.margin_end = 10;
             track_spinbutton.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
 
@@ -171,11 +177,13 @@ namespace niki {
             label_name.get_style_context ().add_class (Granite.STYLE_CLASS_H4_LABEL);
 
             var previous_button = new Gtk.Button.from_icon_name ("go-previous-symbolic");
+            previous_button.focus_on_click = false;
             previous_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             previous_button.get_style_context ().add_class ("transparantbg");
             previous_button.clicked.connect (previous_track);
 
             var next_button = new Gtk.Button.from_icon_name ("go-next-symbolic");
+            next_button.focus_on_click = false;
             next_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             next_button.get_style_context ().add_class ("transparantbg");
             next_button.clicked.connect (next_track);
@@ -205,25 +213,45 @@ namespace niki {
             container_video.margin_end = 10;
 
             duration_video = new MediaEntry ("tools-timer-symbolic", "", false);
+            duration_video.tooltip_notify.connect (info_send);
             pixel_ratio = new MediaEntry ("view-fullscreen-symbolic", "", false);
+            pixel_ratio.tooltip_notify.connect (info_send);
             sekable_video = new MediaEntry ("media-seek-forward-symbolic", "", false);
+            sekable_video.tooltip_notify.connect (info_send);
             audio_codec = new MediaEntry ("audio-x-generic-symbolic", "", false);
+            audio_codec.tooltip_notify.connect (info_send);
             video_codec = new MediaEntry ("video-x-generic-symbolic", "", false);
+            video_codec.tooltip_notify.connect (info_send);
             date_time_video = new MediaEntry ("x-office-calendar-symbolic", "", false);
+            date_time_video.tooltip_notify.connect (info_send);
             interlaced = new MediaEntry ("insert-link-symbolic", "", false);
+            interlaced.tooltip_notify.connect (info_send);
             video_width = new MediaEntry ("video-display-symbolic", "", false);
+            video_width.tooltip_notify.connect (info_send);
             video_height = new MediaEntry ("video-display-symbolic", "", false);
+            video_height.tooltip_notify.connect (info_send);
             container_format = new MediaEntry ("video-x-generic-symbolic", "", false);
+            container_format.tooltip_notify.connect (info_send);
             video_bitrate = new MediaEntry ("video-x-generic-symbolic", "", false);
+            video_bitrate.tooltip_notify.connect (info_send);
             video_bitrate_max = new MediaEntry ("video-x-generic-symbolic", "", false);
+            video_bitrate_max.tooltip_notify.connect (info_send);
             frame_rate = new MediaEntry ("video-x-generic-symbolic", "", false);
+            frame_rate.tooltip_notify.connect (info_send);
             video_depth = new MediaEntry ("video-x-generic-symbolic", "", false);
+            video_depth.tooltip_notify.connect (info_send);
             audio_bitrate = new MediaEntry ("audio-x-generic-symbolic", "", false);
+            audio_bitrate.tooltip_notify.connect (info_send);
             audio_bitrate_max = new MediaEntry ("audio-x-generic-symbolic", "", false);
+            audio_bitrate_max.tooltip_notify.connect (info_send);
             audio_language = new MediaEntry ("audio-x-generic-symbolic", "", false);
+            audio_language.tooltip_notify.connect (info_send);
             audio_chanel = new MediaEntry ("audio-x-generic-symbolic", "", false);
+            audio_chanel.tooltip_notify.connect (info_send);
             audio_samplerate = new MediaEntry ("audio-x-generic-symbolic", "", false);
+            audio_samplerate.tooltip_notify.connect (info_send);
             audio_depth = new MediaEntry ("audio-x-generic-symbolic", "", false);
+            audio_depth.tooltip_notify.connect (info_send);
 
             video_asyncimage = new AsyncImage (true);
             video_asyncimage.pixel_size = 85;
@@ -325,15 +353,18 @@ namespace niki {
             get_content_area ().add (overlay);
 
             save_button = new Gtk.Button.with_label (StringPot.Save);
+            save_button.focus_on_click = false;
             save_button.get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
             save_button.clicked.connect (save_to_file);
 
             var close_button = new Gtk.Button.with_label (StringPot.Close);
+            close_button.focus_on_click = false;
             close_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FRAME);
             close_button.clicked.connect (()=>{
                 destroy();
             });
             clear_button = new Gtk.Button.with_label (StringPot.Clear);
+            clear_button.focus_on_click = false;
             clear_button.get_style_context ().add_class (Gtk.STYLE_CLASS_DESTRUCTIVE_ACTION);
             clear_button.clicked.connect (clear_tags);
 
@@ -349,6 +380,10 @@ namespace niki {
             destroy.connect(()=>{
                 permanent_delete (File.new_for_path (cache_image ("setcover")));
             });
+        }
+        private void info_send (string text) {
+            infobar.title = text;
+            infobar.send_notification ();
         }
 
         private void previous_track () {
@@ -449,8 +484,7 @@ namespace niki {
                     tagfile.tag.track = (uint) track_spinbutton.value;
                     tagfile.save ();
                 }
-                infobar.title = @"$(StringPot.Taged) $(file.get_basename ())";
-                infobar.send_notification ();
+                info_send (@"$(StringPot.Taged) $(file.get_basename ())");
                 update_file (file_name);
             }
         }
@@ -484,8 +518,7 @@ namespace niki {
                     file_flac.save ();
                 }
                 update_file (file_name);
-                infobar.title = @"$(StringPot.Clear) $(file.get_basename ())";
-                infobar.send_notification ();
+                info_send (@"$(StringPot.Clear) $(file.get_basename ())");
                 audio_info (file_name);
             }
         }

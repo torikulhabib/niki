@@ -23,7 +23,7 @@ namespace niki {
     private class MediaEntry : Gtk.Entry {
         public string first_label { get; construct; }
         public string second_label { get; construct; }
-
+        public signal void tooltip_notify (string text);
         public MediaEntry (string first_label, string second_label, bool second = true) {
             Object (
                 first_label: first_label,
@@ -34,14 +34,20 @@ namespace niki {
 
         construct {
             primary_icon_name = first_label;
+            primary_icon_tooltip_text = _("Copy");
             secondary_icon_name = second_label;
             secondary_icon_tooltip_text = _("Paste");
             hexpand = true;
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             icon_press.connect ((pos, event) => {
+                Gtk.Clipboard clipboard = Gtk.Clipboard.get_for_display (get_display (), Gdk.SELECTION_CLIPBOARD);
+                if (pos == Gtk.EntryIconPosition.PRIMARY) {
+                    clipboard.set_text (text, text.length);
+                    tooltip_notify (primary_icon_tooltip_text);
+                }
                 if (pos == Gtk.EntryIconPosition.SECONDARY) {
-                    Gtk.Clipboard clipboard = Gtk.Clipboard.get_for_display (get_display (), Gdk.SELECTION_CLIPBOARD);
                     text = clipboard.wait_for_text ().strip ();
+                    tooltip_notify (secondary_icon_tooltip_text);
                 }
             });
             margin_end = 10;

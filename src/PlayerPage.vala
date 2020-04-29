@@ -183,7 +183,6 @@ namespace niki {
             bottom_actor.add_constraint (new Clutter.AlignConstraint (stage, Clutter.AlignAxis.Y_AXIS, 1));
             bottom_actor.add_constraint (new Clutter.BindConstraint (stage, Clutter.BindCoordinate.WIDTH, 1));
             stage.add_child (bottom_actor);
-            show_all ();
 
             stage.motion_event.connect ((event) => {
                 if (!bottom_bar.child_revealed) {
