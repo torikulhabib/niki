@@ -218,11 +218,7 @@ namespace niki {
             button_release_event.connect (() => {
                 return mouse_hovered = false;
             });
-            playlist_widget ().play.connect ((file, size_path, mediatype, playnow) => {
-                play_file (file, size_path, mediatype, playnow);
-                playback.notify["idle"].connect (load_current_list);
-            });
-
+            playlist_widget ().play.connect (play_file);
             bottom_bar.notify["child-revealed"].connect (mouse_blank);
             top_bar.notify["child-revealed"].connect (mouse_blank);
             right_bar.notify["child-revealed"].connect (mouse_blank);
@@ -340,7 +336,7 @@ namespace niki {
         }
         public void load_current_list () {
             if (NikiApp.window.main_stack.visible_child_name == "player" && !NikiApp.settings.get_boolean("home-signal") && playback.uri != null) {
-                playlist_widget ().set_current (playback.uri);
+                playlist_widget ().set_current (playback.uri, this);
             }
         }
         private void buffer_fill () {
@@ -696,6 +692,7 @@ namespace niki {
                 Idle.add (audio_banner);
             }
             update_position_cover ();
+            load_current_list ();
         }
 
         public void next () {

@@ -475,7 +475,7 @@ namespace niki {
             }
         }
 
-        public Gtk.TreePath set_current (string current_file) {
+        public Gtk.TreePath set_current (string current_file, PlayerPage? player_page) {
             total = 0;
             int current_played = 0;
             liststore.foreach ((model, path, iter) => {
@@ -492,7 +492,7 @@ namespace niki {
             Gtk.TreeIter new_iter;
             liststore.get_iter_from_string (out new_iter, current_played.to_string ());
             if (liststore.iter_is_valid (new_iter)) {
-                liststore.set (new_iter, PlaylistColumns.PLAYING, new ThemedIcon ("media-playback-start-symbolic"));
+                liststore.set (new_iter, PlaylistColumns.PLAYING, player_page.playback.playing? new ThemedIcon ("media-playback-start-symbolic") :  new ThemedIcon ("media-playback-pause-symbolic"));
             }
             current = current_played;
             get_status_list ();

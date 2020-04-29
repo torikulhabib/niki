@@ -177,7 +177,7 @@ namespace niki {
             playlist_scrolled.add (playlist);
             playlist_scrolled.show_all ();
             focus_button.clicked.connect ( () => {
-                playlist.scroll_to_cell (playlist.set_current (player_page.playback.uri), null, true, (float) 0.5, 0);
+                playlist.scroll_to_cell (playlist.set_current (player_page.playback.uri, player_page), null, true, (float) 0.5, 0);
             });
 
             var main_actionbar = new Gtk.ActionBar ();
