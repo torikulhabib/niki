@@ -153,6 +153,11 @@ namespace niki {
                 entry_rev.set_reveal_child (!entry_rev.child_revealed);
                 entry.grab_focus_without_selecting ();
             });
+            entry_rev.notify["child-revealed"].connect (() => {
+                if (!entry_rev.child_revealed) {
+                    entry.text = "";
+                }
+            });
             var header = new Gtk.ActionBar ();
             header.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             header.get_style_context ().add_class ("transbgborder");

@@ -70,8 +70,8 @@ namespace niki {
                 window.show_all ();
                 window.unref ();
             } else {
-                window.show ();
                 if (NikiApp.settings.get_boolean ("audio-video") && window.main_stack.visible_child_name == "player") {
+                    window.show ();
                     return_hide_mode = false;
                     if (NikiApp.settings.get_int ("window-x") != -1 && NikiApp.settings.get_int ("window-y") != -1) {
                         window.move (NikiApp.settings.get_int ("window-x"), NikiApp.settings.get_int ("window-y"));
@@ -130,7 +130,6 @@ namespace niki {
                     arg_files = {};
                 } else {
                     window.position_window ();
-                    window.player_page.signal_playing ();
                 }
                 return 0;
             }

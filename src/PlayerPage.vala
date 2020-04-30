@@ -591,16 +591,16 @@ namespace niki {
             playback.audio_volume = NikiApp.settings.get_double ("volume-adjust");
         }
 
-        public void play_file (string uri, string filesize, int mediatype, bool from_beginning = true) {
+        private void play_file (string uri, string filesize, int mediatype, bool from_beginning = true) {
             NikiApp.settings.set_enum ("player-mode", mediatype);
             top_bar.label_info.set_label (NikiApp.settings.get_string("title-playing") + filesize);
             top_bar.info_label_full.set_label (NikiApp.settings.get_string("title-playing") + filesize);
             if (uri.has_prefix ("http")) {
                 NikiApp.settings.set_string("uri-video", uri);
                 playback.uri = uri;
-                signal_playing ();
                 playback.playing = from_beginning;
                 check_lr_sub ();
+                signal_playing ();
             } else {
                 NikiApp.settings.set_string("uri-video", uri);
                 if (!uri.down().contains (NikiApp.settings.get_string ("last-played").down())) {
@@ -612,8 +612,8 @@ namespace niki {
                     NikiApp.settings.set_double ("last-stopped", 0.0);
                 }
                 sub_lr_check (uri);
-                signal_playing ();
                 playback.playing = from_beginning;
+                signal_playing ();
             }
             if (NikiApp.settings.get_boolean("home-signal")) {
                 NikiApp.settings.set_boolean("home-signal", false);
@@ -660,7 +660,7 @@ namespace niki {
             }
         }
 
-        public void signal_playing () {
+        private void signal_playing () {
             bottom_bar.stop_revealer.set_reveal_child (true);
             if (NikiApp.settings.get_enum ("player-mode") == PlayerMode.VIDEO || NikiApp.settings.get_enum ("player-mode") == PlayerMode.STREAMVID) {
                 if (NikiApp.settings.get_boolean("audio-video")) {

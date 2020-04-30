@@ -151,10 +151,7 @@ namespace niki {
                 }
             });
             serverdlna.browse_metadata_finish.connect (browse_metadata_cb);
-            serverdlna.browse_finish.connect ((didl_xml) => {
-                NikiApp.settings.set_boolean ("spinner-wait", sensitive = true);
-                browse_cb (didl_xml);
-            });
+            serverdlna.browse_finish.connect (browse_cb);
         }
         public Gtk.TreeIter selected_iter () {
             Gtk.TreeIter iter;
@@ -237,6 +234,7 @@ namespace niki {
         }
 
         private void browse_cb (string didl_xml) {
+            NikiApp.settings.set_boolean ("spinner-wait", sensitive = true);
             if (didl_xml != null) {
                 var parser = new GUPnP.DIDLLiteParser ();
                     parser.object_available.connect (on_didl_object_available);

@@ -72,8 +72,6 @@ namespace niki {
                         Source.remove (hiding_timer);
                         hiding_timer = 0;
                     }
-                } else {
-                    reveal_control ();
                 }
             }
         }
@@ -138,6 +136,7 @@ namespace niki {
             leave_notify_event.connect ((event) => {
                 if (NikiApp.window.is_active) {
                     if (event.window == get_window ()) {
+                        reveal_control ();
                         hovered = false;
                     }
                 }
@@ -446,6 +445,9 @@ namespace niki {
                 signal_playlist ();
             });
             notify["child-revealed"].connect (() => {
+                if (!child_revealed) {
+                    hovered = child_revealed;
+                }
                 playerpage.right_bar.reveal_control (false);
             });
             NikiApp.settings.changed["make-lrc"].connect (make_grid_lrc.resize_scr);

@@ -318,8 +318,8 @@ namespace niki {
                             permanent_delete (File.new_for_path (cache_image (info_songs)));
                             Gdk.Pixbuf pixbuf = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (path.get_uri ()).get_tags ()), 48);
                             pix_to_file (pixbuf, nameimage);
-                            Gdk.Pixbuf preview = circle_pix (pixbuf);
-                            liststore.set (iter, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, info_songs, PlaylistColumns.ARTISTTITLE, file_type (path) == 0? Markup.escape_text (info_songs) : @"<b>$(Markup.escape_text (info_songs))</b>\n$(Markup.escape_text (artist_music)) - <i>$(Markup.escape_text (album_music))</i>", PlaylistColumns.ALBUMMUSIC, album_music, PlaylistColumns.ARTISTMUSIC, artist_music);
+                            liststore.set (iter, PlaylistColumns.PREVIEW, circle_pix (pixbuf), PlaylistColumns.TITLE, info_songs, PlaylistColumns.ARTISTTITLE, file_type (path) == 0? Markup.escape_text (info_songs) : @"<b>$(Markup.escape_text (info_songs))</b>\n$(Markup.escape_text (artist_music)) - <i>$(Markup.escape_text (album_music))</i>", PlaylistColumns.ALBUMMUSIC, album_music, PlaylistColumns.ARTISTMUSIC, artist_music);
+                            item_added ();
                         }
                     }
                 });
