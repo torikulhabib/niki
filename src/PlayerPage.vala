@@ -660,7 +660,7 @@ namespace niki {
             }
         }
 
-        private void signal_playing () {
+        public void signal_playing () {
             bottom_bar.stop_revealer.set_reveal_child (true);
             if (NikiApp.settings.get_enum ("player-mode") == PlayerMode.VIDEO || NikiApp.settings.get_enum ("player-mode") == PlayerMode.STREAMVID) {
                 if (NikiApp.settings.get_boolean("audio-video")) {
