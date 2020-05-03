@@ -22,10 +22,11 @@
 namespace niki {
     public class TimeMusic : Gtk.Revealer {
         public signal void position_sec (int64 position);
+        public signal void reloadlrc ();
         public Gtk.Label progression_label;
         public Gtk.Label duration_label;
         private Gtk.Button make_lrc_but;
-        private Gtk.Button set_time_lrc;
+        private Gtk.Button search_time_lrc;
         private Pango.Layout layout;
         private Gtk.DrawingArea anim_area;
         private uint remove_time = 0;
@@ -92,12 +93,20 @@ namespace niki {
             make_lrc_but.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("make-lrc", !NikiApp.settings.get_boolean ("make-lrc"));
             });
-            set_time_lrc = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.time-lrc-symbolic", Gtk.IconSize.BUTTON);
-            set_time_lrc.focus_on_click = false;
-            set_time_lrc.get_style_context ().add_class ("button_action");
-            set_time_lrc.tooltip_text = StringPot.Set_Time_Lyric;
-            set_time_lrc.clicked.connect (() => {
-                position_sec ((int64)(playback.get_position () * 1000000));
+            search_time_lrc = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.time-lrc-symbolic", Gtk.IconSize.BUTTON);
+            search_time_lrc.focus_on_click = false;
+            search_time_lrc.get_style_context ().add_class ("button_action");
+            search_time_lrc.tooltip_text = StringPot.Set_Time_Lyric;
+            search_time_lrc.clicked.connect (() => {
+                if (NikiApp.settings.get_boolean ("make-lrc")) {
+                    position_sec ((int64)(playback.get_position () * 1000000));
+                } else {
+                    var search_lrc = new SearchDialog (playback.uri);
+                    search_lrc.show_all ();
+                    search_lrc.reload_liryc.connect (()=>{
+                        reloadlrc ();
+                    });
+                }
             });
             anim_area = new Gtk.DrawingArea ();
             anim_area.halign = Gtk.Align.CENTER;
@@ -110,16 +119,22 @@ namespace niki {
 
             var actionbar = new Gtk.ActionBar ();
             actionbar.get_style_context ().add_class ("transbgborder");
+            actionbar.hexpand = true;
             actionbar.pack_start (progression_label);
-            actionbar.pack_start (set_time_lrc);
+            actionbar.pack_start (search_time_lrc);
             actionbar.set_center_widget (anim_area);
             actionbar.pack_end (duration_label);
             actionbar.pack_end (make_lrc_but);
-            actionbar.hexpand = true;
             add (actionbar);
             show_all ();
             NikiApp.settings.changed["player-mode"].connect (start_anime);
             playback.notify["playing"].connect (start_anime);
+            NikiApp.settings.changed["make-lrc"].connect (seach_n_time);
+            seach_n_time ();
+        }
+        private void seach_n_time () {
+            ((Gtk.Image) search_time_lrc.image).icon_name = NikiApp.settings.get_boolean ("make-lrc")? "com.github.torikulhabib.niki.time-lrc-symbolic" : "system-search-symbolic";
+            search_time_lrc.tooltip_text = NikiApp.settings.get_boolean ("make-lrc")? StringPot.Set_Time_Lyric : StringPot.Search_Lyrics;
         }
         private void start_anime () {
             if (remove_time > 0 && NikiApp.settings.get_boolean("audio-video") && NikiApp.window.main_stack.visible_child_name == "player") {

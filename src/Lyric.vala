@@ -32,7 +32,9 @@ namespace niki {
         public int64 get_lyric_timestamp (int64 time_in_us, bool cur_pos = true) {
             return iterator_lyric (time_in_us, cur_pos).get_key ();
         }
-
+        public bool is_map_valid () {
+            return iterator_get ().valid;
+        }
         private Gee.BidirMapIterator<int64?, string> iterator_lyric (int64 time_in_us, bool cur_pos = true) {
             if (iterator_get ().get_key () > time_in_us) {
                 iterator_get ().first ();

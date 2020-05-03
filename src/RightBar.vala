@@ -143,7 +143,7 @@ namespace niki {
             var search_button = new Gtk.Button.from_icon_name ("system-search-symbolic", Gtk.IconSize.BUTTON);
             search_button.focus_on_click = false;
             search_button.get_style_context ().add_class ("button_action");
-            search_button.set_tooltip_text (StringPot.Go_to_Play);
+            search_button.set_tooltip_text (StringPot.Search);
             entry = new Gtk.Entry ();
             entry_rev = new Gtk.Revealer ();
             entry_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN;

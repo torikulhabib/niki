@@ -95,6 +95,9 @@ executable(
     'VideoCrop.vala',
     'LabelSpin.vala',
     'DeviceMonitor.vala',
+    'EngineViewlyrics.vala',
+    'SearchDialog.vala',
+    'EngineNetease.vala',
 
     c_args: c_args,
     dependencies: [

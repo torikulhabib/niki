@@ -28,7 +28,7 @@ namespace niki {
         private EqualizerGrid? equalizer_grid;
         private VideoGrid? video_grid;
         private TimeVideo? time_video;
-        private TimeMusic? time_music;
+        public TimeMusic? time_music;
         private VolumeWiget? volume_widget;
         public Gtk.Button play_button;
         private Gtk.Button menu_settings;

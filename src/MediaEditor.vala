@@ -345,12 +345,11 @@ namespace niki {
             grid_combine.orientation = Gtk.Orientation.VERTICAL;
             grid_combine.valign = Gtk.Align.FILL;
             grid_combine.add (arrows_grid);
+            grid_combine.add (infobar);
             grid_combine.add (stack);
             grid_combine.show_all ();
-            var overlay = new Gtk.Overlay ();
-            overlay.add (grid_combine);
-            overlay.add_overlay (infobar);
-            get_content_area ().add (overlay);
+
+            get_content_area ().add (grid_combine);
 
             save_button = new Gtk.Button.with_label (StringPot.Save);
             save_button.get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
@@ -373,6 +372,7 @@ namespace niki {
                 string file_name;
                 playlist.liststore.get (playlist.selected_iter (), PlaylistColumns.FILENAME, out file_name);
                 set_media (file_name);
+                NikiApp.window.player_page.right_bar.set_reveal_child (false);
             });
             destroy.connect(()=>{
                 permanent_delete (File.new_for_path (cache_image ("setcover")));

@@ -278,5 +278,11 @@ namespace niki {
         public abstract const string No_Device                  = _("No Device");
         public abstract const string Plug_And_Play              = _("Plug And Play");
         public abstract const string Go_to_Play                 = _("Go to Playing");
+        public abstract const string Search                     = _("Search");
+        public abstract const string Search_Lyrics              = _("Search Lyrics");
+        public abstract const string Type_File                  = _("Type");
+        public abstract const string Download                   = _("Download");
+        public abstract const string Succes_Download            = _("Succes Download");
+        public abstract const string Server                     = _("Server");
     }
 }

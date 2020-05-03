@@ -37,12 +37,9 @@ namespace niki {
         }
 
         construct {
-            margin = 3;
+            margin = 4;
             halign = Gtk.Align.CENTER;
             valign = Gtk.Align.START;
-            margin_top = 4;
-            margin_start = 4;
-            margin_end = 4;
             notification_label = new Gtk.Label (null);
             notification_label.ellipsize = Pango.EllipsizeMode.END;
             notification_label.hexpand = true;

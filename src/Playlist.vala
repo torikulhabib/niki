@@ -194,6 +194,7 @@ namespace niki {
             NikiApp.settings.changed["sort-by"].connect (get_random);
             NikiApp.settings.changed["shuffle-button"].connect (get_random);
             NikiApp.settings.changed["ascen-descen"].connect (get_random);
+            NikiApp.settings.changed["edit-playlist"].connect (remove_playlist);
             get_random ();
         }
         private bool remove_iter () {
@@ -201,7 +202,11 @@ namespace niki {
             if (!liststore.iter_is_valid (iter)) {
                 return Gdk.EVENT_PROPAGATE;
             }
-            liststore.remove (ref iter);
+            string filename;
+            liststore.get (iter, PlaylistColumns.FILENAME, out filename);
+            if (filename != NikiApp.window.player_page.playback.uri) {
+                liststore.remove (ref iter);
+            }
             update_playlist (50);
             return Gdk.EVENT_PROPAGATE;
         }
@@ -210,6 +215,16 @@ namespace niki {
             get_selection().get_selected(null, out iter);
             return iter;
         }
+        private void remove_playlist () {
+            item_added ();
+            liststore.foreach ((model, path, iter) => {
+                string filename;
+                model.get (iter, PlaylistColumns.FILENAME, out filename);
+                liststore.set (iter, PlaylistColumns.PLAYING, NikiApp.settings.get_boolean ("edit-playlist")? new ThemedIcon (filename == NikiApp.window.player_page.playback.uri? NikiApp.window.player_page.playback.playing? "media-playback-start-symbolic" : "media-playback-pause-symbolic" : "user-trash-symbolic") : filename == NikiApp.window.player_page.playback.uri? new ThemedIcon (NikiApp.window.player_page.playback.playing? "media-playback-start-symbolic" : "media-playback-pause-symbolic") : null);
+                return false;
+            });
+        }
+
         private void get_random () {
             if (NikiApp.settings.get_boolean ("shuffle-button")) {
                 ((Gtk.TreeSortable)liststore).set_sort_column_id (PlaylistColumns.FILESIZE, Gtk.SortType.ASCENDING);
@@ -264,6 +279,9 @@ namespace niki {
         private void create_dialog (Gtk.TreeIter iter_select) {
             string file_name, titlename;
             liststore.get (iter_select, PlaylistColumns.FILENAME, out file_name, PlaylistColumns.TITLE, out titlename);
+            if (file_name == NikiApp.window.player_page.playback.uri) {
+                return;
+            }
             var message_dialog = new MessageDialog.with_image_from_icon_name (StringPot.Are_Sure_Remove, StringPot.Are_Sure, File.new_for_uri (file_name).get_path (), "user-trash");
             var move_trash = new Gtk.Button.with_label (StringPot.Move_Trash);
             var delete_permanent = new Gtk.Button.with_label (StringPot.Delete_Permanent);
@@ -479,7 +497,7 @@ namespace niki {
             total = 0;
             int current_played = 0;
             liststore.foreach ((model, path, iter) => {
-                liststore.set (iter, PlaylistColumns.PLAYING, null);
+                liststore.set (iter, PlaylistColumns.PLAYING, NikiApp.settings.get_boolean ("edit-playlist")? new ThemedIcon ("user-trash-symbolic") : null);
                 string filename;
                 model.get (iter, PlaylistColumns.FILENAME, out filename);
                 if (filename == current_file) {
@@ -492,7 +510,7 @@ namespace niki {
             Gtk.TreeIter new_iter;
             liststore.get_iter_from_string (out new_iter, current_played.to_string ());
             if (liststore.iter_is_valid (new_iter)) {
-                liststore.set (new_iter, PlaylistColumns.PLAYING, player_page.playback.playing? new ThemedIcon ("media-playback-start-symbolic") :  new ThemedIcon ("media-playback-pause-symbolic"));
+                liststore.set (new_iter, PlaylistColumns.PLAYING, player_page.playback.playing? new ThemedIcon ("media-playback-start-symbolic") : new ThemedIcon ("media-playback-pause-symbolic"));
             }
             current = current_played;
             get_status_list ();

@@ -283,9 +283,7 @@ namespace niki {
 
             File file = File.new_for_path (filename);
             try {
-                if (file.query_exists ()) {
-                    file.delete ();
-                }
+                permanent_delete (file);
             	FileOutputStream out_stream = file.create (FileCreateFlags.REPLACE_DESTINATION);
             	out_stream.write (builder.str.data);
             } catch (Error e) {

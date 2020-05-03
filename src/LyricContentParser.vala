@@ -7,7 +7,7 @@ namespace niki {
         }
 
         public override bool can_parse (string item) {
-            return lyric_formatter.is_simplified_lrc (item) || lyric_formatter.is_lrc (item);
+            return lyric_formatter.is_simplified_lrc (item) || lyric_formatter.is_lrc (item) || lyric_formatter.is_mili_second_lrc (item);
         }
 
         public override void process (Gtk.ListStore lrc_store, string ln) {

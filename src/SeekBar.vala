@@ -155,13 +155,15 @@ namespace niki {
         }
 
         public void start (PlayerPage playerpage) {
-            if (playerpage.playback.playing) {
-                if (NikiApp.settings.get_boolean("lyric-available") && NikiApp.settings.get_boolean("audio-video")) {
-                    var seconds_time = ((int64)(playerpage.playback.get_position () * 1000000));
-                    current_lyric = @" $(string_lyric[lyric.get_lyric_timestamp (seconds_time).to_string ()]) ";
-                    playerpage.scroll_actor (sc_lyric[lyric.get_lyric_timestamp (seconds_time).to_string ()]);
-                    string next_lyric = @" $(string_lyric[lyric.get_lyric_timestamp (seconds_time, false).to_string ()]) ";
-                    next_lyric_end = next_lyric.contains (current_lyric)? "" : next_lyric;
+            if (NikiApp.settings.get_boolean("lyric-available") && NikiApp.settings.get_boolean("audio-video")) {
+                if (playerpage.playback.playing && lyric.is_map_valid ()) {
+                    if (NikiApp.settings.get_boolean("lyric-available") && NikiApp.settings.get_boolean("audio-video")) {
+                        var seconds_time = ((int64)(playerpage.playback.get_position () * 1000000));
+                        current_lyric = @" $(string_lyric[lyric.get_lyric_timestamp (seconds_time).to_string ()]) ";
+                        playerpage.scroll_actor (sc_lyric[lyric.get_lyric_timestamp (seconds_time).to_string ()]);
+                        string next_lyric = @" $(string_lyric[lyric.get_lyric_timestamp (seconds_time, false).to_string ()]) ";
+                        next_lyric_end = next_lyric.contains (current_lyric)? "" : next_lyric;
+                    }
                 }
             }
         }

@@ -151,15 +151,14 @@
 
 .scrollbar {
     color: @SolidWhite;
-    background-color: @transparancyColor;
-    border-color: @myColorPrimary;
+    background: @transparancyColor;
 }
 .scrollbar:selected {
     color: @SolidWhite;
     background: @colorAccent;
 }
 .scrollbar trough slider {
-    background-color: rgba (200, 200, 200, 1);
+    background: rgba (200, 200, 200, 1);
     border-color: @transparancyColor;
 }
 

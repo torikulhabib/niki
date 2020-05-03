@@ -325,6 +325,16 @@ namespace niki {
             audiovisualisation ();
             Idle.add (starting);
             window.welcome_page.getlink.errormsg.connect (string_notify);
+            NikiApp.settings.changed["location-save"].connect (()=>{
+                if (playback.uri != null) {
+                    sub_lr_check (playback.uri);
+                }
+            });
+            bottom_bar.time_music.reloadlrc.connect (()=>{
+                if (playback.uri != null) {
+                    sub_lr_check (playback.uri);
+                }
+            });
         }
         public Playlist? playlist_widget () {
             return right_bar.playlist;

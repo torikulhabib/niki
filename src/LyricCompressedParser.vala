@@ -6,7 +6,7 @@ namespace niki {
             lyric_formatter = new LyricFormatter ();
         }
         public override bool can_parse (string item) {
-            return is_compressed (lyric_formatter.split_simple_lrc (item)) || is_compressed (lyric_formatter.split_lrc (item));
+            return is_compressed (lyric_formatter.split_simple_lrc (item)) || is_compressed (lyric_formatter.split_lrc (item)) || is_compressed (lyric_formatter.split_mili_lrc (item));
         }
 
         public override void process (Gtk.ListStore lrc_store, string ln) {

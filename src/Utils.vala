@@ -205,6 +205,14 @@ namespace niki {
         STRING,
         N_COLUMNS
     }
+    private enum SearchLyric {
+        TITLE,
+        ARTIST,
+        TYPEFILE,
+        LINKFILE,
+        SERVER,
+        N_COLUMNS
+    }
     private enum LyricColumns {
         TIMEVIEW,
         LYRIC,
@@ -384,6 +392,11 @@ namespace niki {
             without_ext = uri.slice (0, last_dot);
         }
         return without_ext + "." + "lrc";
+    }
+    private string get_path_noname (string filename) {
+        var file = File.new_for_uri (filename);
+        string [] split_in = file.get_path ().split (file.get_basename ());
+        return split_in [0];
     }
     private static bool file_exists (string uri) {
         if (!uri.has_prefix ("http")) {

@@ -150,6 +150,10 @@ namespace niki {
                     time_outs = 0;
                 }
             });
+            test_collapse_row.connect (()=>{
+                columns_autosize ();
+                return false;
+            });
             serverdlna.browse_metadata_finish.connect (browse_metadata_cb);
             serverdlna.browse_finish.connect (browse_cb);
         }

@@ -83,7 +83,7 @@ namespace niki {
             message_grid.column_spacing = 5;
             message_grid.row_spacing = 0;
             message_grid.margin_start = message_grid.margin_end = 6;
-            message_grid.attach (image, 0, 0, 1, 2);
+            message_grid.attach (image, 0, 0, 1, 3);
             message_grid.attach (primary_label, 1, 0, 1, 1);
             message_grid.attach (secondary_label, 1, 1, 1, 1);
             message_grid.attach (third_label, 1, 2, 1, 1);
