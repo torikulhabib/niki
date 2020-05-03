@@ -101,4 +101,4 @@ If you like Niki and you want to support its development,consider supporting via
 - [ ] DLNA Media Export. (Inprogress)
 - [x] Scrowled lyric mode.
 - [x] lyric Maker.
-- [x] Download lyric.(Inprogress).
+- [x] Download lyric.
