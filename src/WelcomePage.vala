@@ -221,7 +221,7 @@ namespace niki {
                         break;
                     case 2:
                         NikiApp.window.player_page.playlist_widget ().clear_items ();
-                        if (NikiApp.window.run_open_folder (0)) {
+                        if (run_open_folder (0, NikiApp.window)) {
                             stack.visible_child_name = "circular";
                             index_but = 0;
                             NikiApp.window.player_page.playlist_widget ().clear_items ();

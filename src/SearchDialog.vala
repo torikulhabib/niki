@@ -72,7 +72,7 @@ namespace niki {
             var scr_lyric = new Gtk.ScrolledWindow (null, null);
             scr_lyric.expand = true;
             scr_lyric.width_request = 350;
-            scr_lyric.height_request = 260;
+            scr_lyric.height_request = 290;
             scr_lyric.add (tree_view);
 
             var title_label = new Gtk.Label (_("Title:"));
@@ -213,7 +213,7 @@ namespace niki {
                     down_load (lrc_file, link, server);
                     break;
                 case 2 :
-                    if (NikiApp.window.run_open_folder (2)) {
+                    if (run_open_folder (2, this)) {
                         var lrc_file = Path.build_filename (NikiApp.settings.get_string ("ask-lyric"), @"$(get_name_noext (uri)).$(ext.down ())");
                     	down_load (lrc_file, link, server);
                     }

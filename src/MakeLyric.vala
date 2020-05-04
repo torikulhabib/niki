@@ -122,7 +122,7 @@ namespace niki {
                 });
             });
 
-            var save_but = new Gtk.Button.from_icon_name ("document-save-symbolic", Gtk.IconSize.BUTTON);
+            var save_but = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.file-save-symbolic", Gtk.IconSize.BUTTON);
             save_but.focus_on_click = false;
             save_but.get_style_context ().add_class ("button_action");
             save_but.tooltip_text = StringPot.Save_Lyric;
@@ -140,7 +140,7 @@ namespace niki {
                     	save_to_file (lrc_file);
                         break;
                     case 2 :
-                        if (NikiApp.window.run_open_folder (2)) {
+                        if (run_open_folder (2, NikiApp.window)) {
                             var lrc_file = Path.build_filename (NikiApp.settings.get_string ("ask-lyric"), get_name_noext (uri_this) + ".lrc");
                     	    save_to_file (lrc_file);
                         }
@@ -154,7 +154,7 @@ namespace niki {
             get_fol_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             get_fol_rev.transition_duration = 500;
             get_fol_rev.clicked.connect (() => {
-                NikiApp.window.run_open_folder (1);
+                run_open_folder (1, NikiApp.window);
             });
             var label_make = new Gtk.Label (StringPot.Niki_Lyric_Maker);
             label_make.get_style_context ().add_class ("button_action");
@@ -310,7 +310,7 @@ namespace niki {
                     get_fol_rev.set_reveal_child (false);
                     break;
                 case 1 :
-                    button.set_image (new Gtk.Image.from_icon_name ("document-save-as-symbolic", Gtk.IconSize.BUTTON));
+                    button.set_image (new Gtk.Image.from_icon_name ("com.github.torikulhabib.niki.file-save-as-symbolic", Gtk.IconSize.BUTTON));
                     button.tooltip_text = StringPot.Save_to_Folder;
                     get_fol_rev.set_reveal_child (true);
                     break;

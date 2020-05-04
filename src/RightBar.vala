@@ -92,7 +92,7 @@ namespace niki {
             add_folder.get_style_context ().add_class ("button_action");
             add_folder.set_tooltip_text (StringPot.Open_Folder);
             add_folder.clicked.connect ( () => {
-                if (NikiApp.window.run_open_folder (0)) {
+                if (run_open_folder (0, NikiApp.window)) {
                     NikiApp.window.welcome_page.scanfolder.remove_all ();
                     NikiApp.window.welcome_page.scanfolder.scanning (NikiApp.settings.get_string ("folder-location"), 0);
                     NikiApp.window.welcome_page.scanfolder.signal_succes.connect ((file_list)=>{

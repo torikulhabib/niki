@@ -660,8 +660,10 @@ namespace niki {
                     lyric_uri = get_playing_lyric (file_uri.get_uri ());
                     break;
                 case 2 :
-                    var file_uri = File.new_for_path (@"$(NikiApp.settings.get_string ("ask-lyric"))/$(file.get_basename ())");
-                    lyric_uri = get_playing_lyric (file_uri.get_uri ());
+                    if (run_open_folder (2, NikiApp.window)) {
+                        var file_uri = File.new_for_path (@"$(NikiApp.settings.get_string ("ask-lyric"))/$(file.get_basename ())");
+                        lyric_uri = get_playing_lyric (file_uri.get_uri ());
+                    }
                     break;
             }
             if (lyric_uri != null) {

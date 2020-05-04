@@ -55,6 +55,8 @@ actions = [
     '.insert-after-symbolic.svg',
     '.insert-before-symbolic.svg',
     '.lrc-file-symbolic.svg',
+    '.file-save-as-symbolic.svg',
+    '.file-save-symbolic.svg',
 ]
 
 foreach m : actions
