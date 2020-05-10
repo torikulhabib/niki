@@ -327,9 +327,6 @@ namespace niki {
                 audiovisualisation ();
             });
             NikiApp.settings.changed["visualisation-options"].connect (audiovisualisation);
-            if (NikiApp.settings.get_string("subtitle-choose").char_count () > 1) {
-                NikiApp.settings.set_string("subtitle-choose", " ");
-            }
             audiovisualisation ();
             Idle.add (starting);
             window.welcome_page.getlink.errormsg.connect (string_notify);
@@ -478,6 +475,9 @@ namespace niki {
             }
             if (!NikiApp.settings.get_boolean ("fullscreen")) {
                 NikiApp.settings.set_boolean ("fullscreen", true);
+            }
+            if (NikiApp.settings.get_string("subtitle-choose").char_count () > 1) {
+                NikiApp.settings.set_string("subtitle-choose", " ");
             }
         }
         public void signal_window () {
