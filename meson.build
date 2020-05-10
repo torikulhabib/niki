@@ -3,9 +3,11 @@ project('com.github.torikulhabib.niki', 'vala', 'c', version: '1.0.0')
 
 gnome = import('gnome')
 i18n = import('i18n')
-add_project_arguments(['--vapidir', join_paths(meson.current_source_dir(), 'vapi')], language: 'vala')
 add_project_arguments(['-DGETTEXT_PACKAGE="' + meson.project_name() + '"'.format(meson.project_name())], language: 'c',)
 add_global_arguments('-DGETTEXT_PACKAGE="' + meson.project_name() + '"'.format (meson.project_name()), language:'c')
+add_global_arguments('-DPACKAGE="' + meson.project_name() + '"'.format (meson.project_name()), language:'c')
+add_global_arguments('-DVERSION="' + meson.project_name() + '"'.format (meson.project_name()), language:'c')
+add_project_arguments(['--vapidir', join_paths(meson.current_source_dir(), 'vapi')], language: 'vala')
 
 conf = configuration_data()
 conf.set('EXEC_NAME', meson.project_name())
@@ -33,6 +35,7 @@ c_args = [
   '-include', 'config.h',
   '-w', '-DGETTEXT_PACKAGE="' + meson.project_name() + '"'
 ]
+subdir('gstreamer')
 subdir('src')
 subdir('data')
 subdir('po')

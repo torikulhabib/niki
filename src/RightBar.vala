@@ -274,9 +274,11 @@ namespace niki {
             if (button) {
                 set_reveal_child (!child_revealed? true : false);
             }
-            content_box.margin = 4;
-            margin_top = (int)player_page.top_actor.height;
-            margin_bottom = (int)player_page.bottom_actor.height;
+            if (!NikiApp.settings.get_boolean("make-lrc")) {
+                content_box.margin = 4;
+                margin_top = (int)player_page.top_actor.height;
+                margin_bottom = (int)player_page.bottom_actor.height;
+            }
             if (hiding_timer != 0) {
                 Source.remove (hiding_timer);
             }

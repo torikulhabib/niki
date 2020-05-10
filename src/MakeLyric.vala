@@ -117,7 +117,7 @@ namespace niki {
                 bottombar.seekbar_widget.lyric.foreach ((item) => {
                     Gtk.TreeIter iter;
                     listmodel.append (out iter);
-                    listmodel.set (iter, LyricColumns.TIMEVIEW, lrc_sec_to_time (item.key), LyricColumns.LYRIC, (item.value));
+                    listmodel.set (iter, LyricColumns.TIMEVIEW, seconds_to_time ((int)item.key / 1000000), LyricColumns.LYRIC, (item.value));
                     return true;
                 });
             });
@@ -133,7 +133,8 @@ namespace niki {
                 }
                 switch (NikiApp.settings.get_int ("location-save")) {
                     case 0 :
-                    	save_to_file (str_ext_lrc (File.new_for_uri (uri_this).get_path ()));
+                        var lrc_file = Path.build_filename (get_path_noname (uri_this), @"$(get_name_noext (uri_this)).lrc");
+                    	save_to_file (lrc_file);
                         break;
                     case 1 :
                         var lrc_file = Path.build_filename (NikiApp.settings.get_string ("lyric-location"), get_name_noext (uri_this) + ".lrc");
@@ -204,7 +205,7 @@ namespace niki {
             stack.vhomogeneous = false;
             stack.show_all ();
             new_lrc_blk.clicked.connect (() => {
-                uri_this = NikiApp.settings.get_string ("uri-video");
+                uri_this = NikiApp.window.player_page.playback.uri;
                 stack.visible_child = stack.visible_child == lrc_scr? lrc_text : lrc_scr;
             });
             stack.notify["visible-child"].connect (() => {
@@ -233,13 +234,16 @@ namespace niki {
             show_all ();
             playerpage.size_allocate.connect (resize_scr);
             new_img_but ();
+            NikiApp.settings.changed["make-lrc"].connect (() => {
+                uri_this = NikiApp.window.player_page.playback.uri;
+            });
         }
         public void set_time_sec (int64 time_in) {
             Gtk.TreeIter iter = selected_iter ();
             if (!listmodel.iter_is_valid (iter)) {
                 return;
             }
-            listmodel.set (iter, LyricColumns.TIMEVIEW, lrc_sec_to_time (time_in));
+            listmodel.set (iter, LyricColumns.TIMEVIEW, seconds_to_time ((int)time_in));
 
             if (listmodel.iter_next (ref iter)) {
                 tree_view.get_selection ().select_iter (iter);
@@ -282,8 +286,8 @@ namespace niki {
             });
 
             File file = File.new_for_path (filename);
+            permanent_delete (file);
             try {
-                permanent_delete (file);
             	FileOutputStream out_stream = file.create (FileCreateFlags.REPLACE_DESTINATION);
             	out_stream.write (builder.str.data);
             } catch (Error e) {
@@ -362,7 +366,7 @@ namespace niki {
                 file_lyric (file.get_uri ()).foreach ((item) => {
                     Gtk.TreeIter iter;
                     listmodel.append (out iter);
-                    listmodel.set (iter, LyricColumns.TIMEVIEW, lrc_sec_to_time (item.key), LyricColumns.LYRIC, (item.value));
+                    listmodel.set (iter, LyricColumns.TIMEVIEW, seconds_to_time ((int)item.key / 1000000), LyricColumns.LYRIC, (item.value));
                     return true;
                 });
                 stack.visible_child_name = "lyric";

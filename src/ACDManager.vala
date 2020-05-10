@@ -110,15 +110,15 @@ namespace niki {
                         string? artist = file_info.get_attribute_string (FILE_ATTRIBUTE_ARTIST) != null? file_info.get_attribute_string (FILE_ATTRIBUTE_ARTIST) : StringPot.Unknown;
                         string album = file_info.get_attribute_string (FILE_ATTRIBUTE_ALBUM);
                         string uri = GLib.Path.build_filename (file.get_uri (), file_info.get_name ());
-                        NikiApp.window.player_page.playlist_widget ().add_acd (uri, title, album, artist);
+                        NikiApp.window.player_page.right_bar.playlist.add_acd (uri, title, album, artist);
                         counter++;
                     }
                 } catch (Error err) {
                     warning (err.message);
                 }
             });
-		    if (NikiApp.window.player_page.playlist_widget ().liststore.iter_n_children (null) > 0 && NikiApp.window.main_stack.visible_child_name == "welcome") {
-                NikiApp.window.player_page.playlist_widget ().play_first ();
+		    if (NikiApp.window.player_page.right_bar.playlist.liststore.iter_n_children (null) > 0 && NikiApp.window.main_stack.visible_child_name == "welcome") {
+                NikiApp.window.player_page.right_bar.playlist.play_first ();
             }
         }
 

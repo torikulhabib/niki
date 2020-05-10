@@ -118,19 +118,6 @@ namespace niki {
                 return new KeyboardPage ().key_press (e, this);
             });
 
-            uint maximize_window = 0;
-            size_allocate.connect (() => {
-                if (maximize_window != 0) {
-                    Source.remove (maximize_window);
-                }
-                maximize_window = GLib.Timeout.add (50, () => {
-                    if (NikiApp.settings.get_boolean ("maximize") == is_maximized) {
-                        NikiApp.settings.set_boolean ("maximize", !is_maximized);
-                    }
-                    maximize_window = 0;
-                    return Source.REMOVE;
-                });
-            });
             uint move_stoped = 0;
             configure_event.connect (() => {
                 if (move_stoped != 0) {
@@ -152,6 +139,22 @@ namespace niki {
                 });
                 return false;
             });
+            uint maximize_window = 0;
+            window_state_event.connect ((state)=> {
+                if (state.new_window_state.to_string () == Gdk.WindowState.MAXIMIZED.to_string ()) {
+                    if (maximize_window != 0) {
+                        Source.remove (maximize_window);
+                    }
+                    maximize_window = GLib.Timeout.add (40, () => {
+                        if (NikiApp.settings.get_boolean ("maximize") == is_maximized) {
+                            NikiApp.settings.set_boolean ("maximize", !is_maximized);
+                        }
+                        maximize_window = 0;
+                        return Source.REMOVE;
+                    });
+                }
+                return false;
+            });
             delete_event.connect (() => {
                 if (NikiApp.settings.get_boolean ("audio-video") && player_page.playback.playing) {
                     return hide_on_delete ();
@@ -160,6 +163,8 @@ namespace niki {
                 }
             });
             move_widget (this, this);
+            player_page.unref ();
+            camera_page.unref ();
         }
 
         public void position_window () {
@@ -264,13 +269,13 @@ namespace niki {
 
         public void open_files (File[] files, bool clear_playlist = false, bool force_play = true) {
             if (clear_playlist) {
-                player_page.playlist_widget ().clear_items ();
+                player_page.right_bar.playlist.clear_items ();
             }
             foreach (var file in files) {
-                player_page.playlist_widget ().add_item (file);
+                player_page.right_bar.playlist.add_item (file);
             }
             if (force_play) {
-                player_page.playlist_widget ().play_first ();
+                player_page.right_bar.playlist.play_first ();
             }
         }
 
@@ -281,7 +286,7 @@ namespace niki {
 		    switch (target_type) {
 		        case Target.STRING:
 		            if (main_stack.visible_child_name == "welcome") {
-                        player_page.playlist_widget ().clear_items ();
+                        player_page.right_bar.playlist.clear_items ();
                     }
 			        string data = (string) selection_data.get_data ();
                     welcome_page.getlink.get_link_stream (data);
@@ -291,14 +296,14 @@ namespace niki {
 			        break;
 		        case Target.URILIST:
 		            if (main_stack.visible_child_name == "welcome") {
-                        player_page.playlist_widget ().clear_items ();
+                        player_page.right_bar.playlist.clear_items ();
                     }
                     bool audio_video_media = false;
                     foreach (var uri in selection_data.get_uris ()) {
                         File file = File.new_for_uri (uri);
                         if (get_mime_type (file).has_prefix ("video/") || get_mime_type (file).has_prefix ("audio/")) {
                             audio_video_media = true;
-                            player_page.playlist_widget ().add_item (file);
+                            player_page.right_bar.playlist.add_item (file);
                         }
                         if (player_page.playback.playing && main_stack.visible_child_name == "player" && is_subtitle (uri) == true && !NikiApp.settings.get_boolean("audio-video")) {
                             NikiApp.settings.set_string("subtitle-choose", uri);
@@ -308,7 +313,7 @@ namespace niki {
                         }
                     };
 		            if (main_stack.visible_child_name == "welcome" && audio_video_media) {
-                        player_page.playlist_widget ().play_first ();
+                        player_page.right_bar.playlist.play_first ();
                     }
 			        break;
 		    }

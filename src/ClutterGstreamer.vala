@@ -26,7 +26,8 @@ namespace niki {
         private dynamic Gst.Element visualmode;
         public VideoMix? videomix;
         public AudioMix? audiomix;
-        private const string [] VISUALMODE = {"goom", "goom2k1", "spacescope", "spectrascope", "synaescope", "wavescope", "monoscope"};
+        public signal void updated ();
+        private const string [] VISUALMODE = {"goom", "goom2k1", "monoscope"};
 
         construct {
             videomix = new VideoMix (this);
@@ -39,8 +40,7 @@ namespace niki {
             while (iter.next (out value) == Gst.Iterator.OK) {
                 playsink = (Gst.Element)value;
                 string sink_name = playsink.get_name ();
-                if (strcmp (sink_name, "playsink") != 0) {
-                    sink_name = null;
+                if (sink_name == "playsink") {
                     break;
                 }
             }
@@ -76,22 +76,40 @@ namespace niki {
             NikiApp.settings.changed["shader-options"].connect (visualisationsink);
             NikiApp.settings.changed["status-muted"].connect (playback_mute);
             NikiApp.settings.changed["amount-entry"].connect (() => {
-                if (VISUALMODE [NikiApp.settings.get_int ("visualmode-options")] != VISUALMODE [6] ||
-                    VISUALMODE [NikiApp.settings.get_int ("visualmode-options")] != VISUALMODE [0] ||
+                if (VISUALMODE [NikiApp.settings.get_int ("visualmode-options")] != VISUALMODE [0] ||
                     VISUALMODE [NikiApp.settings.get_int ("visualmode-options")] != VISUALMODE [1]) {
                     saderamount (NikiApp.settings.get_int ("amount-entry"));
                 }
             });
+
             playback_mute ();
+            videomix.unref ();
+            audiomix.unref ();
         }
         private void playback_mute () {
             pipeline["mute"] = NikiApp.settings.get_boolean ("status-muted");
         }
+
         private void handle_message (Gst.Bus bus, Gst.Message message) {
             if (message.type == Gst.MessageType.STEP_DONE) {
                 do_step ();
             }
+            if (message.type == Gst.MessageType.ELEMENT) {
+                unowned Gst.Structure struct = message.get_structure ();
+                string name = struct.get_name ();
+                if (name == "nikispectrum") {
+                    unowned GLib.Value? vals = struct.get_value ("magnitude");
+                    for (int cpt = 0; cpt < audiomix.bands; ++cpt) {
+                        unowned GLib.Value? mag = Gst.ValueList.get_value (vals, cpt);
+                        if (mag != null) {
+                            audiomix.m_magnitudes[cpt] = (float)mag;
+                            updated ();
+                        }
+                    }
+                }
+            }
         }
+
         private void do_step () {
             switch (NikiApp.settings.get_int ("speed-playing")) {
                 case 0 :
@@ -133,11 +151,10 @@ namespace niki {
                     break;
                 case 1 :
                     visualmode = Gst.ElementFactory.make(VISUALMODE [NikiApp.settings.get_int ("visualmode-options")], VISUALMODE [NikiApp.settings.get_int ("visualmode-options")]);
-                    if (VISUALMODE [NikiApp.settings.get_int ("visualmode-options")] != VISUALMODE [6]) {
+                    if (VISUALMODE [NikiApp.settings.get_int ("visualmode-options")] != VISUALMODE [2]) {
                         shader_chage ();
                     }
-                    if (VISUALMODE [NikiApp.settings.get_int ("visualmode-options")] != VISUALMODE [6] ||
-                        VISUALMODE [NikiApp.settings.get_int ("visualmode-options")] != VISUALMODE [0] ||
+                    if (VISUALMODE [NikiApp.settings.get_int ("visualmode-options")] != VISUALMODE [0] ||
                         VISUALMODE [NikiApp.settings.get_int ("visualmode-options")] != VISUALMODE [1]) {
                         saderamount (NikiApp.settings.get_int ("amount-entry"));
                     }
@@ -187,7 +204,7 @@ namespace niki {
             }
         }
         public void saderamount (int index) {
-            if (VISUALMODE [NikiApp.settings.get_int ("visualmode-options")] != VISUALMODE [6]) {
+            if (VISUALMODE [NikiApp.settings.get_int ("visualmode-options")] != VISUALMODE [2]) {
                 visualmode["shade-amount"] = index;
             }
         }

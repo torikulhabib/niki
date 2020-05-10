@@ -33,8 +33,6 @@ namespace niki {
             liststore = new Gtk.ListStore (PlaylistColumns.N_COLUMNS, typeof (Icon), typeof (Gdk.Pixbuf), typeof (string), typeof (string), typeof (string), typeof (string), typeof (string), typeof (string), typeof (bool), typeof (int), typeof (int));
             model = liststore;
             headers_visible = activate_on_single_click = false;
-            can_focus = visible = receives_default  = is_focus = true;
-            opacity = 1;
 
             var text_render = new Gtk.CellRendererText ();
             text_render.ellipsize = Pango.EllipsizeMode.END;
@@ -196,6 +194,9 @@ namespace niki {
             NikiApp.settings.changed["ascen-descen"].connect (get_random);
             NikiApp.settings.changed["edit-playlist"].connect (remove_playlist);
             get_random ();
+            notify.connect (() => {
+                queue_draw ();
+            });
         }
         private bool remove_iter () {
             Gtk.TreeIter iter = selected_iter ();

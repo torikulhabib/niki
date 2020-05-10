@@ -54,6 +54,9 @@ namespace niki {
                 try {
                     var parser = new Json.Parser ();
                     parser.load_from_data ((string) mess.response_body.flatten ().data, -1);
+                    if (parser.get_root () == null) {
+                        return;
+                    }
                     var root_object = parser.get_root ().get_object ();
                     if(root_object.get_int_member ("code") == 200){
                         if (!root_object.has_member ("result")) {

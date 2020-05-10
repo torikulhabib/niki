@@ -99,7 +99,7 @@ namespace niki {
             search_time_lrc.tooltip_text = StringPot.Set_Time_Lyric;
             search_time_lrc.clicked.connect (() => {
                 if (NikiApp.settings.get_boolean ("make-lrc")) {
-                    position_sec ((int64)(playback.get_position () * 1000000));
+                    position_sec ((int64)(playback.get_position ()));
                 } else {
                     var search_lrc = new SearchDialog (playback.uri);
                     search_lrc.show_all ();
@@ -115,7 +115,6 @@ namespace niki {
             layout.get_pixel_size (null, out height);
             anim_area.height_request = height;
             anim_area.draw.connect (anim_draw);
-            anim_area.show ();
 
             var actionbar = new Gtk.ActionBar ();
             actionbar.get_style_context ().add_class ("transbgborder");

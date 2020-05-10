@@ -27,7 +27,7 @@ namespace niki {
         private const string [] FLIPVIDEO_ICON = {"system-shutdown-symbolic", "object-rotate-right-symbolic", "com.github.torikulhabib.niki.refresh-180-symbolic", "object-rotate-left-symbolic", "object-flip-horizontal-symbolic", "object-flip-vertical-symbolic", "com.github.torikulhabib.niki.refresh-left-symbolic", "com.github.torikulhabib.niki.refresh-right-symbolic", "com.github.torikulhabib.niki.auto-symbolic"};
         private const string [] VISUALISATION = {StringPot.OFF, StringPot.ON};
         private const string [] VISUALISATION_ICON = {"system-shutdown-symbolic", "video-x-generic-symbolic"};
-        private const string [] VISUALMODE = {StringPot.Goom, StringPot.Goom2k1, StringPot.Spacescope, StringPot.Spectrascope, StringPot.Synaescope, StringPot.Wavescope, StringPot.Monoscope};
+        private const string [] VISUALMODE = {StringPot.Goom, StringPot.Goom2k1, StringPot.Monoscope};
         private const string [] SHADER = {StringPot.NNone, StringPot.Fade, StringPot.Fade_Move_Up, StringPot.Fade_Move_Down, StringPot.Fade_Move_Left, StringPot.Fade_Move_Right, StringPot.Fade_Vertical_Out, StringPot.Fade_Vertical_In};
         private const string [] VIDEORENDER = {"Auto Videosink", "Vaapisink", "Ximagesink", "Xvimagesink"};
         private const string [] AUDIORENDER = {StringPot.Auto_Audiosink, StringPot.Alsasink, StringPot.Pulsesink};

@@ -28,7 +28,6 @@ namespace niki {
         private dynamic Gst.Element color_balance;
         public dynamic Gst.Element flip_filter;
         private dynamic Gst.Element coloreffects;
-        private dynamic Gst.Element videoscale;
         private dynamic Gst.Element capsfilter;
         private dynamic Gst.Element videocrop;
         private const string [] VIDEORENDER = {"autovideosink", "vaapisink", "ximagesink", "xvimagesink", "v4l2sink"};
@@ -38,9 +37,6 @@ namespace niki {
             videocrop = Gst.ElementFactory.make("videocrop","videocrop");
             videoqueue = Gst.ElementFactory.make("queue","queue");
             videoqueue["flush-on-eos"] = true;
-            videoscale = Gst.ElementFactory.make("videoscale","videoscale");
-            videoscale["sharpen"] = 1.0;
-            videoscale["sharpness"] = 1.5;
             flip_filter = Gst.ElementFactory.make ("videoflip", "videoflip");
             gamma = Gst.ElementFactory.make ("gamma","gamma");
             color_balance = Gst.ElementFactory.make ("videobalance","videobalance");
@@ -49,9 +45,9 @@ namespace niki {
             Gst.Util.set_object_arg ((GLib.Object) capsfilter, "caps", "video/x-raw, format={ RGBA, RGB, I420, YV12, YUY2, UYVY, AYUV, Y41B, Y42B, YVYU, Y444, v210, v216, NV12, NV21, UYVP, A420, YUV9, YVU9, IYU1 }");
             videosink = Gst.ElementFactory.make (VIDEORENDER [NikiApp.settings.get_int ("videorender-options")], VIDEORENDER [NikiApp.settings.get_int ("videorender-options")]);
             videosink = playback.get_video_sink ();
-            add_many(videoqueue, videotee, capsfilter, videoscale, videocrop, coloreffects, flip_filter, gamma, color_balance, videosink);
+            add_many(videoqueue, videotee, capsfilter, videocrop, coloreffects, flip_filter, color_balance, gamma, videosink);
             add_pad (new Gst.GhostPad ("sink", videotee.get_static_pad ("sink")));
-            videoqueue.link_many (capsfilter, videoscale, videocrop, coloreffects, flip_filter, gamma, color_balance, videosink);
+            videoqueue.link_many (capsfilter, videocrop, coloreffects, flip_filter, color_balance, gamma, videosink);
             Gst.Pad sinkpad = videoqueue.get_static_pad ("sink");
             Gst.Pad pad = videotee.get_request_pad ("src_%u");
             pad.link(sinkpad);

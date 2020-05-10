@@ -382,17 +382,7 @@ namespace niki {
         int last_dot = base_name.last_index_of (".", 0);
         return base_name.slice (0, last_dot);
     }
-    private string str_ext_lrc (string uri) {
-        string without_ext;
-        int last_dot = uri.last_index_of (".", 0);
-        int last_slash = uri.last_index_of ("/", 0);
-        if (last_dot < last_slash) {
-            without_ext = uri;
-        } else {
-            without_ext = uri.slice (0, last_dot);
-        }
-        return without_ext + "." + "lrc";
-    }
+
     private string get_path_noname (string filename) {
         var file = File.new_for_uri (filename);
         string [] split_in = file.get_path ().split (file.get_basename ());
@@ -442,22 +432,13 @@ namespace niki {
         int min = (seconds % 3600) / 60;
         int sec = (seconds % 60);
 
-        if (!need){
-            return  ("%u:%02u:%02u".printf (hours, min, sec));
+        if (hours > 0 || !need) {
+            return ("%u:%02u:%02u".printf (sign * hours, min, sec));
         } else {
-            if (hours > 0) {
-                return ("%d:%02d:%02d".printf (sign * hours, min, sec));
-            } else {
-                return ("%02d:%02d".printf (sign * min, sec));
-            }
+            return ("%02u:%02u".printf (sign * min, sec));
         }
     }
-    private static string lrc_sec_to_time (int64 seconds) {
-        int time = (int) seconds / 1000000;
-        int min = (time % 3600) / 60;
-        int sec = (time % 60);
-        return  ("%02u:%02u".printf (min, sec));
-    }
+
     private double seconds_from_time (string time_string) {
         string [] tokens = {};
         double seconds = -1.0;

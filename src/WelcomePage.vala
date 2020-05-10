@@ -186,12 +186,12 @@ namespace niki {
             });
 
             getlink.process_all.connect ((links) => {
-                NikiApp.window.player_page.playlist_widget ().add_stream (links);
+                NikiApp.window.player_page.right_bar.playlist.add_stream (links);
                 welcome_left.sensitive = true;
                 welcome_rigth.sensitive = true;
                 NikiApp.settings.set_boolean ("spinner-wait", true);
 		        if (NikiApp.window.main_stack.visible_child_name == "welcome") {
-                    NikiApp.window.player_page.playlist_widget ().play_first ();
+                    NikiApp.window.player_page.right_bar.playlist.play_first ();
                 }
             });
             scanfolder.signal_notify.connect((notif)=> {
@@ -208,7 +208,7 @@ namespace niki {
                         NikiApp.window.run_open_file (true);
                         break;
                     case 1:
-                        NikiApp.window.player_page.playlist_widget ().clear_items ();
+                        NikiApp.window.player_page.right_bar.playlist.clear_items ();
                         Gtk.Clipboard clipboard = Gtk.Clipboard.get_for_display (get_display (), Gdk.SELECTION_CLIPBOARD);
                         string text = clipboard.wait_for_text ().strip ();
                         if (text == null) {
@@ -220,11 +220,11 @@ namespace niki {
                         NikiApp.settings.set_boolean ("spinner-wait", false);
                         break;
                     case 2:
-                        NikiApp.window.player_page.playlist_widget ().clear_items ();
+                        NikiApp.window.player_page.right_bar.playlist.clear_items ();
                         if (run_open_folder (0, NikiApp.window)) {
                             stack.visible_child_name = "circular";
                             index_but = 0;
-                            NikiApp.window.player_page.playlist_widget ().clear_items ();
+                            NikiApp.window.player_page.right_bar.playlist.clear_items ();
                         }
                         break;
                     case 3:
@@ -238,12 +238,12 @@ namespace niki {
                     case 0:
                         stack.visible_child_name = "circular";
                         index_but = 1;
-                        NikiApp.window.player_page.playlist_widget ().clear_items ();
+                        NikiApp.window.player_page.right_bar.playlist.clear_items ();
                         break;
                     case 1:
                         stack.visible_child_name = "circular";
                         index_but = 2;
-                        NikiApp.window.player_page.playlist_widget ().clear_items ();
+                        NikiApp.window.player_page.right_bar.playlist.clear_items ();
                         break;
                     case 2:
                         stack.visible_child = dlna_grid;
@@ -284,9 +284,9 @@ namespace niki {
 
             var root = volume.get_mount ().get_default_location ();
             string uri_file = root.get_uri ().replace ("file:///", "dvd:///");
-            NikiApp.window.player_page.playlist_widget ().add_item (File.new_for_uri (uri_file));
+            NikiApp.window.player_page.right_bar.playlist.add_item (File.new_for_uri (uri_file));
 		    if (NikiApp.window.main_stack.visible_child_name == "welcome") {
-                NikiApp.window.player_page.playlist_widget ().play_first ();
+                NikiApp.window.player_page.right_bar.playlist.play_first ();
             }
         }
         private void read_acd () {

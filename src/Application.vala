@@ -138,6 +138,8 @@ namespace niki {
 }
 
 public static int main (string []? args) {
+    var app = new niki.NikiApp ().instance;
     ClutterGst.init (ref args);
-    return new niki.NikiApp ().instance.run (args);
+    app.unref ();
+    return app.run (args);
 }

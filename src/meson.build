@@ -98,6 +98,7 @@ executable(
     'EngineViewlyrics.vala',
     'SearchDialog.vala',
     'EngineNetease.vala',
+    'Spectrum.vala',
 
     c_args: c_args,
     dependencies: [

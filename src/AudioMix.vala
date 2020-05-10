@@ -27,16 +27,26 @@ namespace niki {
         private dynamic Gst.Element capsfilter;
         private dynamic Gst.Element equalizer;
         private dynamic Gst.Element audioamplify;
+        private dynamic Gst.Element spectrum;
         private const string [] AUDIORENDER = {"autoaudiosink", "alsasink", "pulsesink"};
+        private int interval { get; set; default = 50; }
+        public int threshold { get; set; default = -80; }
+        public float gamma { get; set; default = 3.0f; }
+        public uint bands { get; set; default = 10; }
+        public float[] m_magnitudes;
+        public unowned float[]? get_magnitudes () {
+            return m_magnitudes;
+        }
 
         construct {
+            m_magnitudes = new float[bands];
             audiotee = Gst.ElementFactory.make("tee", "tee");
             audioqueue = Gst.ElementFactory.make("queue", "queue");
             audioqueue["flush-on-eos"] = true;
             capsfilter = Gst.ElementFactory.make("capsfilter", "capsfilter");
-            Gst.Util.set_object_arg ((GLib.Object) capsfilter, "caps", "audio/x-raw, format={ S16LE, F32LE, F64LE }");
+            Gst.Util.set_object_arg ((GLib.Object) capsfilter, "caps", "audio/x-raw, format={ S16LE, F24LE, F32LE, F64LE }");
             equalizer = Gst.ElementFactory.make("equalizer-10bands", "equalizer-10bands");
-            double [] freqs = {30, 60, 119, 238, 475, 947, 1890, 3771, 7524, 15012};
+            double [] freqs = {29, 59, 119, 237, 474, 947, 1889, 3770, 7523, 15011};
             double last_freq = -30;
             uint index = 0;
             foreach (double freq in freqs) {
@@ -49,21 +59,30 @@ namespace niki {
             }
             audioamplify = Gst.ElementFactory.make("audioamplify", "audioamplify");
             audioamplify["amplification"] = 1.15;
+            spectrum = Gst.ElementFactory.make("nikispectrum", "nikispectrum");
+            spectrum["bands"] = bands;
+            spectrum["threshold"] = (float)threshold;
+            spectrum["interval"] = (uint64)(interval * 1000 * 1000);
+            spectrum["gamma"] = (float)gamma;
+            bind_property ("bands", spectrum, "bands");
+            bind_property ("threshold", spectrum, "threshold");
+            bind_property ("gamma", spectrum, "gamma");
             audiosink = Gst.ElementFactory.make(AUDIORENDER [NikiApp.settings.get_int ("audiorender-options")], AUDIORENDER [NikiApp.settings.get_int ("audiorender-options")]);
-            add_many (audioqueue, audiotee, capsfilter, equalizer, audioamplify, audiosink);
+            add_many (audioqueue, audiotee, capsfilter, equalizer, spectrum, audioamplify, audiosink);
             add_pad (new Gst.GhostPad ("sink", audiotee.get_static_pad ("sink")));
-            audioqueue.link_many(capsfilter, equalizer, audioamplify, audiosink);
+            audioqueue.link_many(capsfilter, equalizer, spectrum, audioamplify, audiosink);
             Gst.Pad sinkpad = audioqueue.get_static_pad ("sink");
             Gst.Pad pad = audiotee.get_request_pad ("src_%u");
             pad.link(sinkpad);
             audiotee["alloc-pad"] = pad;
         }
+
         public void setgain (int index, double gain) {
             GLib.Object? band = ((Gst.ChildProxy)equalizer).get_child_by_index (index);
             if (gain < 0) {
-                gain *= 0.28f;
+                gain *= 0.282f;
             } else {
-                gain *= 0.14f;
+                gain *= 0.141f;
             }
             band["gain"] = gain;
         }

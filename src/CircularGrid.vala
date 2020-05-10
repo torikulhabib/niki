@@ -64,7 +64,7 @@ namespace niki {
                 if (liststore.iter_is_valid (iter)) {
                     liststore.get (iter, ColumnScanF.FILENAME, out filename);
                     if (filename != null) {
-                        NikiApp.window.player_page.playlist_widget ().add_item (File.new_for_uri (filename));
+                        NikiApp.window.player_page.right_bar.playlist.add_item (File.new_for_uri (filename));
                     }
                 }
                 count ++;
@@ -75,7 +75,7 @@ namespace niki {
                             NikiApp.window.main_stack.visible_child_name = "player";
                             NikiApp.window.player_page.get_first ();
                         } else {
-                            NikiApp.window.player_page.playlist_widget ().play_first ();
+                            NikiApp.window.player_page.right_bar.playlist.play_first ();
                         }
                     }
                     return false;

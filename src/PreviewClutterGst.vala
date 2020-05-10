@@ -34,7 +34,7 @@ namespace niki {
             while (iter.next (out value) == Gst.Iterator.OK) {
                 playsink = (Gst.Element)value;
                 string sink_name = playsink.get_name ();
-                if (strcmp (sink_name, "playsink") != 0) {
+                if (sink_name == "playsink") {
                     break;
                 }
             }
