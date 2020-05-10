@@ -313,7 +313,13 @@ namespace niki {
 
             playback.ready.connect (signal_window); 
             size_allocate.connect (signal_window);
-
+            NikiApp.settings.changed["home-signal"].connect (() => {
+                if (!NikiApp.settings.get_boolean("home-signal")) {
+                    if (NikiApp.settings.get_boolean("audio-video")) {
+                        window.resize (450, 450);
+                    }
+                }
+            });
             NikiApp.settings.changed["audio-video"].connect (() => {
                 if (NikiApp.settings.get_boolean("audio-video")) {
                     window.resize (450, 450);
