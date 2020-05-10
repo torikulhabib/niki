@@ -206,7 +206,6 @@ namespace niki {
                 return false;
             });
             button_press_event.connect ((event) => {
-                stage.grab_key_focus ();
                 mouse_hovered = false;
                 if (event.button == Gdk.BUTTON_PRIMARY && event.type == Gdk.EventType.2BUTTON_PRESS && !right_bar.hovered && !top_bar.hovered && !bottom_bar.hovered) {
                     NikiApp.settings.set_boolean ("fullscreen", !NikiApp.settings.get_boolean ("fullscreen"));
@@ -338,6 +337,14 @@ namespace niki {
             bottom_bar.time_music.reloadlrc.connect (()=>{
                 if (playback.uri != null) {
                     sub_lr_check (playback.uri);
+                }
+            });
+            destroy.connect (()=> {
+                if (NikiApp.settings.get_string("subtitle-choose").char_count () > 1) {
+                    NikiApp.settings.set_string("subtitle-choose", " ");
+                }
+                if (!NikiApp.settings.get_boolean ("fullscreen")) {
+                    NikiApp.settings.set_boolean ("fullscreen", true);
                 }
             });
             playback.unref ();
@@ -473,12 +480,6 @@ namespace niki {
                     }
                 }
             }
-            if (!NikiApp.settings.get_boolean ("fullscreen")) {
-                NikiApp.settings.set_boolean ("fullscreen", true);
-            }
-            if (NikiApp.settings.get_string("subtitle-choose").char_count () > 1) {
-                NikiApp.settings.set_string("subtitle-choose", " ");
-            }
         }
         public void signal_window () {
             if (NikiApp.settings.get_boolean("audio-video")) {
@@ -563,7 +564,7 @@ namespace niki {
 	        int min_size = int.min (width, height);
 	        int max_size = int.max (width, height);
             double aspect_max = ((double) max_size)/((double) min_size);
-            double limit = aspect_max > 1.5? 0.2377777777777777 : 0.1033333333333337;
+            double limit = aspect_max > 1.5? (aspect_max < 1.9? 0.2377777777777777 : 0.3377777777777777) : 0.1033333333333337;
             geometry.min_aspect = aspect_max - limit;
             geometry.max_aspect = aspect_max - limit;
             geometry.win_gravity = Gdk.Gravity.CENTER;
