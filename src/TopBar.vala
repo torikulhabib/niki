@@ -83,9 +83,6 @@ namespace niki {
                 }
                 return false;
             });
-            if (!NikiApp.settings.get_boolean ("fullscreen")) {
-                NikiApp.settings.set_boolean ("fullscreen", true);
-            }
             maximize_button = new Gtk.Button.from_icon_name ("view-fullscreen-symbolic", Gtk.IconSize.BUTTON);
             maximize_button.focus_on_click = false;
             maximize_button.get_style_context ().add_class ("button_action");
