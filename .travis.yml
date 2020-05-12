@@ -13,6 +13,8 @@ services:
 before_install:
   - sudo apt-get update
   - sudo apt-get -y install meson
+  - mkdir first
+  - cd first
   - git clone https://github.com/torikulhabib/InyTag.git
   - meson InyTag --prefix=/usr
   - sudo ninja install
