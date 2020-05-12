@@ -14,10 +14,7 @@ before_install:
   - sudo apt-get update
   - sudo apt-get -y install meson
   - git clone https://github.com/torikulhabib/InyTag.git
-  - cd InyTag
-  - meson build --prefix=/usr
-  - cd build
-  - sudo ninja install
+  - cd InyTag && meson build --prefix=/usr && cd build && sudo ninja install
 
 addons:
   apt:
