@@ -10,6 +10,13 @@ sudo: required
 services:
   - docker
 
+before_install:
+  git clone https://github.com/torikulhabib/InyTag.git
+  cd InyTag
+  meson build --prefix=/usr
+  cd build
+  sudo ninja install
+
 addons:
   apt:
     sources:

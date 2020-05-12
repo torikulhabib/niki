@@ -561,12 +561,10 @@ namespace niki {
 
         public void resize_player_page (Window window, int width, int height) {
             window.resize (width, height);
-	        int min_size = int.min (width, height);
-	        int max_size = int.max (width, height);
-            double aspect_max = ((double) max_size)/((double) min_size);
-            double limit = aspect_max > 1.5? (aspect_max < 1.9? 0.2377777777777777 : 0.3377777777777777) : 0.1033333333333337;
-            geometry.min_aspect = aspect_max - limit;
-            geometry.max_aspect = aspect_max - limit;
+            double aspect_max = ((double) width)/((double) height);
+            double limit = aspect_max > 1.5? (aspect_max < 1.9? 0.2277777777777777 : 0.3377777777777777) : 0.1033333333333337;
+            geometry.min_aspect = aspect_max > 1? aspect_max - limit : aspect_max + limit;
+            geometry.max_aspect = aspect_max > 1? aspect_max - limit : aspect_max + limit;
             geometry.win_gravity = Gdk.Gravity.CENTER;
             window.set_geometry_hints (window, geometry, !NikiApp.settings.get_boolean("audio-video") && NikiApp.window.main_stack.visible_child_name == "player"? Gdk.WindowHints.ASPECT : Gdk.WindowHints.WIN_GRAVITY);
         }
