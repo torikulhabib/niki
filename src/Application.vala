@@ -83,6 +83,9 @@ namespace niki {
             if (keyboardinfo == null) {
                 keyboardinfo = new KeyboardInfo ();
                 keyboardinfo.application = this;
+                if (window != null) {
+                    keyboardinfo.transient_for = window;
+                }
                 add_window (keyboardinfo);
                 keyboardinfo.show_all ();
                 keyboardinfo.destroy.connect (() => {
