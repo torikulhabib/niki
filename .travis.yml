@@ -15,7 +15,7 @@ os:
 dist: bionic
 
 before_install:
-  - sudo add-apt-repository ppa:elementary-os/os-patches
+  - sudo add-apt-repository -y ppa:elementary-os/os-patches
   - sudo apt-get update
   - sudo apt-get -y install meson libtag1-dev libtag1v5-vanilla
   - mkdir first
