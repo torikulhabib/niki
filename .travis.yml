@@ -16,7 +16,7 @@ dist: bionic
 
 before_install:
   - sudo apt-get update
-  - sudo apt-get -y install meson
+  - sudo apt-get -y install meson libtag1-dev libtag1v5-vanilla
   - mkdir first
   - cd first
   - git clone https://github.com/torikulhabib/InyTag.git
