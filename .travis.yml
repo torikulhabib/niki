@@ -21,9 +21,10 @@ before_install:
   - mkdir first
   - cd first
   - git clone https://github.com/torikulhabib/InyTag.git
-  - meson InyTag --prefix=/usr
+  - meson build --prefix=/usr
+  - cd build
+  - ninja
   - sudo ninja install
-  - sudo ninja clean
 
 addons:
   apt:
