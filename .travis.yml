@@ -21,6 +21,7 @@ before_install:
   - mkdir first
   - cd first
   - git clone https://github.com/torikulhabib/InyTag.git
+  - cd InyTag
   - meson build --prefix=/usr
   - cd build
   - ninja
