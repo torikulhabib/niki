@@ -124,7 +124,7 @@ namespace niki {
                 return false;
             });
             margin = 0;
-            margin_end = margin_start = 5;
+            margin_end = margin_start = 12;
             hexpand = true;
             add (scale);
             show_all ();

@@ -165,11 +165,12 @@ namespace niki {
             label_info.selectable = true;
 
             menu_revealer = new Gtk.Revealer ();
-            menu_revealer.add (label_info);
+            menu_revealer.margin_start = 8;
             menu_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN;
             menu_revealer.transition_duration = 500;
             menu_revealer.hexpand = true;
             menu_revealer.reveal_child = false;
+            menu_revealer.add (label_info);
 
 		    var grid = new Gtk.Grid ();
             grid.orientation = Gtk.Orientation.VERTICAL;
@@ -187,6 +188,7 @@ namespace niki {
 
             var info_actionbar = new Gtk.ActionBar ();
             info_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            info_actionbar.margin_start = 8;
             info_actionbar.hexpand = true;
             info_actionbar.get_style_context ().add_class ("info_topbar");
             info_actionbar.pack_start (info_label_full);
