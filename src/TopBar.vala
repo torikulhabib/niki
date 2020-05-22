@@ -181,6 +181,7 @@ namespace niki {
             grid.show_all ();
 
             info_label_full = new Gtk.Label (null);
+            info_label_full.margin_start = 8;
             info_label_full.get_style_context ().add_class ("selectedlabel");
             info_label_full.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
             info_label_full.ellipsize = Pango.EllipsizeMode.END;
@@ -188,7 +189,6 @@ namespace niki {
 
             var info_actionbar = new Gtk.ActionBar ();
             info_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            info_actionbar.margin_start = 8;
             info_actionbar.hexpand = true;
             info_actionbar.get_style_context ().add_class ("info_topbar");
             info_actionbar.pack_start (info_label_full);

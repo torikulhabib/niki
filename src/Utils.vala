@@ -540,7 +540,7 @@ namespace niki {
         var surface = new Granite.Drawing.BufferSurface ((int)pixbuf.get_width (), (int)pixbuf.get_height ());
         Gdk.cairo_set_source_pixbuf (surface.context, pixbuf, 0, 0);
         surface.context.paint ();
-        surface.exponential_blur (15);
+        surface.exponential_blur (250);
         surface.context.paint ();
         return Gdk.pixbuf_get_from_surface (surface.surface, 0, 0, pixbuf.get_width (), pixbuf.get_height ());
     }
