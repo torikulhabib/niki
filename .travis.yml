@@ -14,17 +14,14 @@ os:
 
 dist: bionic
 
-before_install:
-  - sudo add-apt-repository -y ppa:torik-habib/inytags
-  - sudo apt-get update
-  - sudo apt-get -y install inytag
-
 addons:
   apt:
     sources:
       - ubuntu-toolchain-r-test
+      - sourceline: 'ppa:torik-habib/inytags'
     packages:
       - libstdc++-5-dev
+      - inytag
 
 install:
   - npm i -g @elementaryos/houston
