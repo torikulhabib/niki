@@ -30,7 +30,6 @@ namespace niki {
         private Clutter.Text first_lyric;
         private Clutter.Text seconds_lyric;
         private Clutter.Text notify_text;
-        public Clutter.Text lyric_sc;
         private Clutter.Image oriimage;
         private Clutter.Image blur_image;
         public RightBar? right_bar;
@@ -456,7 +455,7 @@ namespace niki {
             }
         }
         public Clutter.Actor text_clutter (string name) {
-            lyric_sc = new Clutter.Text ();
+            var lyric_sc = new Clutter.Text ();
             lyric_sc.set_text (name);
             lyric_sc.font_name = NikiApp.settings.get_string("font");
             lyric_sc.color = Clutter.Color.from_string ("white");
@@ -543,7 +542,7 @@ namespace niki {
             }
         }
 
-        private bool update_position_cover () {
+        private void update_position_cover () {
             scroll.x = NikiApp.settings.get_boolean("audio-video") && !NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean ("lyric-button") && NikiApp.settings.get_boolean("lyric-available")? (stage.width / 2) - (scroll.width / 2) : -scroll.width;
             scroll.y = NikiApp.settings.get_boolean("audio-video") && !NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean ("lyric-button") && NikiApp.settings.get_boolean("lyric-available")? ((stage.height / 2) - (scroll.height / 2)) : -scroll.height;
             cover_center.x = NikiApp.settings.get_boolean("audio-video") && NikiApp.settings.get_boolean ("information-button")? (stage.width / 2) - (cover_center.width / 2) : -cover_center.width;
@@ -556,7 +555,6 @@ namespace niki {
             first_lyric.y = NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean("lyric-available") && NikiApp.settings.get_boolean("audio-video") && NikiApp.settings.get_boolean ("lyric-button")? ((stage.height / 2) - (first_lyric.height / 2) + (125 + artist_music.height)) : -first_lyric.height;
             seconds_lyric.x = NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean("lyric-available") && NikiApp.settings.get_boolean("audio-video") && NikiApp.settings.get_boolean ("lyric-button")? ((stage.width / 2) - (seconds_lyric.width / 2)) : -seconds_lyric.width;
             seconds_lyric.y = NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean("lyric-available") && NikiApp.settings.get_boolean("audio-video") && NikiApp.settings.get_boolean ("lyric-button")? ((stage.height / 2) - (seconds_lyric.height / 2) + (155 + first_lyric.height)) : -seconds_lyric.height;
-            return Source.REMOVE;
         }
 
         public void resize_player_page (Window window, int width, int height) {

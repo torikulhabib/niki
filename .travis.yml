@@ -17,14 +17,13 @@ dist: bionic
 before_install:
   - sudo add-apt-repository -y ppa:elementary-os/os-patches
   - sudo apt-get update
-  - sudo apt-get -y install meson libtag1-dev libtag1v5-vanilla
+  - sudo apt-get -y install meson devscripts libtag1-dev libtag1v5-vanilla
   - cd ./..
   - git clone https://github.com/torikulhabib/InyTag.git
   - cd InyTag
-  - meson build --prefix=/usr
-  - cd build
-  - ninja
-  - sudo ninja install
+  - debuild -us -uc -d
+  - cd ./..
+  - sudo dpkg -i inytag_0.5.0-0_amd64.deb
 
 addons:
   apt:

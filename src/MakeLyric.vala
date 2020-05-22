@@ -181,8 +181,8 @@ namespace niki {
             lrc_scr.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             lrc_scr.propagate_natural_width = true;
             lrc_scr.size_allocate.connect (resize_scr);
-            lrc_scr.margin_start = 5;
-            lrc_scr.margin_end = 5;
+            lrc_scr.margin_start = 10;
+            lrc_scr.margin_end = 10;
             lrc_scr.add (tree_view);
 
             text_lrc = new Gtk.TextView ();
@@ -192,8 +192,8 @@ namespace niki {
             lrc_text.set_policy (Gtk.PolicyType.EXTERNAL, Gtk.PolicyType.AUTOMATIC);
             lrc_text.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             lrc_text.propagate_natural_width = true;
-            lrc_text.margin_start = 5;
-            lrc_text.margin_end = 5;
+            lrc_text.margin_start = 10;
+            lrc_text.margin_end = 10;
             lrc_text.add (text_lrc);
 
             stack = new Gtk.Stack ();
