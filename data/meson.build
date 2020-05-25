@@ -57,6 +57,8 @@ actions = [
     '.lrc-file-symbolic.svg',
     '.file-save-as-symbolic.svg',
     '.file-save-symbolic.svg',
+    '.restore-symbolic.svg',
+    '.maximize-symbolic.svg',
 ]
 
 foreach m : actions

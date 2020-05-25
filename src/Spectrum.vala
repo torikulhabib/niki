@@ -101,9 +101,6 @@ namespace niki {
         }
         private Gtk.DrawingArea level_music (Spectrum spectrum, int m_band) {
             var drawing = new Gtk.DrawingArea ();
-            notify.connect (() => {
-                queue_draw ();
-            });
             double m_max = 0;
             drawing.expand = true;
             drawing.draw.connect ((in_ctx)=> {

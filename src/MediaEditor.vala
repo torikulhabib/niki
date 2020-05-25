@@ -419,6 +419,9 @@ namespace niki {
             var file = File.new_for_uri (file_name);
             string nameimage = cache_image ("setcover");
             if (get_mime_type (file).has_prefix ("audio/")) {
+                if (file.get_uri ().down ().has_suffix ("aac") || file.get_uri ().down ().has_suffix ("ac3")) {
+                    return;
+                }
                 if (file.get_uri ().down ().has_suffix ("mp3")) {
                     var file_mpg = new InyTag.Mpeg_File (file.get_path ());
                     file_mpg.mpeg_tag.title = title_entry.text;
@@ -490,6 +493,9 @@ namespace niki {
             playlist.liststore.get (playlist.selected_iter (), PlaylistColumns.FILENAME, out file_name);
             var file = File.new_for_uri (file_name);
             if (get_mime_type (file).has_prefix ("audio/")) {
+                if (file.get_uri ().down ().has_suffix ("aac") || file.get_uri ().down ().has_suffix ("ac3")) {
+                    return;
+                }
                 var tagfile = new InyTag.File (file.get_path ());
                 tagfile.tag.title = "";
                 tagfile.tag.artist ="";
@@ -627,6 +633,16 @@ namespace niki {
         private void audio_info (string file_name) {
             label_name.label = File.new_for_uri (file_name).get_basename ();
             label_name.tooltip_text = File.new_for_uri (file_name).get_path ();
+            if (file_name.down ().has_suffix ("aac") || file_name.down ().has_suffix ("ac3")) {
+                title_entry.text = "";
+                artist_entry.text = "";
+                album_entry.text = "";
+                genre_entry.text = "";
+                comment_textview.buffer.text = "";
+                track_spinbutton.value = 0;
+                date_spinbutton.value = 0;
+                return;
+            }
             var tagfile = new InyTag.File (File.new_for_uri (file_name).get_path ());
             label_bitrate.label = tagfile.audioproperties.bitrate.to_string () + _(" kHz");
             label_sample.label = tagfile.audioproperties.samplerate.to_string () + _(" bps");

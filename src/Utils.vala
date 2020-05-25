@@ -249,6 +249,9 @@ namespace niki {
         if (get_mime_type (path).has_prefix ("video/")) {
 		    output = path.get_basename ();
         } else if (get_mime_type (path).has_prefix ("audio/")) {
+            if (path.get_uri ().down ().has_suffix ("aac") || path.get_uri ().down ().has_suffix ("ac3")) {
+                return path.get_basename ();
+            }
 		    var info = new InyTag.File(path.get_path ());
 		    output = info.tag.title.char_count () < 1? path.get_basename () : info.tag.title;
         }
@@ -256,10 +259,16 @@ namespace niki {
 	}
 
     private string get_artist_music (File path) {
+        if (path.get_uri ().down ().has_suffix ("aac") || path.get_uri ().down ().has_suffix ("ac3")) {
+            return StringPot.Unknown;
+        }
 		var info = new InyTag.File(path.get_path ());
 		return info.tag.artist.char_count () < 1? StringPot.Unknown : info.tag.artist;
     }
     private string get_album_music (File path) {
+        if (path.get_uri ().down ().has_suffix ("aac") || path.get_uri ().down ().has_suffix ("ac3")) {
+            return StringPot.Unknown;
+        }
 		var info = new InyTag.File(path.get_path ());
 		return info.tag.album.char_count () < 1? StringPot.Unknown : info.tag.album;
     }
@@ -463,7 +472,7 @@ namespace niki {
         return GLib.Path.build_filename (cache_folder (), name + ".jpg");
     }
     private static string cache_folder () {
-        var cache_dir = File.new_for_path (GLib.Path.build_path (GLib.Path.DIR_SEPARATOR_S, Environment.get_user_cache_dir (), Environment.get_application_name()));
+        var cache_dir = File.new_for_path (GLib.Path.build_path (GLib.Path.DIR_SEPARATOR_S, Environment.get_user_cache_dir (), Environment.get_application_name ()));
         if (!cache_dir.query_exists ()) {
             try {
                 cache_dir.make_directory_with_parents ();
@@ -472,6 +481,20 @@ namespace niki {
             }
         }
         return cache_dir.get_path ();
+    }
+    private static string config_folder () {
+        var config_dir = File.new_for_path (GLib.Path.build_path (GLib.Path.DIR_SEPARATOR_S, Environment.get_user_config_dir (), Environment.get_application_name ()));
+        if (!config_dir.query_exists ()) {
+            try {
+                config_dir.make_directory_with_parents ();
+            } catch (Error e) {
+                warning (e.message);
+            }
+        }
+        return config_dir.get_path ();
+    }
+    private static string folder_db () {
+        return GLib.Path.build_filename (config_folder (), Environment.get_application_name () + ".db");
     }
     private static string? normal_thumb (File thum_file) {
         string hash_file = GLib.Checksum.compute_for_string (ChecksumType.MD5, thum_file.get_uri (), thum_file.get_uri ().length);

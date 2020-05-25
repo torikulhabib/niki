@@ -31,6 +31,7 @@
 * libgupnp-av-1.0-dev,
 * libgssdp-1.0-dev,
 * libcairo2-dev,
+* libsqlite3-dev
 
 Run `meson` to configure the build environment and then `ninja` to build and run automated tests
 

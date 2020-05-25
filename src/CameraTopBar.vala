@@ -179,7 +179,7 @@ namespace niki {
         }
 
         private void maximized_button () {
-            ((Gtk.Image) maximize_button.image).icon_name = NikiApp.settings.get_boolean ("maximize")? "view-fullscreen-symbolic" : "view-restore-symbolic";
+            ((Gtk.Image) maximize_button.image).icon_name = NikiApp.settings.get_boolean ("maximize")? "com.github.torikulhabib.niki.maximize-symbolic" : "com.github.torikulhabib.niki.restore-symbolic";
             maximize_button.tooltip_text = NikiApp.settings.get_boolean ("maximize")? StringPot.Maximize : StringPot.Unmaximize;
         }
     }
