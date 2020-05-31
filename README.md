@@ -25,8 +25,7 @@
 * libgirepository1.0-dev
 * libtag1-dev
 * libcanberra-dev
-* libgstreamer-plugins-good1.0-dev,
-* libgstreamer-plugins-bad1.0-dev,
+* gstreamer1.0-plugins-bad
 * libgupnp-1.0-dev,
 * libgupnp-av-1.0-dev,
 * libgssdp-1.0-dev,
@@ -94,8 +93,8 @@ If you like Niki and you want to support its development,consider supporting via
 
 ### v 0.9
 - [ ] Input Camera device. (Inprogress)
-- [ ] Music Library View. (Inprogress)
-- [ ] Video Library View. (Inprogress)
+- [x] Music Library View. (Inprogress)
+- [x] Video Library View. (Inprogress)
 - [x] Audio Tag Set Picture Mp3, M4A, FLAC.
 - [ ] DLNA Player. (Inprogress)
 - [x] Video Crop.
