@@ -26,11 +26,9 @@ namespace niki {
         public signal void leave_scale ();
 
         construct {
-            get_style_context ().add_class ("volume");
             transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
             transition_duration = 500;
             scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, 0.0, 1.0, 0.01);
-            scale.get_style_context ().add_class ("volume");
             scale.draw_value = scale.can_focus = false;
             scale.set_show_fill_level (true);
             scale.set_margin_start (2);

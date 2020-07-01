@@ -21,7 +21,6 @@
 
 namespace niki {
     public class SearchDialog : Gtk.Dialog {
-        public signal void reload_liryc ();
         private Gtk.Entry title_entry;
         private Gtk.Entry artist_entry;
         private Gtk.Entry album_entry;
@@ -29,7 +28,7 @@ namespace niki {
         private Gtk.ListStore listmodel;
         private Gtk.Label label;
         private Gtk.Spinner spinner;
-        private Gtk.Grid grid;
+        private Gtk.Revealer prog_revealer;
         private EngineViewlyrics? engineviewlrc;
         private EngineNetease? enginenetease;
         private uint hiding_timer = 0;
@@ -72,8 +71,10 @@ namespace niki {
             var scr_lyric = new Gtk.ScrolledWindow (null, null);
             scr_lyric.expand = true;
             scr_lyric.width_request = 350;
-            scr_lyric.height_request = 290;
+            scr_lyric.height_request = 250;
             scr_lyric.add (tree_view);
+            var frame = new Gtk.Frame (null);
+            frame.add (scr_lyric);
 
             var title_label = new Gtk.Label (_("Title:"));
             title_label.halign = Gtk.Align.START;
@@ -84,8 +85,8 @@ namespace niki {
 
             var grid_combine = new Gtk.Grid ();
             grid_combine.expand = true;
-            grid_combine.margin_start = 12;
-            grid_combine.margin_end = 12;
+            grid_combine.margin_start = 10;
+            grid_combine.margin_end = 10;
             grid_combine.column_spacing = 5;
             grid_combine.row_spacing = 5;
             grid_combine.attach (title_label, 0, 0);
@@ -94,22 +95,18 @@ namespace niki {
             grid_combine.attach (artist_entry, 1, 1);
             grid_combine.attach (album_label, 0, 2);
             grid_combine.attach (album_entry, 1, 2);
-            grid_combine.attach (scr_lyric, 0, 3, 2, 2);
-
-            get_content_area ().add (grid_combine);
+            grid_combine.attach (frame, 0, 3, 2, 2);
 
             var search_button = new Gtk.Button.with_label (StringPot.Search);
             search_button.get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
             search_button.clicked.connect (search_lrc);
 
             var close_button = new Gtk.Button.with_label (StringPot.Close);
-            close_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FRAME);
             close_button.clicked.connect (()=>{
                 destroy ();
             });
 
             var download_button = new Gtk.Button.with_label (StringPot.Download);
-            download_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FRAME);
             download_button.clicked.connect (()=>{
                 Gtk.TreeIter iter;
                 if (!tree_view.get_selection ().get_selected (null, out iter)) {
@@ -122,40 +119,58 @@ namespace niki {
 
             label = new Gtk.Label (null);
             label.valign = Gtk.Align.CENTER;
+            label.ellipsize = Pango.EllipsizeMode.END;
             spinner = new Gtk.Spinner ();
+            spinner.margin_end = 5;
             spinner.valign = Gtk.Align.CENTER;
-            grid = new Gtk.Grid ();
-            grid.orientation = Gtk.Orientation.HORIZONTAL;
-            grid.add (spinner);
-            grid.add (label);
 
-            var button = new Gtk.Button ();
-            button.width_request = 130;
-            button.add (grid);
-            button.get_style_context ().add_class ("transparantbg");
-            button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            add_action_widget (button, 0);
-            add_action_widget (close_button, 0);
-            add_action_widget (search_button, 0);
-            add_action_widget (download_button, 0);
+            var prog_grid = new Gtk.Grid ();
+            prog_grid.orientation = Gtk.Orientation.HORIZONTAL;
+            prog_grid.valign = Gtk.Align.CENTER;
+            prog_grid.add (spinner);
+            prog_grid.add (label);
+
+            prog_revealer = new Gtk.Revealer ();
+            prog_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
+            prog_revealer.add (prog_grid);
+
+		    var box_action = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+            box_action.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            box_action.spacing = 5;
+            box_action.margin_top = 5;
+            box_action.margin_start = 10;
+            box_action.margin_end = 10;
+            box_action.pack_end (close_button, false, true, 0);
+            box_action.pack_end (search_button, false, true, 0);
+            box_action.pack_end (download_button, false, true, 0);
+            box_action.pack_start (prog_revealer, false, false, 0);
+
+		    var grid_ver = new Gtk.Grid ();
+            grid_ver.orientation = Gtk.Orientation.VERTICAL;
+            grid_ver.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            grid_ver.add (grid_combine);
+            grid_ver.add (box_action);
+
+            get_content_area ().add (grid_ver);
+
+            show.connect(()=>{
+                NikiApp.window.player_page.bottom_bar.set_reveal_child (false);
+            });
             enginenetease.send_data.connect (get_engindata);
             engineviewlrc.send_data.connect (get_engindata);
             enginenetease.send_lrc.connect (save_to_file);
             engineviewlrc.send_lrc.connect (save_to_file);
-            show.connect(()=>{
-                NikiApp.window.player_page.bottom_bar.set_reveal_child (false);
-            });
         }
         public void send_notification (string text) {
-            grid.show ();
             spinner.active = true;
+            prog_revealer.reveal_child = true;
             label.label = text;
             if (hiding_timer != 0) {
                 Source.remove (hiding_timer);
             }
             hiding_timer = GLib.Timeout.add_seconds (2, () => {
-                grid.hide ();
                 spinner.active = false;
+                prog_revealer.reveal_child = false;
                 hiding_timer = 0;
                 return false;
             });
@@ -237,7 +252,7 @@ namespace niki {
             	FileOutputStream out_stream = file.create (FileCreateFlags.REPLACE_DESTINATION);
             	out_stream.write (lrc.data);
                 send_notification ("Downloaded");
-                reload_liryc ();
+                NikiApp.window.player_page.reloadlrc ();
             } catch (Error e) {
                 send_notification (e.message);
             }

@@ -35,10 +35,10 @@ namespace niki {
                 application_id: "com.github.torikulhabib.niki",
                 flags: ApplicationFlags.HANDLES_COMMAND_LINE
             );
-            startup.connect (on_startup);
-            shutdown.connect (on_shutdown);
+            Unix.signal_add ( Posix.Signal.HUP, on_sigint, Priority.DEFAULT );
+            Unix.signal_add ( Posix.Signal.TERM, on_sigint, Priority.DEFAULT );
         }
-
+        public static Sqlite.Database db;
         public static Window? window;
         public static KeyboardInfo? keyboardinfo;
         public static GLib.Settings settings = new GLib.Settings ("com.github.torikulhabib.niki");
@@ -47,8 +47,8 @@ namespace niki {
         public static GLib.Settings settingsCv = new GLib.Settings ("com.github.torikulhabib.videocamera");
 
         construct {
-            Unix.signal_add ( Posix.Signal.HUP, on_sigint, Priority.DEFAULT );
-            Unix.signal_add ( Posix.Signal.TERM, on_sigint, Priority.DEFAULT );
+            startup.connect (on_startup);
+            shutdown.connect (on_shutdown);
         }
         private bool on_sigint () {
             return Source.REMOVE;
@@ -65,10 +65,9 @@ namespace niki {
         public void active () {
             if (window == null) {
                 window = new Window ();
-                window.application = this;
                 add_window (window);
                 window.show_all ();
-                window.unref ();
+                open_database (out db);
             } else {
                 if (NikiApp.settings.get_boolean ("audio-video") && window.main_stack.visible_child_name == "player") {
                     window.show ();
@@ -76,13 +75,14 @@ namespace niki {
                     if (NikiApp.settings.get_int ("window-x") != -1 && NikiApp.settings.get_int ("window-y") != -1) {
                         window.move (NikiApp.settings.get_int ("window-x"), NikiApp.settings.get_int ("window-y"));
                     }
+                } else if (NikiApp.settings.get_boolean ("audio-video") && window.main_stack.visible_child_name == "listview") {
+                    window.show_all ();
                 }
             }
         }
         public void keyboard_keys () {
             if (keyboardinfo == null) {
                 keyboardinfo = new KeyboardInfo ();
-                keyboardinfo.application = this;
                 if (window != null) {
                     keyboardinfo.transient_for = window;
                 }

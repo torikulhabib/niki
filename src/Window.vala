@@ -47,6 +47,10 @@ namespace niki {
             home_revealer.add (home_button);
             var light_dark = new LightDark ();
             light_dark.focus_on_click = false;
+            var list_button = new Gtk.Button.from_icon_name ("playlist-queue-symbolic", Gtk.IconSize.BUTTON);
+            list_button.focus_on_click = false;
+            list_button.get_style_context ().add_class ("button_action");
+            list_button.tooltip_text = _("Library");
             var spinner = new Gtk.Spinner ();
             var spinner_revealer = new Gtk.Revealer ();
             spinner_revealer.transition_type = Gtk.RevealerTransitionType.CROSSFADE;
@@ -58,6 +62,7 @@ namespace niki {
             headerbar.decoration_layout = "close:maximize";
             headerbar.pack_start (home_revealer);
             headerbar.pack_end (light_dark);
+            headerbar.pack_end (list_button);
             headerbar.pack_end (spinner_revealer);
             headerbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             headerbar.get_style_context ().add_class ("default-decoration");
@@ -79,20 +84,50 @@ namespace niki {
             add (main_stack);
 
             welcome_page.stack.notify["visible-child"].connect (() => {
-                home_revealer.set_reveal_child (welcome_page.stack.visible_child_name == "dlna" || welcome_page.stack.visible_child_name == "dvd" || welcome_page.stack.visible_child_name == "device"? true : false);
+                home_revealer.set_reveal_child (player_page.visible_child_name == "listview" || welcome_page.stack.visible_child_name == "dlna" || welcome_page.stack.visible_child_name == "dvd" || welcome_page.stack.visible_child_name == "device"? true : false);
                 headerbar.title = welcome_page.stack.visible_child_name == "dlna"? StringPot.Niki_DLNA_Browser : StringPot.Niki;
+            });
+            player_page.notify["visible-child"].connect (() => {
+                headerbar_mode ();
+                home_revealer.set_reveal_child (player_page.visible_child_name == "listview" || welcome_page.stack.visible_child_name == "dlna" || welcome_page.stack.visible_child_name == "dvd" || welcome_page.stack.visible_child_name == "device"? true : false);
+                headerbar.title = welcome_page.stack.visible_child_name == "dlna"? StringPot.Niki_DLNA_Browser : StringPot.Niki;
+                ((Gtk.Image) list_button.image).icon_name = player_page.visible_child_name == "embed"? "playlist-queue-symbolic" : (main_stack.visible_child_name == "welcome"? "playlist-queue-symbolic" : "com.github.torikulhabib.niki.play-symbolic");
+                list_button.tooltip_text = player_page.visible_child_name == "embed"? _("Library") : _("Player");
             });
             main_stack.notify["visible-child"].connect (() => {
                 headerbar_mode ();
                 if (welcome_page.stack.visible_child_name == "circular") {
                     welcome_page.stack.visible_child_name = "home";
                 }
-                home_revealer.set_reveal_child (welcome_page.stack.visible_child_name == "dlna" || welcome_page.stack.visible_child_name == "dvd" || welcome_page.stack.visible_child_name == "device"? true : false);
+                home_revealer.set_reveal_child (player_page.visible_child_name == "listview" || welcome_page.stack.visible_child_name == "dlna" || welcome_page.stack.visible_child_name == "dvd" || welcome_page.stack.visible_child_name == "device"? true : false);
                 headerbar.title = welcome_page.stack.visible_child_name == "dlna"? StringPot.Niki_DLNA_Browser : StringPot.Niki;
+            ((Gtk.Image) list_button.image).icon_name = player_page.visible_child_name == "embed"? "playlist-queue-symbolic" : (main_stack.visible_child_name == "welcome"? "playlist-queue-symbolic" : "com.github.torikulhabib.niki.play-symbolic");
+                list_button.tooltip_text = player_page.visible_child_name == "embed"? _("Library") : _("Player");
             });
 
+            list_button.clicked.connect (() => {
+                if (main_stack.visible_child_name == "welcome") {
+                    main_stack.visible_child_name = "player";
+                    player_page.visible_child_name = "listview";
+                } else if (player_page.visible_child_name == "listview") {
+                    main_stack.visible_child_name = "player";
+                    player_page.visible_child_name = "embed";
+                    if (NikiApp.settings.get_boolean("audio-video")) {
+                        player_page.resize_player_page (this, 450, 450);
+                    } else {
+                        if (player_page.video_width > 0 && player_page.video_height > 0) {
+                            player_page.resize_player_page (this, player_page.video_width, player_page.video_height);
+                        }
+                    }
+                }
+            });
             home_button.clicked.connect (() => {
-                welcome_page.stack.visible_child_name = "home";
+                if (player_page.visible_child_name == "listview") {
+                    main_stack.visible_child_name = "welcome";
+                    player_page.visible_child_name = "embed";
+                } else {
+                    welcome_page.stack.visible_child_name = "home";
+                }
             });
 
             Gtk.drag_dest_set (this, Gtk.DestDefaults.ALL, target_list, Gdk.DragAction.COPY);
@@ -163,8 +198,6 @@ namespace niki {
                 }
             });
             move_widget (this, this);
-            player_page.unref ();
-            camera_page.unref ();
         }
 
         public void position_window () {
@@ -172,99 +205,12 @@ namespace niki {
         }
 
         private bool headerbar_mode () {
-            if (main_stack.visible_child_name == "welcome") {
+            if (main_stack.visible_child_name == "welcome" || player_page.visible_child_name == "listview") {
                 headerbar.show ();
             } else {
                 headerbar.hide ();
             }
             return false;
-        }
-
-        public void run_open_file (bool clear_playlist = false, bool force_play = true) {
-            var file = new Gtk.FileChooserDialog (
-            StringPot.Open, this, Gtk.FileChooserAction.OPEN,
-            StringPot.Cancel, Gtk.ResponseType.CANCEL,
-            StringPot.Open, Gtk.ResponseType.ACCEPT);
-            file.select_multiple = true;
-            file.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-
-            var preview_area = new AsyncImage (true);
-            preview_area.pixel_size = 256;
-            preview_area.margin_end = 12;
-
-            var all_files_filter = new Gtk.FileFilter ();
-            all_files_filter.set_filter_name (StringPot.All_Files);
-            all_files_filter.add_pattern ("*");
-
-            var video_filter = new Gtk.FileFilter ();
-            video_filter.set_filter_name (StringPot.Audio_Video);
-            video_filter.add_mime_type ("video/*");
-            video_filter.add_mime_type ("audio/*");
-
-            var label = new Gtk.Label (null);
-            label.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
-            label.ellipsize = Pango.EllipsizeMode.END;
-            label.max_width_chars = 20;
-            label.margin_end = 10;
-
-            var grid = new Gtk.Grid ();
-            grid.orientation = Gtk.Orientation.VERTICAL;
-            grid.valign = Gtk.Align.CENTER;
-            grid.add (preview_area);
-            grid.add (label);
-            grid.show_all ();
-
-            file.add_filter (video_filter);
-            file.add_filter (all_files_filter);
-            file.set_preview_widget (grid);
-            file.set_preview_widget_active (false);
-            file.set_use_preview_label (false);
-            file.update_preview.connect (() => {
-                string uri = file.get_preview_uri ();
-                if (uri != null && uri.has_prefix ("file://")) {
-                    var file_pre = File.new_for_uri (uri);
-                    Gdk.Pixbuf pixbuf = null;
-                    if (get_mime_type (file_pre).has_prefix ("video/")) {
-                        if (!FileUtils.test (large_thumb (file_pre), FileTest.EXISTS)) {
-                            var dbus_Thum = new DbusThumbnailer ().instance;
-                            dbus_Thum.instand_thumbler (file_pre, "large");
-                            dbus_Thum.load_finished.connect (()=>{
-                                preview_area.set_from_pixbuf (pix_scale (large_thumb (file_pre), 256));
-                                label.label = file_pre.get_basename ();
-                                preview_area.show ();
-                                file.set_preview_widget_active (true);
-                            });
-                        } else {
-                            pixbuf = pix_scale (large_thumb (file_pre), 256);
-                        }
-                    } else if (get_mime_type (file_pre).has_prefix ("audio/")) {
-                        pixbuf = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (file_pre.get_uri ()).get_tags ()), 256);
-                    } else if (get_mime_type (file_pre).has_prefix ("image/")) {
-                        pixbuf = pix_scale (file_pre.get_path (), 256);
-                    }
-                    if (pixbuf != null) {
-                        label.label = file_pre.get_basename ();
-                        preview_area.set_from_pixbuf (pixbuf);
-                        preview_area.show ();
-                        file.set_preview_widget_active (true);
-                    } else {
-                        preview_area.hide ();
-                        file.set_preview_widget_active (false);
-                    }
-                } else {
-                    preview_area.hide ();
-                    file.set_preview_widget_active (false);
-                }
-            });
-
-            if (file.run () == Gtk.ResponseType.ACCEPT) {
-                File[] files = {};
-                foreach (File item in file.get_files ()) {
-                    files += item;
-                }
-                open_files (files, clear_playlist, force_play);
-            }
-            file.destroy ();
         }
 
         public void open_files (File[] files, bool clear_playlist = false, bool force_play = true) {
@@ -317,16 +263,6 @@ namespace niki {
                     }
 			        break;
 		    }
-        }
-
-        public bool is_privacy_mode_enabled () {
-            var zeitgeist_manager = new ZeitgeistManager ();
-            var privacy_settings = new GLib.Settings ("org.gnome.desktop.privacy");
-            bool privacy_mode = privacy_settings.get_boolean ("remember-recent-files") || privacy_settings.get_boolean ("remember-app-usage");
-            if (privacy_mode) {
-                return true;
-            }
-            return zeitgeist_manager.app_into_blacklist (NikiApp.instance.application_id);
         }
     }
 }

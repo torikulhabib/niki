@@ -30,7 +30,7 @@ namespace niki {
         private Gtk.Button edit_button;
         private Gtk.ScrolledWindow playlist_scrolled;
         private Gtk.Grid content_box;
-        private Gtk.Entry entry;
+        private SearchEntry entry;
         private uint hiding_timer = 0;
 
         private bool _hovered = false;
@@ -79,13 +79,16 @@ namespace niki {
                 }
                 return false;
             });
-
+            playlist = new Playlist();
             var open_button = new Gtk.Button.from_icon_name ("list-add-symbolic", Gtk.IconSize.BUTTON);
             open_button.focus_on_click = false;
             open_button.get_style_context ().add_class ("button_action");
             open_button.set_tooltip_text (StringPot.Open_File);
             open_button.clicked.connect ( () => {
-                NikiApp.window.run_open_file (false, false);
+                var file = run_open_file (NikiApp.window);
+                if (file != null) {
+                    NikiApp.window.open_files (file, false, false);
+                }
             });
             var add_folder = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.folder-symbolic", Gtk.IconSize.BUTTON);
             add_folder.focus_on_click = false;
@@ -116,6 +119,7 @@ namespace niki {
                 font_button_rev.tooltip_text = NikiApp.settings.get_string ("font");
             });
             repeat_button = new RepeatButton ();
+            repeat_button.get_style_context ().add_class ("button_action");
             var repeat_button_revealer = new Gtk.Revealer ();
             repeat_button_revealer.add (repeat_button);
             repeat_button_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
@@ -144,7 +148,7 @@ namespace niki {
             search_button.focus_on_click = false;
             search_button.get_style_context ().add_class ("button_action");
             search_button.set_tooltip_text (StringPot.Search);
-            entry = new Gtk.Entry ();
+            entry = new SearchEntry (playlist);
             entry_rev = new Gtk.Revealer ();
             entry_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN;
             entry_rev.transition_duration = 500;
@@ -172,7 +176,6 @@ namespace niki {
 		    box_action.add (add_folder);
 		    box_action.add (edit_button);
 
-            playlist = new Playlist();
             playlist.get_style_context ().add_class ("scrollbar");
             playlist.set_search_entry (entry);
             playlist_scrolled = new Gtk.ScrolledWindow (null, null);
@@ -180,7 +183,6 @@ namespace niki {
             playlist_scrolled.set_policy (Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC);
             playlist_scrolled.vexpand = true;
             playlist_scrolled.add (playlist);
-            playlist_scrolled.show_all ();
             focus_button.clicked.connect ( () => {
                 playlist.scroll_to_cell (playlist.set_current (player_page.playback.uri, player_page), null, true, (float) 0.5, 0);
             });
@@ -236,29 +238,6 @@ namespace niki {
             playlist.leave_notify_event.connect (() => {
                 return cursor_hand_mode(2);
             });
-            NikiApp.settings.changed["sort-by"].connect (get_random);
-            NikiApp.settings.changed["ascen-descen"].connect (get_random);
-            get_random ();
-        }
-        private void get_random () {
-            switch (NikiApp.settings.get_int ("sort-by")) {
-                case 0:
-                    entry.primary_icon_name = "com.github.torikulhabib.niki.title-symbolic";
-                    entry.primary_icon_tooltip_markup = StringPot.Title;
-                    break;
-                case 1:
-                    entry.primary_icon_name = "avatar-default-symbolic";
-                    entry.primary_icon_tooltip_markup = StringPot.Artist;
-                    break;
-                case 2:
-                    entry.primary_icon_name = "media-optical-symbolic";
-                    entry.primary_icon_tooltip_markup = StringPot.Album;
-                    break;
-                case 3:
-                    entry.primary_icon_name = "edit-symbolic";
-                    entry.primary_icon_tooltip_markup = StringPot.Custom;
-                    break;
-            }
         }
         private void playlist_edit () {
             header_label.label = !NikiApp.settings.get_boolean ("edit-playlist")? StringPot.Playlist : StringPot.Select_Remove;

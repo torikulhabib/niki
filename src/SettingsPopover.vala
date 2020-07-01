@@ -41,56 +41,56 @@ namespace niki {
             var languange_label = new Gtk.Label (StringPot.Audio);
             languange_label.halign = Gtk.Align.END;
             label_audio_revealer = new Gtk.Revealer ();
-            label_audio_revealer.add (languange_label);
             label_audio_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN;
             label_audio_revealer.transition_duration = 500;
+            label_audio_revealer.add (languange_label);
 
             languages = new ComboxImage ();
             audio_track_revealer = new Gtk.Revealer ();
-            audio_track_revealer.add (languages);
             audio_track_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN;
             audio_track_revealer.transition_duration = 500;
+            audio_track_revealer.add (languages);
 
             var sub_label = new Gtk.Label (StringPot.Internal_Sub);
             sub_label.halign = Gtk.Align.END;
             sub_label_revealer = new Gtk.Revealer ();
-            sub_label_revealer.add (sub_label);
             sub_label_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN;
             sub_label_revealer.transition_duration = 500;
+            sub_label_revealer.add (sub_label);
 
             subtitles = new ComboxImage ();
             subtitles_revealer = new Gtk.Revealer ();
-            subtitles_revealer.add (subtitles);
             subtitles_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN;
             subtitles_revealer.transition_duration = 500;
+            subtitles_revealer.add (subtitles);
 
             var combox_font_label = new Gtk.Label (StringPot.Font_Options);
             combox_font_label.halign = Gtk.Align.END;
             combox_font_label_revealer = new Gtk.Revealer ();
-            combox_font_label_revealer.add (combox_font_label);
             combox_font_label_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN;
             combox_font_label_revealer.transition_duration = 500;
+            combox_font_label_revealer.add (combox_font_label);
 
             combox_font = new ComboxImage ();
             combox_font.appending ("emblem-default-symbolic", StringPot.Default_Font);
             combox_font.appending ("document-properties-symbolic", StringPot.Custom_Font);
             combox_font_revealer = new Gtk.Revealer ();
-            combox_font_revealer.add (combox_font);
             combox_font_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN;
             combox_font_revealer.transition_duration = 500;
+            combox_font_revealer.add (combox_font);
 
             var font_selection_label = new Gtk.Label (StringPot.Customs);
             font_selection_label.halign = Gtk.Align.END;
             font_selection_label_revealer = new Gtk.Revealer ();
-            font_selection_label_revealer.add (font_selection_label);
             font_selection_label_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN;
             font_selection_label_revealer.transition_duration = 500;
+            font_selection_label_revealer.add (font_selection_label);
 
             var font_selection_btn = new Gtk.FontButton ();
             font_selection_btn_revealer = new Gtk.Revealer ();
-            font_selection_btn_revealer.add (font_selection_btn);
             font_selection_btn_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN;
             font_selection_btn_revealer.transition_duration = 500;
+            font_selection_btn_revealer.add (font_selection_btn);
             font_button.connect (() => {
                 font_selection_btn.clicked ();
             });
@@ -100,6 +100,7 @@ namespace niki {
             Speed_label.margin_bottom = 1;
             Speed_label.halign = Gtk.Align.END;
             var speed_combox = new ComboxImage ();
+            speed_combox.margin_bottom = 1;
             speed_combox.appending ("media-playback-start-symbolic", _("0.25"));
             speed_combox.appending ("media-playback-start-symbolic", _("0.5"));
             speed_combox.appending ("media-playback-start-symbolic", _("0.75"));
@@ -109,7 +110,6 @@ namespace niki {
             speed_combox.appending ("media-playback-start-symbolic", _("1.5"));
             speed_combox.appending ("media-playback-start-symbolic", _("1.75"));
             speed_combox.appending ("media-playback-start-symbolic", _("2.0"));
-            speed_combox.margin_bottom = 1;
 
             var ex_subtitle_label = new Gtk.Label (StringPot.External_Sub);
             ex_subtitle_label.halign = Gtk.Align.END;
@@ -139,6 +139,7 @@ namespace niki {
                 } else {
                     file_chooser_subtitle.select_uri (NikiApp.settings.get_string("subtitle-choose"));
                 }
+                playerpage.playback.subtitle_choose ();
             });
 
             grid = new Gtk.Grid ();
@@ -155,7 +156,6 @@ namespace niki {
             grid.attach (speed_combox, 1, 4);
             grid.attach (ex_subtitle_label, 0, 5);
             grid.attach (file_chooser_subtitle, 1, 5);
-            grid.show_all ();
             add (grid);
             NikiApp.settings.bind ("speed-playing", speed_combox, "active", GLib.SettingsBindFlags.DEFAULT);
             NikiApp.settings.bind ("font-options", combox_font, "active", GLib.SettingsBindFlags.DEFAULT);

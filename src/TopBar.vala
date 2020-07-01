@@ -21,7 +21,6 @@
 
 namespace niki {
     public class TopBar : Gtk.Revealer {
-        public signal void button_home ();
         public Gtk.Button info_option;
         public Gtk.Button maximize_button;
         private Gtk.Button close_botton;
@@ -100,13 +99,23 @@ namespace niki {
             close_botton.clicked.connect (() => {
                 destroy_mode ();
             });
-
+            var list_button = new Gtk.Button.from_icon_name ("playlist-queue-symbolic", Gtk.IconSize.BUTTON);
+            list_button.focus_on_click = false;
+            list_button.get_style_context ().add_class ("button_action");
+            list_button.tooltip_text = StringPot.Home;
+            list_button.clicked.connect (() => {
+                playerpage.visible_child_name = "listview";
+                playerpage.mouse_blank ();
+                if (!NikiApp.settings.get_boolean("audio-video")) {
+                    playerpage.resize_player_page (NikiApp.window, 750, 500);
+                }
+            });
             var home_button = new Gtk.Button.from_icon_name ("go-home-symbolic", Gtk.IconSize.BUTTON);
             home_button.focus_on_click = false;
             home_button.get_style_context ().add_class ("button_action");
             home_button.tooltip_text = StringPot.Home;
             home_button.clicked.connect (() => {
-                button_home ();
+                playerpage.home_open ();
             });
             info_option = new Gtk.Button.from_icon_name ("dialog-information-symbolic", Gtk.IconSize.BUTTON);
             info_option.focus_on_click = false;
@@ -153,6 +162,7 @@ namespace niki {
             main_actionbar.pack_start (home_button);
             main_actionbar.set_center_widget (my_app);
             main_actionbar.pack_end (maximize_button);
+            main_actionbar.pack_end (list_button);
             main_actionbar.pack_end (blur_button);
             main_actionbar.pack_end (crop_button);
             main_actionbar.show_all ();
@@ -209,6 +219,7 @@ namespace niki {
             NikiApp.settings.changed["audio-video"].connect (() => {
                 revealer_menu ();
                 label_my_app ();
+                info_button ();
             });
             label_my_app ();
             blured_button ();
@@ -227,7 +238,7 @@ namespace niki {
             blur_button.tooltip_text = NikiApp.settings.get_boolean ("blur-mode")? "Blur" : "Normal";
         }
         private void info_button () {
-            ((Gtk.Image) info_option.image).icon_name = !NikiApp.settings.get_boolean ("information-button")? "dialog-information-symbolic" : "com.github.torikulhabib.niki.info-hide-symbolic";
+            ((Gtk.Image) info_option.image).icon_name = !NikiApp.settings.get_boolean ("information-button")? (!NikiApp.settings.get_boolean ("audio-video")? "com.github.torikulhabib.niki.info.title-symbolic" : "avatar-default-symbolic"): "com.github.torikulhabib.niki.info-hide-symbolic";
             info_option.tooltip_text = !NikiApp.settings.get_boolean ("information-button")? StringPot.Show : StringPot.Hide;
         }
 

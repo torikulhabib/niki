@@ -22,7 +22,6 @@
 namespace niki {
     public class TimeMusic : Gtk.Revealer {
         public signal void position_sec (int64 position);
-        public signal void reloadlrc ();
         public Gtk.Label progression_label;
         public Gtk.Label duration_label;
         private Gtk.Button make_lrc_but;
@@ -103,9 +102,6 @@ namespace niki {
                 } else {
                     var search_lrc = new SearchDialog (playback.uri);
                     search_lrc.show_all ();
-                    search_lrc.reload_liryc.connect (()=>{
-                        reloadlrc ();
-                    });
                 }
             });
             anim_area = new Gtk.DrawingArea ();
@@ -126,20 +122,13 @@ namespace niki {
             actionbar.pack_end (make_lrc_but);
             add (actionbar);
             show_all ();
-            NikiApp.settings.changed["player-mode"].connect (start_anime);
-            playback.notify["playing"].connect (start_anime);
             NikiApp.settings.changed["make-lrc"].connect (seach_n_time);
             seach_n_time ();
+            Timeout.add (40, animation_timer);
         }
         private void seach_n_time () {
             ((Gtk.Image) search_time_lrc.image).icon_name = NikiApp.settings.get_boolean ("make-lrc")? "com.github.torikulhabib.niki.time-lrc-symbolic" : "system-search-symbolic";
             search_time_lrc.tooltip_text = NikiApp.settings.get_boolean ("make-lrc")? StringPot.Set_Time_Lyric : StringPot.Search_Lyrics;
-        }
-        private void start_anime () {
-            if (remove_time > 0 && NikiApp.settings.get_boolean("audio-video") && NikiApp.window.main_stack.visible_child_name == "player") {
-                Source.remove (remove_time);
-            }
-            remove_time = Timeout.add (40, animation_timer);
         }
         private bool anim_draw (Cairo.Context cr) {
             double alpha = 0;
@@ -238,7 +227,7 @@ namespace niki {
                         state = 0;
                         break;
                 }
-                layout.set_text (NikiApp.settings.get_boolean("audio-video")? text : "", -1);
+                layout.set_text (NikiApp.settings.get_boolean("audio-video") && NikiApp.window.main_stack.visible_child_name == "player"&& NikiApp.window.player_page.visible_child_name == "embed"? text : "Niki", -1);
                 layout.set_attributes (null);
             }
 
@@ -262,7 +251,7 @@ namespace niki {
                 remove_time = Timeout.add (timeout, animation_timer);
                 return false;
             }
-            return NikiApp.settings.get_boolean("audio-video") && NikiApp.window.main_stack.visible_child_name == "player";
+            return true;
         }
     }
 }

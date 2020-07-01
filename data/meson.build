@@ -28,7 +28,6 @@ actions = [
     '.lyric-on-symbolic.svg',
     '.playlist-symbolic.svg',
     '.folder-symbolic.svg',
-    '.remove-symbolic.svg',
     '.video-filter-on-symbolic.svg',
     '.auto-symbolic.svg',
     '.refresh-right-symbolic.svg',
@@ -59,6 +58,7 @@ actions = [
     '.file-save-symbolic.svg',
     '.restore-symbolic.svg',
     '.maximize-symbolic.svg',
+    '.info.title-symbolic.svg',
 ]
 
 foreach m : actions

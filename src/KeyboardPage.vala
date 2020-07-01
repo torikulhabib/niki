@@ -46,7 +46,10 @@ namespace niki {
                     NikiApp.settings.set_boolean ("fullscreen", !NikiApp.settings.get_boolean ("fullscreen"));
                 }
             } else if (ctrl_pressed && match_keycode (Gdk.Key.o, keycode) && !NikiApp.settings.get_boolean ("make-lrc") && !window.player_page.right_bar.entry_rev.child_revealed) {
-                window.run_open_file ();
+                var file = run_open_file (NikiApp.window);
+                if (file != null) {
+                    NikiApp.window.open_files (file, true, true);
+                }
             } else if (match_keycode (Gdk.Key.q, keycode) && !NikiApp.settings.get_boolean ("make-lrc")  && !window.player_page.right_bar.entry_rev.child_revealed) {
                 destroy_mode ();
             } else if (match_keycode (Gdk.Key.m, keycode) && !NikiApp.settings.get_boolean ("make-lrc")  && !window.player_page.right_bar.entry_rev.child_revealed) {
@@ -72,9 +75,10 @@ namespace niki {
                 NikiApp.settings.set_boolean ("settings-button", !NikiApp.settings.get_boolean ("settings-button"));
             } else if (match_keycode (Gdk.Key.r, keycode) && !NikiApp.settings.get_boolean ("make-lrc")  && !window.player_page.right_bar.entry_rev.child_revealed) {
                 repeatmode.switch_repeat_mode ();
+                window.player_page.string_notify (window.player_page.bottom_bar.repeat_button.tooltip_text);
             } else if (match_keycode (Gdk.Key.h, keycode) && !NikiApp.settings.get_boolean ("make-lrc")  && !window.player_page.right_bar.entry_rev.child_revealed) {
 		        if (window.main_stack.visible_child_name == "player") {
-                    window.player_page.top_bar.button_home ();
+                    window.player_page.home_open ();
                 } else if (window.welcome_page.stack.visible_child_name == "dlna" && window.main_stack.visible_child_name != "player") {
                     window.welcome_page.stack.visible_child_name = "home";
                 } else if (window.welcome_page.stack.visible_child_name == "dvd" && window.main_stack.visible_child_name != "player") {

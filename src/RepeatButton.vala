@@ -23,7 +23,6 @@ namespace niki {
     public class RepeatButton : Gtk.Button {
         private Gtk.Image repeat_image;
         construct {
-            get_style_context ().add_class ("button_action");
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             focus_on_click = false;
             repeat_image = new Gtk.Image.from_icon_name ("tools-timer-symbolic", Gtk.IconSize.BUTTON);

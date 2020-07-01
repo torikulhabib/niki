@@ -53,7 +53,7 @@ namespace niki {
         private ButtonRevealer? playlist_revealer;
         private ButtonRevealer? lyric_revealer;
         public VolumeButton? volume_button;
-        private RepeatButton? repeat_button;
+        public RepeatButton? repeat_button;
         private RepeatButton? no_plylist_repeat;
         private Gtk.Stack setting_stack;
         private uint hiding_timer = 0;
@@ -167,10 +167,13 @@ namespace niki {
                 playerpage.playback.pipeline.set_state (Gst.State.NULL);
                 playing = false;
                 playerpage.playback.progress = 0.0;
+                insert_last_video (playerpage.playback.uri, seconds_to_time ((int) (playerpage.playback.progress * playerpage.playback.duration)), 0.0);
                 stop_revealer.set_reveal_child (false);
             });
             repeat_button = new RepeatButton ();
+            repeat_button.get_style_context ().add_class ("button_action");
             no_plylist_repeat = new RepeatButton ();
+            no_plylist_repeat.get_style_context ().add_class ("button_action");
             no_rep_rev = new Gtk.Revealer ();
             no_rep_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
             no_rep_rev.transition_duration = 100;
@@ -298,10 +301,13 @@ namespace niki {
             time_music = new TimeMusic (playerpage.playback);
 
             volume_button = new VolumeButton ();
+            volume_button.get_style_context ().add_class ("button_action");
             volume_button.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("status-muted", !NikiApp.settings.get_boolean ("status-muted"));
             });
             volume_widget = new VolumeWiget ();
+            volume_widget.get_style_context ().add_class ("volume");
+            volume_widget.scale.get_style_context ().add_class ("volume");
             volume_widget.notify["child-revealed"].connect (() => {
                 lyric_revealer.set_reveal_child (!volume_widget.child_revealed && NikiApp.settings.get_boolean ("audio-video"));
             });

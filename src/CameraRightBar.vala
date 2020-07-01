@@ -193,6 +193,7 @@ namespace niki {
             content_box.get_style_context ().add_class ("playlist");
             content_box.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             content_box.margin = 2;
+            content_box.valign = Gtk.Align.CENTER;
             content_box.orientation = Gtk.Orientation.VERTICAL;
             content_box.add (profile_button);
             content_box.add (flip_button);

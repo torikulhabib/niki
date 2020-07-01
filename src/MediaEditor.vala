@@ -60,9 +60,12 @@ namespace niki {
         private MediaEntry? audio_depth;
         private Gtk.Stack stack;
         private Playlist? playlist;
-        private InfoBar? infobar;
         private Gtk.Button save_button;
         private Gtk.Button clear_button;
+        private Gtk.Label label;
+        private Gtk.Spinner spinner;
+        private Gtk.Revealer prog_revealer;
+        private uint hiding_timer = 0;
         public signal void update_file (string file_name);
 
         public MediaEditor (Playlist playlist) {
@@ -74,7 +77,6 @@ namespace niki {
                 destroy_with_parent: true
             );
             this.playlist = playlist;
-            infobar = new InfoBar ();
             resize (425, 380);
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             get_style_context ().add_class ("niki");
@@ -116,7 +118,12 @@ namespace niki {
             openimage.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             openimage.get_style_context ().add_class ("transparantbg");
             openimage.add (asyncimage);
-            openimage.clicked.connect (run_open_file);
+            openimage.clicked.connect (()=> {
+                var file = run_open_file (this, false);
+                if (file != null) {
+                    select_image (file[0].get_path ());
+                }
+            });
 
             label_duration = new Gtk.Label (null);
             label_duration.halign = Gtk.Align.START;
@@ -345,11 +352,8 @@ namespace niki {
             grid_combine.orientation = Gtk.Orientation.VERTICAL;
             grid_combine.valign = Gtk.Align.FILL;
             grid_combine.add (arrows_grid);
-            grid_combine.add (infobar);
             grid_combine.add (stack);
             grid_combine.show_all ();
-
-            get_content_area ().add (grid_combine);
 
             save_button = new Gtk.Button.with_label (StringPot.Save);
             save_button.get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
@@ -365,9 +369,41 @@ namespace niki {
             clear_button.clicked.connect (clear_tags);
 
             move_widget (this, this);
-            add_action_widget (clear_button, 0);
-            add_action_widget (save_button, 0);
-            add_action_widget (close_button, 0);
+
+            label = new Gtk.Label (null);
+            label.valign = Gtk.Align.CENTER;
+            label.ellipsize = Pango.EllipsizeMode.END;
+            spinner = new Gtk.Spinner ();
+            spinner.margin_end = 5;
+            spinner.valign = Gtk.Align.CENTER;
+
+            var prog_grid = new Gtk.Grid ();
+            prog_grid.orientation = Gtk.Orientation.HORIZONTAL;
+            prog_grid.valign = Gtk.Align.CENTER;
+            prog_grid.add (spinner);
+            prog_grid.add (label);
+
+            prog_revealer = new Gtk.Revealer ();
+            prog_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
+            prog_revealer.add (prog_grid);
+
+		    var box_action = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+            box_action.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            box_action.spacing = 5;
+            box_action.margin_top = 5;
+            box_action.margin_start = 10;
+            box_action.margin_end = 10;
+            box_action.pack_end (close_button, false, true, 0);
+            box_action.pack_end (save_button, false, true, 0);
+            box_action.pack_end (clear_button, false, true, 0);
+            box_action.pack_start (prog_revealer, false, false, 0);
+
+		    var grid_ver = new Gtk.Grid ();
+            grid_ver.orientation = Gtk.Orientation.VERTICAL;
+            grid_ver.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            grid_ver.add (grid_combine);
+            grid_ver.add (box_action);
+            get_content_area ().add (grid_ver);
             show.connect(()=>{
                 string file_name;
                 playlist.liststore.get (playlist.selected_iter (), PlaylistColumns.FILENAME, out file_name);
@@ -378,9 +414,19 @@ namespace niki {
                 permanent_delete (File.new_for_path (cache_image ("setcover")));
             });
         }
-        private void info_send (string text) {
-            infobar.title = text;
-            infobar.send_notification ();
+        public void info_send (string text) {
+            spinner.active = true;
+            prog_revealer.reveal_child = true;
+            label.label = text;
+            if (hiding_timer != 0) {
+                Source.remove (hiding_timer);
+            }
+            hiding_timer = GLib.Timeout.add_seconds (1, () => {
+                spinner.active = false;
+                prog_revealer.reveal_child = false;
+                hiding_timer = 0;
+                return false;
+            });
         }
 
         private void previous_track () {
@@ -561,18 +607,15 @@ namespace niki {
             var info = get_discoverer_info (file_name);
             var stream_info = info.get_stream_info ();
             Gst.Caps caps = stream_info.get_caps ();
-            container.label = "%s: %s".printf(stream_info.get_stream_type_nick (), caps.is_fixed () == true? Gst.PbUtils.get_codec_description (caps) : caps.to_string ());
-            container.tooltip_text = "%s: %s".printf(stream_info.get_stream_type_nick (), caps.is_fixed () == true? Gst.PbUtils.get_codec_description (caps) : caps.to_string ());
+            container.tooltip_text = container.label = "%s: %s".printf(stream_info.get_stream_type_nick (), caps.is_fixed () == true? Gst.PbUtils.get_codec_description (caps) : caps.to_string ());
             ((Gst.PbUtils.DiscovererContainerInfo) stream_info).get_streams ().foreach ((list)=> {
                 if (list.get_stream_type_nick () == "audio") {
                     Gst.Caps acaps = list.get_caps ();
-                    container_audio.label = "%s: %s".printf(list.get_stream_type_nick (), acaps.is_fixed () == true? Gst.PbUtils.get_codec_description (acaps) : acaps.to_string ());
-                    container_audio.tooltip_text = "%s: %s".printf(list.get_stream_type_nick (), acaps.is_fixed () == true? Gst.PbUtils.get_codec_description (acaps) : acaps.to_string ());
+                    container_audio.tooltip_text = container_audio.label = "%s: %s".printf(list.get_stream_type_nick (), acaps.is_fixed () == true? Gst.PbUtils.get_codec_description (acaps) : acaps.to_string ());
                 }
                 if (list.get_stream_type_nick () == "video") {
                     Gst.Caps vcaps = list.get_caps ();
-                    container_video.label = "%s: %s".printf(list.get_stream_type_nick (), vcaps.is_fixed () == true? Gst.PbUtils.get_codec_description (vcaps) : vcaps.to_string ());
-                    container_video.tooltip_text = "%s: %s".printf(list.get_stream_type_nick (), vcaps.is_fixed () == true? Gst.PbUtils.get_codec_description (vcaps) : vcaps.to_string ());
+                    container_video.tooltip_text = container_video.label = "%s: %s".printf(list.get_stream_type_nick (), vcaps.is_fixed () == true? Gst.PbUtils.get_codec_description (vcaps) : vcaps.to_string ());
                 }
             });
             duration_video.text = seconds_to_time ((int)(info.get_duration ()/1000000000));
@@ -661,53 +704,6 @@ namespace niki {
         private void apply_cover_pixbuf (Gdk.Pixbuf save_pixbuf) {
             asyncimage.set_from_pixbuf (align_and_scale_pixbuf (save_pixbuf, 85));
             asyncimage.show ();
-        }
-
-        private void run_open_file () {
-            var file = new Gtk.FileChooserDialog (
-            StringPot.Open, this, Gtk.FileChooserAction.OPEN,
-            StringPot.Cancel, Gtk.ResponseType.CANCEL,
-            StringPot.Open, Gtk.ResponseType.ACCEPT);
-            var preview_area = new AsyncImage (true);
-            preview_area.pixel_size = 256;
-            preview_area.margin_end = 12;
-
-            var all_files_filter = new Gtk.FileFilter ();
-            all_files_filter.set_filter_name (StringPot.All_Files);
-            all_files_filter.add_pattern ("*");
-
-            var video_filter = new Gtk.FileFilter ();
-            video_filter.set_filter_name (StringPot.Image);
-            video_filter.add_mime_type ("image/*");
-
-            file.add_filter (video_filter);
-            file.add_filter (all_files_filter);
-            file.set_preview_widget (preview_area);
-            file.set_preview_widget_active (false);
-            file.set_use_preview_label (false);
-            file.update_preview.connect (() => {
-                string uri = file.get_preview_uri ();
-                if (uri != null && uri.has_prefix ("file://")) {
-                    var preview_file = File.new_for_uri (uri);
-                    if (get_mime_type (preview_file).has_prefix ("image/")) {
-                        Gdk.Pixbuf pixbuf = pix_scale (preview_file.get_path (), 256);
-                        preview_area.set_from_pixbuf (pixbuf);
-                        preview_area.show ();
-                        file.set_preview_widget_active (true);
-                    } else {
-                        preview_area.hide ();
-                        file.set_preview_widget_active (false);
-                    }
-                } else {
-                    preview_area.hide ();
-                    file.set_preview_widget_active (false);
-                }
-            });
-
-            if (file.run () == Gtk.ResponseType.ACCEPT) {
-                select_image (file.get_file ().get_path ());
-            }
-            file.destroy ();
         }
 
         private void select_image (string inpu_data) {

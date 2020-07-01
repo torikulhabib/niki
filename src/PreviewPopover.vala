@@ -43,8 +43,10 @@ namespace niki {
             clutter = new GtkClutter.Embed ();
             clutter.margin = 1;
             var stage = (Clutter.Stage)clutter.get_stage ();
+            stage.set_content_scaling_filters (Clutter.ScalingFilter.TRILINEAR, Clutter.ScalingFilter.LINEAR);
+            stage.set_content_gravity (Clutter.ContentGravity.RESIZE_ASPECT);
             stage.background_color = Clutter.Color.from_string ("black") { alpha = 0 };
-            var aspectratio = new ClutterGst.Aspectratio ();
+            var aspectratio = new ClutterGst.Content ();
             aspectratio.player = playback;
             stage.content = aspectratio;
 

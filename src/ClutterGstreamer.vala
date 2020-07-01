@@ -57,17 +57,6 @@ namespace niki {
                 pipeline.set_state (Gst.State.PLAYING);
             });
 
-            NikiApp.settings.changed["subtitle-choose"].connect (() => {
-                var start_progress = progress;
-                pipeline.set_state (Gst.State.NULL);
-                subtitle_uri = NikiApp.settings.get_string ("subtitle-choose");
-                ready.connect (() => {
-                    progress = start_progress;
-                    start_progress = 0.0;
-                });
-                pipeline.set_state (Gst.State.PLAYING);
-            });
-
             flip_chage ();
             visualisationsink ();
             NikiApp.settings.changed["flip-options"].connect (flip_chage);
@@ -81,10 +70,15 @@ namespace niki {
                     saderamount (NikiApp.settings.get_int ("amount-entry"));
                 }
             });
-
-            playback_mute ();
-            videomix.unref ();
-            audiomix.unref ();
+        }
+        public void subtitle_choose () {
+            insert_last_video (uri, seconds_to_time ((int) (progress * duration)), progress);
+            pipeline.set_state (Gst.State.NULL);
+            subtitle_uri = NikiApp.settings.get_string ("subtitle-choose");
+            ready.connect (() => {
+                progress = lastplay_video (uri);
+            });
+            pipeline.set_state (Gst.State.PLAYING);
         }
         private void playback_mute () {
             pipeline["mute"] = NikiApp.settings.get_boolean ("status-muted");

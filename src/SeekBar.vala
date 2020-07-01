@@ -71,7 +71,7 @@ namespace niki {
             scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, 0.0, 1.0, 0.01);
             scale.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             scale.get_style_context ().add_class ("label");
-            scale.expand = true;
+            scale.hexpand = true;
             scale.draw_value = false;
             preview_popover = new PreviewPopover ();
             preview_popover.relative_to = scale;
@@ -124,7 +124,7 @@ namespace niki {
                 return false;
             });
             margin = 0;
-            margin_end = margin_start = 12;
+            margin_end = margin_start = 10;
             hexpand = true;
             add (scale);
             show_all ();
@@ -157,13 +157,11 @@ namespace niki {
         public void start (PlayerPage playerpage) {
             if (NikiApp.settings.get_boolean("lyric-available") && NikiApp.settings.get_boolean("audio-video")) {
                 if (playerpage.playback.playing && lyric.is_map_valid ()) {
-                    if (NikiApp.settings.get_boolean("lyric-available") && NikiApp.settings.get_boolean("audio-video")) {
-                        var seconds_time = ((int64)(playerpage.playback.get_position () * 1000000));
-                        current_lyric = @" $(string_lyric[lyric.get_lyric_timestamp (seconds_time).to_string ()]) ";
-                        playerpage.scroll_actor (sc_lyric[lyric.get_lyric_timestamp (seconds_time).to_string ()]);
-                        string next_lyric = @" $(string_lyric[lyric.get_lyric_timestamp (seconds_time, false).to_string ()]) ";
-                        next_lyric_end = next_lyric.contains (current_lyric)? "" : next_lyric;
-                    }
+                    var seconds_time = ((int64)(playerpage.playback.get_position () * 1000000));
+                    current_lyric = @" $(string_lyric[lyric.get_lyric_timestamp (seconds_time).to_string ()]) ";
+                    playerpage.scroll_actor (sc_lyric[lyric.get_lyric_timestamp (seconds_time).to_string ()]);
+                    string next_lyric = @" $(string_lyric[lyric.get_lyric_timestamp (seconds_time, false).to_string ()]) ";
+                    next_lyric_end = next_lyric.contains (current_lyric)? "" : next_lyric;
                 }
             }
         }

@@ -99,6 +99,11 @@ executable(
     'SearchDialog.vala',
     'EngineNetease.vala',
     'Spectrum.vala',
+    'ListView.vala',
+    'MusicList.vala',
+    'BottomList.vala',
+    'SeekTimeMusic.vala',
+    'SearchEntry.vala',
 
     c_args: c_args,
     dependencies: [
@@ -128,6 +133,7 @@ executable(
         dependency('libxml-2.0'),
         dependency('libcanberra'),
         dependency('inytag'),
+        dependency('sqlite3'),
 
         meson.get_compiler('vala').find_library('posix'),
         meson.get_compiler('c').find_library('m', required : false)

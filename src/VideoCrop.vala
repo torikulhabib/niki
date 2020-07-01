@@ -58,13 +58,19 @@ namespace niki {
             var button_change = add_button (StringPot.Set_Crop, Gtk.ResponseType.OK);
             button_change.has_default = true;
             button_change.get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
+            int top_value, bottom_value, left_value, right_value;
+            playerpage.playback.videomix.videocrop.get ("top", out top_value, "bottom", out bottom_value, "left", out left_value, "right", out right_value);
+            top_label.number_entry.value = top_value;
+            bottom_label.number_entry.value = bottom_value;
+            left_label.number_entry.value = left_value;
+            right_label.number_entry.value = right_value;
             response.connect ((source, response_id)=>{
                 if (response_id == Gtk.ResponseType.OK) {
-                    int top_value = (int) top_label.number_entry.get_value ();
-                    int bottom_value = (int) bottom_label.number_entry.get_value ();
-                    int left_value = (int) left_label.number_entry.get_value ();
-                    int right_value = (int) right_label.number_entry.get_value ();
-                    NikiApp.window.player_page.playback.videomix.set_videocrp (top_value, bottom_value, left_value, right_value);
+                    top_value = (int) top_label.number_entry.get_value ();
+                    bottom_value = (int) bottom_label.number_entry.get_value ();
+                    left_value = (int) left_label.number_entry.get_value ();
+                    right_value = (int) right_label.number_entry.get_value ();
+                    playerpage.playback.videomix.set_videocrp (top_value, bottom_value, left_value, right_value);
                 } else if (response_id == Gtk.ResponseType.CLOSE) {
                     destroy ();
                 }

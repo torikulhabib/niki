@@ -23,8 +23,6 @@ namespace niki {
     public class GetLink : Object {
 		public signal void errormsg (string msg);
 		public signal void process_all (string [] msg);
-		private Pid child_pid;
-		private List<string> string_list = new List<string> ();
 
         private bool process_line (IOChannel channel, IOCondition condition, string stream_name) {
             if (condition == IOCondition.HUP) {
@@ -66,7 +64,7 @@ namespace niki {
             }
             try {
                 int standard_input, standard_output, standard_error;
-                Process.spawn_async_with_pipes ( cache_folder (), spawn_args, Environ.get (), SpawnFlags.SEARCH_PATH | SpawnFlags.DO_NOT_REAP_CHILD, null, out child_pid, out standard_input, out standard_output, out standard_error);
+                Process.spawn_async_with_pipes ( cache_folder (), spawn_args, Environ.get (), SpawnFlags.SEARCH_PATH | SpawnFlags.DO_NOT_REAP_CHILD, null, null, out standard_input, out standard_output, out standard_error);
                 IOChannel output = new IOChannel.unix_new (standard_output);
                 output.add_watch (IOCondition.IN | IOCondition.HUP, (channel, condition) => {
                     return process_line (channel, condition, "stdout");
@@ -79,27 +77,15 @@ namespace niki {
                 warning ("Error: %s\n", e.message);
             }
         }
-
+        private string[] string_list = {};
         private void sendata (string datain) {
 	        string[] datains = datain.split ("\n");
-            string_list.append (datains [0]);
-            if (string_list.length () > 2) {
-                set_list ();
+            string_list += datains [0];
+            if (string_list.length > 2) {
+                process_all (string_list);
+                string_list = {};
                 datains = {};
             }
-        }
-        private void set_list () {
-            uint i = 0;
-            var listlink = new string[string_list.length ()];
-            foreach (var filename in string_list) {
-                listlink[i] = filename;
-                i++;
-            }
-            process_all (listlink);
-            listlink = {};
-            string_list.delete_link (string_list.nth (2));
-            string_list.delete_link (string_list.nth (1));
-            string_list.delete_link (string_list.nth (0));
         }
     }
 }

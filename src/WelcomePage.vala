@@ -103,7 +103,9 @@ namespace niki {
             var dlna_scrolled = new Gtk.ScrolledWindow (null, null);
             dlna_scrolled.get_style_context ().add_class ("dlna_scrollbar");
             dlna_scrolled.add (treview);
-            dlna_scrolled.show_all ();
+            var frame = new Gtk.Frame (null);
+            frame.margin_bottom = 5;
+            frame.add (dlna_scrolled);
 
             var welcome_drive = new Welcome ();
             welcome_drive.append ("media-optical", StringPot.Browse, StringPot.DVD);
@@ -115,7 +117,7 @@ namespace niki {
             var dlna_grid = new Gtk.Grid ();
             dlna_grid.orientation = Gtk.Orientation.VERTICAL;
             dlna_grid.margin = 10;
-            dlna_grid.add (dlna_scrolled);
+            dlna_grid.add (frame);
             dlna_grid.add (dlnaaction);
             dlna_grid.add (dlnarendercontrol);
 
@@ -205,7 +207,10 @@ namespace niki {
             welcome_rigth.activated.connect ((index) => {
                 switch (index) {
                     case 0:
-                        NikiApp.window.run_open_file (true);
+                        var file = run_open_file (NikiApp.window);
+                        if (file != null) {
+                            NikiApp.window.open_files (file, true, true);
+                        }
                         break;
                     case 1:
                         NikiApp.window.player_page.right_bar.playlist.clear_items ();

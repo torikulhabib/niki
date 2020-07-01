@@ -67,10 +67,9 @@ namespace niki {
                 create_dialog (selected_iter ());
             });
             var info_details = new Gtk.MenuItem ();
-            info_details.add (new MenuLabel ("dialog-information-symbolic", StringPot.Details));
-            info_details.activate.connect (() => {
-                edit_info ();
-            });
+            info_details.add (new MenuLabel ("tag-symbolic", StringPot.Details));
+            info_details.activate.connect (edit_info);
+
             var save_to = new Gtk.MenuItem ();
             save_to.add (new MenuLabel ("drive-harddisk-symbolic", StringPot.Save_MyComputer));
             save_to.activate.connect (() => {
@@ -101,7 +100,7 @@ namespace niki {
             });
 
             var costum_short = new Gtk.MenuItem ();
-            var sub_cus = new MenuLabelRadio ("edit-symbolic", StringPot.Custom);
+            var sub_cus = new MenuLabelRadio ("insert-object-symbolic", StringPot.Custom);
             costum_short.add (sub_cus);
             costum_short.activate.connect (() => {
                 NikiApp.settings.set_int ("sort-by", 3);
@@ -194,9 +193,6 @@ namespace niki {
             NikiApp.settings.changed["ascen-descen"].connect (get_random);
             NikiApp.settings.changed["edit-playlist"].connect (remove_playlist);
             get_random ();
-            notify.connect (() => {
-                queue_draw ();
-            });
         }
         private bool remove_iter () {
             Gtk.TreeIter iter = selected_iter ();
@@ -234,19 +230,17 @@ namespace niki {
                     case 0:
                         reorderable = false;
                         ((Gtk.TreeSortable)liststore).set_sort_column_id (PlaylistColumns.TITLE, NikiApp.settings.get_boolean ("ascen-descen")? Gtk.SortType.ASCENDING : Gtk.SortType.DESCENDING);
-                        set_search_column (PlaylistColumns.TITLE);
                         break;
                     case 1:
                         reorderable = false;
                         ((Gtk.TreeSortable)liststore).set_sort_column_id (PlaylistColumns.ARTISTMUSIC, NikiApp.settings.get_boolean ("ascen-descen")? Gtk.SortType.ASCENDING : Gtk.SortType.DESCENDING);
-                        set_search_column (PlaylistColumns.ARTISTMUSIC);
                         break;
                     case 2:
                         reorderable = false;
                         ((Gtk.TreeSortable)liststore).set_sort_column_id (PlaylistColumns.ALBUMMUSIC, NikiApp.settings.get_boolean ("ascen-descen")? Gtk.SortType.ASCENDING : Gtk.SortType.DESCENDING);
-                        set_search_column (PlaylistColumns.ALBUMMUSIC);
                         break;
                     case 3:
+                        ((Gtk.TreeSortable)liststore).set_sort_column_id (Gtk.TREE_SORTABLE_UNSORTED_SORT_COLUMN_ID, Gtk.SortType.DESCENDING);
                         reorderable = true;
                         break;
                 }
@@ -338,6 +332,7 @@ namespace niki {
                             Gdk.Pixbuf pixbuf = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (path.get_uri ()).get_tags ()), 48);
                             pix_to_file (pixbuf, nameimage);
                             liststore.set (iter, PlaylistColumns.PREVIEW, circle_pix (pixbuf), PlaylistColumns.TITLE, info_songs, PlaylistColumns.ARTISTTITLE, file_type (path) == 0? Markup.escape_text (info_songs) : @"<b>$(Markup.escape_text (info_songs))</b>\n$(Markup.escape_text (artist_music)) - <i>$(Markup.escape_text (album_music))</i>", PlaylistColumns.ALBUMMUSIC, album_music, PlaylistColumns.ARTISTMUSIC, artist_music);
+                            update_music_db (filename);
                             item_added ();
                         }
                     }
@@ -349,70 +344,44 @@ namespace niki {
         }
 
         public void add_stream (string [] inputstream) {
-            bool exist = false;
             string filenamein = Markup.escape_text (inputstream [2]);
             int mediatype = file_type (File.new_for_uri (inputstream [0]));
-            Gtk.TreeIter iter;
-            liststore.foreach ((model, path, iter) => {
-                string filename;
-                model.get (iter, PlaylistColumns.TITLE, out filename);
-                if (filename == filenamein) {
-                    exist = true;
-                }
-                return false;
-            });
-            if (exist) {
+            if (liststore_exist (PlaylistColumns.TITLE, filenamein)) {
                 return;
             }
-            Gdk.Pixbuf preview = align_and_scale_pixbuf (get_pixbuf_from_url (inputstream [1], inputstream [2]), 48);
-            if (preview != null) {
-                preview = icon_from_mediatype (mediatype);
+            Gdk.Pixbuf preview = pix_scale (inputstream [2], 48);
+            if (preview == null) {
+                preview = get_pixbuf_from_url (inputstream [1], inputstream [2]);
+                if (preview == null) {
+                    preview = icon_from_mediatype (mediatype);
+                }
             }
+            Gtk.TreeIter iter;
             liststore.append (out iter);
             liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, inputstream [2], PlaylistColumns.ARTISTTITLE, Markup.escape_text (inputstream [2]), PlaylistColumns.FILENAME, inputstream [0], PlaylistColumns.MEDIATYPE, mediatype, PlaylistColumns.FILESIZE, "", PlaylistColumns.ALBUMMUSIC, "", PlaylistColumns.ARTISTMUSIC, "", PlaylistColumns.PLAYNOW, true, PlaylistColumns.INPUTMODE, 1);
         }
 
         public void add_dlna (string input_url, string input_title, string input_album, string input_artist, int mediatype, bool playnow, string upnp_class, string size_file) {
-            bool exist = false;
             if (mediatype == 4) {
                 mediatype = 0;
             }
             string filenamein = Markup.escape_text (input_title);
-            Gtk.TreeIter iter;
-            liststore.foreach ((model, path, iter) => {
-                string filename;
-                model.get (iter, PlaylistColumns.TITLE, out filename);
-                if (filename == filenamein) {
-                    exist = true;
-                }
-                return false;
-            });
-            if (exist) {
+            if (liststore_exist (PlaylistColumns.TITLE, filenamein)) {
                 return;
             }
 
             Gdk.Pixbuf preview = icon_from_type (upnp_class, 48);
+            Gtk.TreeIter iter;
             liststore.append (out iter);
             liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, input_title, PlaylistColumns.ARTISTTITLE, mediatype == 2? @"<b>$(Markup.escape_text (input_title))</b>\n$(Markup.escape_text (input_artist)) - <i>$(Markup.escape_text (input_album))</i>" : Markup.escape_text (input_title), PlaylistColumns.FILENAME, input_url, PlaylistColumns.FILESIZE, size_file, PlaylistColumns.MEDIATYPE, mediatype, PlaylistColumns.ALBUMMUSIC, input_album, PlaylistColumns.ARTISTMUSIC, input_artist, PlaylistColumns.PLAYNOW, playnow, PlaylistColumns.INPUTMODE, 2);
             update_playlist (50);
         }
         public void add_acd (string input_uri, string input_title, string input_album, string input_artist) {
-            bool exist = false;
-            string filenamein = Markup.escape_text (input_title);
-            Gtk.TreeIter iter;
-            liststore.foreach ((model, path, iter) => {
-                string filename;
-                model.get (iter, PlaylistColumns.TITLE, out filename);
-                if (filename == filenamein) {
-                    exist = true;
-                }
-                return false;
-            });
-            if (exist) {
+            if (liststore_exist (PlaylistColumns.FILENAME, input_uri)) {
                 return;
             }
-
             Gdk.Pixbuf preview = unknown_cover ();
+            Gtk.TreeIter iter;
             liststore.append (out iter);
             liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, input_title, PlaylistColumns.ARTISTTITLE, @"<b>$(Markup.escape_text (input_title))</b>\n$(Markup.escape_text (input_artist)) - <i>$(Markup.escape_text (input_album))</i>", PlaylistColumns.FILENAME, input_uri, PlaylistColumns.FILESIZE, "", PlaylistColumns.MEDIATYPE, 1, PlaylistColumns.ALBUMMUSIC, input_album, PlaylistColumns.ARTISTMUSIC, input_artist, PlaylistColumns.PLAYNOW, true, PlaylistColumns.INPUTMODE, 2);
             update_playlist (50);
@@ -422,25 +391,26 @@ namespace niki {
                 return;
             }
             var file_name = path.get_uri ();
-            bool exist = false;
             string album_music = "";
             string artist_music = "";
-            string info_songs = get_song_info (path);
-            Gtk.TreeIter iter;
-            liststore.foreach ((model, path, iter) => {
-                string filename;
-                model.get (iter, PlaylistColumns.FILENAME, out filename);
-                if (filename == file_name) {
-                    exist = true;
-                }
-                return false;
-            });
-            if (exist) {
+            string info_songs = "";
+            string progress = "";
+            string duration = "";
+            if (liststore_exist (PlaylistColumns.FILENAME, file_name)) {
                 return;
             }
 
             Gdk.Pixbuf preview = null;
             if (get_mime_type (path).has_prefix ("video/")) {
+                if (!videos_file_exists (file_name)) {
+                    var info = get_discoverer_info (file_name);
+                    duration = seconds_to_time ((int)(info.get_duration ()/1000000000));
+                    progress = "00:00";
+                    insert_video (file_name, progress, duration, 0.0);
+                } else {
+                    get_video (file_name, out progress, out duration, null);
+                }
+                info_songs = get_song_info (path);
                 if (!FileUtils.test (normal_thumb (path), FileTest.EXISTS)) {
                     var dbus_Thum = new DbusThumbnailer ().instance;
                     dbus_Thum.instand_thumbler (path, "normal");
@@ -450,8 +420,14 @@ namespace niki {
                     preview = icon_from_mediatype (0);
                 }
             } else if (get_mime_type (path).has_prefix ("audio/")) {
-                album_music = get_album_music (path);
-                artist_music = get_artist_music (path);
+                if (!music_file_exists (file_name)) {
+                    insert_music (path);
+                    info_songs = get_song_info (path);
+                    album_music = get_album_music (path);
+                    artist_music = get_artist_music (path);
+                } else {
+                    get_music (file_name, out info_songs, out artist_music, out album_music, null, null, null, null);
+                }
                 string nameimage = cache_image (@"$(info_songs) $(artist_music) $(path.get_basename ())");
                 if (!FileUtils.test (nameimage, FileTest.EXISTS)) {
                     Gdk.Pixbuf pixbuf = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (path.get_uri ()).get_tags ()), 48);
@@ -461,9 +437,33 @@ namespace niki {
                     preview = circle_pix (pix_file(nameimage));
 	            }
 	        }
+            Gtk.TreeIter iter;
             liststore.append (out iter);
-            liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE,  info_songs, PlaylistColumns.ARTISTTITLE, file_type (path) == 0? Markup.escape_text (info_songs) : @"<b>$(Markup.escape_text (info_songs))</b>\n$(Markup.escape_text (artist_music)) - <i>$(Markup.escape_text (album_music))</i>", PlaylistColumns.FILENAME, path.get_uri (), PlaylistColumns.FILESIZE, get_info_size (path.get_uri ()), PlaylistColumns.MEDIATYPE, file_type (path), PlaylistColumns.ALBUMMUSIC, album_music, PlaylistColumns.ARTISTMUSIC, artist_music, PlaylistColumns.PLAYNOW, true, PlaylistColumns.INPUTMODE, 0);
+            liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE,  info_songs, PlaylistColumns.ARTISTTITLE, file_type (path) == 0? @"$(Markup.escape_text (info_songs))\n $(progress) / $(duration)" : @"<b>$(Markup.escape_text (info_songs))</b>\n$(Markup.escape_text (artist_music)) - <i>$(Markup.escape_text (album_music))</i>", PlaylistColumns.FILENAME, path.get_uri (), PlaylistColumns.FILESIZE, get_info_size (path.get_uri ()), PlaylistColumns.MEDIATYPE, file_type (path), PlaylistColumns.ALBUMMUSIC, album_music, PlaylistColumns.ARTISTMUSIC, artist_music, PlaylistColumns.PLAYNOW, true, PlaylistColumns.INPUTMODE, 0);
         }
+        private bool liststore_exist (PlaylistColumns column, string file_name) {
+            bool exist = false;
+            liststore.foreach ((model, path, iter) => {
+                string filename;
+                model.get (iter, column, out filename);
+                if (filename == file_name) {
+                    exist = true;
+                }
+                return false;
+            });
+            return exist;
+        }
+        public void update_progress_video (string uri, string progress, string duration) {
+            liststore.foreach ((model, path, iter) => {
+                string filename;
+                model.get (iter, PlaylistColumns.FILENAME, out filename);
+                if (filename == uri) {
+                    liststore.set (iter, PlaylistColumns.ARTISTTITLE,  @"$(Markup.escape_text (get_song_info (File.new_for_uri (uri))))\n $(progress) / $(duration)");
+                }
+                return false;
+            });
+        }
+
         private uint finish_timer = 0;
         private void update_playlist (uint timeout) {
             if (finish_timer != 0) {
@@ -517,7 +517,11 @@ namespace niki {
             get_status_list ();
             return liststore.get_path (new_iter);
         }
-
+        public void play_starup (string uri, PlayerPage player_page) {
+            Gtk.TreeIter iter;
+            liststore.get_iter (out iter, set_current (uri, player_page));
+            send_iter_to (iter);
+        }
         public bool get_has_previous () {
             return current > 0;
         }

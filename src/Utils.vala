@@ -39,6 +39,25 @@ namespace niki {
             }
         }
     }
+    private Searchentry searchentry;
+    private enum Searchentry {
+        TITLE = 0,
+        ARTIST = 1,
+        ALBUM = 2;
+        public Searchentry switch_search_mode () {
+            switch (NikiApp.settings.get_enum ("search-entry")) {
+                case ARTIST:
+                    NikiApp.settings.set_enum ("search-entry", Searchentry.ALBUM);
+                    return ALBUM;
+                case ALBUM:
+                    NikiApp.settings.set_enum ("search-entry", Searchentry.TITLE);
+                    return TITLE;
+                default:
+                    NikiApp.settings.set_enum ("search-entry", Searchentry.ARTIST);
+                    return ARTIST;
+            }
+        }
+    }
 
     private CameraDelay cameradelay;
     private enum CameraDelay {
@@ -187,6 +206,17 @@ namespace niki {
         INPUTMODE,
         N_COLUMNS
     }
+    private enum MusicColumns {
+        PLAYING,
+        TRACK,
+        TITLE,
+        ARTIST,
+        ALBUM,
+        GENRE,
+        DATE,
+        FILEURI,
+        N_COLUMNS
+    }
     private enum DeviceColumns {
         NAME,
         CLASS,
@@ -236,6 +266,7 @@ namespace niki {
         UPNPCLASS,
         N_COLUMNS
     }
+
     private enum PlaybackState {
         UNKNOWN = 0,
         TRANSITIONING = 1,
@@ -644,7 +675,7 @@ namespace niki {
             string tmp_file = cache_image (filename);
             var file_stream = FileStream.open (tmp_file, "w");
             file_stream.write (msg.response_body.data, (size_t)msg.response_body.length);
-            return_value = pix_file (tmp_file);
+            return_value = pix_scale (tmp_file, 48);
             File deleteunuse = File.new_for_path (tmp_file);
             deleteunuse.delete_async.begin ();
             Gdk.Pixbuf pixbuf = align_and_scale_pixbuf (return_value, return_value.get_width (), return_value.get_height ());
@@ -818,6 +849,164 @@ namespace niki {
         folder_location.destroy ();
         return res == Gtk.ResponseType.ACCEPT;
     }
+    public File[] run_open_file (Gtk.Window window, bool av = true) {
+        var file = new Gtk.FileChooserDialog (
+        StringPot.Open, window, Gtk.FileChooserAction.OPEN,
+        StringPot.Cancel, Gtk.ResponseType.CANCEL,
+        StringPot.Open, Gtk.ResponseType.ACCEPT);
+        file.select_multiple = av;
+        file.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+
+        var preview_area = new AsyncImage (true);
+        preview_area.pixel_size = 256;
+        preview_area.margin_end = 12;
+
+        var all_files_filter = new Gtk.FileFilter ();
+        all_files_filter.set_filter_name (StringPot.All_Files);
+        all_files_filter.add_pattern ("*");
+
+        var video_filter = new Gtk.FileFilter ();
+        video_filter.set_filter_name (StringPot.Audio_Video);
+        video_filter.add_mime_type ("video/*");
+        video_filter.add_mime_type ("audio/*");
+
+        var image_filter = new Gtk.FileFilter ();
+        image_filter.set_filter_name (StringPot.Image);
+        image_filter.add_mime_type ("image/*");
+
+        var label = new Gtk.Label (null);
+        label.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
+        label.ellipsize = Pango.EllipsizeMode.END;
+        label.max_width_chars = 20;
+        label.margin_end = 10;
+        var label_bitrate = new Gtk.Label (null);
+        label_bitrate.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
+        label_bitrate.ellipsize = Pango.EllipsizeMode.END;
+        label_bitrate.max_width_chars = 20;
+        label_bitrate.margin_end = 10;
+        var label_sample = new Gtk.Label (null);
+        label_sample.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
+        label_sample.ellipsize = Pango.EllipsizeMode.END;
+        label_sample.max_width_chars = 20;
+        label_sample.margin_end = 10;
+        var label_chanel = new Gtk.Label (null);
+        label_chanel.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
+        label_chanel.ellipsize = Pango.EllipsizeMode.END;
+        label_chanel.max_width_chars = 20;
+        label_chanel.margin_end = 10;
+        var label_duration = new Gtk.Label (null);
+        label_duration.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
+        label_duration.ellipsize = Pango.EllipsizeMode.END;
+        label_duration.max_width_chars = 20;
+        label_duration.margin_end = 10;
+        var grid = new Gtk.Grid ();
+        grid.orientation = Gtk.Orientation.VERTICAL;
+        grid.valign = Gtk.Align.CENTER;
+        grid.add (preview_area);
+        grid.add (label);
+        grid.add (label_bitrate);
+        grid.add (label_sample);
+        grid.add (label_chanel);
+        grid.add (label_duration);
+        grid.show_all ();
+        if (av) {
+            file.add_filter (video_filter);
+        } else {
+            file.add_filter (image_filter);
+        }
+        file.add_filter (all_files_filter);
+        file.set_preview_widget (grid);
+        file.set_preview_widget_active (false);
+        file.set_use_preview_label (false);
+        file.update_preview.connect (() => {
+            string uri = file.get_preview_uri ();
+            if (uri != null && uri.has_prefix ("file://")) {
+                var file_pre = File.new_for_uri (uri);
+                Gdk.Pixbuf pixbuf = null;
+                if (get_mime_type (file_pre).has_prefix ("video/")) {
+                    if (!FileUtils.test (large_thumb (file_pre), FileTest.EXISTS)) {
+                        var dbus_Thum = new DbusThumbnailer ().instance;
+                        dbus_Thum.instand_thumbler (file_pre, "large");
+                        dbus_Thum.load_finished.connect (()=>{
+                            preview_area.set_from_pixbuf (pix_scale (large_thumb (file_pre), 256));
+                            label.label = file_pre.get_basename ();
+                            preview_area.show ();
+                            file.set_preview_widget_active (true);
+                        });
+                    } else {
+                        pixbuf = pix_scale (large_thumb (file_pre), 256);
+                    }
+                    var info = get_discoverer_info (file_pre.get_uri ());
+                    var stream_info = info.get_stream_info ();
+                    Gst.Caps caps = stream_info.get_caps ();
+                    label_bitrate.tooltip_text = label_bitrate.label ="%s: %s".printf(stream_info.get_stream_type_nick (), caps.is_fixed () == true? Gst.PbUtils.get_codec_description (caps) : caps.to_string ());
+                    ((Gst.PbUtils.DiscovererContainerInfo) stream_info).get_streams ().foreach ((list)=> {
+                        if (list.get_stream_type_nick () == "audio") {
+                            Gst.Caps acaps = list.get_caps ();
+                            label_sample.tooltip_text = label_sample.label ="%s: %s".printf(list.get_stream_type_nick (), acaps.is_fixed () == true? Gst.PbUtils.get_codec_description (acaps) : acaps.to_string ());
+                        }
+                        if (list.get_stream_type_nick () == "video") {
+                            Gst.Caps vcaps = list.get_caps ();
+                            label_chanel.tooltip_text = label_chanel.label ="%s: %s".printf(list.get_stream_type_nick (), vcaps.is_fixed () == true? Gst.PbUtils.get_codec_description (vcaps) : vcaps.to_string ());
+                        }
+                    });
+                    label_duration.tooltip_text = label_duration.label =seconds_to_time ((int)(info.get_duration ()/1000000000));
+                } else if (get_mime_type (file_pre).has_prefix ("audio/")) {
+                    pixbuf = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (file_pre.get_uri ()).get_tags ()), 256);
+                    if (!file_pre.get_uri ().down ().has_suffix ("aac") || !file_pre.get_uri ().down ().has_suffix ("ac3")) {
+                        var tagfile = new InyTag.File (file_pre.get_path ());
+                        label_bitrate.tooltip_text = label_bitrate.label = tagfile.audioproperties.bitrate.to_string () + _(" kHz");
+                        label_sample.tooltip_text = label_sample.label = tagfile.audioproperties.samplerate.to_string () + _(" bps");
+                        label_chanel.tooltip_text = label_chanel.label = tagfile.audioproperties.channels == 2? _("Stereo") : _("Mono");
+                        label_duration.tooltip_text = label_duration.label = seconds_to_time (tagfile.audioproperties.length);
+                    }
+                } else if (get_mime_type (file_pre).has_prefix ("image/")) {
+                    pixbuf = pix_scale (file_pre.get_path (), 256);
+                }
+                if (get_mime_type (file_pre).has_prefix ("video/") || get_mime_type (file_pre).has_prefix ("audio/")) {
+                    label_bitrate.show ();
+                    label_sample.show ();
+                    label_chanel.show ();
+                    label_duration.show ();
+                } else {
+                    label_bitrate.hide ();
+                    label_sample.hide ();
+                    label_chanel.hide ();
+                    label_duration.hide ();
+                }
+                if (pixbuf != null) {
+                    label.tooltip_text = label.label = file_pre.get_basename ();
+                    preview_area.set_from_pixbuf (pixbuf);
+                    preview_area.show ();
+                    file.set_preview_widget_active (true);
+                } else {
+                    preview_area.hide ();
+                    file.set_preview_widget_active (false);
+                }
+            } else {
+                preview_area.hide ();
+                file.set_preview_widget_active (false);
+            }
+        });
+        File[] files = null;
+        if (file.run () == Gtk.ResponseType.ACCEPT) {
+            foreach (File item in file.get_files ()) {
+                files += item;
+            }
+        }
+        file.destroy ();
+        return files;
+    }
+    public bool is_privacy_mode_enabled () {
+        var zeitgeist_manager = new ZeitgeistManager ();
+        var privacy_settings = new GLib.Settings ("org.gnome.desktop.privacy");
+        bool privacy_mode = privacy_settings.get_boolean ("remember-recent-files") || privacy_settings.get_boolean ("remember-app-usage");
+        if (privacy_mode) {
+            return true;
+        }
+        return zeitgeist_manager.app_into_blacklist (NikiApp.instance.application_id);
+    }
+
     private Gdk.Pixbuf? unknown_cover () {
 	    Cairo.ImageSurface surface = new Cairo.ImageSurface (Cairo.Format.RGB30, 256, 256);
 	    Cairo.Context context = new Cairo.Context (surface);
@@ -1087,5 +1276,208 @@ namespace niki {
         builder.append (@"rtsp:*:video/mpegurl:*,");
         builder.append (@"rtsp:*:video/x-mpegurl:*");
         return builder.str;
+    }
+
+    private int open_database (out Sqlite.Database db) {
+        int opendb = 0;
+        if (!File.new_for_path (folder_db ()).query_exists ()) {
+            opendb = creat_no_exist (out db);
+        } else {
+            opendb = Sqlite.Database.open (folder_db (), out db);
+        }
+        if (opendb != Sqlite.OK) {
+            warning ("Can't open database: %s\n", db.errmsg ());
+        }
+        return opendb;
+    }
+
+    private int creat_no_exist (out Sqlite.Database db) {
+        int opendb = Sqlite.Database.open (folder_db (), out db);
+        if (opendb != Sqlite.OK) {
+            warning ("Can't open database: %s\n", db.errmsg ());
+        }
+        opendb = db.exec ("CREATE TABLE IF NOT EXISTS musics (
+            id             INTEGER PRIMARY KEY AUTOINCREMENT,
+            uri            TEXT    NOT NULL,
+            title          TEXT    NOT NULL,
+            artist         TEXT    NOT NULL,
+            album          TEXT    NOT NULL,
+            genre          TEXT    NOT NULL,
+            year           INT     NOT NULL,
+            duration       TEXT    NOT NULL,
+            lastplay       DOUBLE  NOT NULL,
+            CONSTRAINT unique_music UNIQUE (uri),
+            FOREIGN KEY (album) REFERENCES albums (id) ON DELETE CASCADE)", null, null);
+        opendb = db.exec ("CREATE TABLE IF NOT EXISTS videos (
+            id             INTEGER PRIMARY KEY AUTOINCREMENT,
+            uri            TEXT    NOT NULL,
+            progress       TEXT    NOT NULL,
+            duration       TEXT    NOT NULL,
+            lastplay       DOUBLE  NOT NULL,
+            CONSTRAINT unique_video UNIQUE (uri),
+            FOREIGN KEY (uri) REFERENCES uris (id) ON DELETE CASCADE)", null, null);
+        return opendb;
+    }
+    private bool music_file_exists (string uri) {
+        bool exist = false;
+        Sqlite.Statement stmt;
+        int res = NikiApp.db.prepare_v2 ("SELECT COUNT (*) FROM musics WHERE uri = ?", -1, out stmt);
+        res = stmt.bind_text (1, uri);
+        if ((res = stmt.step ()) == Sqlite.ROW) {
+            exist = stmt.column_int (0) > 0;
+        }
+        return exist;
+    }
+    private bool videos_file_exists (string uri) {
+        bool exist = false;
+        Sqlite.Statement stmt;
+        int res = NikiApp.db.prepare_v2 ("SELECT COUNT (*) FROM videos WHERE uri = ?", -1, out stmt);
+        res = stmt.bind_text (1, uri);
+        if ((res = stmt.step ()) == Sqlite.ROW) {
+            exist = stmt.column_int (0) > 0;
+        }
+        return exist;
+    }
+
+    private void insert_music (File path) {
+        Sqlite.Statement stmt;
+        string sql = "INSERT OR IGNORE INTO musics (uri, title, artist, album, genre, year, duration, lastplay) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
+        if (path.get_uri ().down ().has_suffix ("aac") || path.get_uri ().down ().has_suffix ("ac3")) {
+            int res = NikiApp.db.prepare_v2 (sql, -1, out stmt);
+            res = stmt.bind_text (1, path.get_uri ());
+            res = stmt.bind_text (2, path.get_basename ());
+            res = stmt.bind_text (3, "Unknown");
+            res = stmt.bind_text (4, "Unknown");
+            res = stmt.bind_text (5, "Unknown");
+            res = stmt.bind_int (6, 0);
+            res = stmt.bind_text (7, "Unknown");
+            res = stmt.bind_double (8, 0.0);
+            if ((res = stmt.step ()) != Sqlite.DONE) {
+                warning ("Error: %d: %s", NikiApp.db.errcode (), NikiApp.db.errmsg ());
+            }
+            stmt.reset ();
+            return;
+        }
+        var tagfile = new InyTag.File (path.get_path ());
+        int res = NikiApp.db.prepare_v2 (sql, -1, out stmt);
+        res = stmt.bind_text (1, path.get_uri ());
+        res = stmt.bind_text (2, get_song_info (path));
+        res = stmt.bind_text (3, get_artist_music (path));
+        res = stmt.bind_text (4, get_album_music (path));
+        res = stmt.bind_text (5, tagfile.tag.genre);
+        res = stmt.bind_int (6, (int)tagfile.tag.year);
+        res = stmt.bind_text (7, seconds_to_time (tagfile.audioproperties.length));
+        res = stmt.bind_double (8, 0.0);
+        if ((res = stmt.step ()) != Sqlite.DONE) {
+            warning ("Error: %d: %s", NikiApp.db.errcode (), NikiApp.db.errmsg ());
+        }
+        stmt.reset ();
+    }
+    private void insert_video (string uri, string progress, string duration, double lastplay) {
+        Sqlite.Statement stmt;
+        string sql = "INSERT OR IGNORE INTO videos (uri, progress, duration, lastplay) VALUES (?, ?, ?, ?);";
+        int res = NikiApp.db.prepare_v2 (sql, -1, out stmt);
+        res = stmt.bind_text (1, uri);
+        res = stmt.bind_text (2, progress);
+        res = stmt.bind_text (3, duration);
+        res = stmt.bind_double (4, lastplay);
+        if ((res = stmt.step ()) != Sqlite.DONE) {
+            warning ("Error: %d: %s", NikiApp.db.errcode (), NikiApp.db.errmsg ());
+        }
+        stmt.reset ();
+    }
+
+    private void insert_last_video (string uri, string progress, double lastplay) {
+        Sqlite.Statement stmt;
+        string sql = @" UPDATE videos SET progress = '$(progress)', lastplay = $(lastplay)  WHERE uri = ?";
+        int res = NikiApp.db.prepare_v2 (sql, -1, out stmt);
+        res = stmt.bind_text (1, uri);
+        if ((res = stmt.step ()) != Sqlite.DONE) {
+            warning ("Error: %d: %s", NikiApp.db.errcode (), NikiApp.db.errmsg ());
+        }
+        stmt.reset ();
+    }
+
+    private double lastplay_video (string uri) {
+        Sqlite.Statement stmt;
+        double last = 0.0;
+        int res = NikiApp.db.prepare_v2 ("SELECT * FROM videos WHERE uri = ?", -1, out stmt);
+        res = stmt.bind_text (1, uri);
+        if ((res = stmt.step ()) == Sqlite.ROW) {
+            last = stmt.column_double (4);
+        }
+        return last;
+    }
+    private void insert_last_music (string uri, double lastplay) {
+        Sqlite.Statement stmt;
+        string sql = @" UPDATE musics SET lastplay = $(lastplay) WHERE uri = ?";
+        int res = NikiApp.db.prepare_v2 (sql, -1, out stmt);
+        res = stmt.bind_text (1, uri);
+        if ((res = stmt.step ()) != Sqlite.DONE) {
+            warning ("Error: %d: %s", NikiApp.db.errcode (), NikiApp.db.errmsg ());
+        }
+        stmt.reset ();
+    }
+    private double lastplay_music (string uri) {
+        Sqlite.Statement stmt;
+        double last = 0.0;
+        int res = NikiApp.db.prepare_v2 ("SELECT * FROM musics WHERE uri = ?", -1, out stmt);
+        res = stmt.bind_text (1, uri);
+        if ((res = stmt.step ()) == Sqlite.ROW) {
+            last = stmt.column_double (8);
+        }
+        return last;
+    }
+
+    private void get_video (string uri, out string progress, out string duration, out double lastplay) {
+        progress = "";
+        duration = "";
+        lastplay = 0.0;
+        Sqlite.Statement stmt;
+        int res = NikiApp.db.prepare_v2 ("SELECT * FROM videos WHERE uri = ?", -1, out stmt);
+        res = stmt.bind_text (1, uri);
+        if ((res = stmt.step ()) == Sqlite.ROW) {
+            progress = stmt.column_text (2);
+            duration = stmt.column_text (3);
+            lastplay = stmt.column_double (4);
+        }
+    }
+    private void get_music (string uri, out string title, out string artist, out string album, out string genre, out int years, out string duration, out double lastplay) {
+        title = "";
+        artist = "";
+        album = "";
+        genre = "";
+        duration = "";
+        years = 0;
+        lastplay = 0.0;
+        Sqlite.Statement stmt;
+        int res = NikiApp.db.prepare_v2 ("SELECT * FROM musics WHERE uri = ?", -1, out stmt);
+        res = stmt.bind_text (1, uri);
+        if ((res = stmt.step ()) == Sqlite.ROW) {
+            title = stmt.column_text (2);
+            artist = stmt.column_text (3);
+            album = stmt.column_text (4);
+            genre = stmt.column_text (5);
+            years = stmt.column_int (6);
+            duration = stmt.column_text (7);
+            lastplay = stmt.column_double (8);
+        }
+    }
+    private void update_music_db (string uri) {
+        Sqlite.Statement stmt;
+        var path = File.new_for_uri (uri);
+        string sql = "";
+        if (path.get_uri ().down ().has_suffix ("aac") || path.get_uri ().down ().has_suffix ("ac3")) {
+            sql = @" UPDATE musics SET title = '$(get_song_info (path))', artist = 'Unknown', album = 'Unknown', genre = 'Unknown', year = 0 WHERE uri = ?";
+        } else {
+            var tagfile = new InyTag.File (path.get_path ());
+            sql = @" UPDATE musics SET title = '$(get_song_info (path))', artist = '$(get_artist_music (path))', album = '$(get_album_music (path))', genre = '$(tagfile.tag.genre)', year = $((int)tagfile.tag.year) WHERE uri = ?";
+        }
+        int res = NikiApp.db.prepare_v2 (sql, -1, out stmt);
+        res = stmt.bind_text (1, uri);
+        if ((res = stmt.step ()) != Sqlite.DONE) {
+            warning ("Error: %d: %s", NikiApp.db.errcode (), NikiApp.db.errmsg ());
+        }
+        stmt.reset ();
     }
 }
