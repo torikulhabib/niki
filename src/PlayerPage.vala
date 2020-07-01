@@ -257,7 +257,6 @@ namespace niki {
                     case RepeatMode.OFF :
                         if (!right_bar.playlist.next ()) {
                             playback.playing = false;
-                            NikiApp.settings.set_double ("last-stopped", 0);
                             ((Gtk.Image) bottom_bar.play_button.image).icon_name = "com.github.torikulhabib.niki.replay-symbolic";
                             bottom_bar.play_button.tooltip_text = StringPot.Replay;
                             bottom_bar.stop_revealer.set_reveal_child (false);
