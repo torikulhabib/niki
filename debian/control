@@ -22,6 +22,7 @@ Build-Depends: meson (>= 0.43),
                libtagc0-dev,
                libcanberra-dev,
                libcairo2-dev,
+               libsqlite3-dev,
 Standards-Version: 4.14
 
 Package: com.github.torikulhabib.niki
