@@ -96,7 +96,7 @@ namespace niki {
                 cr.move_to (center_x - ((w / Pango.SCALE) / 2), center_y - 27 );
                 Pango.cairo_show_layout (cr, layout);
 
-                layout.set_text (StringPot.Loading_Files, -1);
+                layout.set_text (_("Loading Files"), -1);
                 desc = Pango.FontDescription.from_string ("Bitstream Vera Sans 14");
                 layout.set_font_description (desc);
                 Pango.cairo_update_layout (cr, layout);

@@ -11,7 +11,7 @@ namespace niki {
         private bool apply_changes = false;
         private bool adding_preset = false;
         private bool in_transition = false;
-        private const string [] CHROMA = {StringPot.Gamma, StringPot.Brightness, StringPot.Contrast, StringPot.Saturation, StringPot.Hue, StringPot.Blur};
+        private const string [] CHROMA = {"Gamma", "Brightness", "Contrast", "Saturation", "Hue", "Blur"};
 
         public CameraGrid (CameraPage camerapage) {
             this.camerapage = camerapage;
@@ -94,7 +94,7 @@ namespace niki {
                     cursor_hand_mode (0);
                     return false;
                 });
-                if (croma == StringPot.Hue || croma == StringPot.Blur) {
+                if (croma == "Hue" || croma == "Blur") {
                     scale.has_origin = false;
                 }
                 scale_container.add (label_name);
@@ -129,7 +129,7 @@ namespace niki {
             new_preset_entry = new Gtk.Entry ();
             new_preset_entry.hexpand = true;
             new_preset_entry.secondary_icon_name = "document-save-symbolic";
-            new_preset_entry.secondary_icon_tooltip_text = StringPot.Save_Preset;
+            new_preset_entry.secondary_icon_tooltip_text = _("Save Preset");
 
             var size_group = new Gtk.SizeGroup (Gtk.SizeGroupMode.BOTH);
             size_group.add_widget (camera_preset_list);
@@ -253,7 +253,7 @@ namespace niki {
             if (NikiApp.settingsCv.get_boolean ("videocamera-enabled")) {
                 NikiApp.settings.set_string ("tooltip-videos", camera_preset_list.get_selected_preset ().name);
             } else {
-                NikiApp.settings.set_string ("tooltip-videos", StringPot.None);
+                NikiApp.settings.set_string ("tooltip-videos", _("None"));
             }
         }
 
@@ -311,15 +311,15 @@ namespace niki {
             do {
                 if (from_current) {
                     if (i < 1) {
-                        preset_name = _("%s (%s)").printf (current_preset_name, StringPot.Custom);
+                        preset_name = _("%s (%s)").printf (current_preset_name, _("Custom"));
                     } else {
-                        preset_name = _("%s (%s %i)").printf (current_preset_name, StringPot.Custom, i);
+                        preset_name = _("%s (%s %i)").printf (current_preset_name, _("Custom"), i);
                     }
                 } else {
                     if (i < 1) {
-                        preset_name = StringPot.Custom_Preset;
+                        preset_name = _("Custom Preset");
                     } else {
-                        preset_name = _("%s %i").printf (StringPot.Custom_Preset, i);
+                        preset_name = _("%s %i").printf (_("Custom Preset"), i);
                     }
                 }
                 i++;

@@ -107,7 +107,7 @@ namespace niki {
                     var children = file.enumerate_children (string.joinv (",", attributes), GLib.FileQueryInfoFlags.NONE);
                     while ((file_info = children.next_file ()) != null) {
                         string? title = file_info.get_attribute_string (FILE_ATTRIBUTE_TITLE) != null? file_info.get_attribute_string (FILE_ATTRIBUTE_TITLE).strip () : _ ("Track %d").printf (counter);
-                        string? artist = file_info.get_attribute_string (FILE_ATTRIBUTE_ARTIST) != null? file_info.get_attribute_string (FILE_ATTRIBUTE_ARTIST) : StringPot.Unknown;
+                        string? artist = file_info.get_attribute_string (FILE_ATTRIBUTE_ARTIST) != null? file_info.get_attribute_string (FILE_ATTRIBUTE_ARTIST) : _("Unknown");
                         string album = file_info.get_attribute_string (FILE_ATTRIBUTE_ALBUM);
                         string uri = GLib.Path.build_filename (file.get_uri (), file_info.get_name ());
                         NikiApp.window.player_page.right_bar.playlist.add_acd (uri, title, album, artist);

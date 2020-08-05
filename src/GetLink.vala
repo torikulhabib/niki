@@ -84,7 +84,6 @@ namespace niki {
             if (string_list.length > 2) {
                 process_all (string_list);
                 string_list = {};
-                datains = {};
             }
         }
     }

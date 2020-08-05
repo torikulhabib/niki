@@ -88,14 +88,13 @@ namespace niki {
             make_lrc_but = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.make-lrc-symbolic", Gtk.IconSize.BUTTON);
             make_lrc_but.focus_on_click = false;
             make_lrc_but.get_style_context ().add_class ("button_action");
-            make_lrc_but.tooltip_text = StringPot.Make_Lyric;
+            make_lrc_but.tooltip_text = _("Make Lyric");
             make_lrc_but.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("make-lrc", !NikiApp.settings.get_boolean ("make-lrc"));
             });
             search_time_lrc = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.time-lrc-symbolic", Gtk.IconSize.BUTTON);
             search_time_lrc.focus_on_click = false;
             search_time_lrc.get_style_context ().add_class ("button_action");
-            search_time_lrc.tooltip_text = StringPot.Set_Time_Lyric;
             search_time_lrc.clicked.connect (() => {
                 if (NikiApp.settings.get_boolean ("make-lrc")) {
                     position_sec ((int64)(playback.get_position ()));
@@ -128,7 +127,7 @@ namespace niki {
         }
         private void seach_n_time () {
             ((Gtk.Image) search_time_lrc.image).icon_name = NikiApp.settings.get_boolean ("make-lrc")? "com.github.torikulhabib.niki.time-lrc-symbolic" : "system-search-symbolic";
-            search_time_lrc.tooltip_text = NikiApp.settings.get_boolean ("make-lrc")? StringPot.Set_Time_Lyric : StringPot.Search_Lyrics;
+            search_time_lrc.tooltip_text = NikiApp.settings.get_boolean ("make-lrc")? _("Set Time Lyric") : _("Search Lyrics");
         }
         private bool anim_draw (Cairo.Context cr) {
             double alpha = 0;
@@ -195,7 +194,7 @@ namespace niki {
                         state += 1;
                         return false;
                     case 1:
-                        text = StringPot.Title;
+                        text = _("Title");
                         state += 1;
                         break;
                     case 2:
@@ -203,7 +202,7 @@ namespace niki {
                         state += 1;
                       break;
                     case 3:
-                        text = StringPot.Artist;
+                        text = _("Artist");
                         state += 1;
                         break;
                     case 4:
@@ -211,7 +210,7 @@ namespace niki {
                         state += 1;
                         break;
                     case 5:
-                        text = StringPot.Album;
+                        text = _("Album");
                         state += 1;
                         break;
                     case 6:
@@ -219,7 +218,7 @@ namespace niki {
                         state += 1;
                         break;
                     case 7:
-                        text = StringPot.Equalizer;
+                        text = _("Equalizer");
                         state += 1;
                         break;
                     case 8:

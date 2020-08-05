@@ -193,36 +193,36 @@ namespace niki {
         public void previous () throws GLib.Error {
             if (NikiApp.settings.get_boolean ("previous-status")) {
                 NikiApp.window.player_page.previous ();
-                NikiApp.window.player_page.string_notify (StringPot.Previous);
+                NikiApp.window.player_page.string_notify (_("Previous"));
             }
         }
 
         public void next () throws GLib.Error {
             if (NikiApp.settings.get_boolean("next-status")) {
                 NikiApp.window.player_page.next ();
-                NikiApp.window.player_page.string_notify (StringPot.Next);
+                NikiApp.window.player_page.string_notify (_("Next"));
             }
         }
 
         public void pause () throws GLib.Error {
             playback.playing = false;
-            NikiApp.window.player_page.string_notify (StringPot.Pause);
+            NikiApp.window.player_page.string_notify (_("Pause"));
         }
 
         public void play () throws GLib.Error {
             playback.playing = true;
-            NikiApp.window.player_page.string_notify (StringPot.Play);
+            NikiApp.window.player_page.string_notify (_("Play"));
         }
 
         public void stop () throws GLib.Error {
             playback.playing = false;
             playback.progress = 0.0;
-            NikiApp.window.player_page.string_notify (StringPot.Stop);
+            NikiApp.window.player_page.string_notify (_("Stop"));
         }
 
         public void PlayPause () throws GLib.Error {
             playback.playing = playback.playing? false : true;
-            NikiApp.window.player_page.string_notify (playback.playing? StringPot.Play : StringPot.Pause);
+            NikiApp.window.player_page.string_notify (playback.playing? _("Play") : _("Pause"));
         }
 
         public void seek (int64 offset) throws GLib.Error {

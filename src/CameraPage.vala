@@ -108,7 +108,7 @@ namespace niki {
             NikiApp.settings.changed["camera-video"].connect (camera_record);
             NikiApp.settings.changed["fullscreen"].connect (() => {
                 if (!NikiApp.settings.get_boolean("fullscreen")) {
-                    string_notify (StringPot.Press_Esc);
+                    string_notify (_("Press Esc"));
                 } else {
                     notify_blank ();
                     if (notify_timer != 0) {
@@ -124,7 +124,7 @@ namespace niki {
         }
 
         private void camera_record () {
-            string_notify (!NikiApp.settings.get_boolean ("camera-video")? StringPot.Camera_Mode : StringPot.Video_Mode);
+            string_notify (!NikiApp.settings.get_boolean ("camera-video")? _("Camera Mode") : _("Video Mode"));
         }
         private uint notify_timer = 0;
         private void notify_control () {
@@ -221,7 +221,7 @@ namespace niki {
 		    camerabottombar.load_all ();
         }
         public void zoom_in_out (double zoom) {
-            string_notify ("%s %2.1f".printf (StringPot.Zoom_X, zoom));
+            string_notify ("%s %2.1f".printf (_("Zoom X"), zoom));
             cameraplayer.input_zoom (zoom);
         }
     }

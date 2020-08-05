@@ -105,12 +105,12 @@ namespace niki {
                 return default_presets;
             }
             default_presets = new Gee.TreeSet<VideoPreset> ();
-            default_presets.add (new VideoPreset.with_value (StringPot.Normal, {0, 0, 0, 0, 0}));
-            default_presets.add (new VideoPreset.with_value (StringPot.Vivid, {15, 5, 5, 35, 0}));
-            default_presets.add (new VideoPreset.with_value (StringPot.Bright, {5, 10, 10, 10, 0}));
-            default_presets.add (new VideoPreset.with_value (StringPot.Full_Color, {0, -1, -1, 100, 0}));
-            default_presets.add (new VideoPreset.with_value (StringPot.No_Color, {0, 0, 10, -100, 0}));
-            default_presets.add (new VideoPreset.with_value (StringPot.Soft, {0, 0, -10, 0, 0}));
+            default_presets.add (new VideoPreset.with_value (_("Normal"), {0, 0, 0, 0, 0}));
+            default_presets.add (new VideoPreset.with_value (_("Vivid"), {15, 5, 5, 35, 0}));
+            default_presets.add (new VideoPreset.with_value (_("Bright"), {5, 10, 10, 10, 0}));
+            default_presets.add (new VideoPreset.with_value (_("Full Color"), {0, -1, -1, 100, 0}));
+            default_presets.add (new VideoPreset.with_value (_("No Color"), {0, 0, 10, -100, 0}));
+            default_presets.add (new VideoPreset.with_value (_("Soft"), {0, 0, -10, 0, 0}));
             return default_presets;
         }
     }

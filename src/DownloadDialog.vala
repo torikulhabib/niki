@@ -117,7 +117,7 @@ namespace niki {
 		        try {
 			        file_from_uri.copy_async.end (res);
 		        } catch (Error e) {
-			        notify_app (StringPot.Niki_DLNA_Browser, e.message);
+			        notify_app (_("Niki DLNA Browser"), e.message);
 		        }
 		        destroy ();
 		    });

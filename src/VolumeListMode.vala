@@ -20,23 +20,21 @@
 */
 
 namespace niki {
-    public class VolumeWiget : Gtk.Revealer {
+    public class VolumeListMode : Gtk.Grid {
         public Gtk.Scale scale { get; construct set; }
         public bool hovering_grabing { get; construct set; }
         public signal void leave_scale ();
 
         construct {
-            transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
-            transition_duration = 500;
+            get_style_context ().add_class ("dlna_volume");
             scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, 0.0, 1.0, 0.01);
+            scale.valign = Gtk.Align.CENTER;
             scale.draw_value = scale.can_focus = false;
             scale.set_show_fill_level (true);
             scale.set_margin_start (2);
             scale.set_margin_end (2);
+            scale.width_request = 350;
             scale.set_value (NikiApp.settings.get_double ("volume-adjust"));
-            scale.events |= Gdk.EventMask.POINTER_MOTION_MASK;
-            scale.events |= Gdk.EventMask.LEAVE_NOTIFY_MASK;
-            scale.events |= Gdk.EventMask.ENTER_NOTIFY_MASK;
 
             NikiApp.settings.changed["status-muted"].connect (() => {
                 scale.sensitive = NikiApp.settings.get_boolean ("status-muted")? false : true;
@@ -66,19 +64,26 @@ namespace niki {
                 leave_scale ();
                 return cursor_hand_mode (2);
             });
-
-            margin_top = 3;
-            valign = Gtk.Align.CENTER;
+            var volume_button = new VolumeButton ();
+            volume_button.valign = Gtk.Align.CENTER;
+            volume_button.get_style_context ().add_class ("transbgborder");
+            volume_button.clicked.connect (() => {
+                NikiApp.settings.set_boolean ("status-muted", !NikiApp.settings.get_boolean ("status-muted"));
+            });
+            var volume_buttonmax = new VolumeButton ();
+            volume_buttonmax.valign = Gtk.Align.CENTER;
+            scale.get_style_context ().add_class ("transbgborder");
+            volume_buttonmax.get_style_context ().add_class ("transbgborder");
+            volume_buttonmax.clicked.connect (() => {
+                NikiApp.settings.set_double ("volume-adjust", 1.0);
+            });
+            orientation = Gtk.Orientation.HORIZONTAL;
+            add (volume_button);
             add (scale);
-            size_allocate.connect (scale_widh);
-            notify["child-revealed"].connect (scale_widh);
-            NikiApp.settings.changed["audio-video"].connect (scale_widh);
+            add (volume_buttonmax);
+            show_all ();
         }
-        public void scale_widh () {
-            int width;
-            NikiApp.window.get_size (out width, null);
-            scale.width_request = NikiApp.settings.get_boolean ("audio-video") && width < 500? 61 : 81;
-        }
+
         public bool update_tooltip () {
             scale.tooltip_text = double_to_percent (scale.get_value ());
             return cursor_hand_mode (0);

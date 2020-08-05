@@ -25,7 +25,7 @@ namespace niki {
         private static Gtk.ListStore liststore;
         private static GUPnP.ServiceProxy connection_manager;
         private const string SEPARATOR_NAME = "<separator_item_unique_name>";
-        private static string NIKI_MODE = StringPot.Niki_Player;
+        private static string NIKI_MODE = _("Niki Player");
 
         public DLNARenderControl (WelcomePage welcompage) {
             this.welcompage = welcompage;

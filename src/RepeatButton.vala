@@ -39,15 +39,15 @@ namespace niki {
             switch (NikiApp.settings.get_enum ("repeat-mode")) {
                 case RepeatMode.ALL :
                     ((Gtk.Image) repeat_image).icon_name = "media-playlist-repeat-symbolic";
-                    set_tooltip_text (StringPot.Repeat_All);
+                    set_tooltip_text (_("Repeat All"));
                     break;
                 case RepeatMode.ONE :
                     ((Gtk.Image) repeat_image).icon_name = "media-playlist-repeat-one-symbolic";
-                    set_tooltip_text (StringPot.Repeat_One);
+                    set_tooltip_text (_("Repeat One"));
                     break;
                 case RepeatMode.OFF :
                     ((Gtk.Image) repeat_image).icon_name = "media-playlist-no-repeat-symbolic";
-                    set_tooltip_text (StringPot.Disable_Repeat);
+                    set_tooltip_text (_("Disable Repeat"));
                     break;
             }
         }

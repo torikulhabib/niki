@@ -82,7 +82,6 @@ executable(
     'FlowboxChild.vala',
     'LightDark.vala',
     'MenuLabelRadio.vala',
-    'StringPot.vala',
     'CropDialog.vala',
     'CropView.vala',
     'MediaEntry.vala',
@@ -104,6 +103,7 @@ executable(
     'BottomList.vala',
     'SeekTimeMusic.vala',
     'SearchEntry.vala',
+    'VolumeListMode.vala',
 
     c_args: c_args,
     dependencies: [

@@ -57,7 +57,7 @@ namespace niki {
         }
         private void volume_mute () {
             ((Gtk.Image) volume_image).icon_name = NikiApp.settings.get_boolean ("status-muted")? "audio-volume-muted-blocking-symbolic" : "audio-volume-high-symbolic";
-            volume_image.tooltip_text = NikiApp.settings.get_boolean ("status-muted")? StringPot.Muted : double_to_percent (NikiApp.settings.get_double ("volume-adjust"));
+            volume_image.tooltip_text = NikiApp.settings.get_boolean ("status-muted")? _("Muted") : double_to_percent (NikiApp.settings.get_double ("volume-adjust"));
         }
     }
 }

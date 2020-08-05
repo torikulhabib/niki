@@ -5,8 +5,8 @@ namespace niki {
         public VideoPreset? video_preset;
         private Gtk.ListStore store;
         private const string SEPARATOR_NAME = "<separator_item_unique_name>";
-        private static string OFF_MODE = StringPot.OFF;
-        private static string DELETE_PRESET = StringPot.Delete_Current;
+        private static string OFF_MODE = _("OFF");
+        private static string DELETE_PRESET = _("Delete Current");
         private int ncustompresets {get; set;}
         private bool modifying_list;
 
@@ -29,7 +29,7 @@ namespace niki {
 		    pack_start (cell, false);
 		    set_attributes (cell_pb, "gicon", 2);
 		    set_attributes (cell, "text", 1);
-            changed.connect (list_selection_change);
+            changed.connect (selection_change);
             show_all ();
             store.clear ();
 
@@ -97,18 +97,34 @@ namespace niki {
             modifying_list = false;
             select_delete_preset ();
         }
-
-        public virtual void list_selection_change () {
+        public void keyboard_press () {
+            Gtk.TreeIter iter;
+            get_active_iter (out iter);
+            model.iter_next (ref iter);
+            if (store.iter_is_valid (iter)) {
+                string option;
+                store.get (iter, ComboColumns.STRING, out option);
+                if (option == SEPARATOR_NAME) {
+                    set_active (get_active () + 2);
+                } else {
+                    set_active_iter (iter);
+                }
+            } else {
+                set_active (0);
+            }
+        }
+        public void selection_change () {
             if (!NikiApp.settingsVf.get_boolean ("videofilter-enabled")) {
                 NikiApp.settingsVf.set_boolean ("videofilter-enabled", true);
             }
             if (modifying_list) {
                 return;
             }
-
             Gtk.TreeIter it;
             get_active_iter (out it);
-
+            selected_iters (it);
+        }
+        private void selected_iters (Gtk.TreeIter it) {
             GLib.Object o;
             store.get (it, ComboColumns.OBJECT, out o);
             if (o != null && o is VideoPreset) {
@@ -124,7 +140,6 @@ namespace niki {
 
             string option;
             store.get (it, ComboColumns.STRING, out option);
-
             if (option == OFF_MODE) {
                 NikiApp.settingsVf.set_boolean ("videofilter-enabled", false);
                 remove_delete_option ();
@@ -156,10 +171,8 @@ namespace niki {
         public VideoPreset? get_selected_preset () {
             Gtk.TreeIter it;
             get_active_iter (out it);
-
             GLib.Object o;
             store.get (it, ComboColumns.OBJECT, out o);
-
             if (o != null && o is VideoPreset) {
                 return o as VideoPreset;
             } else {

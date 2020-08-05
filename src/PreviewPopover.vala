@@ -66,7 +66,9 @@ namespace niki {
         }
         private void clutter_resize () {
             if (clutter_width > 0 && clutter_height > 0 && !NikiApp.settings.get_boolean ("audio-video")) {
-                double diagonal_window = GLib.Math.sqrt ((GLib.Math.pow (NikiApp.settings.get_int ("window-width"), 2) + GLib.Math.pow (NikiApp.settings.get_int ("window-height"), 2)) / 45);
+                int height, width;
+                NikiApp.window.get_size (out width, out height);
+                double diagonal_window = GLib.Math.sqrt ((GLib.Math.pow (width, 2) + GLib.Math.pow (height, 2)) / 45);
                 double diagonal = Math.sqrt (GLib.Math.pow (clutter_width, 2)  + GLib.Math.pow(clutter_height, 2));
                 double k = (diagonal_window / diagonal);
                 clutter.set_size_request ((int)(clutter_width * k), (int)(clutter_height * k));

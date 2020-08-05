@@ -215,10 +215,10 @@ namespace niki {
                     if (message.src.name == "camerabin") {
                         unowned Gst.Structure structure = message.get_structure ();
                         if (structure.get_name () == "image-done") {
-                            camerapage.string_notify (StringPot.Photo_Saved);
+                            camerapage.string_notify (_("Photo Saved"));
                             was_capture ();
                         } else if (structure.get_name () == "video-done") {
-                            camerapage.string_notify (StringPot.Video_Saved);
+                            camerapage.string_notify (_("Video Saved"));
                             was_capture ();
                         }
                     }
@@ -261,12 +261,12 @@ namespace niki {
                 return default_presets;
             }
             default_presets = new Gee.TreeSet<CameraPreset> ();
-            default_presets.add (new CameraPreset.with_value (StringPot.Normal, {0, 0, 0, 0, 0, 0}));
-            default_presets.add (new CameraPreset.with_value (StringPot.Vivid, {15, 5, 5, 35, 0, 0}));
-            default_presets.add (new CameraPreset.with_value (StringPot.Bright, {5, 10, 10, 10, 0, 0}));
-            default_presets.add (new CameraPreset.with_value (StringPot.Full_Color, {0, -1, -1, 100, 0, 0}));
-            default_presets.add (new CameraPreset.with_value (StringPot.No_Color, {0, 0, 10, -100, 0, 0}));
-            default_presets.add (new CameraPreset.with_value (StringPot.Soft, {0, 0, -10, 0, 0, 0}));
+            default_presets.add (new CameraPreset.with_value (_("Normal"), {0, 0, 0, 0, 0, 0}));
+            default_presets.add (new CameraPreset.with_value (_("Vivid"), {15, -1, 5, 35, 0, 0}));
+            default_presets.add (new CameraPreset.with_value (_("Bright"), {5, 10, 10, 10, 0, 0}));
+            default_presets.add (new CameraPreset.with_value (_("Full Color"), {0, -1, -1, 100, 0, 0}));
+            default_presets.add (new CameraPreset.with_value (_("No Color"), {0, 0, 10, -100, 0, 0}));
+            default_presets.add (new CameraPreset.with_value (_("Soft"), {0, 0, -10, 0, 0, 0}));
             return default_presets;
         }
     }

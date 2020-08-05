@@ -42,8 +42,8 @@ namespace niki {
             text_render.text = null;
             tree_view.headers_visible = true;
             tree_view.set_search_column (LyricColumns.LYRIC);
-            tree_view.insert_column_with_attributes (-1, StringPot.Time, new Gtk.CellRendererText (), "markup", LyricColumns.TIMEVIEW);
-            tree_view.insert_column_with_attributes (-1, StringPot.Lyric, text_render, "text", LyricColumns.LYRIC);
+            tree_view.insert_column_with_attributes (-1, _("Time"), new Gtk.CellRendererText (), "markup", LyricColumns.TIMEVIEW);
+            tree_view.insert_column_with_attributes (-1, _("Lyric"), text_render, "text", LyricColumns.LYRIC);
 
             text_render.edited.connect ((path, new_text) => {
                 listmodel.set (selected_iter (), LyricColumns.LYRIC, new_text);
@@ -51,12 +51,17 @@ namespace niki {
             var add_doc = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.lrc-file-symbolic", Gtk.IconSize.BUTTON);
             add_doc.focus_on_click = false;
             add_doc.get_style_context ().add_class ("button_action");
-            add_doc.tooltip_text = StringPot.Open_Text;
-            add_doc.clicked.connect (run_open_file);
+            add_doc.tooltip_text = _("Open Text");
+            add_doc.clicked.connect (()=> {
+                var file = run_open_file (NikiApp.window, false, 3);
+                if (file != null) {
+                    load_text (file[0]);
+                }
+            });
             var add_but = new Gtk.Button.from_icon_name ("list-add-symbolic", Gtk.IconSize.BUTTON);
             add_but.focus_on_click = false;
             add_but.get_style_context ().add_class ("button_action");
-            add_but.tooltip_text = StringPot.Add_List;
+            add_but.tooltip_text = _("Add List");
             add_but.clicked.connect (() => {
                 Gtk.TreeIter iter;
                 listmodel.append (out iter);
@@ -65,7 +70,7 @@ namespace niki {
             var insert_aft = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.insert-after-symbolic", Gtk.IconSize.BUTTON);
             insert_aft.focus_on_click = false;
             insert_aft.get_style_context ().add_class ("button_action");
-            insert_aft.tooltip_text = StringPot.Insert_After;
+            insert_aft.tooltip_text = _("Insert After");
             insert_aft.clicked.connect (() => {
                 Gtk.TreeIter iter_in = selected_iter ();
                 if (!listmodel.iter_is_valid (iter_in)) {
@@ -78,7 +83,7 @@ namespace niki {
             var insert_bef = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.insert-before-symbolic", Gtk.IconSize.BUTTON);
             insert_bef.focus_on_click = false;
             insert_bef.get_style_context ().add_class ("button_action");
-            insert_bef.tooltip_text = StringPot.Insert_Before;
+            insert_bef.tooltip_text = _("Insert Before");
             insert_bef.clicked.connect (() => {
                 Gtk.TreeIter iter_in = selected_iter ();
                 if (!listmodel.iter_is_valid (iter_in)) {
@@ -91,7 +96,7 @@ namespace niki {
             var remove_but = new Gtk.Button.from_icon_name ("list-remove-symbolic", Gtk.IconSize.BUTTON);
             remove_but.focus_on_click = false;
             remove_but.get_style_context ().add_class ("button_action");
-            remove_but.tooltip_text = StringPot.Remove_List;
+            remove_but.tooltip_text = _("Remove List");
             remove_but.clicked.connect (() => {
                 Gtk.TreeIter iter = selected_iter ();
                 if (!listmodel.iter_is_valid (iter)) {
@@ -107,7 +112,7 @@ namespace niki {
             load_but = new Gtk.Button.from_icon_name ("edit-symbolic", Gtk.IconSize.BUTTON);
             load_but.focus_on_click = false;
             load_but.get_style_context ().add_class ("button_action");
-            load_but.tooltip_text = StringPot.Edit_Exist_Lyric;
+            load_but.tooltip_text = _("Edit Exist Lyric");
             load_but.clicked.connect (() => {
                 uri_this = NikiApp.settings.get_string ("uri-video");
                 if (!NikiApp.settings.get_boolean("lyric-available")) {
@@ -125,7 +130,7 @@ namespace niki {
             var save_but = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.file-save-symbolic", Gtk.IconSize.BUTTON);
             save_but.focus_on_click = false;
             save_but.get_style_context ().add_class ("button_action");
-            save_but.tooltip_text = StringPot.Save_Lyric;
+            save_but.tooltip_text = _("Save Lyric");
             save_but.clicked.connect (() => {
                 int b =listmodel.iter_n_children (null);
                 if (b < 2) {
@@ -151,13 +156,13 @@ namespace niki {
 
             get_fol_rev = new ButtonRevealer ("com.github.torikulhabib.niki.folder-symbolic");
             get_fol_rev.button.get_style_context ().add_class ("button_action");
-            get_fol_rev.button.tooltip_text = StringPot.Folder_Location;
+            get_fol_rev.button.tooltip_text = _("Folder Location");
             get_fol_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             get_fol_rev.transition_duration = 500;
             get_fol_rev.clicked.connect (() => {
                 run_open_folder (1, NikiApp.window);
             });
-            var label_make = new Gtk.Label (StringPot.Niki_Lyric_Maker);
+            var label_make = new Gtk.Label (_("Niki Lyric Maker"));
             label_make.get_style_context ().add_class ("button_action");
             label_make.ellipsize = Pango.EllipsizeMode.END;
 
@@ -274,7 +279,7 @@ namespace niki {
         }
         private void new_img_but () {
             ((Gtk.Image) new_lrc_blk.image).icon_name = stack.visible_child_name == "lyric"? "document-new-symbolic" : "go-previous-symbolic";
-            new_lrc_blk.tooltip_text = stack.visible_child_name == "lyric"? StringPot.Writer : StringPot.Maker;
+            new_lrc_blk.tooltip_text = stack.visible_child_name == "lyric"? _("Writer") : _("Maker");
         }
         private void save_to_file (string filename) {
             var builder = new StringBuilder ();
@@ -291,9 +296,10 @@ namespace niki {
             	FileOutputStream out_stream = file.create (FileCreateFlags.REPLACE_DESTINATION);
             	out_stream.write (builder.str.data);
             } catch (Error e) {
-                notify_app (StringPot.Error_Make, @"$(e.message)");
+                notify_app (_("Error Make"), @"$(e.message)");
+                return;
             }
-            notify_app (StringPot.Succes_Make, @"$(StringPot.Save_to) $(filename)");
+            notify_app (_("Succes Make"), @"$(_("Save_to")) $(filename)");
         }
         private Gtk.Button loc_save () {
             var locat_button = new Gtk.Button ();
@@ -310,43 +316,22 @@ namespace niki {
             switch (NikiApp.settings.get_int ("location-save")) {
                 case 0 :
                     button.set_image (new Gtk.Image.from_icon_name ("dialog-information-symbolic", Gtk.IconSize.BUTTON));
-                    button.tooltip_text = StringPot.Location_Music;
+                    button.tooltip_text = _("Location Music");
                     get_fol_rev.set_reveal_child (false);
                     break;
                 case 1 :
                     button.set_image (new Gtk.Image.from_icon_name ("com.github.torikulhabib.niki.file-save-as-symbolic", Gtk.IconSize.BUTTON));
-                    button.tooltip_text = StringPot.Save_to_Folder;
+                    button.tooltip_text = _("Save to Folder");
                     get_fol_rev.set_reveal_child (true);
                     break;
                 case 2 :
                     button.set_image (new Gtk.Image.from_icon_name ("system-help-symbolic", Gtk.IconSize.BUTTON));
-                    button.tooltip_text = StringPot.Ask_Place;
+                    button.tooltip_text = _("Ask Place");
                     get_fol_rev.set_reveal_child (false);
                     break;
             }
         }
-        private void run_open_file () {
-            var file = new Gtk.FileChooserDialog (
-            StringPot.Open, NikiApp.window, Gtk.FileChooserAction.OPEN,
-            StringPot.Cancel, Gtk.ResponseType.CANCEL,
-            StringPot.Open, Gtk.ResponseType.ACCEPT);
 
-            var all_files_filter = new Gtk.FileFilter ();
-            all_files_filter.set_filter_name (StringPot.All_Files);
-            all_files_filter.add_pattern ("*");
-
-            var video_filter = new Gtk.FileFilter ();
-            video_filter.set_filter_name (StringPot.Text);
-            video_filter.add_mime_type ("text/*");
-
-            file.add_filter (video_filter);
-            file.add_filter (all_files_filter);
-
-            if (file.run () == Gtk.ResponseType.ACCEPT) {
-                load_text (file.get_file ());
-            }
-            file.destroy ();
-        }
         private void load_text (File file) {
             if (!file.get_uri ().down ().has_suffix (".lrc")) {
                 text_lrc.buffer.text = "";

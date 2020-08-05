@@ -28,8 +28,8 @@ namespace niki {
         public CropDialog (string pixbuf_path, Gtk.Window window) {
             Object (
                 text_image: "image-crop",
-                primary_text: StringPot.Crop_Position,
-                secondary_text: StringPot.Choose_Part,
+                primary_text: _("Crop Position"),
+                secondary_text: _("Choose the part of the image to use as a cover."),
                 pixbuf_path: pixbuf_path,
                 selectable_text: false,
                 deletable: false,
@@ -41,9 +41,9 @@ namespace niki {
         }
 
         construct {
-            add_button (StringPot.Close, Gtk.ResponseType.CLOSE);
+            add_button (_("Close"), Gtk.ResponseType.CLOSE);
 
-            var button_change = add_button (StringPot.Set_Cover, Gtk.ResponseType.OK);
+            var button_change = add_button (_("Set Cover"), Gtk.ResponseType.OK);
             button_change.has_default = true;
             button_change.margin_end = 5;
             button_change.get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);

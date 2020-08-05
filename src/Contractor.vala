@@ -36,8 +36,8 @@ namespace niki {
                 File file = file_contr ();
                 permanent_delete (file);
         		FileOutputStream out_stream = file.create (FileCreateFlags.PRIVATE);
-                string str_name=@"Name=$(StringPot.Add_Niki_Playlist)\n";
-                string str_desc=@"Description=$(StringPot.Add_Niki_Playlist)\n";
+                string str_name=@"Name=$(_("Add Niki Playlist"))\n";
+                string str_desc=@"Description=$(_("Add Niki Playlist"))\n";
                 string str_command ="Exec=com.github.torikulhabib.niki --playlist %U \n";
         		out_stream.write ("[Contractor Entry]\n".data);
                 out_stream.write (str_name.data);

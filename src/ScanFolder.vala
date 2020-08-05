@@ -40,13 +40,13 @@ namespace niki {
             }
             check_count = GLib.Timeout.add (50, () => {
                 if (mode_scan == 1 && !content_check) {
-                    signal_notify (StringPot.Empty_Video);
+                    signal_notify (_("Empty Video"));
                 }
                 if (mode_scan == 2 && !content_check) {
-                    signal_notify (StringPot.Empty_Audio);
+                    signal_notify (_("Empty Audio"));
                 }
                 if (mode_scan == 0 && !content_check) {
-                    signal_notify (StringPot.Empty_Folder);
+                    signal_notify (_("Empty Folder"));
                 }
                 content_check = false;
                 check_count = 0;
@@ -77,13 +77,13 @@ namespace niki {
                                 }
                             }
                             if (mode_scan == 1 && !content_video) {
-                                signal_notify (StringPot.Empty_Video);
+                                signal_notify (_("Empty Video"));
                             }
                             if (mode_scan == 2 && !content_Audio) {
-                                signal_notify (StringPot.Empty_Audio);
+                                signal_notify (_("Empty Audio"));
                             }
                             if (mode_scan == 0 && !content_Audio && !content_video) {
-                                signal_notify (StringPot.Empty_Folder);
+                                signal_notify (_("Empty Folder"));
                             }
                             if (content_video || content_Audio) {
                                 signal_succes (liststore);

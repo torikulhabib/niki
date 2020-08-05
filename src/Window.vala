@@ -41,7 +41,7 @@ namespace niki {
             var home_button = new Gtk.Button.from_icon_name ("go-home-symbolic", Gtk.IconSize.BUTTON);
             home_button.focus_on_click = false;
             home_button.get_style_context ().add_class ("button_action");
-            home_button.tooltip_text = StringPot.Home;
+            home_button.tooltip_text = _("Home");
             var home_revealer = new Gtk.Revealer ();
             home_revealer.transition_type = Gtk.RevealerTransitionType.CROSSFADE;
             home_revealer.add (home_button);
@@ -56,7 +56,7 @@ namespace niki {
             spinner_revealer.transition_type = Gtk.RevealerTransitionType.CROSSFADE;
             spinner_revealer.add (spinner);
             headerbar = new Gtk.HeaderBar ();
-            headerbar.title = StringPot.Niki;
+            headerbar.title = _("Niki");
             headerbar.has_subtitle = false;
             headerbar.show_close_button = true;
             headerbar.decoration_layout = "close:maximize";
@@ -85,12 +85,12 @@ namespace niki {
 
             welcome_page.stack.notify["visible-child"].connect (() => {
                 home_revealer.set_reveal_child (player_page.visible_child_name == "listview" || welcome_page.stack.visible_child_name == "dlna" || welcome_page.stack.visible_child_name == "dvd" || welcome_page.stack.visible_child_name == "device"? true : false);
-                headerbar.title = welcome_page.stack.visible_child_name == "dlna"? StringPot.Niki_DLNA_Browser : StringPot.Niki;
+                headerbar.title = welcome_page.stack.visible_child_name == "dlna"? _("Niki DLNA Browser") : _("Niki");
             });
             player_page.notify["visible-child"].connect (() => {
                 headerbar_mode ();
                 home_revealer.set_reveal_child (player_page.visible_child_name == "listview" || welcome_page.stack.visible_child_name == "dlna" || welcome_page.stack.visible_child_name == "dvd" || welcome_page.stack.visible_child_name == "device"? true : false);
-                headerbar.title = welcome_page.stack.visible_child_name == "dlna"? StringPot.Niki_DLNA_Browser : StringPot.Niki;
+                headerbar.title = welcome_page.stack.visible_child_name == "dlna"? _("Niki DLNA Browser") : _("Niki");
                 ((Gtk.Image) list_button.image).icon_name = player_page.visible_child_name == "embed"? "playlist-queue-symbolic" : (main_stack.visible_child_name == "welcome"? "playlist-queue-symbolic" : "com.github.torikulhabib.niki.play-symbolic");
                 list_button.tooltip_text = player_page.visible_child_name == "embed"? _("Library") : _("Player");
             });
@@ -100,7 +100,7 @@ namespace niki {
                     welcome_page.stack.visible_child_name = "home";
                 }
                 home_revealer.set_reveal_child (player_page.visible_child_name == "listview" || welcome_page.stack.visible_child_name == "dlna" || welcome_page.stack.visible_child_name == "dvd" || welcome_page.stack.visible_child_name == "device"? true : false);
-                headerbar.title = welcome_page.stack.visible_child_name == "dlna"? StringPot.Niki_DLNA_Browser : StringPot.Niki;
+                headerbar.title = welcome_page.stack.visible_child_name == "dlna"? _("Niki DLNA Browser") : _("Niki");
             ((Gtk.Image) list_button.image).icon_name = player_page.visible_child_name == "embed"? "playlist-queue-symbolic" : (main_stack.visible_child_name == "welcome"? "playlist-queue-symbolic" : "com.github.torikulhabib.niki.play-symbolic");
                 list_button.tooltip_text = player_page.visible_child_name == "embed"? _("Library") : _("Player");
             });
@@ -159,10 +159,6 @@ namespace niki {
                     Source.remove (move_stoped);
                 }
                 move_stoped = GLib.Timeout.add (500, () => {
-                    int height, width;
-                    get_size (out width, out height);
-                    NikiApp.settings.set_int ("window-width", width);
-                    NikiApp.settings.set_int ("window-height", height);
                     int root_x, root_y;
                     get_position (out root_x, out root_y);
                     if (NikiApp.settings.get_boolean ("audio-video") && main_stack.visible_child_name == "player") {
@@ -256,6 +252,7 @@ namespace niki {
                             if (!NikiApp.settings.get_boolean("subtitle-available")) {
                                 NikiApp.settings.set_boolean ("subtitle-available", true);
                             }
+                            player_page.playback.subtitle_choose ();
                         }
                     };
 		            if (main_stack.visible_child_name == "welcome" && audio_video_media) {

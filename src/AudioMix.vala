@@ -101,25 +101,24 @@ namespace niki {
             }
 
             default_presets = new Gee.TreeSet<EqualizerPreset> ();
-            default_presets.add (new EqualizerPreset.with_gains (StringPot.Flat, {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
-            default_presets.add (new EqualizerPreset.with_gains (StringPot.Classical, {0, 0, 0, 0, 0, 0, -40, -40, -40, -50}));
-            default_presets.add (new EqualizerPreset.with_gains (StringPot.Club, {0, 0, 20, 30, 30, 30, 20, 0, 0, 0}));
-            default_presets.add (new EqualizerPreset.with_gains (StringPot.Dance, {50, 35, 10, 0, 0, -30, -40, -40, 0, 0}));
-            default_presets.add (new EqualizerPreset.with_gains (StringPot.Full_Bass, {55, 55, 55, 30, 0, -25, -50, -50, -50, -50}));
-            default_presets.add (new EqualizerPreset.with_gains (StringPot.Full_Treble, {-50, -50, -50, -30, -5, 5, 25, 45, 55, 55}));
-            default_presets.add (new EqualizerPreset.with_gains (StringPot.Bass_Treble, {70, 70, 0, -40, -25, 20, 45, 55, 60, 60}));
-            default_presets.add (new EqualizerPreset.with_gains (StringPot.Headphones, {0, 45, -35, -35, -55, -35, -40, -40, 0, 0}));
-            default_presets.add (new EqualizerPreset.with_gains (StringPot.Large_Hall, {50, 50, 30, 30, 0, -25, -25, -25, 0, 0}));
-            default_presets.add (new EqualizerPreset.with_gains (StringPot.Live, {-25, 0, 20, 25, 30, 30, 20, 15, 15, 10}));
-            default_presets.add (new EqualizerPreset.with_gains (StringPot.Party, {35, 35, 0, 0, 0, 0, 0, 0, 35, 35}));
-            default_presets.add (new EqualizerPreset.with_gains (StringPot.Pop, {-10, 25, 35, 40, 25, -5, -15, -15, -10, -10}));
-            default_presets.add (new EqualizerPreset.with_gains (StringPot.Reggae, {0, 0, -5, -30, 0, -35, -35, 0, 0, 0}));
-            default_presets.add (new EqualizerPreset.with_gains (StringPot.Rock, {40, 25, -30, -40, -20, 20, 45, 55, 55, 55}));
-            default_presets.add (new EqualizerPreset.with_gains (StringPot.Soft, {25, 10, -5, -15, -5, 20, 45, 50, 55, 60}));
-            default_presets.add (new EqualizerPreset.with_gains (StringPot.Ska, {-15, -25, -25, -5, 20, 30, 45, 50, 55, 50}));
-            default_presets.add (new EqualizerPreset.with_gains (StringPot.Soft_Rock, {20, 20, 10, -5, -25, -30, -20, -5, 15, 45}));
-            default_presets.add (new EqualizerPreset.with_gains (StringPot.Techno, {40, 30, 0, -30, -25, 0, 40, 50, 50, 45}));
-
+            default_presets.add (new EqualizerPreset.with_gains (_("Flat"), {0, 0, 0, 0, 0, 0, 0, 0, 0, 0}));
+            default_presets.add (new EqualizerPreset.with_gains (_("Classical"), {0, 0, 0, 0, 0, 0, -40, -40, -40, -50}));
+            default_presets.add (new EqualizerPreset.with_gains (_("Club"), {0, 0, 20, 30, 30, 30, 20, 0, 0, 0}));
+            default_presets.add (new EqualizerPreset.with_gains (_("Dance"), {50, 35, 10, 0, 0, -30, -40, -40, 0, 0}));
+            default_presets.add (new EqualizerPreset.with_gains (_("Full Bass"), {55, 55, 55, 30, 0, -25, -50, -50, -50, -50}));
+            default_presets.add (new EqualizerPreset.with_gains (_("Full Treble"), {-50, -50, -50, -30, -5, 5, 25, 45, 55, 55}));
+            default_presets.add (new EqualizerPreset.with_gains (_("Power Full"), {70, 70, 0, -40, -25, 20, 45, 55, 60, 60}));
+            default_presets.add (new EqualizerPreset.with_gains (_("Headphones"), {0, 45, -35, -35, -55, -35, -40, -40, 0, 0}));
+            default_presets.add (new EqualizerPreset.with_gains (_("Large Hall"), {50, 50, 30, 30, 0, -25, -25, -25, 0, 0}));
+            default_presets.add (new EqualizerPreset.with_gains (_("Live"), {-25, 0, 20, 25, 30, 30, 20, 15, 15, 10}));
+            default_presets.add (new EqualizerPreset.with_gains (_("Party"), {35, 35, 0, 0, 0, 0, 0, 0, 35, 35}));
+            default_presets.add (new EqualizerPreset.with_gains (_("Pop"), {-10, 25, 35, 40, 25, -5, -15, -15, -10, -10}));
+            default_presets.add (new EqualizerPreset.with_gains (_("Reggae"), {0, 0, -5, -30, 0, -35, -35, 0, 0, 0}));
+            default_presets.add (new EqualizerPreset.with_gains (_("Rock"), {40, 25, -30, -40, -20, 20, 45, 55, 55, 55}));
+            default_presets.add (new EqualizerPreset.with_gains (_("Soft"), {25, 10, -5, -15, -5, 20, 45, 50, 55, 60}));
+            default_presets.add (new EqualizerPreset.with_gains (_("Ska"), {-15, -25, -25, -5, 20, 30, 45, 50, 55, 50}));
+            default_presets.add (new EqualizerPreset.with_gains (_("Soft Rock"), {20, 20, 10, -5, -25, -30, -20, -5, 15, 45}));
+            default_presets.add (new EqualizerPreset.with_gains (_("Techno"), {40, 30, 0, -30, -25, 0, 40, 50, 50, 45}));
             return default_presets;
         }
     }

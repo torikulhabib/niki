@@ -106,7 +106,7 @@ namespace niki {
             });
             zoom_in_button = new Gtk.Button.from_icon_name ("zoom-in-symbolic", Gtk.IconSize.BUTTON);
             zoom_in_button.focus_on_click = false;
-            zoom_in_button.tooltip_text = StringPot.Zoom_In;
+            zoom_in_button.tooltip_text = _("Zoom In");
             zoom_in_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             zoom_in_button.get_style_context ().add_class ("button_action");
             zoom_in_button.clicked.connect (() => {
@@ -116,7 +116,7 @@ namespace niki {
             });
             zoom_out_button = new Gtk.Button.from_icon_name ("zoom-out-symbolic", Gtk.IconSize.BUTTON);
             zoom_out_button.focus_on_click = false;
-            zoom_out_button.tooltip_text = StringPot.Zoom_Out;
+            zoom_out_button.tooltip_text = _("Zoom Out");
             zoom_out_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             zoom_out_button.get_style_context ().add_class ("button_action");
             zoom_out_button.clicked.connect (() => {

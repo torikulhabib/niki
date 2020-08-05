@@ -216,12 +216,12 @@ namespace niki {
         }
         private void mode_flip () {
             ((Gtk.Image) flip_button.image).icon_name = NikiApp.settings.get_boolean ("mode-flip")? "com.github.torikulhabib.niki.flip-off-symbolic" : "com.github.torikulhabib.niki.flip-on-symbolic";
-            flip_button.tooltip_text = NikiApp.settings.get_boolean ("mode-flip")? StringPot.Flip_Off : StringPot.Flip_On;
+            flip_button.tooltip_text = NikiApp.settings.get_boolean ("mode-flip")? _("Flip Off") : _("Flip On");
         }
 
         private void flash_on () {
             ((Gtk.Image) flash_button.image).icon_name = NikiApp.settings.get_boolean ("flash-camera")? "com.github.torikulhabib.niki.flash-off-symbolic" : "com.github.torikulhabib.niki.flash-on-symbolic";
-            flash_button.tooltip_text = NikiApp.settings.get_boolean ("flash-camera")? StringPot.Flash_Off : StringPot.Flash_On;
+            flash_button.tooltip_text = NikiApp.settings.get_boolean ("flash-camera")? _("Flash Off") : _("Flash On");
         }
 
         public void reveal_control () {

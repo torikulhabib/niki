@@ -51,7 +51,7 @@ namespace niki {
             set {
                 _playing = value;
                 ((Gtk.Image) capture_button.image).icon_name = value? "com.github.torikulhabib.niki.recording-symbolic" : "com.github.torikulhabib.niki.record-symbolic";
-                capture_button.tooltip_text = value? StringPot.Stop : StringPot.Record;
+                capture_button.tooltip_text = value? _("Stop") : _("Record");
             }
         }
 
@@ -145,7 +145,7 @@ namespace niki {
             setting_revealer.transition_duration = 500;
             setting_button = new Gtk.Button.from_icon_name ("applications-graphics-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
             setting_button.focus_on_click = false;
-            setting_button.tooltip_text = StringPot.Setting_Filter;
+            setting_button.tooltip_text = _("Setting Filter");
             setting_button.get_style_context ().add_class ("button_action");
             setting_revealer.set_reveal_child (NikiApp.settings.get_boolean ("setting-camera"));
             setting_button.clicked.connect (() => {
@@ -304,9 +304,9 @@ namespace niki {
 
         private void camera_video () {
             ((Gtk.Image) option_button.image).icon_name = (NikiApp.settings.get_boolean ("camera-video")? "com.github.torikulhabib.niki.capture-symbolic" : "com.github.torikulhabib.niki.record-symbolic");
-            option_button.tooltip_text = NikiApp.settings.get_boolean ("camera-video")? StringPot.Camera : StringPot.Video;
+            option_button.tooltip_text = NikiApp.settings.get_boolean ("camera-video")? _("Camera") : _("Video");
             ((Gtk.Image) capture_button.image).icon_name = (NikiApp.settings.get_boolean ("camera-video")? "com.github.torikulhabib.niki.record-symbolic" : "com.github.torikulhabib.niki.capture-symbolic");
-            capture_button.tooltip_text = NikiApp.settings.get_boolean ("camera-video")? StringPot.Record : StringPot.Capture;
+            capture_button.tooltip_text = NikiApp.settings.get_boolean ("camera-video")? _("Record") : _("Capture");
             timer_button.sensitive = NikiApp.settings.get_boolean ("camera-video")? false : true;
             load_all ();
         }

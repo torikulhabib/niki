@@ -291,17 +291,17 @@ namespace niki {
 
     private string get_artist_music (File path) {
         if (path.get_uri ().down ().has_suffix ("aac") || path.get_uri ().down ().has_suffix ("ac3")) {
-            return StringPot.Unknown;
+            return _("Unknown");
         }
 		var info = new InyTag.File(path.get_path ());
-		return info.tag.artist.char_count () < 1? StringPot.Unknown : info.tag.artist;
+		return info.tag.artist.char_count () < 1? _("Unknown") : info.tag.artist;
     }
     private string get_album_music (File path) {
         if (path.get_uri ().down ().has_suffix ("aac") || path.get_uri ().down ().has_suffix ("ac3")) {
-            return StringPot.Unknown;
+            return _("Unknown");
         }
 		var info = new InyTag.File(path.get_path ());
-		return info.tag.album.char_count () < 1? StringPot.Unknown : info.tag.album;
+		return info.tag.album.char_count () < 1? _("Unknown") : info.tag.album;
     }
 
     private string get_mime_type (File fileinput) {
@@ -360,7 +360,7 @@ namespace niki {
             order = 0;
         }
         if (need) {
-            file_info = " %s: %3.1f%s".printf (StringPot.Size, len, sizes[order]);
+            file_info = " %s: %3.1f%s".printf (_("Size"), len, sizes[order]);
         } else {
             file_info = "%3.1f%s".printf (len, sizes[order]);
         }
@@ -824,9 +824,9 @@ namespace niki {
     }
     private bool run_open_folder (int loca_set, Gtk.Window window) {
         var folder_location = new Gtk.FileChooserDialog (
-        StringPot.Open, window, Gtk.FileChooserAction.SELECT_FOLDER,
-        StringPot.Cancel, Gtk.ResponseType.CANCEL,
-        StringPot.Open, Gtk.ResponseType.ACCEPT);
+        _("Open"), window, Gtk.FileChooserAction.SELECT_FOLDER,
+        _("Cancel"), Gtk.ResponseType.CANCEL,
+        _("Open"), Gtk.ResponseType.ACCEPT);
         folder_location.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
 
         var filter_folder = new Gtk.FileFilter ();
@@ -849,12 +849,12 @@ namespace niki {
         folder_location.destroy ();
         return res == Gtk.ResponseType.ACCEPT;
     }
-    public File[] run_open_file (Gtk.Window window, bool av = true) {
+    public File[] run_open_file (Gtk.Window window, bool multi, int count) {
         var file = new Gtk.FileChooserDialog (
-        StringPot.Open, window, Gtk.FileChooserAction.OPEN,
-        StringPot.Cancel, Gtk.ResponseType.CANCEL,
-        StringPot.Open, Gtk.ResponseType.ACCEPT);
-        file.select_multiple = av;
+        _("Open"), window, Gtk.FileChooserAction.OPEN,
+        _("Cancel"), Gtk.ResponseType.CANCEL,
+        _("Open"), Gtk.ResponseType.ACCEPT);
+        file.select_multiple = multi;
         file.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
 
         var preview_area = new AsyncImage (true);
@@ -862,17 +862,21 @@ namespace niki {
         preview_area.margin_end = 12;
 
         var all_files_filter = new Gtk.FileFilter ();
-        all_files_filter.set_filter_name (StringPot.All_Files);
+        all_files_filter.set_filter_name (_("All Files"));
         all_files_filter.add_pattern ("*");
 
         var video_filter = new Gtk.FileFilter ();
-        video_filter.set_filter_name (StringPot.Audio_Video);
+        video_filter.set_filter_name (_("Audio Video"));
         video_filter.add_mime_type ("video/*");
         video_filter.add_mime_type ("audio/*");
 
         var image_filter = new Gtk.FileFilter ();
-        image_filter.set_filter_name (StringPot.Image);
+        image_filter.set_filter_name (_("Image"));
         image_filter.add_mime_type ("image/*");
+
+        var text_filter = new Gtk.FileFilter ();
+        text_filter.set_filter_name (_("Text"));
+        text_filter.add_mime_type ("text/*");
 
         var label = new Gtk.Label (null);
         label.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
@@ -909,11 +913,18 @@ namespace niki {
         grid.add (label_chanel);
         grid.add (label_duration);
         grid.show_all ();
-        if (av) {
-            file.add_filter (video_filter);
-        } else {
-            file.add_filter (image_filter);
+        switch (count) {
+            case 1:
+                file.add_filter (video_filter);
+                break;
+            case 2:
+                file.add_filter (image_filter);
+                break;
+            case 3:
+                file.add_filter (text_filter);
+                break;
         }
+
         file.add_filter (all_files_filter);
         file.set_preview_widget (grid);
         file.set_preview_widget_active (false);

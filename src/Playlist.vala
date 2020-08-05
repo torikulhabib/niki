@@ -52,55 +52,55 @@ namespace niki {
 
             menu = new Gtk.Menu ();
             var playing = new Gtk.MenuItem ();
-            playing.add (new MenuLabel ("media-playback-start-symbolic", StringPot.Play));
+            playing.add (new MenuLabel ("media-playback-start-symbolic", _("Play")));
             playing.activate.connect (() => {
                 send_iter_to (selected_iter ());
             });
             var from_list = new Gtk.MenuItem ();
-            from_list.add (new MenuLabel ("list-remove-symbolic", StringPot.Remove_Playlist));
+            from_list.add (new MenuLabel ("list-remove-symbolic", _("Remove from Playlist")));
             from_list.activate.connect (() => {
                 remove_iter ();
             });
             var from_device = new Gtk.MenuItem ();
-            from_device.add (new MenuLabel ("edit-delete-symbolic", StringPot.Remove_Device));
+            from_device.add (new MenuLabel ("edit-delete-symbolic", _("Remove from Device")));
             from_device.activate.connect (() => {
                 create_dialog (selected_iter ());
             });
             var info_details = new Gtk.MenuItem ();
-            info_details.add (new MenuLabel ("tag-symbolic", StringPot.Details));
+            info_details.add (new MenuLabel ("tag-symbolic", _("Details")));
             info_details.activate.connect (edit_info);
 
             var save_to = new Gtk.MenuItem ();
-            save_to.add (new MenuLabel ("drive-harddisk-symbolic", StringPot.Save_MyComputer));
+            save_to.add (new MenuLabel ("drive-harddisk-symbolic", _("Save to MyComputer")));
             save_to.activate.connect (() => {
                 save_to_computer (selected_iter ());
             });
 
             var menu_sub = new Gtk.MenuItem ();
-            menu_sub.add (new MenuLabel ("go-jump-symbolic", StringPot.Sort_by));
+            menu_sub.add (new MenuLabel ("go-jump-symbolic", _("Sort By")));
 
             var title_short = new Gtk.MenuItem ();
-            var sub_tit = new MenuLabelRadio ("com.github.torikulhabib.niki.title-symbolic", StringPot.Title);
+            var sub_tit = new MenuLabelRadio ("com.github.torikulhabib.niki.title-symbolic", _("Title"));
             title_short.add (sub_tit);
             title_short.activate.connect (() => {
                 NikiApp.settings.set_int ("sort-by", 0);
             });
             var artist_short = new Gtk.MenuItem ();
-            var sub_art = new MenuLabelRadio ("avatar-default-symbolic", StringPot.Artist);
+            var sub_art = new MenuLabelRadio ("avatar-default-symbolic", _("Artist"));
             artist_short.add (sub_art);
             artist_short.activate.connect (() => {
                 NikiApp.settings.set_int ("sort-by", 1);
             });
 
             var album_short = new Gtk.MenuItem ();
-            var sub_alb = new MenuLabelRadio ("media-optical-symbolic", StringPot.Album);
+            var sub_alb = new MenuLabelRadio ("media-optical-symbolic", _("Album"));
             album_short.add (sub_alb);
             album_short.activate.connect (() => {
                 NikiApp.settings.set_int ("sort-by", 2);
             });
 
             var costum_short = new Gtk.MenuItem ();
-            var sub_cus = new MenuLabelRadio ("insert-object-symbolic", StringPot.Custom);
+            var sub_cus = new MenuLabelRadio ("insert-object-symbolic", _("Custom"));
             costum_short.add (sub_cus);
             costum_short.activate.connect (() => {
                 NikiApp.settings.set_int ("sort-by", 3);
@@ -110,14 +110,14 @@ namespace niki {
             spart_short.add (new Gtk.Separator (Gtk.Orientation.HORIZONTAL));
 
             var ascending_short = new Gtk.MenuItem ();
-            var sub_asc = new MenuLabelRadio ("view-sort-descending-symbolic", StringPot.Ascending);
+            var sub_asc = new MenuLabelRadio ("view-sort-descending-symbolic", _("Ascending"));
             ascending_short.add (sub_asc);
             ascending_short.activate.connect (() => {
                 NikiApp.settings.set_boolean("ascen-descen", true);
             });
 
             var descending_short = new Gtk.MenuItem ();
-            var sub_des = new MenuLabelRadio ("view-sort-ascending-symbolic", StringPot.Descending);
+            var sub_des = new MenuLabelRadio ("view-sort-ascending-symbolic", _("Descending"));
             descending_short.add (sub_des);
             descending_short.activate.connect (() => {
                 NikiApp.settings.set_boolean("ascen-descen", false);
@@ -277,9 +277,9 @@ namespace niki {
             if (file_name == NikiApp.window.player_page.playback.uri) {
                 return;
             }
-            var message_dialog = new MessageDialog.with_image_from_icon_name (StringPot.Are_Sure_Remove, StringPot.Are_Sure, File.new_for_uri (file_name).get_path (), "user-trash");
-            var move_trash = new Gtk.Button.with_label (StringPot.Move_Trash);
-            var delete_permanent = new Gtk.Button.with_label (StringPot.Delete_Permanent);
+            var message_dialog = new MessageDialog.with_image_from_icon_name (_("Do you really want to remove this from device?"), _("This will remove the file from your playlist and from any device."), File.new_for_uri (file_name).get_path (), "user-trash");
+            var move_trash = new Gtk.Button.with_label (_("Move Trash"));
+            var delete_permanent = new Gtk.Button.with_label (_("Delete Permanent"));
             move_trash.get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
             delete_permanent.get_style_context ().add_class (Gtk.STYLE_CLASS_DESTRUCTIVE_ACTION);
             move_trash.show_all ();
@@ -293,7 +293,7 @@ namespace niki {
                 liststore.remove (ref iter_select);
             });
             message_dialog.add_action_widget (move_trash, 0);
-            message_dialog.add_button (StringPot.Close, Gtk.ButtonsType.CANCEL);
+            message_dialog.add_button (_("Close"), Gtk.ButtonsType.CANCEL);
             message_dialog.add_action_widget (delete_permanent, 0);
             message_dialog.run ();
             message_dialog.show_all ();

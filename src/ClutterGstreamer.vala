@@ -97,8 +97,8 @@ namespace niki {
                         unowned GLib.Value? mag = Gst.ValueList.get_value (vals, cpt);
                         if (mag != null) {
                             audiomix.m_magnitudes[cpt] = (float)mag;
-                            updated ();
                         }
+                        updated ();
                     }
                 }
             }

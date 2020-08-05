@@ -94,7 +94,7 @@ namespace niki {
             });
             close_botton = new Gtk.Button.from_icon_name ("window-close-symbolic", Gtk.IconSize.BUTTON);
             close_botton.focus_on_click = false;
-            close_botton.tooltip_text = StringPot.Close;
+            close_botton.tooltip_text = _("Close");
             close_botton.get_style_context ().add_class ("button_action");
             close_botton.clicked.connect (() => {
                 destroy_mode ();
@@ -102,7 +102,7 @@ namespace niki {
             var list_button = new Gtk.Button.from_icon_name ("playlist-queue-symbolic", Gtk.IconSize.BUTTON);
             list_button.focus_on_click = false;
             list_button.get_style_context ().add_class ("button_action");
-            list_button.tooltip_text = StringPot.Home;
+            list_button.tooltip_text = _("Home");
             list_button.clicked.connect (() => {
                 playerpage.visible_child_name = "listview";
                 playerpage.mouse_blank ();
@@ -113,7 +113,7 @@ namespace niki {
             var home_button = new Gtk.Button.from_icon_name ("go-home-symbolic", Gtk.IconSize.BUTTON);
             home_button.focus_on_click = false;
             home_button.get_style_context ().add_class ("button_action");
-            home_button.tooltip_text = StringPot.Home;
+            home_button.tooltip_text = _("Home");
             home_button.clicked.connect (() => {
                 playerpage.home_open ();
             });
@@ -239,14 +239,14 @@ namespace niki {
         }
         private void info_button () {
             ((Gtk.Image) info_option.image).icon_name = !NikiApp.settings.get_boolean ("information-button")? (!NikiApp.settings.get_boolean ("audio-video")? "com.github.torikulhabib.niki.info.title-symbolic" : "avatar-default-symbolic"): "com.github.torikulhabib.niki.info-hide-symbolic";
-            info_option.tooltip_text = !NikiApp.settings.get_boolean ("information-button")? StringPot.Show : StringPot.Hide;
+            info_option.tooltip_text = !NikiApp.settings.get_boolean ("information-button")? _("Show") : _("Hide");
         }
 
         private void label_my_app () {
             if (NikiApp.settings.get_boolean ("audio-video")) {
-                my_app.label = @"$(Markup.escape_text (NikiApp.settings.get_string ("title-playing"))) <b> $(StringPot.Artist) </b> $(Markup.escape_text (NikiApp.settings.get_string ("artist-music"))) <b> $(StringPot.Album) </b> <i>$(Markup.escape_text (NikiApp.settings.get_string ("album-music")))</i>";
+                my_app.label = @"$(Markup.escape_text (NikiApp.settings.get_string ("title-playing"))) <b> $(_("Artist")) </b> $(Markup.escape_text (NikiApp.settings.get_string ("artist-music"))) <b> $(_("Album")) </b> <i>$(Markup.escape_text (NikiApp.settings.get_string ("album-music")))</i>";
             } else {
-                my_app.label = StringPot.Niki_Video;
+                my_app.label = _("Niki Video");
             }
         }
         private void stack_fulscreen () {
@@ -259,7 +259,7 @@ namespace niki {
         }
         private void maximized_button () {
             ((Gtk.Image) maximize_button.image).icon_name = NikiApp.settings.get_boolean ("maximize")? "com.github.torikulhabib.niki.maximize-symbolic" : "com.github.torikulhabib.niki.restore-symbolic";
-            maximize_button.tooltip_text = NikiApp.settings.get_boolean ("maximize")? StringPot.Maximize : StringPot.Unmaximize;
+            maximize_button.tooltip_text = NikiApp.settings.get_boolean ("maximize")? _("Maximize") : _("Unmaximize");
         }
 
         public void reveal_control () {

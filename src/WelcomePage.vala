@@ -56,12 +56,12 @@ namespace niki {
             scanfolder = new ScanFolder ();
             getlink = new GetLink ();
             infobar = new InfoBar ();
-            title_label = new Gtk.Label (StringPot.Select_Menu);
+            title_label = new Gtk.Label (_("Select Menu"));
             title_label.justify = Gtk.Justification.CENTER;
             title_label.hexpand = true;
             title_label.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
 
-            subtitle_label = new Gtk.Label (StringPot.DND_Home);
+            subtitle_label = new Gtk.Label (_("Drag Url, files or Select a source to playing."));
             subtitle_label.get_style_context ().add_class (Gtk.STYLE_CLASS_DIM_LABEL);
             subtitle_label.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
             subtitle_label.justify = Gtk.Justification.CENTER;
@@ -72,17 +72,17 @@ namespace niki {
 
             welcome_rigth = new Welcome ();
             welcome_rigth.focus_on_click = false;
-            welcome_rigth.append ("applications-multimedia", StringPot.Open_File, StringPot.Open_File);
-            welcome_rigth.append ("edit-paste", StringPot.Paste_URL, StringPot.Play_Stream);
-            welcome_rigth.append ("document-open", StringPot.Open_Folder, StringPot.Open_Folder);
-            welcome_rigth.append ("camera-photo", StringPot.Open_Camera, StringPot.Camera_Device);
+            welcome_rigth.append ("applications-multimedia", _("Open File"), _("Open File"));
+            welcome_rigth.append ("edit-paste", _("Paste URL"), _("Play Stream"));
+            welcome_rigth.append ("document-open", _("Open Folder"), _("Open Folder"));
+            welcome_rigth.append ("camera-photo", _("Open Camera"), _("Camera Device"));
 
             welcome_left = new Welcome ();
             welcome_left.focus_on_click = false;
-            welcome_left.append ("folder-videos", StringPot.Browse_Library, StringPot.Movie_Library);
-            welcome_left.append ("folder-music", StringPot.Browse_Library, StringPot.Music_Library);
-            welcome_left.append ("folder-remote", StringPot.Browse_Library, StringPot.DLNA_Library);
-            welcome_left.append ("media-optical", StringPot.Browse_Library, StringPot.Optical_Library);
+            welcome_left.append ("folder-videos", _("Browse Library"), _("Movie Library"));
+            welcome_left.append ("folder-music", _("Browse Library"), _("Music Library"));
+            welcome_left.append ("folder-remote", _("Browse Library"), _("DLNA Library"));
+            welcome_left.append ("media-optical", _("Browse Library"), _("Optical Library"));
 
             var grid_home = new Gtk.Grid ();
             grid_home.get_style_context ().add_class ("widget_background");
@@ -108,8 +108,8 @@ namespace niki {
             frame.add (dlna_scrolled);
 
             var welcome_drive = new Welcome ();
-            welcome_drive.append ("media-optical", StringPot.Browse, StringPot.DVD);
-            welcome_drive.append ("media-optical", StringPot.Browse, StringPot.Audio_Cd);
+            welcome_drive.append ("media-optical", _("Browse"), _("DVD"));
+            welcome_drive.append ("media-optical", _("Browse"), _("ACD"));
             welcome_drive.valign = Gtk.Align.CENTER;
             welcome_drive.get_style_context ().add_class ("widget_background");
             welcome_drive.margin_bottom = 30;
@@ -207,7 +207,7 @@ namespace niki {
             welcome_rigth.activated.connect ((index) => {
                 switch (index) {
                     case 0:
-                        var file = run_open_file (NikiApp.window);
+                        var file = run_open_file (NikiApp.window, true, 1);
                         if (file != null) {
                             NikiApp.window.open_files (file, true, true);
                         }
@@ -273,7 +273,7 @@ namespace niki {
         private async void read_dvd () {
             var dvdanager = new DVDManager ().instance;
             if (!dvdanager.has_media_volumes ()) {
-                infobar.title = StringPot.Disk_Empty;
+                infobar.title = _("Disk Empty");
                 infobar.send_notification ();
                 return;
             }
@@ -297,7 +297,7 @@ namespace niki {
         private void read_acd () {
             var acdmanager = new ACDManager ().instance;
             if (!acdmanager.has_media_volumes ()) {
-                infobar.title = StringPot.Disk_Empty;
+                infobar.title = _("Disk Empty");
                 infobar.send_notification ();
                 return;
             }

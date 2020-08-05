@@ -41,12 +41,12 @@ namespace niki {
             bus.message.connect (bus_msg_handler);
             monitor.set_show_all_devices (true);
             monitor.get_devices ().foreach (device_added);
-            var title_label = new Gtk.Label (StringPot.No_Device);
+            var title_label = new Gtk.Label (_("No Device"));
             title_label.justify = Gtk.Justification.CENTER;
             title_label.hexpand = true;
             title_label.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
 
-            var subtitle_label = new Gtk.Label (StringPot.Plug_And_Play);
+            var subtitle_label = new Gtk.Label (_("Plug And Play"));
             subtitle_label.get_style_context ().add_class (Gtk.STYLE_CLASS_DIM_LABEL);
             subtitle_label.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
             subtitle_label.justify = Gtk.Justification.CENTER;
@@ -70,7 +70,7 @@ namespace niki {
         }
         public void start_init () {
             if (!monitor.start ()) {
-                notify_app (StringPot.Niki_Camera, StringPot.Failed_device_monitor);
+                notify_app (_("Niki Camera"), _("Failed Device Monitor"));
             }
             monitor.get_devices ().foreach (device_added);
             devibut.show_all ();

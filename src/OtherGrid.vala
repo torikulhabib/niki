@@ -22,16 +22,16 @@
 namespace niki {
     public class OtherGrid : Gtk.Grid {
         private Gtk.Grid combox_container;
-        private const string [] SETTINGALL = { StringPot.Video_Flip, StringPot.Video_Render, StringPot.Color_Effects, StringPot.Audio_Render, StringPot.Audio_Visualisation, StringPot.Visualisation_Mode, StringPot.Visualisation_Shader, StringPot.Visualisation_Amount};
-        private const string [] FLIPVIDEO = {StringPot.NNone, StringPot.Rotate_90_Right, StringPot.Rotate_180, StringPot.Rotate_90_Left, StringPot.Flip_Horizontal, StringPot.Flip_Vertical, StringPot.Across_Upper_Left, StringPot.Across_Upper_Right, StringPot.Automatic};
+        private const string [] SETTINGALL = {"Video Flip","Video Render","Color Effects","Audio Render","Audio Visualisation","Visualisation Mode","Visualisation Shader","Visualisation Amount"};
+        private const string [] FLIPVIDEO = {"None","Rotate 90 Right","Rotate 180","Rotate 90 Left","Flip_Horizontal","Flip Vertical","Across Upper Left","Across Upper Right","Automatic"};
         private const string [] FLIPVIDEO_ICON = {"system-shutdown-symbolic", "object-rotate-right-symbolic", "com.github.torikulhabib.niki.refresh-180-symbolic", "object-rotate-left-symbolic", "object-flip-horizontal-symbolic", "object-flip-vertical-symbolic", "com.github.torikulhabib.niki.refresh-left-symbolic", "com.github.torikulhabib.niki.refresh-right-symbolic", "com.github.torikulhabib.niki.auto-symbolic"};
-        private const string [] VISUALISATION = {StringPot.OFF, StringPot.ON};
+        private const string [] VISUALISATION = {"OFF","ON"};
         private const string [] VISUALISATION_ICON = {"system-shutdown-symbolic", "video-x-generic-symbolic"};
-        private const string [] VISUALMODE = {StringPot.Goom, StringPot.Goom2k1, StringPot.Monoscope};
-        private const string [] SHADER = {StringPot.NNone, StringPot.Fade, StringPot.Fade_Move_Up, StringPot.Fade_Move_Down, StringPot.Fade_Move_Left, StringPot.Fade_Move_Right, StringPot.Fade_Vertical_Out, StringPot.Fade_Vertical_In};
+        private const string [] VISUALMODE = {"GOOM","GOOM 2","MONOSCOPE"};
+        private const string [] SHADER = {"None","Fade","Fade Move UP","Fade Move Down","Fade Move Left","Fade Move Right","Fade Vertical Out","Fade Vertical In"};
         private const string [] VIDEORENDER = {"Auto Videosink", "Vaapisink", "Ximagesink", "Xvimagesink"};
-        private const string [] AUDIORENDER = {StringPot.Auto_Audiosink, StringPot.Alsasink, StringPot.Pulsesink};
-        private const string [] COLOREFFECTS = {StringPot.NNone, StringPot.Heat, StringPot.Sepia, StringPot.Xray, StringPot.Xpro, StringPot.Yellow_Blue};
+        private const string [] AUDIORENDER = {"Auto Audiosink","Alsasink","Pulsesink"};
+        private const string [] COLOREFFECTS = {"None","Heat","Sepia","X-Ray","X-Pro","Yellow Blue"};
 
         construct {
             valign = Gtk.Align.END;
@@ -50,7 +50,7 @@ namespace niki {
                 number_entry.get_style_context ().add_class ("spinbut");
 
                 switch (setingall) {
-                    case StringPot.Video_Flip:
+                    case "Video Flip":
                         int i = 0;
                         foreach (string flipvideo in FLIPVIDEO) {
                             settingcombox.appending (FLIPVIDEO_ICON [i], flipvideo);
@@ -58,7 +58,7 @@ namespace niki {
                         }
                         NikiApp.settings.bind ("flip-options", settingcombox, "active", GLib.SettingsBindFlags.DEFAULT);
                         break;
-                    case StringPot.Video_Render:
+                    case "Video Render":
                         settingcombox.tooltip_text = "Need Restart niki";
                         int i = 0;
                         foreach (string videorender in VIDEORENDER) {
@@ -67,7 +67,7 @@ namespace niki {
                         }
                         NikiApp.settings.bind ("videorender-options", settingcombox, "active", GLib.SettingsBindFlags.DEFAULT);
                         break;
-                    case StringPot.Color_Effects:
+                    case "Color Effects":
                         int i = 0;
                         foreach (string color_effect in COLOREFFECTS) {
                             settingcombox.appending (COLOREFFECTS [i] == COLOREFFECTS [0]? "system-shutdown-symbolic" : "com.github.torikulhabib.niki.color-symbolic", color_effect);
@@ -75,7 +75,7 @@ namespace niki {
                         }
                         NikiApp.settings.bind ("coloreffects-options", settingcombox, "active", GLib.SettingsBindFlags.DEFAULT);
                         break;
-                    case StringPot.Audio_Render:
+                    case "Audio Render":
                         settingcombox.tooltip_text = "Need Restart niki";
                         int i = 0;
                         foreach (string audiorender in AUDIORENDER) {
@@ -84,7 +84,7 @@ namespace niki {
                         }
                         NikiApp.settings.bind ("audiorender-options", settingcombox, "active", GLib.SettingsBindFlags.DEFAULT);
                         break;
-                    case StringPot.Audio_Visualisation:
+                    case "Audio Visualisation":
                         int i = 0;
                         foreach (string visualisation in VISUALISATION) {
                             settingcombox.appending (VISUALISATION_ICON[i], visualisation);
@@ -92,7 +92,7 @@ namespace niki {
                         }
                         NikiApp.settings.bind ("visualisation-options", settingcombox, "active", GLib.SettingsBindFlags.DEFAULT);
                         break;
-                    case StringPot.Visualisation_Mode:
+                    case "Visualisation Mode":
                         foreach (string visualmode in VISUALMODE) {
                             settingcombox.appending ("emblem-photos-symbolic", visualmode);
                         }
@@ -102,7 +102,7 @@ namespace niki {
                         });
                         settingcombox.sensitive = NikiApp.settings.get_int ("visualisation-options") == 0? false : true;
                         break;
-                    case StringPot.Visualisation_Shader:
+                    case "Visualisation Shader":
                         int i = 0;
                         foreach (string shader in SHADER) {
                             settingcombox.appending (i < 1? "system-shutdown-symbolic" : "insert-object-symbolic", shader);
@@ -117,7 +117,7 @@ namespace niki {
                         });
                         settingcombox.sensitive = NikiApp.settings.get_int ("visualisation-options") == 0 || VISUALMODE [NikiApp.settings.get_int ("visualmode-options")] == VISUALMODE [6] ? false : true;
                         break;
-                    case StringPot.Visualisation_Amount:
+                    case "Visualisation Amount":
                         number_entry.hexpand = true;
                         number_entry.value = NikiApp.settings.get_int ("amount-entry");
 		                number_entry.value_changed.connect (() => {
@@ -140,7 +140,7 @@ namespace niki {
                 holder.column_homogeneous = true;
                 holder.row_spacing = 6;
                 holder.add (label);
-                if (setingall == StringPot.Visualisation_Amount) {
+                if (setingall == "Visualisation Amount") {
                     holder.add (number_entry);
                 } else {
                     holder.add (settingcombox);

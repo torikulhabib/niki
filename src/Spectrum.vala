@@ -95,8 +95,7 @@ namespace niki {
             return def / 100.0;
         }
 
-        private new double @get (int in_index)
-            requires (in_index >= 0 && in_index < m_magnitudes.length) {
+        private new double @get (int in_index) requires (in_index >= 0 && in_index < m_magnitudes.length) {
             return iec_scale (c_offset + m_magnitudes[in_index]);
         }
         private Gtk.DrawingArea level_music (Spectrum spectrum, int m_band) {

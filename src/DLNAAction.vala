@@ -59,7 +59,7 @@ namespace niki {
             set {
                 _playing = value;
                 ((Gtk.Image) play_button.image).icon_name = value? "media-playback-pause-symbolic" : "media-playback-start-symbolic";
-                play_button.tooltip_text = value? StringPot.Pause : StringPot.Play;
+                play_button.tooltip_text = value? _("Pause") : _("Play");
             }
         }
 
@@ -71,7 +71,7 @@ namespace niki {
             events |= Gdk.EventMask.ENTER_NOTIFY_MASK;
 
             stop_revealer = new ButtonRevealer ("media-playback-stop-symbolic");
-            stop_revealer.tooltip_text = StringPot.Stop;
+            stop_revealer.tooltip_text = _("Stop");
             stop_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
             stop_revealer.transition_duration = 500;
             stop_revealer.clicked.connect (() => {
@@ -84,12 +84,12 @@ namespace niki {
             });
 
             previous_button = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.previous-symbolic", Gtk.IconSize.BUTTON);
-            previous_button.tooltip_text = StringPot.Previous;
+            previous_button.tooltip_text = _("Previous");
             previous_button.clicked.connect (() => {
                 welcompage.treview.previous_signal ();
             });
             next_button = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.next-symbolic", Gtk.IconSize.BUTTON);
-            next_button.tooltip_text = StringPot.Next;
+            next_button.tooltip_text = _("Next");
             next_button.clicked.connect (() => {
                 welcompage.dlnarendercontrol.next_media ();
             });
@@ -98,7 +98,7 @@ namespace niki {
                 NikiApp.settings.set_boolean ("dlna-muted", !NikiApp.settings.get_boolean ("dlna-muted"));
             });
             var clear_button = new Gtk.Button.from_icon_name ("view-refresh-symbolic", Gtk.IconSize.BUTTON);
-            clear_button.tooltip_text = StringPot.Reload;
+            clear_button.tooltip_text = _("Reload");
             clear_button.clicked.connect (() => {
                 welcompage.dlnarendercontrol.clear_selected_renderer_state ();
             });

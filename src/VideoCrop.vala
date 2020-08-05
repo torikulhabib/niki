@@ -26,8 +26,8 @@ namespace niki {
         public VideoCrop (PlayerPage playerpage) {
             Object (
                 text_image: "image-crop",
-                primary_text: StringPot.Video_Crop,
-                secondary_text: StringPot.Choose_Crop,
+                primary_text: _("Video Crop"),
+                secondary_text: _("Choose the part of the video to crop."),
                 selectable_text: false,
                 deletable: false,
                 resizable: false,
@@ -37,10 +37,10 @@ namespace niki {
                 window_position: Gtk.WindowPosition.CENTER_ON_PARENT
             );
             this.playerpage = playerpage;
-            var top_label = new LabelSpin (StringPot.Top, playerpage.video_height / 2);
-            var bottom_label = new LabelSpin (StringPot.Bottom, playerpage.video_height / 2);
-            var left_label = new LabelSpin (StringPot.Left, playerpage.video_width / 2);
-            var right_label = new LabelSpin (StringPot.Right, playerpage.video_width / 2);
+            var top_label = new LabelSpin (_("Top"), playerpage.video_height / 2);
+            var bottom_label = new LabelSpin (_("Bottom"), playerpage.video_height / 2);
+            var left_label = new LabelSpin (_("Left"), playerpage.video_width / 2);
+            var right_label = new LabelSpin (_("Right"), playerpage.video_width / 2);
 
             var frame = new Gtk.Grid ();
             frame.orientation = Gtk.Orientation.VERTICAL;
@@ -54,8 +54,8 @@ namespace niki {
             custom_bin.add (frame);
             custom_bin.set_size_request (300, 150);
             show_all ();
-            add_button (StringPot.Close, Gtk.ResponseType.CLOSE);
-            var button_change = add_button (StringPot.Set_Crop, Gtk.ResponseType.OK);
+            add_button (_("Close"), Gtk.ResponseType.CLOSE);
+            var button_change = add_button (_("Set Crop"), Gtk.ResponseType.OK);
             button_change.has_default = true;
             button_change.get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
             int top_value, bottom_value, left_value, right_value;

@@ -23,11 +23,8 @@ namespace niki {
     public class SeekBar : Gtk.Grid {
         public PreviewPopover? preview_popover;
         private Gtk.Scale scale;
-        private Gee.HashMap<string, string> string_lyric;
         private Gee.HashMap<string, int> sc_lyric;
         public Lyric? lyric;
-        private string current_lyric;
-        private string next_lyric_end;
         private string duration_string;
         public string duration_n_progress;
 
@@ -134,12 +131,10 @@ namespace niki {
             this.lyric = lyric;
             int count = 0;
 		    List<string> list_lyric = new List<string> ();
-            string_lyric = new Gee.HashMap<string, string> ();
             sc_lyric = new Gee.HashMap<string, int> ();
             lyric.foreach ((item) => {
                 list_lyric.append (item.value);
                 sc_lyric[item.key.to_string ()] = count;
-                string_lyric[item.key.to_string ()] = item.value;
                 count++;
                 return true;
             });
@@ -147,21 +142,21 @@ namespace niki {
                 playerpage.menu_actor.add_child (playerpage.text_clutter (@" $(lyric_sc) "));
             }
         }
-        public string get_lyric_now () {
-            return current_lyric;
-        }
-        public string get_lyric_next () {
-            return next_lyric_end;
-        }
 
         public void start (PlayerPage playerpage) {
             if (NikiApp.settings.get_boolean("lyric-available") && NikiApp.settings.get_boolean("audio-video")) {
                 if (playerpage.playback.playing && lyric.is_map_valid ()) {
                     var seconds_time = ((int64)(playerpage.playback.get_position () * 1000000));
-                    current_lyric = @" $(string_lyric[lyric.get_lyric_timestamp (seconds_time).to_string ()]) ";
-                    playerpage.scroll_actor (sc_lyric[lyric.get_lyric_timestamp (seconds_time).to_string ()]);
-                    string next_lyric = @" $(string_lyric[lyric.get_lyric_timestamp (seconds_time, false).to_string ()]) ";
-                    next_lyric_end = next_lyric.contains (current_lyric)? "" : next_lyric;
+                    int currentline = sc_lyric[lyric.get_lyric_timestamp (seconds_time, true).to_string ()];
+                    int nextline = sc_lyric[lyric.get_lyric_timestamp (seconds_time, false).to_string ()];
+                    if (NikiApp.settings.get_boolean ("information-button")) {
+                        playerpage.first_lyric.text = currentline % 2 == 0? lyric.is_map_prev () && nextline != currentline? playerpage.scroll_actor (nextline) : "" : playerpage.scroll_actor (currentline);
+                        playerpage.seconds_lyric.text = currentline % 2 == 0? playerpage.scroll_actor (currentline) : nextline != currentline? playerpage.scroll_actor (nextline) : "";
+                        playerpage.first_lyric.color = currentline % 2 == 0? Clutter.Color.from_string ("white") : Clutter.Color.from_string ("orange");
+                        playerpage.seconds_lyric.color = currentline % 2 == 0? Clutter.Color.from_string ("orange") : Clutter.Color.from_string ("white");
+                    } else {
+                        playerpage.scroll_actor (currentline);
+                    }
                 }
             }
         }

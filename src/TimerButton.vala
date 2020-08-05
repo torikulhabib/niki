@@ -66,7 +66,7 @@ namespace niki {
             }
 
             timer_label.label = text_in;
-            tooltip_text = NikiApp.settings.get_enum ("camera-delay") != CameraDelay.DISABLED? StringPot.Timer + text_in : StringPot.Timer_Disabled;
+            tooltip_text = NikiApp.settings.get_enum ("camera-delay") != CameraDelay.DISABLED? _("Timer ") + text_in : _("Timer Disabled");
             label_revealer.reveal_child = NikiApp.settings.get_enum ("camera-delay") != CameraDelay.DISABLED? true : false;
         }
     }

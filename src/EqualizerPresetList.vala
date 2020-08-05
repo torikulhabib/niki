@@ -26,8 +26,8 @@ namespace niki {
         public EqualizerPreset? equalizer_preset;
         private Gtk.ListStore store;
         private const string SEPARATOR_NAME = "<separator_item_unique_name>";
-        private static string OFF_MODE = StringPot.OFF;
-        private static string DELETE_PRESET = StringPot.Delete_Current;
+        private static string OFF_MODE = _("OFF");
+        private static string DELETE_PRESET = _("Delete Current");
         private int ncustompresets {get; set;}
         private bool modifying_list;
 
@@ -50,7 +50,7 @@ namespace niki {
 		    pack_start (cell, false);
 		    set_attributes (cell_pb, "gicon", 2);
 		    set_attributes (cell, "text", 1);
-            changed.connect (list_selection_change);
+            changed.connect (selection_change);
             show_all ();
             store.clear ();
 
@@ -100,7 +100,6 @@ namespace niki {
         }
         public void remove_current_preset () {
             modifying_list = true;
-
             Gtk.TreeIter iter;
             for (int i = 0; store.get_iter_from_string (out iter, i.to_string ()); ++i) {
                 GLib.Object objets;
@@ -121,18 +120,34 @@ namespace niki {
             modifying_list = false;
             select_delete_preset ();
         }
-
-        public virtual void list_selection_change () {
+        public void keyboard_press () {
+            Gtk.TreeIter iter;
+            get_active_iter (out iter);
+            model.iter_next (ref iter);
+            if (store.iter_is_valid (iter)) {
+                string option;
+                store.get (iter, ComboColumns.STRING, out option);
+                if (option == SEPARATOR_NAME) {
+                    set_active (get_active () + 2);
+                } else {
+                    set_active_iter (iter);
+                }
+            } else {
+                set_active (0);
+            }
+        }
+        public void selection_change () {
             if (!NikiApp.settingsEq.get_boolean ("equalizer-enabled")) {
                 NikiApp.settingsEq.set_boolean ("equalizer-enabled", true);
             }
             if (modifying_list) {
                 return;
             }
-
             Gtk.TreeIter it;
             get_active_iter (out it);
-
+            selected_iters (it);
+        }
+        private void selected_iters (Gtk.TreeIter it) {
             GLib.Object objets;
             store.get (it, ComboColumns.OBJECT, out objets);
             if (objets != null && objets is EqualizerPreset) {
@@ -148,7 +163,6 @@ namespace niki {
 
             string option;
             store.get (it, ComboColumns.STRING, out option);
-
             if (option == OFF_MODE) {
                 NikiApp.settingsEq.set_boolean ("equalizer-enabled", false);
                 remove_delete_option ();
@@ -180,10 +194,8 @@ namespace niki {
         public EqualizerPreset? get_selected_preset () {
             Gtk.TreeIter it;
             get_active_iter (out it);
-
             GLib.Object objets;
             store.get (it, ComboColumns.OBJECT, out objets);
-
             if (objets != null && objets is EqualizerPreset) {
                 return objets as EqualizerPreset;
             } else {
@@ -237,7 +249,6 @@ namespace niki {
         private void add_delete_preset_option () {
             bool already_added = false;
             Gtk.TreeIter last_iter, new_iter;
-
             for (int i = 0; store.get_iter_from_string (out last_iter, i.to_string ()); ++i) {
                 string text;
                 store.get (last_iter, ComboColumns.STRING, out text);

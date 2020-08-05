@@ -84,7 +84,7 @@ namespace niki {
                             }
                         }
 
-                        GLib.Timeout.add (content_av == 0? 30 : 215, () => {
+                        GLib.Timeout.add (content_av == 0? 15 : 215, () => {
                             circularprogressbar.percentage = count_pro / pers_to;
                             circularprogressbar.count_file = count;
                             string filename;

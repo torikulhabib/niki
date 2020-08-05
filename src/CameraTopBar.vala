@@ -87,7 +87,7 @@ namespace niki {
 
             close_botton = new Gtk.Button.from_icon_name ("window-close-symbolic", Gtk.IconSize.BUTTON);
             close_botton.focus_on_click = false;
-            close_botton.tooltip_text = StringPot.Close;
+            close_botton.tooltip_text = _("Close");
             close_botton.get_style_context ().add_class ("button_action");
             close_botton.clicked.connect (() => {
                 destroy_mode ();
@@ -96,7 +96,7 @@ namespace niki {
             var home_button = new Gtk.Button.from_icon_name ("go-home-symbolic", Gtk.IconSize.BUTTON);
             home_button.focus_on_click = false;
             home_button.get_style_context ().add_class ("button_action");
-            home_button.tooltip_text = StringPot.Home;
+            home_button.tooltip_text = _("Home");
             home_button.clicked.connect (() => {
                 NikiApp.window.main_stack.visible_child_name = "welcome";
 		        NikiApp.window.camera_page.cameraplayer.set_null ();
@@ -127,7 +127,7 @@ namespace niki {
             var reso_button = new Gtk.Button.from_icon_name ("preferences-desktop-display-symbolic", Gtk.IconSize.BUTTON);
             reso_button.focus_on_click = false;
             reso_button.get_style_context ().add_class ("button_action");
-            reso_button.tooltip_text = StringPot.Resolution;
+            reso_button.tooltip_text = _("Resolution");
             reso_button.clicked.connect (() => {
                 menu_revealer.reveal_child = !menu_revealer.reveal_child;
             });
@@ -136,7 +136,7 @@ namespace niki {
             my_app.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
             my_app.ellipsize = Pango.EllipsizeMode.END;
             my_app.use_markup = true;
-            my_app.label = StringPot.Niki_Camera;
+            my_app.label = _("Niki Camera");
             var main_actionbar = new Gtk.ActionBar ();
             main_actionbar.hexpand = true;
             main_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
@@ -180,7 +180,7 @@ namespace niki {
 
         private void maximized_button () {
             ((Gtk.Image) maximize_button.image).icon_name = NikiApp.settings.get_boolean ("maximize")? "com.github.torikulhabib.niki.maximize-symbolic" : "com.github.torikulhabib.niki.restore-symbolic";
-            maximize_button.tooltip_text = NikiApp.settings.get_boolean ("maximize")? StringPot.Maximize : StringPot.Unmaximize;
+            maximize_button.tooltip_text = NikiApp.settings.get_boolean ("maximize")? _("Maximize") : _("Unmaximize");
         }
     }
 }

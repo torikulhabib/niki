@@ -27,8 +27,8 @@ namespace niki {
         private Clutter.Actor cover_center;
         private Clutter.Text title_music;
         private Clutter.Text artist_music;
-        private Clutter.Text first_lyric;
-        private Clutter.Text seconds_lyric;
+        public Clutter.Text first_lyric;
+        public Clutter.Text seconds_lyric;
         private Clutter.Text notify_text;
         private Clutter.Image cover_img;
         private Clutter.Image oriimage;
@@ -129,7 +129,6 @@ namespace niki {
 
             first_lyric = new Clutter.Text ();
             first_lyric.ellipsize = Pango.EllipsizeMode.END;
-            first_lyric.color = Clutter.Color.from_string ("orange");
             first_lyric.background_color = Clutter.Color.from_string ("black") { alpha = 100 };
             first_lyric.line_alignment = Pango.Alignment.CENTER;
             first_lyric.single_line_mode = true;
@@ -138,7 +137,6 @@ namespace niki {
 
             seconds_lyric = new Clutter.Text ();
             seconds_lyric.ellipsize = Pango.EllipsizeMode.END;
-            seconds_lyric.color = Clutter.Color.from_string ("white");
             seconds_lyric.background_color = Clutter.Color.from_string ("black") { alpha = 100 };
             seconds_lyric.line_alignment = Pango.Alignment.CENTER;
             seconds_lyric.single_line_mode = true;
@@ -229,7 +227,7 @@ namespace niki {
 
                 if (event.button == Gdk.BUTTON_SECONDARY && !right_bar.hovered && !top_bar.hovered && !bottom_bar.hovered && visible_child_name != "listview") {
                     playback.playing = !playback.playing;
-                    string_notify (playback.playing? StringPot.Play : StringPot.Pause);
+                    string_notify (playback.playing? _("Play") : _("Pause"));
                 }
                 return Gdk.EVENT_PROPAGATE;
             });
@@ -258,7 +256,7 @@ namespace niki {
                         if (!right_bar.playlist.next ()) {
                             playback.playing = false;
                             ((Gtk.Image) bottom_bar.play_button.image).icon_name = "com.github.torikulhabib.niki.replay-symbolic";
-                            bottom_bar.play_button.tooltip_text = StringPot.Replay;
+                            bottom_bar.play_button.tooltip_text = _("Replay");
                             bottom_bar.stop_revealer.set_reveal_child (false);
                             bottom_bar.previous_revealer.set_reveal_child (false);
                             bottom_bar.next_revealer.set_reveal_child (false);
@@ -271,8 +269,6 @@ namespace niki {
             playback.notify["progress"].connect (() => {
                 if (playback.playing) {
                     if (NikiApp.settings.get_boolean("lyric-available") && NikiApp.settings.get_boolean("audio-video")) {
-                        first_lyric.text = bottom_bar.seekbar_widget.get_lyric_now ();
-                        seconds_lyric.text = bottom_bar.seekbar_widget.get_lyric_next ();
                         update_position_cover ();
                     }
                 }
@@ -287,7 +283,7 @@ namespace niki {
             NikiApp.settings.changed["status-muted"].connect (update_volume);
             NikiApp.settings.changed["fullscreen"].connect (() => {
                 if (!NikiApp.settings.get_boolean("fullscreen")) {
-                    string_notify (StringPot.Press_Esc);
+                    string_notify (_("Press ESC to exit full screen"));
                 } else {
                     notify_blank ();
                     if (notify_timer != 0) {
@@ -374,7 +370,7 @@ namespace niki {
             }
         }
         private void buffer_fill () {
-            string_notify (@"$(StringPot.Buffering)$(((int)(playback.get_buffer_fill () * 100)).to_string ())%" );
+            string_notify (@"$(_("Buffering"))$(((int)(playback.get_buffer_fill () * 100)).to_string ())%" );
         }
         public bool starting () {
             if (!playback.playing) {
@@ -421,7 +417,7 @@ namespace niki {
             right_bar.playlist.clear_items ();
             NikiApp.window.main_stack.visible_child_name = "welcome";
         }
-        public void scroll_actor (int index_in) {
+        public string scroll_actor (int index_in) {
             Clutter.Actor menu = scroll.get_first_child ();
             if (index_in > 0) {
                 seek_music ();
@@ -434,6 +430,7 @@ namespace niki {
             scroll.restore_easing_state ();
             ((Clutter.Text)item).color = Clutter.Color.from_string ("orange");
             ((GLib.Object)scroll).set_data ("selected-item", index_in.to_pointer ());
+            return ((Clutter.Text)item).text;
         }
 
         private void font_change () {
@@ -565,8 +562,10 @@ namespace niki {
 
         public void resize_player_page (Window window, int width, int height) {
             window.resize (width, height);
-            double aspect_max = ((double) width)/((double) height);
-            double limit = aspect_max > 1.5? (aspect_max < 1.9? 0.1977777777777777 : 0.3377777777777777) : 0.1033333333333337;
+            double widths = width / 2;
+            double heights = height / 2;
+            double aspect_max = widths / heights;
+            double limit = aspect_max > 1.5? (aspect_max < 1.9? 0.1977777777777777 : 0.3277777777777777) : 0.1033333333333337;
             geometry.min_aspect = aspect_max > 1? aspect_max - limit : aspect_max + limit;
             geometry.max_aspect = aspect_max > 1? aspect_max - limit : aspect_max + limit;
             window.set_geometry_hints (window, geometry, !NikiApp.settings.get_boolean("audio-video") && NikiApp.window.main_stack.visible_child_name == "player" && visible_child_name == "embed"? Gdk.WindowHints.ASPECT : Gdk.WindowHints.USER_SIZE);
@@ -637,22 +636,24 @@ namespace niki {
                 check_lr_sub ();
                 signal_playing ();
             } else {
-                if (get_mime_type (File.new_for_uri (uri)).has_prefix ("video/")) {
-                    if (playback.uri != null) {
+                if (playback.uri != null) {
+                    if (get_mime_type (File.new_for_uri (playback.uri)).has_prefix ("video/")) {
                         if (videos_file_exists (playback.uri)) {
                             insert_last_video (playback.uri, seconds_to_time ((int) (playback.progress * playback.duration)), playback.progress);
                             right_bar.playlist.update_progress_video (playback.uri, seconds_to_time ((int) (playback.progress * playback.duration)), seconds_to_time ((int) (playback.duration)));
                         }
                     }
-                    playback.uri = uri;
-                    playback.progress = lastplay_video (uri);
-                }
-                if (get_mime_type (File.new_for_uri (uri)).has_prefix ("audio/")) {
-                    if (playback.uri != null) {
+                    if (get_mime_type (File.new_for_uri (playback.uri)).has_prefix ("audio/")) {
                         if (music_file_exists (playback.uri)) {
                             insert_last_music (playback.uri, playback.progress);
                         }
                     }
+                }
+                if (get_mime_type (File.new_for_uri (uri)).has_prefix ("video/")) {
+                    playback.uri = uri;
+                    playback.progress = lastplay_video (uri);
+                }
+                if (get_mime_type (File.new_for_uri (uri)).has_prefix ("audio/")) {
                     playback.uri = uri;
                     playback.progress = lastplay_music (uri);
                 }

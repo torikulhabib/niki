@@ -5,8 +5,8 @@ namespace niki {
         public CameraPreset? camera_preset;
         private Gtk.ListStore store;
         private const string SEPARATOR_NAME = "<separator_item_unique_name>";
-        private static string OFF_MODE = StringPot.OFF;
-        private static string DELETE_PRESET = StringPot.Delete_Current;
+        private static string OFF_MODE = _("OFF");
+        private static string DELETE_PRESET = _("Delete Current");
         private int ncustompresets {get; set;}
         private bool modifying_list;
 

@@ -26,6 +26,7 @@ namespace niki {
         construct {
             store = new Gtk.ListStore (ComboIcon.N_COLUMNS, typeof (Icon), typeof (string));
             model = store;
+
 		    var cell = new Gtk.CellRendererText ();
 		    cell.ellipsize = Pango.EllipsizeMode.END;
 		    var cell_pb = new Gtk.CellRendererPixbuf ();

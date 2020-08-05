@@ -119,7 +119,7 @@ namespace niki {
             openimage.get_style_context ().add_class ("transparantbg");
             openimage.add (asyncimage);
             openimage.clicked.connect (()=> {
-                var file = run_open_file (this, false);
+                var file = run_open_file (this, false, 2);
                 if (file != null) {
                     select_image (file[0].get_path ());
                 }
@@ -160,21 +160,21 @@ namespace niki {
             grid.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             grid.expand = true;
             grid.margin_start = 10;
-            grid.attach (new HeaderLabel (StringPot.Cover, 200), 0, 0, 1, 1);
+            grid.attach (new HeaderLabel (_("Cover:"), 200), 0, 0, 1, 1);
             grid.attach (imagege_box, 0, 1, 1, 1);
-            grid.attach (new HeaderLabel (StringPot.NComment, 200), 1, 0, 1, 1);
+            grid.attach (new HeaderLabel (_("Comment:"), 200), 1, 0, 1, 1);
             grid.attach (comment_frame, 1, 1, 1, 1);
-            grid.attach (new HeaderLabel (StringPot.NTitle, 200), 0, 2, 1, 1);
+            grid.attach (new HeaderLabel (_("Tittle:"), 200), 0, 2, 1, 1);
             grid.attach (title_entry, 0, 3, 1, 1);
-            grid.attach (new HeaderLabel (StringPot.NArtist, 200), 1, 2, 1, 1);
+            grid.attach (new HeaderLabel (_("Artist:"), 200), 1, 2, 1, 1);
             grid.attach (artist_entry, 1, 3, 1, 1);
-            grid.attach (new HeaderLabel (StringPot.Album, 200), 0, 4, 1, 1);
+            grid.attach (new HeaderLabel (_("Album:"), 200), 0, 4, 1, 1);
             grid.attach (album_entry, 0, 5, 1, 1);
-            grid.attach (new HeaderLabel (StringPot.NGenre, 200), 1, 4, 1, 1);
+            grid.attach (new HeaderLabel (_("Genre:"), 200), 1, 4, 1, 1);
             grid.attach (genre_entry, 1, 5, 1, 1);
-            grid.attach (new HeaderLabel (StringPot.NTrack, 200), 0, 6, 1, 1);
+            grid.attach (new HeaderLabel (_("Track:"), 200), 0, 6, 1, 1);
             grid.attach (track_spinbutton, 0, 7, 1, 1);
-            grid.attach (new HeaderLabel (StringPot.NDate, 200), 1, 6, 1, 1);
+            grid.attach (new HeaderLabel (_("Date:"), 200), 1, 6, 1, 1);
             grid.attach (date_spinbutton, 1, 7, 1, 1);
 
             label_name = new Gtk.Label (null);
@@ -290,49 +290,49 @@ namespace niki {
             video_grid.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             video_grid.expand = true;
             video_grid.margin_start = 10;
-            video_grid.attach (new HeaderLabel ("Thumbnail:", 200), 0, 0, 1, 1);
+            video_grid.attach (new HeaderLabel (_("Thumbnail:"), 200), 0, 0, 1, 1);
             video_grid.attach (thumbnail, 0, 1, 1, 1);
-            video_grid.attach (new HeaderLabel ("Topology:", 200), 1, 0, 1, 1);
+            video_grid.attach (new HeaderLabel (_("Topology:"), 200), 1, 0, 1, 1);
             video_grid.attach (topology_box, 1, 1, 1, 1);
-            video_grid.attach (new HeaderLabel ("Duration:", 200), 0, 2, 1, 1);
+            video_grid.attach (new HeaderLabel (_("Duration:"), 200), 0, 2, 1, 1);
             video_grid.attach (duration_video, 0, 3, 1, 1);
-            video_grid.attach (new HeaderLabel ("Seekable:", 200), 1, 2, 1, 1);
+            video_grid.attach (new HeaderLabel (_("Seekable:"), 200), 1, 2, 1, 1);
             video_grid.attach (sekable_video, 1, 3, 1, 1);
-            video_grid.attach (new HeaderLabel ("Container format:", 200), 0, 4, 1, 1);
+            video_grid.attach (new HeaderLabel (_("Container Format:"), 200), 0, 4, 1, 1);
             video_grid.attach (container_format, 0, 5, 1, 1);
-            video_grid.attach (new HeaderLabel ("Date time:", 200), 1, 4, 1, 1);
+            video_grid.attach (new HeaderLabel (_("Date Time:"), 200), 1, 4, 1, 1);
             video_grid.attach (date_time_video, 1, 5, 1, 1);
-            video_grid.attach (new HeaderLabel ("Audio codec", 200), 0, 6, 1, 1);
+            video_grid.attach (new HeaderLabel (_("Audio Codec:"), 200), 0, 6, 1, 1);
             video_grid.attach (audio_codec, 0, 7, 1, 1);
-            video_grid.attach (new HeaderLabel ("Video codec:", 200), 1, 6, 1, 1);
+            video_grid.attach (new HeaderLabel (_("Video Codec:"), 200), 1, 6, 1, 1);
             video_grid.attach (video_codec, 1, 7, 1, 1);
-            video_grid.attach (new HeaderLabel ("Pixel aspect ratio:", 200), 0, 8, 1, 1);
+            video_grid.attach (new HeaderLabel (_("Pixel Aspect Ratio:"), 200), 0, 8, 1, 1);
             video_grid.attach (pixel_ratio, 0, 9, 1, 1);
-            video_grid.attach (new HeaderLabel ("Interlaced:", 200), 1, 8, 1, 1);
+            video_grid.attach (new HeaderLabel (_("Interlaced:"), 200), 1, 8, 1, 1);
             video_grid.attach (interlaced, 1, 9, 1, 1);
-            video_grid.attach (new HeaderLabel ("Video bitrate:", 200), 0, 10, 1, 1);
+            video_grid.attach (new HeaderLabel (_("Video Bitrate:"), 200), 0, 10, 1, 1);
             video_grid.attach (video_bitrate, 0, 11, 1, 1);
-            video_grid.attach (new HeaderLabel ("Video bitrate max", 200), 1, 10, 1, 1);
+            video_grid.attach (new HeaderLabel (_("Video Bitrate Max:"), 200), 1, 10, 1, 1);
             video_grid.attach (video_bitrate_max, 1, 11, 1, 1);
-            video_grid.attach (new HeaderLabel ("Frame rate:", 200), 0, 12, 1, 1);
+            video_grid.attach (new HeaderLabel (_("Frame Rate:"), 200), 0, 12, 1, 1);
             video_grid.attach (frame_rate, 0, 13, 1, 1);
-            video_grid.attach (new HeaderLabel ("Video depth", 200), 1, 12, 1, 1);
+            video_grid.attach (new HeaderLabel (_("Video Depth"), 200), 1, 12, 1, 1);
             video_grid.attach (video_depth, 1, 13, 1, 1);
-            video_grid.attach (new HeaderLabel ("Video Width:", 200), 0, 14, 1, 1);
+            video_grid.attach (new HeaderLabel (_("Video Width:"), 200), 0, 14, 1, 1);
             video_grid.attach (video_width, 0, 15, 1, 1);
-            video_grid.attach (new HeaderLabel ("Video height", 200), 1, 14, 1, 1);
+            video_grid.attach (new HeaderLabel (_("Video Height:"), 200), 1, 14, 1, 1);
             video_grid.attach (video_height, 1, 15, 1, 1);
-            video_grid.attach (new HeaderLabel ("audio bitrate:", 200), 0, 16, 1, 1);
+            video_grid.attach (new HeaderLabel (_("Audio Bitrate:"), 200), 0, 16, 1, 1);
             video_grid.attach (audio_bitrate, 0, 17, 1, 1);
-            video_grid.attach (new HeaderLabel ("audio bitrate max", 200), 1, 16, 1, 1);
+            video_grid.attach (new HeaderLabel (_("Audio Bitrate Max:"), 200), 1, 16, 1, 1);
             video_grid.attach (audio_bitrate_max, 1, 17, 1, 1);
-            video_grid.attach (new HeaderLabel ("Audio language:", 200), 0, 18, 1, 1);
+            video_grid.attach (new HeaderLabel (_("Audio Language:"), 200), 0, 18, 1, 1);
             video_grid.attach (audio_language, 0, 19, 1, 1);
-            video_grid.attach (new HeaderLabel ("Audio chanels", 200), 1, 18, 1, 1);
+            video_grid.attach (new HeaderLabel (_("Audio Chanels:"), 200), 1, 18, 1, 1);
             video_grid.attach (audio_chanel, 1, 19, 1, 1);
-            video_grid.attach (new HeaderLabel ("Audio Sample rate:", 200), 0, 20, 1, 1);
+            video_grid.attach (new HeaderLabel (_("Audio Sample rate:"), 200), 0, 20, 1, 1);
             video_grid.attach (audio_samplerate, 0, 21, 1, 1);
-            video_grid.attach (new HeaderLabel ("Audio depth", 200), 1, 20, 1, 1);
+            video_grid.attach (new HeaderLabel (_("Audio Depth:"), 200), 1, 20, 1, 1);
             video_grid.attach (audio_depth, 1, 21, 1, 1);
 
             var viscrolledwindow = new Gtk.ScrolledWindow (null, null);
@@ -355,16 +355,16 @@ namespace niki {
             grid_combine.add (stack);
             grid_combine.show_all ();
 
-            save_button = new Gtk.Button.with_label (StringPot.Save);
+            save_button = new Gtk.Button.with_label (_("Save"));
             save_button.get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
             save_button.clicked.connect (save_to_file);
 
-            var close_button = new Gtk.Button.with_label (StringPot.Close);
+            var close_button = new Gtk.Button.with_label (_("Close"));
             close_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FRAME);
             close_button.clicked.connect (()=>{
                 destroy();
             });
-            clear_button = new Gtk.Button.with_label (StringPot.Clear);
+            clear_button = new Gtk.Button.with_label (_("Clear"));
             clear_button.get_style_context ().add_class (Gtk.STYLE_CLASS_DESTRUCTIVE_ACTION);
             clear_button.clicked.connect (clear_tags);
 
@@ -530,7 +530,7 @@ namespace niki {
                     tagfile.tag.track = (uint) track_spinbutton.value;
                     tagfile.save ();
                 }
-                info_send (@"$(StringPot.Taged) $(file.get_basename ())");
+                info_send (@"$(_("Taged")) $(file.get_basename ())");
                 update_file (file_name);
             }
         }
@@ -566,7 +566,7 @@ namespace niki {
                     file_flac.remove_picture ();
                     file_flac.save ();
                 }
-                info_send (@"$(StringPot.Clear) $(file.get_basename ())");
+                info_send (@"$(_("Clear")) $(file.get_basename ())");
                 audio_info (file_name);
                 update_file (file_name);
             }
@@ -619,12 +619,12 @@ namespace niki {
                 }
             });
             duration_video.text = seconds_to_time ((int)(info.get_duration ()/1000000000));
-            sekable_video.text = info.get_seekable ()? StringPot.Yes : StringPot.No;
+            sekable_video.text = info.get_seekable ()? _("Yes") : _("No");
             info.get_video_streams ().foreach ((list)=> {
                 var stream_video = (Gst.PbUtils.DiscovererVideoInfo)list;
                 video_height.text = "%u".printf (stream_video.get_height ());
                 video_width.text = "%u".printf (stream_video.get_width ());
-                interlaced.text = "%s".printf (stream_video.is_interlaced ()? StringPot.Yes : StringPot.No);
+                interlaced.text = "%s".printf (stream_video.is_interlaced ()? _("Yes") : _("No"));
                 pixel_ratio.text = "%u/%u".printf (stream_video.get_par_num (), stream_video.get_par_denom ());
                 video_bitrate.text = "%u".printf (stream_video.get_bitrate ());
                 video_bitrate_max.text = "%u".printf (stream_video.get_max_bitrate ());
@@ -668,7 +668,7 @@ namespace niki {
                     astring.append_printf ("%s%s", value.value_nick, i + 1 == channels ? "" : ", ");
                 }
             } else {
-                astring.append (StringPot.Unknown_Layout);
+                astring.append (_("Unknown Layout"));
             }
             return astring.str;
         }

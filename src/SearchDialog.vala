@@ -58,10 +58,10 @@ namespace niki {
             tree_view.model = listmodel;
             tree_view.headers_visible = true;
             tree_view.expand = true;
-            tree_view.append_column (tree_view_column (StringPot.Title, SearchLyric.TITLE));
-            tree_view.append_column (tree_view_column (StringPot.Artist, SearchLyric.ARTIST));
-            tree_view.append_column (tree_view_column (StringPot.Type_File, SearchLyric.TYPEFILE));
-            tree_view.append_column (tree_view_column (StringPot.Server, SearchLyric.SERVER));
+            tree_view.append_column (tree_view_column (_("Title"), SearchLyric.TITLE));
+            tree_view.append_column (tree_view_column (_("Artist"), SearchLyric.ARTIST));
+            tree_view.append_column (tree_view_column (_("Type File"), SearchLyric.TYPEFILE));
+            tree_view.append_column (tree_view_column (_("Server"), SearchLyric.SERVER));
 
             tree_view.row_activated.connect ((path, column) => {
                 Gtk.TreeIter iter;
@@ -97,16 +97,16 @@ namespace niki {
             grid_combine.attach (album_entry, 1, 2);
             grid_combine.attach (frame, 0, 3, 2, 2);
 
-            var search_button = new Gtk.Button.with_label (StringPot.Search);
+            var search_button = new Gtk.Button.with_label (_("Search"));
             search_button.get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
             search_button.clicked.connect (search_lrc);
 
-            var close_button = new Gtk.Button.with_label (StringPot.Close);
+            var close_button = new Gtk.Button.with_label (_("Close"));
             close_button.clicked.connect (()=>{
                 destroy ();
             });
 
-            var download_button = new Gtk.Button.with_label (StringPot.Download);
+            var download_button = new Gtk.Button.with_label (_("Download"));
             download_button.clicked.connect (()=>{
                 Gtk.TreeIter iter;
                 if (!tree_view.get_selection ().get_selected (null, out iter)) {

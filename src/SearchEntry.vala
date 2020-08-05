@@ -41,17 +41,17 @@ namespace niki {
             switch (NikiApp.settings.get_enum ("search-entry")) {
                 case 0:
                     primary_icon_name = "com.github.torikulhabib.niki.title-symbolic";
-                    primary_icon_tooltip_markup = StringPot.Title;
+                    primary_icon_tooltip_markup = _("Title");
                     playlist.set_search_column (PlaylistColumns.TITLE);
                     break;
                 case 1:
                     primary_icon_name = "avatar-default-symbolic";
-                    primary_icon_tooltip_markup = StringPot.Artist;
+                    primary_icon_tooltip_markup = _("Artist");
                     playlist.set_search_column (PlaylistColumns.ARTISTMUSIC);
                     break;
                 case 2:
                     primary_icon_name = "media-optical-symbolic";
-                    primary_icon_tooltip_markup = StringPot.Album;
+                    primary_icon_tooltip_markup = _("Album");
                     playlist.set_search_column (PlaylistColumns.ALBUMMUSIC);
                     break;
             }
