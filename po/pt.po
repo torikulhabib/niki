@@ -132,7 +132,7 @@ msgstr "Suave"
 
 #: src/StringPot.vala:52
 msgid "Save Preset"
-msgstr "Gravar Predefinição"
+msgstr "Guardar Predefinição"
 
 #: src/StringPot.vala:53
 msgid "None"
@@ -300,7 +300,7 @@ msgstr "Detalhes"
 
 #: src/StringPot.vala:94
 msgid "Save to MyComputer"
-msgstr "Gravar para O Meu Computador"
+msgstr "Guardar para O Meu Computador"
 
 #: src/StringPot.vala:95
 msgid "Sort by"
@@ -552,7 +552,7 @@ msgstr "A carregar: "
 
 #: src/StringPot.vala:204
 msgid "Save"
-msgstr "Gravar"
+msgstr "Guardar"
 
 #: src/StringPot.vala:205
 msgid "Crop & Position"
@@ -660,7 +660,7 @@ msgstr "Editar Letra de Música Existente"
 
 #: src/StringPot.vala:231
 msgid "Save Lyric"
-msgstr "Gravar Letra de Música"
+msgstr "Guardar Letra de Música"
 
 #: src/StringPot.vala:232
 msgid "Niki - Lyric Maker"
@@ -688,7 +688,7 @@ msgstr "Sucesso ao Criar a Letra de Música"
 
 #: src/StringPot.vala:238
 msgid "Save to"
-msgstr "Gravar em"
+msgstr "Guardar em"
 
 #: src/StringPot.vala:239
 msgid "Location Music"
@@ -696,7 +696,7 @@ msgstr "Localização da Música"
 
 #: src/StringPot.vala:240
 msgid "Save to Folder"
-msgstr "Gravar na Pasta"
+msgstr "Guardar na Pasta"
 
 #: src/StringPot.vala:241
 msgid "Ask Place"
