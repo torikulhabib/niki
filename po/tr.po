@@ -594,7 +594,7 @@ msgstr "Görselleştirme Gölgelendirici Miktarı"
 
 #: src/StringPot.vala:168
 msgid "Rotate 90 Right"
-msgstr ""
+msgstr "90 Sağa Döndür"
 
 #: src/StringPot.vala:169
 msgid "Rotate 180"
