@@ -71,10 +71,10 @@ namespace niki {
                 }
             });
         }
-        public void subtitle_choose () {
+        public void subtitle_choose (string in_sub) {
             insert_last_video (uri, seconds_to_time ((int) (progress * duration)), progress);
             pipeline.set_state (Gst.State.NULL);
-            subtitle_uri = NikiApp.settings.get_string ("subtitle-choose");
+            subtitle_uri = in_sub;
             ready.connect (() => {
                 progress = lastplay_video (uri);
             });

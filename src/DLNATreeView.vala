@@ -288,7 +288,7 @@ namespace niki {
                 }
 
                 string uri = resource.get_uri ();
-                string size_file = int64_to_size (resource.get_size64 ());
+                string size_file = GLib.format_size (resource.get_size64 ());
 
                 if (uri == null) {
                     return;

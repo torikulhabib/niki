@@ -34,6 +34,7 @@ namespace niki {
         public DLNARenderControl? dlnarendercontrol;
         public DLNAAction? dlnaaction;
         public CircularGrid? circulargrid;
+        public Gtk.ListStore liststore;
         public int index_but;
 
         construct {
@@ -52,6 +53,7 @@ namespace niki {
                     dlnaaction.set_reveal_child (false);
                 }
             });
+            liststore = new Gtk.ListStore (ColumnScanF.N_COLUMNS, typeof (string));
             set_size_request (570, 430);
             scanfolder = new ScanFolder ();
             getlink = new GetLink ();
@@ -68,6 +70,7 @@ namespace niki {
             subtitle_label.hexpand = true;
             subtitle_label.can_focus = true;
             subtitle_label.wrap = true;
+            subtitle_label.margin_bottom = 10;
             subtitle_label.wrap_mode = Pango.WrapMode.WORD;
 
             welcome_rigth = new Welcome ();
@@ -76,6 +79,7 @@ namespace niki {
             welcome_rigth.append ("edit-paste", _("Paste URL"), _("Play Stream"));
             welcome_rigth.append ("document-open", _("Open Folder"), _("Open Folder"));
             welcome_rigth.append ("camera-photo", _("Open Camera"), _("Camera Device"));
+            welcome_rigth.get_style_context ().add_class ("card");
 
             welcome_left = new Welcome ();
             welcome_left.focus_on_click = false;
@@ -83,6 +87,7 @@ namespace niki {
             welcome_left.append ("folder-music", _("Browse Library"), _("Music Library"));
             welcome_left.append ("folder-remote", _("Browse Library"), _("DLNA Library"));
             welcome_left.append ("media-optical", _("Browse Library"), _("Optical Library"));
+            welcome_left.get_style_context ().add_class ("card");
 
             var grid_home = new Gtk.Grid ();
             grid_home.get_style_context ().add_class ("widget_background");
@@ -112,6 +117,7 @@ namespace niki {
             welcome_drive.append ("media-optical", _("Browse"), _("ACD"));
             welcome_drive.valign = Gtk.Align.CENTER;
             welcome_drive.get_style_context ().add_class ("widget_background");
+            welcome_drive.get_style_context ().add_class ("card");
             welcome_drive.margin_bottom = 30;
 
             var dlna_grid = new Gtk.Grid ();
@@ -138,7 +144,9 @@ namespace niki {
             stack.add_named (devicegrid, "device");
             stack.visible_child = vertical_grid;
             stack.show_all ();
-
+            scanfolder.signal_succes.connect ((store_uri)=>{
+                circulargrid.count_uri (store_uri);
+            });
             stack.notify["visible-child"].connect (() => {
                 if (stack.visible_child_name == "circular") {
                     circulargrid.circular_clear ();
@@ -152,10 +160,9 @@ namespace niki {
                             } if (index_but == 2) {
                                 scanfolder.scanning (GLib.Environment.get_user_special_dir (UserDirectory.MUSIC), index_but);
                             }
-                            scanfolder.signal_succes.connect ((store_uri)=>{
-                                circulargrid.count_uri (store_uri);
-                            });
                             index_but = 0;
+                        } else if (index_but == 4) {
+                            circulargrid.count_uri (liststore);
                         } else {
                             circulargrid.count_uri (NikiApp.window.player_page.restore_file ());
                         }
@@ -207,9 +214,15 @@ namespace niki {
             welcome_rigth.activated.connect ((index) => {
                 switch (index) {
                     case 0:
-                        var file = run_open_file (NikiApp.window, true, 1);
-                        if (file != null) {
-                            NikiApp.window.open_files (file, true, true);
+                        remove_all ();
+                        NikiApp.window.player_page.right_bar.playlist.clear_items ();
+                        index_but = 4;
+                        var files = run_open_file (NikiApp.window, true, 1);
+                        if (files != null) {
+                            foreach (var file in files) {
+                                list_append (file.get_uri ());
+                            }
+                            stack.visible_child_name = "circular";
                         }
                         break;
                     case 1:
@@ -227,8 +240,8 @@ namespace niki {
                     case 2:
                         NikiApp.window.player_page.right_bar.playlist.clear_items ();
                         if (run_open_folder (0, NikiApp.window)) {
-                            stack.visible_child_name = "circular";
                             index_but = 0;
+                            stack.visible_child_name = "circular";
                             NikiApp.window.player_page.right_bar.playlist.clear_items ();
                         }
                         break;
@@ -241,13 +254,13 @@ namespace niki {
             welcome_left.activated.connect ((index) => {
                 switch (index) {
                     case 0:
-                        stack.visible_child_name = "circular";
                         index_but = 1;
+                        stack.visible_child_name = "circular";
                         NikiApp.window.player_page.right_bar.playlist.clear_items ();
                         break;
                     case 1:
-                        stack.visible_child_name = "circular";
                         index_but = 2;
+                        stack.visible_child_name = "circular";
                         NikiApp.window.player_page.right_bar.playlist.clear_items ();
                         break;
                     case 2:
@@ -269,7 +282,16 @@ namespace niki {
                 }
             });
         }
-
+        private void list_append (string path) {
+            Gtk.TreeIter iter;
+            liststore.append (out iter);
+            liststore.set (iter, ColumnScanF.FILENAME, path);
+        }
+        public void remove_all () {
+            if (liststore.iter_n_children (null) > 0) {
+                liststore.clear ();
+            }
+        }
         private async void read_dvd () {
             var dvdanager = new DVDManager ().instance;
             if (!dvdanager.has_media_volumes ()) {
@@ -289,10 +311,8 @@ namespace niki {
 
             var root = volume.get_mount ().get_default_location ();
             string uri_file = root.get_uri ().replace ("file:///", "dvd:///");
-            NikiApp.window.player_page.right_bar.playlist.add_item (File.new_for_uri (uri_file));
-		    if (NikiApp.window.main_stack.visible_child_name == "welcome") {
-                NikiApp.window.player_page.right_bar.playlist.play_first ();
-            }
+            list_append (uri_file);
+            stack.visible_child_name = "circular";
         }
         private void read_acd () {
             var acdmanager = new ACDManager ().instance;

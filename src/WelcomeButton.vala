@@ -37,7 +37,7 @@ namespace niki {
             button_grid.attach (image_menu, 0, 0, 1, 2);
             add (button_grid);
             enter_notify_event.connect (() => {
-                if (NikiApp.window.is_active) {
+                if (((Gtk.Window) get_toplevel ()).is_active) {
                     get_style_context ().remove_class ("widget_background");
                     get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
                 }
@@ -45,14 +45,14 @@ namespace niki {
             });
 
             leave_notify_event.connect (() => {
-                if (NikiApp.window.is_active) {
+                if (((Gtk.Window) get_toplevel ()).is_active) {
                     get_style_context ().remove_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
                     get_style_context ().add_class ("widget_background");
                 }
                 return Gdk.EVENT_PROPAGATE;
             });
             focus_in_event.connect (() => {
-                if (NikiApp.window.is_active) {
+                if (((Gtk.Window) get_toplevel ()).is_active) {
                     get_style_context ().remove_class ("widget_background");
                     get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
                 }
@@ -60,7 +60,7 @@ namespace niki {
             });
 
             focus_out_event.connect (() => {
-                if (NikiApp.window.is_active) {
+                if (((Gtk.Window) get_toplevel ()).is_active) {
                     get_style_context ().remove_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
                     get_style_context ().add_class ("widget_background");
                 }

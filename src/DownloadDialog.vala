@@ -111,7 +111,7 @@ namespace niki {
                 loop_run = true;
                 progress = (double) current_num_bytes / total_num_bytes;
                 progress_bar.set_fraction (progress);
-                bottom_label.label = @"$(int64_to_size (current_num_bytes, false)) / $(int64_to_size (total_num_bytes, false))";
+                bottom_label.label = @"$(GLib.format_size (current_num_bytes)) / $(GLib.format_size (total_num_bytes))";
 	        }, (obj, res) => {
 	            loop_run = false;
 		        try {

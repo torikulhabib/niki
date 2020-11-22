@@ -21,7 +21,7 @@
 
 [DBus (name = "org.gnome.SettingsDaemon.Power.Screen")]
 private interface BrightnessSettings : GLib.Object {
-    public abstract int brightness {get; set; }
+    public abstract int brightness {owned get; set; }
 }
 namespace niki {
     public class CameraFlash : Gtk.Window {
@@ -29,7 +29,7 @@ namespace niki {
         private uint flash_timeout = 0;
         private int start_brighnest;
         public signal bool capture_now ();
-        private new BrightnessSettings? brightness_settings;
+        private BrightnessSettings? brightness_settings;
 
         construct {
             var headerbar = new Gtk.HeaderBar ();

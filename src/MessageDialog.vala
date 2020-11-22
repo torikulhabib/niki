@@ -50,6 +50,7 @@ namespace niki {
             get_style_context ().add_class ("niki");
             var image = new Gtk.Image ();
             image.valign = Gtk.Align.START;
+            image.can_focus = true;
             image.set_from_gicon (new ThemedIcon (text_image), Gtk.IconSize.DIALOG);
 
             var primary_label = new Gtk.Label (primary_text);

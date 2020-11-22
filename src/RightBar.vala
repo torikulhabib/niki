@@ -27,10 +27,11 @@ namespace niki {
         private RepeatButton? repeat_button;
         public ButtonRevealer? font_button_rev;
         private Gtk.Label header_label;
-        private Gtk.Button edit_button;
+        private Gtk.Button remove_button;
         private Gtk.ScrolledWindow playlist_scrolled;
         private Gtk.Box content_box;
         private SearchEntry entry;
+        private DialogImport dialogimport;
         private uint hiding_timer = 0;
 
         private bool _hovered = false;
@@ -80,33 +81,16 @@ namespace niki {
                 return false;
             });
             playlist = new Playlist();
-            var open_button = new Gtk.Button.from_icon_name ("list-add-symbolic", Gtk.IconSize.BUTTON);
+            var open_button = new Gtk.Button.from_icon_name ("applications-multimedia-symbolic", Gtk.IconSize.BUTTON);
             open_button.focus_on_click = false;
             open_button.get_style_context ().add_class ("button_action");
             open_button.set_tooltip_text (_("Open File"));
-            open_button.clicked.connect ( () => {
-                var file = run_open_file (NikiApp.window, true, 1);
-                if (file != null) {
-                    NikiApp.window.open_files (file, false, false);
-                }
-            });
-            var add_folder = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.folder-symbolic", Gtk.IconSize.BUTTON);
-            add_folder.focus_on_click = false;
-            add_folder.get_style_context ().add_class ("button_action");
-            add_folder.set_tooltip_text (_("Open Folder"));
-            add_folder.clicked.connect ( () => {
-                if (run_open_folder (0, NikiApp.window)) {
-                    NikiApp.window.welcome_page.scanfolder.remove_all ();
-                    NikiApp.window.welcome_page.scanfolder.scanning (NikiApp.settings.get_string ("folder-location"), 0);
-                    NikiApp.window.welcome_page.scanfolder.signal_succes.connect ((file_list)=>{
-                        NikiApp.window.welcome_page.circulargrid.count_uri (file_list);
-                    });
-                }
-            });
-            edit_button = new Gtk.Button.from_icon_name ("list-remove-symbolic", Gtk.IconSize.BUTTON);
-            edit_button.focus_on_click = false;
-            edit_button.get_style_context ().add_class ("button_action");
-            edit_button.clicked.connect ( () => {
+            open_button.clicked.connect (impor_file);
+
+            remove_button = new Gtk.Button.from_icon_name ("list-remove-symbolic", Gtk.IconSize.BUTTON);
+            remove_button.focus_on_click = false;
+            remove_button.get_style_context ().add_class ("button_action");
+            remove_button.clicked.connect ( () => {
                 NikiApp.settings.set_boolean ("edit-playlist", !NikiApp.settings.get_boolean ("edit-playlist")); 
             });
 
@@ -115,7 +99,7 @@ namespace niki {
             font_button_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
             font_button_rev.transition_duration = 100;
             font_button_rev.clicked.connect (() => {
-                playerpage.bottom_bar.menu_popover.font_button ();
+                playerpage.bottom_bar.menu_popover.font_selection_btn.clicked ();
                 font_button_rev.tooltip_text = NikiApp.settings.get_string ("font");
             });
             repeat_button = new RepeatButton ();
@@ -173,8 +157,7 @@ namespace niki {
 		    var box_action = new Gtk.Grid ();
             box_action.orientation = Gtk.Orientation.HORIZONTAL;
 		    box_action.add (open_button);
-		    box_action.add (add_folder);
-		    box_action.add (edit_button);
+		    box_action.add (remove_button);
 
             playlist.get_style_context ().add_class ("scrollbar");
             playlist.set_search_entry (entry);
@@ -227,10 +210,22 @@ namespace niki {
                 return cursor_hand_mode(2);
             });
         }
+        public void impor_file () {
+            if (dialogimport == null) {
+                dialogimport = new DialogImport (playerpage);
+                dialogimport.show_all ();
+                dialogimport.show.connect(()=>{
+                    NikiApp.window.player_page.right_bar.set_reveal_child (false);
+                });
+                dialogimport.destroy.connect (()=>{
+                    dialogimport = null;
+                });
+            }
+        }
         private void playlist_edit () {
             header_label.label = !NikiApp.settings.get_boolean ("edit-playlist")? _("Playlist") : _("Select Remove");
-            ((Gtk.Image) edit_button.image).icon_name = NikiApp.settings.get_boolean ("edit-playlist")? "go-previous-symbolic" : "list-remove-symbolic";
-            edit_button.tooltip_text = NikiApp.settings.get_boolean ("edit-playlist")? _("Back Playlist") : _("Remove Playlists");
+            ((Gtk.Image) remove_button.image).icon_name = NikiApp.settings.get_boolean ("edit-playlist")? "go-previous-symbolic" : "list-remove-symbolic";
+            remove_button.tooltip_text = NikiApp.settings.get_boolean ("edit-playlist")? _("Back Playlist") : _("Remove Playlists");
         }
 
         private void size_flexible (){

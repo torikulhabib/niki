@@ -47,10 +47,6 @@ namespace niki {
             home_revealer.add (home_button);
             var light_dark = new LightDark ();
             light_dark.focus_on_click = false;
-            var list_button = new Gtk.Button.from_icon_name ("playlist-queue-symbolic", Gtk.IconSize.BUTTON);
-            list_button.focus_on_click = false;
-            list_button.get_style_context ().add_class ("button_action");
-            list_button.tooltip_text = _("Library");
             var spinner = new Gtk.Spinner ();
             var spinner_revealer = new Gtk.Revealer ();
             spinner_revealer.transition_type = Gtk.RevealerTransitionType.CROSSFADE;
@@ -62,7 +58,6 @@ namespace niki {
             headerbar.decoration_layout = "close:maximize";
             headerbar.pack_start (home_revealer);
             headerbar.pack_end (light_dark);
-            headerbar.pack_end (list_button);
             headerbar.pack_end (spinner_revealer);
             headerbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             headerbar.get_style_context ().add_class ("default-decoration");
@@ -84,50 +79,20 @@ namespace niki {
             add (main_stack);
 
             welcome_page.stack.notify["visible-child"].connect (() => {
-                home_revealer.set_reveal_child (player_page.visible_child_name == "listview" || welcome_page.stack.visible_child_name == "dlna" || welcome_page.stack.visible_child_name == "dvd" || welcome_page.stack.visible_child_name == "device"? true : false);
+                home_revealer.set_reveal_child (welcome_page.stack.visible_child_name == "dlna" || welcome_page.stack.visible_child_name == "dvd" || welcome_page.stack.visible_child_name == "device"? true : false);
                 headerbar.title = welcome_page.stack.visible_child_name == "dlna"? _("Niki DLNA Browser") : _("Niki");
-            });
-            player_page.notify["visible-child"].connect (() => {
-                headerbar_mode ();
-                home_revealer.set_reveal_child (player_page.visible_child_name == "listview" || welcome_page.stack.visible_child_name == "dlna" || welcome_page.stack.visible_child_name == "dvd" || welcome_page.stack.visible_child_name == "device"? true : false);
-                headerbar.title = welcome_page.stack.visible_child_name == "dlna"? _("Niki DLNA Browser") : _("Niki");
-                ((Gtk.Image) list_button.image).icon_name = player_page.visible_child_name == "embed"? "playlist-queue-symbolic" : (main_stack.visible_child_name == "welcome"? "playlist-queue-symbolic" : "com.github.torikulhabib.niki.play-symbolic");
-                list_button.tooltip_text = player_page.visible_child_name == "embed"? _("Library") : _("Player");
             });
             main_stack.notify["visible-child"].connect (() => {
                 headerbar_mode ();
                 if (welcome_page.stack.visible_child_name == "circular") {
                     welcome_page.stack.visible_child_name = "home";
                 }
-                home_revealer.set_reveal_child (player_page.visible_child_name == "listview" || welcome_page.stack.visible_child_name == "dlna" || welcome_page.stack.visible_child_name == "dvd" || welcome_page.stack.visible_child_name == "device"? true : false);
+                home_revealer.set_reveal_child (welcome_page.stack.visible_child_name == "dlna" || welcome_page.stack.visible_child_name == "dvd" || welcome_page.stack.visible_child_name == "device"? true : false);
                 headerbar.title = welcome_page.stack.visible_child_name == "dlna"? _("Niki DLNA Browser") : _("Niki");
-            ((Gtk.Image) list_button.image).icon_name = player_page.visible_child_name == "embed"? "playlist-queue-symbolic" : (main_stack.visible_child_name == "welcome"? "playlist-queue-symbolic" : "com.github.torikulhabib.niki.play-symbolic");
-                list_button.tooltip_text = player_page.visible_child_name == "embed"? _("Library") : _("Player");
             });
 
-            list_button.clicked.connect (() => {
-                if (main_stack.visible_child_name == "welcome") {
-                    main_stack.visible_child_name = "player";
-                    player_page.visible_child_name = "listview";
-                } else if (player_page.visible_child_name == "listview") {
-                    main_stack.visible_child_name = "player";
-                    player_page.visible_child_name = "embed";
-                    if (NikiApp.settings.get_boolean("audio-video")) {
-                        player_page.resize_player_page (this, 450, 450);
-                    } else {
-                        if (player_page.video_width > 0 && player_page.video_height > 0) {
-                            player_page.resize_player_page (this, player_page.video_width, player_page.video_height);
-                        }
-                    }
-                }
-            });
             home_button.clicked.connect (() => {
-                if (player_page.visible_child_name == "listview") {
-                    main_stack.visible_child_name = "welcome";
-                    player_page.visible_child_name = "embed";
-                } else {
-                    welcome_page.stack.visible_child_name = "home";
-                }
+                welcome_page.stack.visible_child_name = "home";
             });
 
             Gtk.drag_dest_set (this, Gtk.DestDefaults.ALL, target_list, Gdk.DragAction.COPY);
@@ -201,7 +166,7 @@ namespace niki {
         }
 
         private bool headerbar_mode () {
-            if (main_stack.visible_child_name == "welcome" || player_page.visible_child_name == "listview") {
+            if (main_stack.visible_child_name == "welcome") {
                 headerbar.show ();
             } else {
                 headerbar.hide ();
@@ -248,11 +213,11 @@ namespace niki {
                             player_page.right_bar.playlist.add_item (file);
                         }
                         if (player_page.playback.playing && main_stack.visible_child_name == "player" && is_subtitle (uri) == true && !NikiApp.settings.get_boolean("audio-video")) {
-                            NikiApp.settings.set_string("subtitle-choose", uri);
                             if (!NikiApp.settings.get_boolean("subtitle-available")) {
                                 NikiApp.settings.set_boolean ("subtitle-available", true);
                             }
-                            player_page.playback.subtitle_choose ();
+                            player_page.bottom_bar.menu_popover.file_chooser_subtitle.select_uri (uri);
+                            player_page.playback.subtitle_choose (uri);
                         }
                     };
 		            if (main_stack.visible_child_name == "welcome" && audio_video_media) {

@@ -69,7 +69,7 @@ namespace niki {
             height_request = 200;
             scale_container = new Gtk.Grid ();
             scale_container.hexpand = true;
-            scale_container.column_spacing = 12;
+            scale_container.column_spacing = 10;
             scale_container.margin_top = 2;
             scale_container.margin_bottom = 2;
 

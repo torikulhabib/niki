@@ -340,30 +340,10 @@ namespace niki {
         }
 	    try {
 		    FileInfo info = File.new_for_uri (fileinput).query_info ("standard::*",0);
-		    file_info = int64_to_size (info.get_size ());
+		    file_info = " %s: %s".printf ("Size", GLib.format_size (info.get_size ()));
 	    } catch (Error e) {
             GLib.warning (e.message);
 	    }
-        return file_info;
-    }
-    private static string int64_to_size (int64 size_file, bool need = true) {
-        string file_info = null;
-        string [] sizes = { " Byte", " KB", " MB", " GB", " TB" };
-        double len = (double) size_file;
-        int order = 0;
-        while (len >= 1000 && order < sizes.length - 1) {
-            order++;
-            len = len/1000;
-        }
-        if(size_file < 0){
-            len = 0;
-            order = 0;
-        }
-        if (need) {
-            file_info = " %s: %3.1f%s".printf (_("Size"), len, sizes[order]);
-        } else {
-            file_info = "%3.1f%s".printf (len, sizes[order]);
-        }
         return file_info;
     }
 

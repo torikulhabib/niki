@@ -110,18 +110,14 @@ namespace niki {
             }
 
             var builder = new VariantBuilder (VariantType.ARRAY);
-            var invalidated_builder = new VariantBuilder (new VariantType ("as"));
-
             foreach (string name in changed_properties.get_keys ()) {
                 Variant variant = changed_properties.lookup (name);
                 builder.add ("{sv}", name, variant);
             }
-
             changed_properties = null;
-
             try {
                 this.connection.emit_signal (null, "/org/mpris/MediaPlayer2", "org.freedesktop.DBus.Properties", "PropertiesChanged",
- new Variant ("(sa{sv}as)", "org.mpris.MediaPlayer2.Player", builder, invalidated_builder));
+ new Variant ("(sa{sv}as)", "org.mpris.MediaPlayer2.Player", builder, new VariantBuilder (new VariantType ("as"))));
             } catch (Error e) {
                 print ("Could not send MPRIS property change: %s\n", e.message);
             }

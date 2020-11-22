@@ -77,7 +77,7 @@ namespace niki {
         public void scale_widh () {
             int width;
             NikiApp.window.get_size (out width, null);
-            scale.width_request = NikiApp.settings.get_boolean ("audio-video") && width < 500? 61 : 81;
+            scale.width_request = NikiApp.settings.get_boolean ("audio-video") && width < 480? 55 : 81;
         }
         public bool update_tooltip () {
             scale.tooltip_text = double_to_percent (scale.get_value ());

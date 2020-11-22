@@ -201,7 +201,7 @@ namespace niki {
             font_button.get_style_context ().add_class ("button_action");
             font_button.tooltip_text = NikiApp.settings.get_string ("font");
             font_button.clicked.connect (() => {
-                menu_popover.font_button ();
+                menu_popover.font_selection_btn.clicked ();
                 font_button.tooltip_text = NikiApp.settings.get_string ("font");
             });
             font_but_rev = new Gtk.Revealer ();
@@ -356,8 +356,8 @@ namespace niki {
             setting_actionbar.hexpand = true;
             setting_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             setting_actionbar.get_style_context ().add_class ("transbgborder");
-            setting_actionbar.set_center_widget (setting_stack);
             setting_actionbar.pack_start (settings_prev_button);
+            setting_actionbar.set_center_widget (setting_stack);
             setting_actionbar.pack_end (settings_next_button);
             setting_actionbar.show_all ();
 

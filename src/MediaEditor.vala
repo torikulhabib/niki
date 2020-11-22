@@ -405,9 +405,6 @@ namespace niki {
             grid_ver.add (box_action);
             get_content_area ().add (grid_ver);
             show.connect(()=>{
-                string file_name;
-                playlist.liststore.get (playlist.selected_iter (), PlaylistColumns.FILENAME, out file_name);
-                set_media (file_name);
                 NikiApp.window.player_page.right_bar.set_reveal_child (false);
             });
             destroy.connect(()=>{
@@ -571,7 +568,13 @@ namespace niki {
                 update_file (file_name);
             }
         }
-        private void set_media (string file_name) {
+        public void set_media (string file_name) {
+            Gtk.TreeIter iter;
+            playlist.liststore.get_iter (out iter, playlist.set_current (file_name, NikiApp.window.player_page));
+            playlist.get_selection().select_iter (iter);
+            if (!playlist.liststore.iter_is_valid (iter)) {
+                return;
+            }
             if (file_name.has_prefix ("http")) {
                 return;
             }

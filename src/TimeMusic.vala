@@ -226,7 +226,7 @@ namespace niki {
                         state = 0;
                         break;
                 }
-                layout.set_text (NikiApp.settings.get_boolean("audio-video") && NikiApp.window.main_stack.visible_child_name == "player"&& NikiApp.window.player_page.visible_child_name == "embed"? text : "Niki", -1);
+                layout.set_text (NikiApp.settings.get_boolean("audio-video") && NikiApp.window.main_stack.visible_child_name == "player"? text : "Niki", -1);
                 layout.set_attributes (null);
             }
 

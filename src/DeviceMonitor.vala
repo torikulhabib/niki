@@ -29,6 +29,8 @@ namespace niki {
             liststore = new Gtk.ListStore (DeviceColumns.N_COLUMNS, typeof (string), typeof (string), typeof (Gtk.ListStore), typeof (string));
             devibut = new Welcome ();
             devibut.valign = Gtk.Align.CENTER;
+            devibut.get_style_context ().add_class ("card");
+            devibut.margin = 4;
             devibut.activated.connect ((index) => {
 		        NikiApp.window.main_stack.visible_child_name = "camera";
 		        NikiApp.window.camera_page.cameraplayer.video_source (get_device (index));

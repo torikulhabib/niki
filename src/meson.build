@@ -98,12 +98,9 @@ executable(
     'SearchDialog.vala',
     'EngineNetease.vala',
     'Spectrum.vala',
-    'ListView.vala',
-    'MusicList.vala',
-    'BottomList.vala',
     'SeekTimeMusic.vala',
     'SearchEntry.vala',
-    'VolumeListMode.vala',
+    'DialogImport.vala',
 
     c_args: c_args,
     dependencies: [

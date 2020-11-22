@@ -326,15 +326,10 @@
         <summary>album music</summary>
         <description>album music</description>
     </key>
-    <key name="subtitle-choose" type="s">
-      <default>''</default>
-      <summary>Subtitle file</summary>
-      <description>subtitle file</description>
-    </key>
     <key name="last-played" type="s">
       <default>''</default>
-      <default>'Default font'</default>
-      <summary>Font custom or default</summary>
+      <default>'Last played'</default>
+      <summary>Last played</summary>
     </key>
     <key name="folder-location" type="s">
       <default>''</default>

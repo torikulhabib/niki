@@ -34,7 +34,8 @@ namespace niki {
         private Gtk.Revealer font_selection_label_revealer;
         private Gtk.Revealer font_selection_btn_revealer;
         private Gtk.Grid grid;
-        public signal void font_button ();
+        public Gtk.FontButton font_selection_btn;
+        public Gtk.FileChooserButton file_chooser_subtitle;
 
         public SettingsPopover (PlayerPage playerpage) {
             this.playerpage = playerpage;
@@ -86,14 +87,11 @@ namespace niki {
             font_selection_label_revealer.transition_duration = 500;
             font_selection_label_revealer.add (font_selection_label);
 
-            var font_selection_btn = new Gtk.FontButton ();
+            font_selection_btn = new Gtk.FontButton ();
             font_selection_btn_revealer = new Gtk.Revealer ();
             font_selection_btn_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN;
             font_selection_btn_revealer.transition_duration = 500;
             font_selection_btn_revealer.add (font_selection_btn);
-            font_button.connect (() => {
-                font_selection_btn.clicked ();
-            });
             NikiApp.settings.changed["subtitle-available"].connect (revealer_view);
 
             var Speed_label = new Gtk.Label (_("Play Speed"));
@@ -113,7 +111,7 @@ namespace niki {
 
             var ex_subtitle_label = new Gtk.Label (_("External Subtitle"));
             ex_subtitle_label.halign = Gtk.Align.END;
-            var file_chooser_subtitle = new Gtk.FileChooserButton (_("Pick File"), Gtk.FileChooserAction.OPEN);
+            file_chooser_subtitle = new Gtk.FileChooserButton (_("Pick File"), Gtk.FileChooserAction.OPEN);
 
             var all_files_filter = new Gtk.FileFilter ();
             all_files_filter.set_filter_name (_("All Files"));
@@ -127,23 +125,18 @@ namespace niki {
             file_chooser_subtitle.add_filter (subtitle_files_filter);
             file_chooser_subtitle.add_filter (all_files_filter);
 
-            NikiApp.settings.changed["subtitle-choose"].connect (() => {
-                file_chooser_subtitle.select_uri (NikiApp.settings.get_string("subtitle-choose"));
-            });
             file_chooser_subtitle.file_set.connect (() => {
                 if (is_subtitle (file_chooser_subtitle.get_uri())) {
-                    NikiApp.settings.set_string("subtitle-choose", file_chooser_subtitle.get_uri());
                     if (!NikiApp.settings.get_boolean("subtitle-available")) {
                         NikiApp.settings.set_boolean ("subtitle-available", true);
                     }
-                } else {
-                    file_chooser_subtitle.select_uri (NikiApp.settings.get_string("subtitle-choose"));
                 }
-                playerpage.playback.subtitle_choose ();
+                playerpage.playback.subtitle_choose (file_chooser_subtitle.get_uri());
             });
 
             grid = new Gtk.Grid ();
             grid.margin = 2;
+            grid.column_spacing = 10;
             grid.attach (label_audio_revealer, 0, 0);
             grid.attach (audio_track_revealer, 1, 0);
             grid.attach (sub_label_revealer, 0, 1);
@@ -156,6 +149,7 @@ namespace niki {
             grid.attach (speed_combox, 1, 4);
             grid.attach (ex_subtitle_label, 0, 5);
             grid.attach (file_chooser_subtitle, 1, 5);
+            grid.show_all ();
             add (grid);
             NikiApp.settings.bind ("speed-playing", speed_combox, "active", GLib.SettingsBindFlags.DEFAULT);
             NikiApp.settings.bind ("font-options", combox_font, "active", GLib.SettingsBindFlags.DEFAULT);
@@ -176,7 +170,7 @@ namespace niki {
             combox_font_revealer.set_reveal_child (NikiApp.settings.get_boolean ("subtitle-available"));
             font_selection_label_revealer.set_reveal_child (combox_font.get_active_int () == 0 || !combox_font_revealer.child_revealed? false : true);
             font_selection_btn_revealer.set_reveal_child (combox_font.get_active_int () == 0 || !combox_font_revealer.child_revealed? false : true);
-            grid.row_spacing = grid.column_spacing = NikiApp.settings.get_boolean ("subtitle-available")? 2 : 0;
+            grid.row_spacing = NikiApp.settings.get_boolean ("subtitle-available")? 2 : 0;
         }
         private uint remove_timer = 0;
         public void subtitle_audio_track () {

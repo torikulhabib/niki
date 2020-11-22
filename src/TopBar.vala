@@ -26,11 +26,14 @@ namespace niki {
         private Gtk.Button close_botton;
         private Gtk.Revealer menu_revealer;
         private Gtk.Stack stack;
-        public ButtonRevealer? blur_button;
+        public ButtonRevealer? tag_botton;
         public ButtonRevealer? crop_button;
+        public ButtonRevealer? cropfull_button;
         public Gtk.Label label_info;
         public Gtk.Label info_label_full;
         private Gtk.Label my_app;
+        private VideoCrop videocrop;
+        private PlayerPage playerpage;
 
         private uint hiding_timer = 0;
         private bool _hovered = false;
@@ -50,6 +53,7 @@ namespace niki {
         }
 
         public TopBar (PlayerPage playerpage) {
+            this.playerpage = playerpage;
             transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN;
             transition_duration = 500;
             events |= Gdk.EventMask.POINTER_MOTION_MASK;
@@ -99,17 +103,6 @@ namespace niki {
             close_botton.clicked.connect (() => {
                 destroy_mode ();
             });
-            var list_button = new Gtk.Button.from_icon_name ("playlist-queue-symbolic", Gtk.IconSize.BUTTON);
-            list_button.focus_on_click = false;
-            list_button.get_style_context ().add_class ("button_action");
-            list_button.tooltip_text = _("Home");
-            list_button.clicked.connect (() => {
-                playerpage.visible_child_name = "listview";
-                playerpage.mouse_blank ();
-                if (!NikiApp.settings.get_boolean("audio-video")) {
-                    playerpage.resize_player_page (NikiApp.window, 750, 500);
-                }
-            });
             var home_button = new Gtk.Button.from_icon_name ("go-home-symbolic", Gtk.IconSize.BUTTON);
             home_button.focus_on_click = false;
             home_button.get_style_context ().add_class ("button_action");
@@ -124,23 +117,22 @@ namespace niki {
                 NikiApp.settings.set_boolean ("information-button", !NikiApp.settings.get_boolean ("information-button"));
                 info_button ();
             });
-            blur_button = new ButtonRevealer ("view-paged-symbolic");
-            blur_button.button.get_style_context ().add_class ("button_action");
-            blur_button.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
-            blur_button.transition_duration = 500;
-            blur_button.clicked.connect (() => {
-                NikiApp.settings.set_boolean ("blur-mode", !NikiApp.settings.get_boolean ("blur-mode"));
-                blured_button ();
+            tag_botton = new ButtonRevealer ("tag-symbolic");
+            tag_botton.button.get_style_context ().add_class ("button_action");
+            tag_botton.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
+            tag_botton.transition_duration = 500;
+            tag_botton.clicked.connect (() => {
+                NikiApp.window.player_page.right_bar.playlist.edit_info (playerpage.playback.uri);
             });
             crop_button = new ButtonRevealer ("image-crop-symbolic");
             crop_button.button.get_style_context ().add_class ("button_action");
             crop_button.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             crop_button.transition_duration = 500;
-            crop_button.clicked.connect (() => {
-                var videocrop = new VideoCrop (playerpage);
-                videocrop.show_all ();
-                set_reveal_child (false);
-            });
+            crop_button.clicked.connect (dialog_crop);
+            var cropfull_button = new Gtk.Button.from_icon_name ("image-crop-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+            cropfull_button.focus_on_click = false;
+            cropfull_button.get_style_context ().add_class ("button_action");
+            cropfull_button.clicked.connect (dialog_crop);
             notify["child-revealed"].connect (() => {
                 playerpage.right_bar.reveal_control (false);
                 if (!child_revealed) {
@@ -162,8 +154,7 @@ namespace niki {
             main_actionbar.pack_start (home_button);
             main_actionbar.set_center_widget (my_app);
             main_actionbar.pack_end (maximize_button);
-            main_actionbar.pack_end (list_button);
-            main_actionbar.pack_end (blur_button);
+            main_actionbar.pack_end (tag_botton);
             main_actionbar.pack_end (crop_button);
             main_actionbar.show_all ();
 
@@ -202,6 +193,7 @@ namespace niki {
             info_actionbar.hexpand = true;
             info_actionbar.get_style_context ().add_class ("info_topbar");
             info_actionbar.pack_start (info_label_full);
+            info_actionbar.pack_end (cropfull_button);
             info_actionbar.show_all ();
 
             stack = new Gtk.Stack ();
@@ -211,7 +203,10 @@ namespace niki {
             stack.homogeneous = false;
             add (stack);
             show_all ();
-            NikiApp.settings.changed["information-button"].connect (revealer_menu);
+            NikiApp.settings.changed["information-button"].connect (() => {
+                revealer_menu ();
+                info_button ();
+            });
             NikiApp.settings.changed["title-playing"].connect (label_my_app);
             NikiApp.settings.changed["artist-music"].connect (label_my_app);
             NikiApp.settings.changed["album-music"].connect (label_my_app);
@@ -222,7 +217,6 @@ namespace niki {
                 info_button ();
             });
             label_my_app ();
-            blured_button ();
             info_button ();
             stack_fulscreen ();
             revealer_menu ();
@@ -233,10 +227,17 @@ namespace niki {
                 }
             });
         }
-        private void blured_button () {
-            blur_button.change_icon (NikiApp.settings.get_boolean ("blur-mode")? "applications-graphics-symbolic" : "com.github.torikulhabib.niki.color-symbolic");
-            blur_button.tooltip_text = NikiApp.settings.get_boolean ("blur-mode")? "Blur" : "Normal";
+        private void dialog_crop () {
+            if (videocrop == null) {
+                videocrop = new VideoCrop (playerpage);
+                videocrop.show_all ();
+                set_reveal_child (false);
+                videocrop.destroy.connect (()=>{
+                    videocrop = null;
+                });
+            }
         }
+
         private void info_button () {
             ((Gtk.Image) info_option.image).icon_name = !NikiApp.settings.get_boolean ("information-button")? (!NikiApp.settings.get_boolean ("audio-video")? "com.github.torikulhabib.niki.info.title-symbolic" : "avatar-default-symbolic"): "com.github.torikulhabib.niki.info-hide-symbolic";
             info_option.tooltip_text = !NikiApp.settings.get_boolean ("information-button")? _("Show") : _("Hide");
@@ -253,7 +254,7 @@ namespace niki {
             stack.visible_child_name = !NikiApp.settings.get_boolean ("fullscreen") && !NikiApp.settings.get_boolean ("audio-video")? "info_actionbar" : "grid";
         }
         private void revealer_menu () {
-            blur_button.set_reveal_child (NikiApp.settings.get_boolean ("audio-video"));
+            tag_botton.set_reveal_child (NikiApp.settings.get_boolean ("audio-video"));
             crop_button.set_reveal_child (!NikiApp.settings.get_boolean ("audio-video"));
             menu_revealer.set_reveal_child (!NikiApp.settings.get_boolean ("audio-video") && NikiApp.settings.get_boolean ("information-button")? true : false);
         }

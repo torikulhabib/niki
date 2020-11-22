@@ -68,7 +68,11 @@ namespace niki {
             });
             var info_details = new Gtk.MenuItem ();
             info_details.add (new MenuLabel ("tag-symbolic", _("Details")));
-            info_details.activate.connect (edit_info);
+            info_details.activate.connect (()=>{
+                string select_name;
+                liststore.get (selected_iter (), PlaylistColumns.FILENAME, out select_name);
+                edit_info (select_name);
+            });
 
             var save_to = new Gtk.MenuItem ();
             save_to.add (new MenuLabel ("drive-harddisk-symbolic", _("Save to MyComputer")));
@@ -309,9 +313,10 @@ namespace niki {
             download_dialog.show_all ();
         }
 
-        private void edit_info () {
+        public void edit_info (string select_name) {
             if (mediaeditor == null) {
                 mediaeditor = new MediaEditor (this);
+                mediaeditor.set_media (select_name);
                 mediaeditor.show_all ();
                 mediaeditor.update_file.connect ((file_name)=> {
                     Gtk.TreeIter iter;

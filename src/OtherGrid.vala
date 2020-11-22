@@ -25,13 +25,13 @@ namespace niki {
         private const string [] SETTINGALL = {"Video Flip","Video Render","Color Effects","Audio Render","Audio Visualisation","Visualisation Mode","Visualisation Shader","Visualisation Amount"};
         private const string [] FLIPVIDEO = {"None","Rotate 90 Right","Rotate 180","Rotate 90 Left","Flip_Horizontal","Flip Vertical","Across Upper Left","Across Upper Right","Automatic"};
         private const string [] FLIPVIDEO_ICON = {"system-shutdown-symbolic", "object-rotate-right-symbolic", "com.github.torikulhabib.niki.refresh-180-symbolic", "object-rotate-left-symbolic", "object-flip-horizontal-symbolic", "object-flip-vertical-symbolic", "com.github.torikulhabib.niki.refresh-left-symbolic", "com.github.torikulhabib.niki.refresh-right-symbolic", "com.github.torikulhabib.niki.auto-symbolic"};
-        private const string [] VISUALISATION = {"OFF","ON"};
+        private const string [] VISUALISATION = {"Disabled","Enabled"};
         private const string [] VISUALISATION_ICON = {"system-shutdown-symbolic", "video-x-generic-symbolic"};
         private const string [] VISUALMODE = {"GOOM","GOOM 2","MONOSCOPE"};
         private const string [] SHADER = {"None","Fade","Fade Move UP","Fade Move Down","Fade Move Left","Fade Move Right","Fade Vertical Out","Fade Vertical In"};
-        private const string [] VIDEORENDER = {"Auto Videosink", "Vaapisink", "Ximagesink", "Xvimagesink"};
-        private const string [] AUDIORENDER = {"Auto Audiosink","Alsasink","Pulsesink"};
-        private const string [] COLOREFFECTS = {"None","Heat","Sepia","X-Ray","X-Pro","Yellow Blue"};
+        private const string [] VIDEORENDER = {"Auto", "Vaapi", "Ximage", "Xvimage"};
+        private const string [] AUDIORENDER = {"Auto","Alsa","Pulse"};
+        private const string [] COLOREFFECTS = {"Disabled","Heat","Sepia","X-Ray","X-Pro","Yellow Blue"};
 
         construct {
             valign = Gtk.Align.END;
