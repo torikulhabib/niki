@@ -133,7 +133,7 @@ namespace niki {
             });
             my_app = new Gtk.Label (null);
             my_app.get_style_context ().add_class ("button_action");
-            my_app.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
+            my_app.get_style_context ().add_class ("h3");
             my_app.ellipsize = Pango.EllipsizeMode.END;
             my_app.use_markup = true;
             my_app.label = _("Niki Camera");

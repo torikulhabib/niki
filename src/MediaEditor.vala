@@ -181,7 +181,7 @@ namespace niki {
             label_name.hexpand = true;
             label_name.halign = Gtk.Align.CENTER;
             label_name.ellipsize = Pango.EllipsizeMode.MIDDLE;
-            label_name.get_style_context ().add_class (Granite.STYLE_CLASS_H4_LABEL);
+            label_name.get_style_context ().add_class ("h4");
 
             var previous_button = new Gtk.Button.from_icon_name ("go-previous-symbolic");
             previous_button.focus_on_click = false;

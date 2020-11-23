@@ -120,7 +120,7 @@ namespace niki {
             });
 
             header_label = new Gtk.Label (null);
-            header_label.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
+            header_label.get_style_context ().add_class ("h3");
             header_label.ellipsize = Pango.EllipsizeMode.END;
             var focus_button = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.play-symbolic", Gtk.IconSize.BUTTON);
             focus_button.focus_on_click = false;

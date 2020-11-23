@@ -61,11 +61,11 @@ namespace niki {
             title_label = new Gtk.Label (_("Select Menu"));
             title_label.justify = Gtk.Justification.CENTER;
             title_label.hexpand = true;
-            title_label.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
+            title_label.get_style_context ().add_class ("h2");
 
             subtitle_label = new Gtk.Label (_("Drag Url, files or Select a source to playing."));
             subtitle_label.get_style_context ().add_class (Gtk.STYLE_CLASS_DIM_LABEL);
-            subtitle_label.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
+            subtitle_label.get_style_context ().add_class ("h3");
             subtitle_label.justify = Gtk.Justification.CENTER;
             subtitle_label.hexpand = true;
             subtitle_label.can_focus = true;

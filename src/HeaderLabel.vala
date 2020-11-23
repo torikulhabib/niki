@@ -30,7 +30,7 @@ namespace niki {
         construct {
             halign = Gtk.Align.START;
             xalign = 0;
-            get_style_context ().add_class (Granite.STYLE_CLASS_H4_LABEL);
+            get_style_context ().add_class ("h4");
         }
     }
 }

@@ -13,7 +13,7 @@ namespace niki {
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             focus_on_click = false;
             var button_title = new Gtk.Label (title);
-            button_title.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
+            button_title.get_style_context ().add_class ("h3");
             button_title.halign = Gtk.Align.START;
             button_title.valign = Gtk.Align.END;
 

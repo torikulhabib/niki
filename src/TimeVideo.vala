@@ -68,7 +68,7 @@ namespace niki {
 
             progress_duration_label = new Gtk.Label (null);
             progress_duration_label.get_style_context ().add_class ("selectedlabel");
-            progress_duration_label.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
+            progress_duration_label.get_style_context ().add_class ("h3");
             progress_duration_label.selectable = true;
             progress_duration_label.halign = Gtk.Align.START;
             add (progress_duration_label);

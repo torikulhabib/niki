@@ -91,10 +91,10 @@ namespace niki {
                 return false;
             });
             progression_label = new Gtk.Label (null);
-            progression_label.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
+            progression_label.get_style_context ().add_class ("h3");
 
             duration_label = new Gtk.Label (null);
-            duration_label.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
+            duration_label.get_style_context ().add_class ("h3");
 
             margin = 0;
             hexpand = true;

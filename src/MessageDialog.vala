@@ -54,7 +54,7 @@ namespace niki {
             image.set_from_gicon (new ThemedIcon (text_image), Gtk.IconSize.DIALOG);
 
             var primary_label = new Gtk.Label (primary_text);
-            primary_label.get_style_context ().add_class (Granite.STYLE_CLASS_PRIMARY_LABEL);
+            primary_label.get_style_context ().add_class ("primary");
             primary_label.max_width_chars = 50;
             primary_label.wrap = true;
             primary_label.xalign = 0;

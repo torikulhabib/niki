@@ -101,6 +101,8 @@ executable(
     'SeekTimeMusic.vala',
     'SearchEntry.vala',
     'DialogImport.vala',
+    'BufferSurface.vala',
+    'Color.vala',
 
     c_args: c_args,
     dependencies: [
@@ -114,7 +116,6 @@ executable(
         dependency('gdk-x11-3.0'),
         dependency('gdk-pixbuf-2.0'),
         dependency('libsoup-2.4'),
-        dependency('granite'),
         dependency('clutter-gtk-1.0'),
         dependency('clutter-gst-3.0'),
         dependency('clutter-1.0'),

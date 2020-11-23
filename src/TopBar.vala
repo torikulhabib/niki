@@ -141,7 +141,7 @@ namespace niki {
             });
             my_app = new Gtk.Label (null);
             my_app.get_style_context ().add_class ("button_action");
-            my_app.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
+            my_app.get_style_context ().add_class ("h3");
             my_app.ellipsize = Pango.EllipsizeMode.END;
             my_app.use_markup = true;
 
@@ -160,7 +160,7 @@ namespace niki {
 
             label_info = new Gtk.Label (null);
             label_info.get_style_context ().add_class ("selectedlabel");
-            label_info.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
+            label_info.get_style_context ().add_class ("h3");
             label_info.ellipsize = Pango.EllipsizeMode.END;
             label_info.halign = Gtk.Align.START;
             label_info.selectable = true;
@@ -184,7 +184,7 @@ namespace niki {
             info_label_full = new Gtk.Label (null);
             info_label_full.margin_start = 8;
             info_label_full.get_style_context ().add_class ("selectedlabel");
-            info_label_full.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
+            info_label_full.get_style_context ().add_class ("h2");
             info_label_full.ellipsize = Pango.EllipsizeMode.END;
             info_label_full.selectable = true;
 

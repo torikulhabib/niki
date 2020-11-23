@@ -571,7 +571,7 @@ namespace niki {
         return unknown_cover ();
     }
     private Gdk.Pixbuf pix_mode_blur (Gdk.Pixbuf pixbuf) {
-        var surface = new Granite.Drawing.BufferSurface ((int)pixbuf.get_width (), (int)pixbuf.get_height ());
+        var surface = new BufferSurface ((int)pixbuf.get_width (), (int)pixbuf.get_height ());
         Gdk.cairo_set_source_pixbuf (surface.context, pixbuf, 0, 0);
         surface.context.paint ();
         surface.exponential_blur (250);
@@ -719,7 +719,7 @@ namespace niki {
 	    int min_size = int.min (pixbuf.get_width (), pixbuf.get_height ());
 	    int max_size = int.max (pixbuf.get_width (), pixbuf.get_height ());
 	    Gdk.Pixbuf new_pix = new Gdk.Pixbuf.subpixbuf (pixbuf, min_size == pixbuf.get_width ()? 0 : (int) (max_size / 2) - (min_size / 2), pixbuf.get_height () == min_size? 0 : (int) (max_size / 2) - (min_size / 2), min_size, min_size);
-        var draw_surface = new Granite.Drawing.BufferSurface ((int)min_size, (int)min_size);
+        var draw_surface = new BufferSurface ((int)min_size, (int)min_size);
         Gdk.cairo_set_source_pixbuf (draw_surface.context, new_pix, 0, 0);
         draw_surface.context.paint ();
 	    Cairo.ImageSurface surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, min_size, min_size);
@@ -859,27 +859,27 @@ namespace niki {
         text_filter.add_mime_type ("text/*");
 
         var label = new Gtk.Label (null);
-        label.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
+        label.get_style_context ().add_class ("h3");
         label.ellipsize = Pango.EllipsizeMode.END;
         label.max_width_chars = 20;
         label.margin_end = 10;
         var label_bitrate = new Gtk.Label (null);
-        label_bitrate.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
+        label_bitrate.get_style_context ().add_class ("h3");
         label_bitrate.ellipsize = Pango.EllipsizeMode.END;
         label_bitrate.max_width_chars = 20;
         label_bitrate.margin_end = 10;
         var label_sample = new Gtk.Label (null);
-        label_sample.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
+        label_sample.get_style_context ().add_class ("h3");
         label_sample.ellipsize = Pango.EllipsizeMode.END;
         label_sample.max_width_chars = 20;
         label_sample.margin_end = 10;
         var label_chanel = new Gtk.Label (null);
-        label_chanel.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
+        label_chanel.get_style_context ().add_class ("h3");
         label_chanel.ellipsize = Pango.EllipsizeMode.END;
         label_chanel.max_width_chars = 20;
         label_chanel.margin_end = 10;
         var label_duration = new Gtk.Label (null);
-        label_duration.get_style_context ().add_class (Granite.STYLE_CLASS_H3_LABEL);
+        label_duration.get_style_context ().add_class ("h3");
         label_duration.ellipsize = Pango.EllipsizeMode.END;
         label_duration.max_width_chars = 20;
         label_duration.margin_end = 10;

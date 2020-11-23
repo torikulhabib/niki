@@ -130,7 +130,7 @@ namespace niki {
             timer_button = new TimerButton ();
             timer_label = new Gtk.Label (null);
             timer_label.get_style_context ().add_class ("transbgborder");
-            timer_label.get_style_context ().add_class (Granite.STYLE_CLASS_H2_LABEL);
+            timer_label.get_style_context ().add_class ("h2");
             timer_label.ellipsize = Pango.EllipsizeMode.END;
             timer_revealer = new Gtk.Revealer ();
             timer_revealer.add (timer_label);
