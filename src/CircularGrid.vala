@@ -100,12 +100,13 @@ namespace niki {
                             count_pro = count_pro + count_to;
                             if (count > n_child) {
 		                        if (NikiApp.window.main_stack.visible_child_name == "welcome") {
-		                            if (NikiApp.window.welcome_page.index_but == 3) {
+		                            if (NikiApp.window.welcome_page.index_but == 2) {
                                         NikiApp.window.main_stack.visible_child_name = "player";
                                         NikiApp.window.player_page.get_first ();
                                     } else {
                                         NikiApp.window.player_page.right_bar.playlist.play_first ();
                                     }
+                                    NikiApp.window.welcome_page.index_but = 0;
                                 }
                                 return false;
                             } else {

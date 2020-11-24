@@ -326,11 +326,6 @@
       <default>'Last played'</default>
       <summary>Last played</summary>
     </key>
-    <key name="folder-location" type="s">
-      <default>''</default>
-      <default>'Folder location'</default>
-      <summary>Folder location</summary>
-    </key>
     <key name="tooltip-equalizer" type="s">
       <default>''</default>
       <default>'Tooltips equalizer presets'</default>

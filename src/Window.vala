@@ -97,7 +97,6 @@ namespace niki {
 
             Gtk.drag_dest_set (this, Gtk.DestDefaults.ALL, target_list, Gdk.DragAction.COPY);
             drag_data_received.connect (on_drag_data_received);
-            GLib.Timeout.add (50, headerbar_mode);
 
             NikiApp.settings.changed["fullscreen"].connect (() => {
                 if (NikiApp.settings.get_boolean ("fullscreen")) {
@@ -159,6 +158,7 @@ namespace niki {
                 }
             });
             move_widget (this);
+            headerbar_mode ();
         }
 
         public void position_window () {
@@ -178,11 +178,21 @@ namespace niki {
             if (clear_playlist) {
                 player_page.right_bar.playlist.clear_items ();
             }
-            foreach (var file in files) {
-                player_page.right_bar.playlist.add_item (file);
-            }
-            if (force_play) {
-                player_page.right_bar.playlist.play_first ();
+            if (main_stack.visible_child_name == "player") {
+                foreach (var file in files) {
+                    player_page.right_bar.playlist.add_item (file);
+                }
+                if (force_play) {
+                    player_page.right_bar.playlist.play_first ();
+                }
+            } else if (main_stack.visible_child_name == "welcome") {
+                NikiApp.window.welcome_page.index_but = 1;
+                welcome_page.remove_all ();
+                foreach (var file in files) {
+                    welcome_page.list_append (file.get_uri ());
+                }
+                welcome_page.stack.visible_child_name = "circular";
+                welcome_page.start_count (welcome_page.liststore);
             }
         }
 
@@ -202,15 +212,13 @@ namespace niki {
                     NikiApp.settings.set_boolean ("spinner-wait", false);
 			        break;
 		        case Target.URILIST:
-		            if (main_stack.visible_child_name == "welcome") {
-                        player_page.right_bar.playlist.clear_items ();
-                    }
                     bool audio_video_media = false;
+                    File [] files = null;
                     foreach (var uri in selection_data.get_uris ()) {
                         File file = File.new_for_uri (uri);
                         if (get_mime_type (file).has_prefix ("video/") || get_mime_type (file).has_prefix ("audio/")) {
                             audio_video_media = true;
-                            player_page.right_bar.playlist.add_item (file);
+                            files += file;
                         }
                         if (player_page.playback.playing && main_stack.visible_child_name == "player" && is_subtitle (uri) == true && !NikiApp.settings.get_boolean("audio-video")) {
                             if (!NikiApp.settings.get_boolean("subtitle-available")) {
@@ -220,8 +228,12 @@ namespace niki {
                             player_page.playback.subtitle_choose (uri);
                         }
                     };
-		            if (main_stack.visible_child_name == "welcome" && audio_video_media) {
-                        player_page.right_bar.playlist.play_first ();
+                    if (files != null) {
+		                if (main_stack.visible_child_name == "welcome") {
+                            open_files (files, true);
+                        } else if (main_stack.visible_child_name == "player") {
+                            open_files (files, false, false);
+                        }
                     }
 			        break;
 		    }

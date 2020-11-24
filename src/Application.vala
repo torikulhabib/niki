@@ -127,7 +127,7 @@ namespace niki {
             } else {
                 active ();
                 if (files != null) {
-                    window.open_files (files, true); 
+                    window.open_files (files, true);
                     arg_files = {};
                 } else {
                     window.position_window ();

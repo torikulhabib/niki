@@ -365,10 +365,11 @@ namespace niki {
         }
         public bool starting () {
             if (!playback.playing) {
-                if (is_privacy_mode_enabled () && !NikiApp.settings.get_boolean("home-signal")) {
+                if (is_privacy_mode_enabled () && !NikiApp.settings.get_boolean("home-signal") && NikiApp.window.welcome_page.index_but != 1) {
                     if (file_exists (NikiApp.settings.get_string("last-played"))) {
-                        NikiApp.window.welcome_page.index_but = 3;
+                        NikiApp.window.welcome_page.index_but = 2;
                         NikiApp.window.welcome_page.stack.visible_child_name = "circular";
+                        NikiApp.window.welcome_page.start_count (restore_file ());
                     } else {
                         gohome ();
                     }
