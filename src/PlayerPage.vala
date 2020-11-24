@@ -81,7 +81,7 @@ namespace niki {
             playback.size_change.connect ((width, height) => {
                 video_width = width;
                 video_height = height;
-                resize_player_page (window, width, height);
+                resize_player_page (width, height);
             });
             NikiApp.settings.changed["activate-subtitle"].connect (() => {
                 playback.subtitle_track = NikiApp.settings.get_boolean ("activate-subtitle")? playback.get_subtitle_track() : -1;
@@ -295,7 +295,7 @@ namespace niki {
             playback.ready.connect (()=> {
                 signal_window ();
                 if (video_width > 0 && video_height > 0) {
-                    resize_player_page (window, video_width, video_height);
+                    resize_player_page (video_width, video_height);
                 }
             });
             size_allocate.connect (signal_window);
@@ -303,14 +303,14 @@ namespace niki {
                 if (!NikiApp.settings.get_boolean("home-signal")) {
                     if (NikiApp.settings.get_boolean("audio-video")) {
                         window.resize (420, 420);
-                        resize_player_page (window, 420, 420);
+                        resize_player_page (420, 420);
                     }
                 }
             });
             NikiApp.settings.changed["audio-video"].connect (() => {
                 if (NikiApp.settings.get_boolean("audio-video")) {
                     window.resize (420, 420);
-                    resize_player_page (window, 420, 420);
+                    resize_player_page (420, 420);
                 }
                 audiovisualisation ();
             });
@@ -319,6 +319,7 @@ namespace niki {
             Idle.add (starting);
             window.welcome_page.getlink.errormsg.connect (string_notify);
             NikiApp.settings.changed["location-save"].connect (reloadlrc);
+            NikiApp.settings.changed["lyric-location"].connect (reloadlrc);
             destroy.connect (()=> {
                 if (!NikiApp.settings.get_boolean ("fullscreen")) {
                     NikiApp.settings.set_boolean ("fullscreen", true);
@@ -341,7 +342,7 @@ namespace niki {
                 }
                 NikiApp.window.main_stack.visible_child_name = "welcome";
                 NikiApp.window.resize (570, 430);
-                resize_player_page (NikiApp.window, 570, 430);
+                resize_player_page (570, 430);
             }
             NikiApp.settings.set_string("last-played", " ");
             NikiApp.settings.set_string("uri-video", " ");
@@ -393,7 +394,7 @@ namespace niki {
         public void get_first () {
             if (NikiApp.settings.get_boolean("audio-video")){
                 audio_banner ();
-                NikiApp.window.resize (420, 420);
+                ((Gtk.Window) get_toplevel ()).resize (420, 420);
             }
             if (!NikiApp.settings.get_string("last-played").has_prefix ("http")) {
                 right_bar.playlist.play_starup (NikiApp.settings.get_string("last-played"), this);
@@ -550,9 +551,9 @@ namespace niki {
             seconds_lyric.y = NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean("lyric-available") && NikiApp.settings.get_boolean("audio-video") && NikiApp.settings.get_boolean ("lyric-button")? ((stage.height / 2) - (seconds_lyric.height / 2) + (155 + first_lyric.height)) : -seconds_lyric.height;
         }
 
-        public void resize_player_page (Window window, int width, int height) {
+        public void resize_player_page (int width, int height) {
             if (!NikiApp.settings.get_boolean("audio-video")) {
-                window.resize (width, height);
+                ((Gtk.Window) get_toplevel ()).resize (width, height);
             }
             double widths = width / 2;
             double heights = height / 2;
@@ -560,7 +561,7 @@ namespace niki {
             double limit = aspect_max > 1.5? (aspect_max < 1.9? 0.1977777777777777 : 0.3277777777777777) : 0.1033333333333337;
             geometry.min_aspect = aspect_max > 1? aspect_max - limit : aspect_max + limit;
             geometry.max_aspect = aspect_max > 1? aspect_max - limit : aspect_max + limit;
-            window.set_geometry_hints (window, geometry, !NikiApp.settings.get_boolean("audio-video") && NikiApp.window.main_stack.visible_child_name == "player"? Gdk.WindowHints.ASPECT : Gdk.WindowHints.USER_SIZE);
+            ((Gtk.Window) get_toplevel ()).set_geometry_hints (((Gtk.Window) get_toplevel ()), geometry, !NikiApp.settings.get_boolean("audio-video") && NikiApp.window.main_stack.visible_child_name == "player"? Gdk.WindowHints.ASPECT : Gdk.WindowHints.USER_SIZE);
         }
 
         private void font_option () {
@@ -689,9 +690,9 @@ namespace niki {
                     lyric_uri = get_playing_lyric (file_uri.get_uri ());
                     break;
                 case 2 :
-                    if (run_open_folder (2, NikiApp.window)) {
-                        var file_uri = File.new_build_filename (NikiApp.settings.get_string ("ask-lyric"), file.get_basename ());
-                        lyric_uri = get_playing_lyric (file_uri.get_uri ());
+                    var file_ask = run_open_file (this, false, 3);
+                    if (file_ask != null) {
+                        lyric_uri = get_playing_lyric (file_ask[0].get_uri ());
                     }
                     break;
             }

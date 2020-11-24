@@ -53,7 +53,7 @@ namespace niki {
             add_doc.get_style_context ().add_class ("button_action");
             add_doc.tooltip_text = _("Open Text");
             add_doc.clicked.connect (()=> {
-                var file = run_open_file (NikiApp.window, false, 3);
+                var file = run_open_file (this, false, 3);
                 if (file != null) {
                     load_text (file[0]);
                 }
@@ -146,8 +146,9 @@ namespace niki {
                     	save_to_file (lrc_file);
                         break;
                     case 2 :
-                        if (run_open_folder (2, NikiApp.window)) {
-                            var lrc_file = Path.build_filename (NikiApp.settings.get_string ("ask-lyric"), get_name_noext (uri_this) + ".lrc");
+                        var file = run_open_folder (this);
+                        if (file != null) {
+                            var lrc_file = Path.build_filename (file.get_path (), get_name_noext (uri_this) + ".lrc");
                     	    save_to_file (lrc_file);
                         }
                         break;
@@ -160,7 +161,10 @@ namespace niki {
             get_fol_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             get_fol_rev.transition_duration = 500;
             get_fol_rev.clicked.connect (() => {
-                run_open_folder (1, NikiApp.window);
+                var file = run_open_folder (this);
+                if (file != null) {
+                    NikiApp.settings.set_string ("lyric-location", file.get_path ());
+                }
             });
             var label_make = new Gtk.Label (_("Niki Lyric Maker"));
             label_make.get_style_context ().add_class ("button_action");
@@ -252,7 +256,7 @@ namespace niki {
 
             if (listmodel.iter_next (ref iter)) {
                 tree_view.get_selection ().select_iter (iter);
-                tree_view.scroll_to_cell (listmodel.get_path (iter), null, true, (float) 0.5, 0);
+                tree_view.scroll_to_cell (listmodel.get_path (iter), null, true, 0.5f, 0);
             }
         }
         public void resize_scr () {

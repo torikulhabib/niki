@@ -744,12 +744,12 @@ namespace niki {
         notification.set_body (msg_bd);
         NikiApp.window.application.send_notification ("notify.app", notification);
     }
-    private void move_widget (Gtk.Widget widget, Gtk.Window windows) {
+    private void move_widget (Gtk.Widget widget) {
         bool mouse_primary_down = false;
         widget.motion_notify_event.connect ((event) => {
             if (mouse_primary_down) {
                 mouse_primary_down = false;
-                windows.begin_move_drag (Gdk.BUTTON_PRIMARY, (int)event.x_root, (int)event.y_root, event.time);
+                ((Gtk.Window) widget.get_toplevel ()).begin_move_drag (Gdk.BUTTON_PRIMARY, (int)event.x_root, (int)event.y_root, event.time);
             }
             return false;
         });
@@ -802,9 +802,9 @@ namespace niki {
             warning ("Error: %s\n", e.message);
         }
     }
-    private bool run_open_folder (int loca_set, Gtk.Window window) {
+    private File run_open_folder (Gtk.Widget widget) {
         var folder_location = new Gtk.FileChooserDialog (
-        _("Open"), window, Gtk.FileChooserAction.SELECT_FOLDER,
+        _("Open"), ((Gtk.Window) widget.get_toplevel ()), Gtk.FileChooserAction.SELECT_FOLDER,
         _("Cancel"), Gtk.ResponseType.CANCEL,
         _("Open"), Gtk.ResponseType.ACCEPT);
         folder_location.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
@@ -812,26 +812,17 @@ namespace niki {
         var filter_folder = new Gtk.FileFilter ();
         filter_folder.add_mime_type ("inode/directory");
         folder_location.set_filter (filter_folder);
-        var res = folder_location.run ();
-        if (res == Gtk.ResponseType.ACCEPT) {
-            switch (loca_set) {
-                case 0 :
-                    NikiApp.settings.set_string ("folder-location", folder_location.get_file ().get_path ());
-                    break;
-                case 1 :
-                    NikiApp.settings.set_string ("lyric-location", folder_location.get_file ().get_path ());
-                    break;
-                case 2 :
-                    NikiApp.settings.set_string ("ask-lyric", folder_location.get_file ().get_path ());
-                    break;
-            }
+        File files = null;
+        if (folder_location.run () == Gtk.ResponseType.ACCEPT) {
+            files = folder_location.get_file ();
         }
         folder_location.destroy ();
-        return res == Gtk.ResponseType.ACCEPT;
+        return files;
     }
-    public File[] run_open_file (Gtk.Window window, bool multi, int count) {
+
+    public File[] run_open_file (Gtk.Widget widget, bool multi, int count) {
         var file = new Gtk.FileChooserDialog (
-        _("Open"), window, Gtk.FileChooserAction.OPEN,
+        _("Open"), ((Gtk.Window) widget.get_toplevel ()), Gtk.FileChooserAction.OPEN,
         _("Cancel"), Gtk.ResponseType.CANCEL,
         _("Open"), Gtk.ResponseType.ACCEPT);
         file.select_multiple = multi;

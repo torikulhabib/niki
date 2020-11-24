@@ -82,7 +82,7 @@ namespace niki {
             });
 
             scale.enter_notify_event.connect (() => {
-                if (NikiApp.window.is_active) {
+                if (((Gtk.Window) get_toplevel ()).is_active) {
                     if (playerpage.bottom_bar.child_revealed) {
                         cursor_hand_mode (0);
                         preview_popover.schedule_show ();

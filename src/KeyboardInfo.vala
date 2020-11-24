@@ -64,7 +64,7 @@ namespace niki {
             scrolled_window.add (main_grid);
             scrolled_window.width_request = 600;
             scrolled_window.height_request = 440;
-            move_widget (this, this);
+            move_widget (this);
             set_keep_above (true);
             var headerbar = new Gtk.HeaderBar ();
             headerbar.has_subtitle = false;

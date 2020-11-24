@@ -67,7 +67,7 @@ namespace niki {
                 return false;
             });
             motion_notify_event.connect (() => {
-                if (NikiApp.window.is_active) {
+                if (((Gtk.Window) get_toplevel ()).is_active) {
                     reveal_control (false);
                     hovered = true;
                 }
@@ -167,7 +167,7 @@ namespace niki {
             playlist_scrolled.propagate_natural_height = true;
             playlist_scrolled.add (playlist);
             focus_button.clicked.connect ( () => {
-                playlist.scroll_to_cell (playlist.set_current (playerpage.playback.uri, playerpage), null, true, (float) 0.5, 0);
+                playlist.scroll_to_cell (playlist.set_current (playerpage.playback.uri, playerpage), null, true, 0.5f, 0);
             });
 
             var main_actionbar = new Gtk.ActionBar ();

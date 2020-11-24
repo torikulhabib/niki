@@ -158,7 +158,7 @@ namespace niki {
                     return destroy_mode ();
                 }
             });
-            move_widget (this, this);
+            move_widget (this);
         }
 
         public void position_window () {

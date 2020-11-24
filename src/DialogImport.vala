@@ -90,7 +90,7 @@ namespace niki {
             scanfolder.signal_succes.connect ((store_uri)=>{
                 count_uri (store_uri);
             });
-            move_widget (this, this);
+            move_widget (this);
             welcome_rigth.activated.connect ((index) => {
                 switch (index) {
                     case 0:
@@ -107,9 +107,10 @@ namespace niki {
 
                         break;
                     case 2:
-                        if (run_open_folder (0, this)) {
+                        var file = run_open_folder (this);
+                        if (file != null) {
                             scanfolder.remove_all ();
-                            scanfolder.scanning (NikiApp.settings.get_string ("folder-location"), 0);
+                            scanfolder.scanning (file.get_path (), 0);
                         }
                         break;
                 }

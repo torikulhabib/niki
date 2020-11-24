@@ -98,7 +98,7 @@ namespace niki {
 		        }
 		        destroy ();
             });
-            move_widget (this, this);
+            move_widget (this);
         }
         public void download_dlna (string uri, string uriout) {
             var file_path = File.new_for_path (uriout);

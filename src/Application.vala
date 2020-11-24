@@ -75,8 +75,6 @@ namespace niki {
                     if (NikiApp.settings.get_int ("window-x") != -1 && NikiApp.settings.get_int ("window-y") != -1) {
                         window.move (NikiApp.settings.get_int ("window-x"), NikiApp.settings.get_int ("window-y"));
                     }
-                } else if (NikiApp.settings.get_boolean ("audio-video") && window.main_stack.visible_child_name == "listview") {
-                    window.show_all ();
                 }
             }
         }

@@ -116,7 +116,7 @@ namespace niki {
             events |= Gdk.EventMask.ENTER_NOTIFY_MASK;
 
             enter_notify_event.connect ((event) => {
-                if (NikiApp.window.is_active) {
+                if (((Gtk.Window) get_toplevel ()).is_active) {
                     if (event.window == get_window ()) {
                         reveal_control ();
                         hovered = true;
@@ -126,7 +126,7 @@ namespace niki {
             });
 
             motion_notify_event.connect (() => {
-                if (NikiApp.window.is_active) {
+                if (((Gtk.Window) get_toplevel ()).is_active) {
                     reveal_control ();
                     hovered = true;
                 }
@@ -134,7 +134,7 @@ namespace niki {
             });
 
             leave_notify_event.connect ((event) => {
-                if (NikiApp.window.is_active) {
+                if (((Gtk.Window) get_toplevel ()).is_active) {
                     if (event.window == get_window ()) {
                         reveal_control ();
                         hovered = false;

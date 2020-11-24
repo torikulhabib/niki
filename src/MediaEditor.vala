@@ -368,7 +368,7 @@ namespace niki {
             clear_button.get_style_context ().add_class (Gtk.STYLE_CLASS_DESTRUCTIVE_ACTION);
             clear_button.clicked.connect (clear_tags);
 
-            move_widget (this, this);
+            move_widget (this);
 
             label = new Gtk.Label (null);
             label.valign = Gtk.Align.CENTER;

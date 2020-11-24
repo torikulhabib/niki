@@ -101,7 +101,7 @@ namespace niki {
             action_area.margin = 3;
             action_area.margin_top = 3;
             action_area.add (grid_combine);
-            move_widget (this, this);
+            move_widget (this);
         }
     }
 }

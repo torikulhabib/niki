@@ -217,7 +217,7 @@ namespace niki {
                         remove_all ();
                         NikiApp.window.player_page.right_bar.playlist.clear_items ();
                         index_but = 4;
-                        var files = run_open_file (NikiApp.window, true, 1);
+                        var files = run_open_file (this, true, 1);
                         if (files != null) {
                             foreach (var file in files) {
                                 list_append (file.get_uri ());
@@ -239,8 +239,10 @@ namespace niki {
                         break;
                     case 2:
                         NikiApp.window.player_page.right_bar.playlist.clear_items ();
-                        if (run_open_folder (0, NikiApp.window)) {
+                        var file = run_open_folder (this);
+                        if (file != null) {
                             index_but = 0;
+                            NikiApp.settings.set_string ("folder-location", file.get_path ());
                             stack.visible_child_name = "circular";
                             NikiApp.window.player_page.right_bar.playlist.clear_items ();
                         }

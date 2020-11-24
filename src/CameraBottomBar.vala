@@ -63,7 +63,7 @@ namespace niki {
             liststrore = new Gtk.ListStore (ColumnCamPre.N_COLUMNS, typeof (string), typeof (string));
             ((Gtk.TreeSortable)liststrore).set_sort_column_id (1, Gtk.SortType.DESCENDING);
             enter_notify_event.connect ((event) => {
-                if (NikiApp.window.is_active) {
+                if (((Gtk.Window) get_toplevel ()).is_active) {
                     if (event.window == get_window ()) {
                         hovered = true;
                     }
@@ -72,7 +72,7 @@ namespace niki {
             });
 
             motion_notify_event.connect (() => {
-                if (NikiApp.window.is_active) {
+                if (((Gtk.Window) get_toplevel ()).is_active) {
                     hovered = true;
                 }
                 return false;
@@ -87,7 +87,7 @@ namespace niki {
                 return false;
             });
             leave_notify_event.connect ((event) => {
-                if (NikiApp.window.is_active) {
+                if (((Gtk.Window) get_toplevel ()).is_active) {
                     if (event.window == get_window ()) {
                         hovered = false;
                     }

@@ -57,7 +57,7 @@ namespace niki {
                 return false;
             });
             motion_notify_event.connect (() => {
-                if (NikiApp.window.is_active) {
+                if (((Gtk.Window) get_toplevel ()).is_active) {
                     reveal_control ();
                     hovered = true;
                 }

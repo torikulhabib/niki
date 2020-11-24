@@ -115,7 +115,7 @@ namespace niki {
                 get_iter_select (NikiApp.window.player_page.playback.uri, iter);
             });
 
-            move_widget (this, this);
+            move_widget (this);
 
             label = new Gtk.Label (null);
             label.valign = Gtk.Align.CENTER;
@@ -228,8 +228,9 @@ namespace niki {
                     down_load (lrc_file, link, server);
                     break;
                 case 2 :
-                    if (run_open_folder (2, this)) {
-                        var lrc_file = Path.build_filename (NikiApp.settings.get_string ("ask-lyric"), @"$(get_name_noext (uri)).$(ext.down ())");
+                    var file = run_open_folder (this);
+                    if (file != null) {
+                        var lrc_file = Path.build_filename (file.get_path (), @"$(get_name_noext (uri)).$(ext.down ())");
                     	down_load (lrc_file, link, server);
                     }
                     break;
