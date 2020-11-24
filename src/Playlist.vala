@@ -316,8 +316,8 @@ namespace niki {
         public void edit_info (string select_name) {
             if (mediaeditor == null) {
                 mediaeditor = new MediaEditor (this);
-                mediaeditor.set_media (select_name);
                 mediaeditor.show_all ();
+                mediaeditor.set_media (select_name);
                 mediaeditor.update_file.connect ((file_name)=> {
                     Gtk.TreeIter iter;
                     for (int i = 0; liststore.get_iter_from_string (out iter, i.to_string ()); ++i) {

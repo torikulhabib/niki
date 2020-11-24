@@ -571,25 +571,26 @@ namespace niki {
         public void set_media (string file_name) {
             Gtk.TreeIter iter;
             playlist.liststore.get_iter (out iter, playlist.set_current (file_name, NikiApp.window.player_page));
-            playlist.get_selection().select_iter (iter);
-            if (!playlist.liststore.iter_is_valid (iter)) {
-                return;
-            }
-            if (file_name.has_prefix ("http")) {
-                return;
-            }
-            var file = File.new_for_uri (file_name);
-            if (get_mime_type (file).has_prefix ("video/")) {
-		        stack.visible_child_name = "video_info";
-                video_info (file_name);
-                clear_button.hide ();
-                save_button.hide ();
-            }
-            if (get_mime_type (file).has_prefix ("audio/")) {
-                stack.visible_child_name = "audio_info";
-                audio_info (file_name);
-                clear_button.show ();
-                save_button.show ();
+            if (playlist.liststore.iter_is_valid (iter)) {
+                playlist.get_selection().select_iter (iter);
+                string filename;
+                playlist.liststore.get (iter, PlaylistColumns.FILENAME, out filename);
+                if (filename.has_prefix ("http")) {
+                    return;
+                }
+                var file = File.new_for_uri (filename);
+                if (get_mime_type (file).has_prefix ("video/")) {
+		            stack.visible_child_name = "video_info";
+                    video_info (filename);
+                    clear_button.hide ();
+                    save_button.hide ();
+                }
+                if (get_mime_type (file).has_prefix ("audio/")) {
+                    stack.visible_child_name = "audio_info";
+                    audio_info (filename);
+                    clear_button.show ();
+                    save_button.show ();
+                }
             }
         }
         private void video_info (string file_name) {
