@@ -49,7 +49,7 @@ namespace niki {
                 index++;
             }
             audioamplify = Gst.ElementFactory.make("audioamplify", "audioamplify");
-            audioamplify["amplification"] = 1.17;
+            audioamplify["amplification"] = 1.16;
             spectrum = Gst.ElementFactory.make("nikispectrum", "nikispectrum");
             spectrum["interval"] = (uint64)(60 * 1000 * 1000);
             audiosink = Gst.ElementFactory.make(AUDIORENDER [NikiApp.settings.get_int ("audiorender-options")], AUDIORENDER [NikiApp.settings.get_int ("audiorender-options")]);
