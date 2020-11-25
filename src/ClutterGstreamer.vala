@@ -83,7 +83,7 @@ namespace niki {
         private void playback_mute () {
             pipeline["mute"] = NikiApp.settings.get_boolean ("status-muted");
         }
-
+        public float[] m_magnitudes = new float[10];
         private void handle_message (Gst.Bus bus, Gst.Message message) {
             if (message.type == Gst.MessageType.STEP_DONE) {
                 do_step ();
@@ -93,13 +93,13 @@ namespace niki {
                 string name = struct.get_name ();
                 if (name == "nikispectrum") {
                     unowned GLib.Value? vals = struct.get_value ("magnitude");
-                    for (int cpt = 0; cpt < audiomix.bands; ++cpt) {
+                    for (int cpt = 0; cpt < 10; ++cpt) {
                         unowned GLib.Value? mag = Gst.ValueList.get_value (vals, cpt);
                         if (mag != null) {
-                            audiomix.m_magnitudes[cpt] = (float)mag;
+                            m_magnitudes[cpt] = (float)mag;
                         }
-                        updated ();
                     }
+                    updated ();
                 }
             }
         }

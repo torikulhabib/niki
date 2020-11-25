@@ -212,12 +212,10 @@ namespace niki {
                     NikiApp.settings.set_boolean ("spinner-wait", false);
 			        break;
 		        case Target.URILIST:
-                    bool audio_video_media = false;
                     File [] files = null;
                     foreach (var uri in selection_data.get_uris ()) {
                         File file = File.new_for_uri (uri);
                         if (get_mime_type (file).has_prefix ("video/") || get_mime_type (file).has_prefix ("audio/")) {
-                            audio_video_media = true;
                             files += file;
                         }
                         if (player_page.playback.playing && main_stack.visible_child_name == "player" && is_subtitle (uri) == true && !NikiApp.settings.get_boolean("audio-video")) {

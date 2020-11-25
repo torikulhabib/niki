@@ -59,7 +59,7 @@ namespace niki {
         }
 
         private void on_spectrum_updated () {
-            unowned float[] magnitudes = playback.audiomix.get_magnitudes ();
+            unowned float[] magnitudes = playback.m_magnitudes;
             for (int band = 0; band < nb_bands; ++band) {
                 double val = magnitudes[band];
                 if (m_magnitudes[band] != val) {

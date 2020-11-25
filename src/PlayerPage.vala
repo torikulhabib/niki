@@ -478,7 +478,7 @@ namespace niki {
         public void signal_window () {
             if (NikiApp.settings.get_boolean("audio-video")) {
                 int height;
-                NikiApp.window.get_size (null, out height);
+                ((Gtk.Window) get_toplevel ()).get_size (null, out height);
                 menu_actor.height = height - 150;
                 update_position_cover ();
             }
@@ -518,9 +518,13 @@ namespace niki {
 
         private void audiovisualisation () {
             if (NikiApp.settings.get_boolean ("audio-video")) {
-                set_size_request (420, 420);
+                if (NikiApp.settings.get_int ("visualisation-options") == 0) {
+                    set_size_request (420, 420);
+                } else {
+                    set_size_request (670, 420);
+                }
             } else {
-                set_size_request (100, 150);
+                set_size_request (250, 150);
             }
             switch (NikiApp.settings.get_int ("visualisation-options")) {
                 case 0 :

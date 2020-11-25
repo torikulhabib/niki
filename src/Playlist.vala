@@ -208,6 +208,7 @@ namespace niki {
             if (filename != NikiApp.window.player_page.playback.uri) {
                 liststore.remove (ref iter);
             }
+            get_selection ().unselect_all ();
             update_playlist (50);
             return Gdk.EVENT_PROPAGATE;
         }

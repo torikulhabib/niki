@@ -29,17 +29,8 @@ namespace niki {
         private dynamic Gst.Element audioamplify;
         private dynamic Gst.Element spectrum;
         private const string [] AUDIORENDER = {"autoaudiosink", "alsasink", "pulsesink"};
-        private int interval { get; set; default = 50; }
-        public int threshold { get; set; default = -80; }
-        public float gamma { get; set; default = 3.0f; }
-        public uint bands { get; set; default = 10; }
-        public float[] m_magnitudes;
-        public unowned float[]? get_magnitudes () {
-            return m_magnitudes;
-        }
 
         construct {
-            m_magnitudes = new float[bands];
             audiotee = Gst.ElementFactory.make("tee", "tee");
             audioqueue = Gst.ElementFactory.make("queue", "queue");
             audioqueue["flush-on-eos"] = true;
@@ -58,15 +49,9 @@ namespace niki {
                 index++;
             }
             audioamplify = Gst.ElementFactory.make("audioamplify", "audioamplify");
-            audioamplify["amplification"] = 1.15;
+            audioamplify["amplification"] = 1.17;
             spectrum = Gst.ElementFactory.make("nikispectrum", "nikispectrum");
-            spectrum["bands"] = bands;
-            spectrum["threshold"] = (float)threshold;
-            spectrum["interval"] = (uint64)(interval * 1000 * 1000);
-            spectrum["gamma"] = (float)gamma;
-            bind_property ("bands", spectrum, "bands");
-            bind_property ("threshold", spectrum, "threshold");
-            bind_property ("gamma", spectrum, "gamma");
+            spectrum["interval"] = (uint64)(60 * 1000 * 1000);
             audiosink = Gst.ElementFactory.make(AUDIORENDER [NikiApp.settings.get_int ("audiorender-options")], AUDIORENDER [NikiApp.settings.get_int ("audiorender-options")]);
             add_many (audioqueue, audiotee, capsfilter, equalizer, spectrum, audioamplify, audiosink);
             add_pad (new Gst.GhostPad ("sink", audiotee.get_static_pad ("sink")));
