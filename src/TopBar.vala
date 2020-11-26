@@ -122,7 +122,7 @@ namespace niki {
             tag_botton.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             tag_botton.transition_duration = 500;
             tag_botton.clicked.connect (() => {
-                NikiApp.window.player_page.right_bar.playlist.edit_info (playerpage.playback.uri);
+                playerpage.right_bar.playlist.open_tag (playerpage.playback.uri);
             });
             crop_button = new ButtonRevealer ("image-crop-symbolic");
             crop_button.button.get_style_context ().add_class ("button_action");

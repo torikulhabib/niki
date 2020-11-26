@@ -313,7 +313,12 @@ namespace niki {
             var download_dialog = new DownloadDialog (file_name, titlename, mediatype);
             download_dialog.show_all ();
         }
-
+        public void open_tag (string tag_prop) {
+            Gtk.TreeIter iter;
+            liststore.get_iter (out iter, set_current (tag_prop, NikiApp.window.player_page));
+            get_selection ().select_iter (iter);
+            edit_info (tag_prop);
+        }
         public void edit_info (string select_name) {
             if (mediaeditor == null) {
                 mediaeditor = new MediaEditor (this);
