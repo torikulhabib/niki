@@ -197,7 +197,8 @@ parts:
       mkdir -pv $SNAPCRAFT_PART_INSTALL/gnome-platform
 apps:
   niki:
-    command: desktop-launch $SNAP/usr/bin/com.github.torikulhabib.niki
+    command: usr/bin/com.github.torikulhabib.niki
+    command-chain: [snap/command-chain/desktop-launch]
     desktop: usr/share/applications/com.github.torikulhabib.niki.desktop
     plugs:
       - desktop
