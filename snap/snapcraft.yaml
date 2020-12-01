@@ -198,7 +198,6 @@ parts:
 apps:
   niki:
     command: usr/bin/com.github.torikulhabib.niki
-    command-chain: [snap/command-chain/desktop-launch]
     desktop: usr/share/applications/com.github.torikulhabib.niki.desktop
     plugs:
       - desktop
