@@ -1,7 +1,7 @@
 name: niki
 version: "0.8.01"
 grade: stable
-base: core18
+base: core20
 summary: niki
 description: |
     Multimedia Player
