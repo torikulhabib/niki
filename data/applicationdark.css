@@ -21,7 +21,6 @@
 @define-color SemiBlack rgba (26, 26, 26, 1); 
 @define-color DarkMode rgba (56, 56, 56, 1); 
 @define-color SolidWhite rgba (255, 255, 255, 1);
-@define-color transparancyColor rgba (0, 0, 0, 0);
 @define-color colorAccent rgba (54, 137, 230, 1);
 @define-color colorAccentTransparent rgba(0, 0, 0, 0.1);
 @define-color bg_highlight_color shade (rgba(0, 0, 0, 0), 1.4);
@@ -29,7 +28,6 @@
 .niki,
 .niki, .widget_background {
     color: @SolidWhite;
-    transition: 300ms ease;
     background: @DarkMode;
     border-bottom-left-radius: 4px;
     border-bottom-right-radius: 4px;
@@ -47,8 +45,18 @@
 
 .button_action {
     color: @SolidWhite;
-    background-color: @transparancyColor;
-    border-color: @transparancyColor;
+    background-color: transparent;
+    border-color: transparent;
+}
+
+.button_action:disabled {
+    color: rgba (255, 255, 255, 0.5);
+    background-color: transparent;
+    border: transparent;
+    box-shadow:
+        inset 1px 0 0 0 alpha (shade (@colorPrimary, 1.4), 0.6),
+        inset -1px 0 0 0 alpha (shade (@colorPrimary, 1.4), 0.6),
+        inset 0 -1px 0 0 alpha (shade (@colorPrimary, 1.4), 0.8);
 }
 
 .dlnaplaylist:selected {
@@ -59,7 +67,7 @@
 .playlist {
     color: @SolidWhite;
     background: rgba (0,0,0,0.4);
-    border-color: @transparancyColor;
+    border-color: transparent;
 }
 
 .label_popover {
@@ -71,13 +79,13 @@
 }
 
 .transbgborder {
-    border-color: @transparancyColor;
-    background: @transparancyColor;
+    border-color: transparent;
+    background: transparent;
 }
 
 .progress_bar trough {
     background: rgba (56, 56, 56, 0.2);
-    border: @transparancyColor;
+    border: transparent;
     box-shadow: none;
 }
 
@@ -88,12 +96,12 @@
 }
 
 .seek_bar {
-    background: @transparancyColor;
-    border: @transparancyColor;
+    background: transparent;
+    border: transparent;
 }
 .seek_bar trough highlight {
     background: rgba (255, 0, 0, 1);
-    border: @transparancyColor;
+    border: transparent;
 }
 
 .seek_bar trough {
@@ -101,21 +109,21 @@
     background: rgba (56, 56, 56, 0.2);
 }
 .seek_bar trough fill {
-    border: @transparancyColor;
-    background: @transparancyColor;
+    border: transparent;
+    background: transparent;
 }
 
 .seek_bar scale slider {
-    background: @transparancyColor;
-    border: @transparancyColor;
+    background: transparent;
+    border: transparent;
     box-shadow: none;
     min-width: 0;
     min-height: 0;
 }
 
 .dlna_seek_bar {
-    background: @transparancyColor;
-    color: @transparancyColor;
+    background: transparent;
+    color: transparent;
 }
 
 .dlna_seek_bar trough highlight {
@@ -129,21 +137,21 @@
 }
 
 .dlna_seek_bar trough fill {
-    border: @transparancyColor;
-    background: @transparancyColor;
+    border: transparent;
+    background: transparent;
 }
 
 .dlna_seek_bar scale slider {
-    background: @transparancyColor;
-    border: @transparancyColor;
+    background: transparent;
+    border: transparent;
     box-shadow: none;
     min-width: 0;
     min-height: 0;
 }
 
 .dlna_volume {
-    color: @transparancyColor;
-    border-color: @transparancyColor;
+    color: transparent;
+    border-color: transparent;
 }
 
 .dlna_volume slider {
@@ -157,8 +165,8 @@
 }
 
 .dlna_volume trough fill {
-    background-color: @transparancyColor;
-    border-color: @transparancyColor;
+    background-color: transparent;
+    border-color: transparent;
 }
 
 .dlna_volume trough {
@@ -171,20 +179,20 @@
 }
 .volume slider {
     background-color: @SolidWhite;
-    border-color: @transparancyColor;
+    border-color: transparent;
 }
 .volume trough highlight {
     background-color: @SolidWhite;
-    border-color: @transparancyColor;
+    border-color: transparent;
 }
 
 .volume trough fill {
-    background-color: @transparancyColor;
+    background-color: transparent;
     border-color: @SolidWhite;
 }
 
 .volume trough {
-    border-color: @transparancyColor;
+    border-color: transparent;
     background-color: rgba (255, 255, 255, 0.2);
 }
 .scrollbar:selected {
@@ -192,42 +200,59 @@
     background: @colorAccent;
 }
 .scrollbar {
-    background: @transparancyColor;
+    background: transparent;
     border-color: @myColorPrimary;
 }
 
 .scrollbar trough slider {
     background: rgba (200, 200, 200, 1);
-    border-color: @transparancyColor;
+    border-color: transparent;
 }
 
+.makerlyric:selected {
+    color: @SolidWhite;
+    background: @colorAccent;
+}
+.makerlyric {
+    background: @DarkMode;
+    border-color: transparent;
+    color: @SolidWhite;
+}
+.makerlyric entry {
+    color: @SolidWhite;
+    background: @DarkMode;
+}
+.makerlyric trough slider {
+    background: rgba (200, 200, 200, 1);
+    border-color: transparent;
+}
 .dlna_scrollbar {
-    background-color: @transparancyColor;
+    background-color: transparent;
     border-color: rgba (26, 26, 26, 0.3);
 }
 
 .dlna_scrollbar trough slider {
     background-color: rgba (200, 200, 200, 1);
-    border-color: @transparancyColor;
+    border-color: transparent;
 }
 .spinbut {
     background: @SemiBlack;
-    border-color: @transparancyColor;
+    border-color: transparent;
 }
 
 .combox button.combo {
     background-color: @SemiBlack;
-    border: @transparancyColor;
+    border: transparent;
     color: @SolidWhite;
 }
 .combox arrow {
-    background-color: @transparancyColor;
-    border: @transparancyColor;
-    color: @transparancyColor;
+    background-color: transparent;
+    border: transparent;
+    color: transparent;
 }
 
 .transparantbg {
-    background: @transparancyColor;
+    background: transparent;
 }
 .ground_dlna {
     color: @SemiBlack;
@@ -236,7 +261,7 @@
 }
 
 .selectedlabel {
-    background: @transparancyColor;
+    background: transparent;
     color: @SolidWhite;
     border-color: @SolidWhite;
 }

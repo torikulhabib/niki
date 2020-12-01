@@ -34,6 +34,7 @@ namespace niki {
 
         public MakeLyric (BottomBar bottombar, PlayerPage playerpage) {
             tree_view = new Gtk.TreeView ();
+            tree_view.get_style_context ().add_class ("makerlyric");
             listmodel = new Gtk.ListStore (LyricColumns.N_COLUMNS, typeof (string), typeof (string));
             tree_view.model = listmodel;
             tree_view.reorderable = true;
@@ -265,8 +266,8 @@ namespace niki {
             if (NikiApp.settings.get_boolean("audio-video")) {
                 int height;
                 NikiApp.window.get_size (null, out height);
-                lrc_scr.height_request = height - 170;
-                lrc_text.height_request = height - 170;
+                lrc_scr.height_request = height - 158;
+                lrc_text.height_request = height - 158;
             }
         }
         private Gtk.TreeIter selected_iter () {

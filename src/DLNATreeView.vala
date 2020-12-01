@@ -115,22 +115,16 @@ namespace niki {
 
             button_press_event.connect ((event) => {
                 if (event.button == Gdk.BUTTON_SECONDARY && event.type != Gdk.EventType.2BUTTON_PRESS) {
-                    Idle.add (()=> {
-                        Gtk.TreeIter iter = selected_iter ();
-                        if (treestore.iter_is_valid (iter)) {
-                            string upnp_class;
-                            treestore.get (iter, DlnaTreeColumns.UPNPCLASS, out upnp_class);
-                            if (upnp_class == "object.item.videoItem" || upnp_class == "object.item.audioItem.musicTrack" || upnp_class == "object.item.imageItem.photo") {
-                                playing.show ();
-                                save_to.show ();
-                                if (!welcompage.dlnarendercontrol.get_selected_device ()) {
-                                    next_playing.show ();
-                                } else {
-                                    next_playing.hide ();
-                                }
+                    Gtk.TreeIter iter = selected_iter ();
+                    if (treestore.iter_is_valid (iter)) {
+                        string upnp_class;
+                        treestore.get (iter, DlnaTreeColumns.UPNPCLASS, out upnp_class);
+                        if (upnp_class == "object.item.videoItem" || upnp_class == "object.item.audioItem.musicTrack" || upnp_class == "object.item.imageItem.photo") {
+                            playing.show ();
+                            save_to.show ();
+                            if (!welcompage.dlnarendercontrol.get_selected_device ()) {
+                                next_playing.show ();
                             } else {
-                                playing.hide ();
-                                save_to.hide ();
                                 next_playing.hide ();
                             }
                         } else {
@@ -138,8 +132,11 @@ namespace niki {
                             save_to.hide ();
                             next_playing.hide ();
                         }
-                        return Gdk.EVENT_PROPAGATE;
-                    });
+                    } else {
+                        playing.hide ();
+                        save_to.hide ();
+                        next_playing.hide ();
+                    }
                     menu.popup_at_pointer (event);
                 }
                 return Gdk.EVENT_PROPAGATE;
