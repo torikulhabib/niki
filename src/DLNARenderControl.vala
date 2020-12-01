@@ -284,9 +284,25 @@ namespace niki {
                 return;
             }
             if (NikiApp.settings.get_enum ("dlna-state") == PlaybackState.PLAYING && pause) {
-                av_transport.begin_action ("Pause", av_transport_action_cb, "InstanceID", Type.UINT, 0);
+                var in_namesn = new GLib.List <string> ();
+                in_namesn.append ("InstanceID");
+                var in_valuesn = new GLib.List<GLib.Value?> ();
+                Value valueinstn = Value (Type.UINT);
+                valueinstn.set_uint (0);
+                in_valuesn.append (valueinstn);
+                av_transport.begin_action_list ("Pause", in_namesn, in_valuesn, av_transport_action_cb);
             } else {
-                av_transport.begin_action ("Play", av_transport_action_cb, "InstanceID", Type.UINT, 0, "Speed", Type.STRING, "1");
+                var in_names = new GLib.List <string> ();
+                in_names.append ("InstanceID");
+                in_names.append ("Speed");
+                var in_values = new GLib.List<GLib.Value?> ();
+                Value valueinst = Value (Type.UINT);
+                valueinst.set_uint (0);
+                in_values.append (valueinst);
+                Value valuespe = Value (Type.STRING);
+                valuespe.set_string ("1");
+                in_values.append (valuespe);
+                av_transport.begin_action_list ("Play", in_names, in_values, av_transport_action_cb);
             }
         }
 
@@ -301,7 +317,13 @@ namespace niki {
             if (av_transport == null) {
                 return;
             }
-            av_transport.begin_action (playback, av_transport_action_cb, "InstanceID", Type.UINT, 0);
+            var in_names = new GLib.List <string> ();
+            in_names.append ("InstanceID");
+            var in_values = new GLib.List<GLib.Value?> ();
+            Value valueinst = Value (Type.UINT);
+            valueinst.set_uint (0);
+            in_values.append (valueinst);
+            av_transport.begin_action_list (playback, in_names, in_values, av_transport_action_cb);
         }
 
         private void set_av_transport_uri_cb (GUPnP.ServiceProxy av_transport, GUPnP.ServiceProxyAction action) {
@@ -326,7 +348,13 @@ namespace niki {
             if (connection_manager == null) {
                 return;
             }
-            connection_manager.begin_action ("GetProtocolInfo", (connection_manager, action)=> {
+            var in_names = new GLib.List <string> ();
+            in_names.append ("");
+            var in_values = new GLib.List<GLib.Value?> ();
+            Value valueinst = Value (Type.UINT);
+            valueinst.set_uint (-1);
+            in_values.append (valueinst);
+            connection_manager.begin_action_list ("GetProtocolInfo", in_names, in_values, (connection_manager, action)=> {
                 string sink_protocol;
                 try {
                     if (connection_manager.end_action (action, "Sink", Type.STRING, out sink_protocol)) {
@@ -359,14 +387,42 @@ namespace niki {
                                 } else {
                                     mediatype = 0;
                                 }
-                                var download_dialog = new DownloadDialog (uri, title, mediatype);
+                                var download_dialog = new DownloadDialog (this, uri, title, mediatype);
                                 download_dialog.show_all ();
                                 welcompage.treview.downloaded = false;
                             } else {
                                 if (!next_uri) {
-                                    av_transport.begin_action ("SetAVTransportURI", set_av_transport_uri_cb, "InstanceID", Type.UINT, 0, "CurrentURI", Type.STRING, uri, "CurrentURIMetaData", Type.STRING, metadata);
+                                    var in_namesf = new GLib.List <string> ();
+                                    in_namesf.append ("InstanceID");
+                                    in_namesf.append ("CurrentURI");
+                                    in_namesf.append ("CurrentURIMetaData");
+                                    var in_valuesf = new GLib.List<GLib.Value?> ();
+                                    Value valueinstf = Value (Type.UINT);
+                                    valueinstf.set_uint (0);
+                                    in_valuesf.append (valueinstf);
+                                    Value valuecur = Value (Type.STRING);
+                                    valuecur.set_string (uri);
+                                    in_valuesf.append (valuecur);
+                                    Value valuecmet = Value (Type.STRING);
+                                    valuecmet.set_string (metadata);
+                                    in_valuesf.append (valuecmet);
+                                    av_transport.begin_action_list ("SetAVTransportURI", in_namesf, in_valuesf, set_av_transport_uri_cb);
                                 } else {
-                                    av_transport.begin_action ("SetNextAVTransportURI", set_av_transport_uri_cb, "InstanceID", Type.UINT, 0, "NextURI", Type.STRING, uri, "NextURIMetaData", Type.STRING, metadata);
+                                    var in_namess = new GLib.List <string> ();
+                                    in_namess.append ("InstanceID");
+                                    in_namess.append ("NextURI");
+                                    in_namess.append ("NextURIMetaData");
+                                    var in_valuess = new GLib.List<GLib.Value?> ();
+                                    Value valueinsta = Value (Type.UINT);
+                                    valueinsta.set_uint (0);
+                                    in_valuess.append (valueinsta);
+                                    Value valuenext = Value (Type.STRING);
+                                    valuenext.set_string (uri);
+                                    in_valuess.append (valuenext);
+                                    Value valuenmet = Value (Type.STRING);
+                                    valuenmet.set_string (metadata);
+                                    in_valuess.append (valuenmet);
+                                    av_transport.begin_action_list ("SetNextAVTransportURI", in_namess, in_valuess, set_av_transport_uri_cb);
                                     welcompage.treview.next_uri = false;
                                 }
                             }
@@ -388,7 +444,21 @@ namespace niki {
             if (av_transport == null) {
                 return;
             }
-            av_transport.begin_action ("Seek", av_transport_action_cb, "InstanceID", Type.UINT, 0, "Unit", Type.STRING, "ABS_TIME", "Target", Type.STRING, seconds_to_time ((int)total_secs, false));
+            var in_names = new GLib.List <string> ();
+            in_names.append ("InstanceID");
+            in_names.append ("Unit");
+            in_names.append ("Target");
+            var in_values = new GLib.List<GLib.Value?> ();
+            Value valueinst = Value (Type.UINT);
+            valueinst.set_uint (0);
+            in_values.append (valueinst);
+            Value valueunit = Value (Type.STRING);
+            valueunit.set_string ("ABS_TIME");
+            in_values.append (valueunit);
+            Value valuetarg = Value (Type.STRING);
+            valuetarg.set_string (seconds_to_time ((int)total_secs, false));
+            in_values.append (valuetarg);
+            av_transport.begin_action_list ("Seek", in_names, in_values, av_transport_action_cb);
         }
 
         private void get_position_info_cb (GUPnP.ServiceProxy av_transport, GUPnP.ServiceProxyAction action) {
@@ -417,7 +487,13 @@ namespace niki {
             if (av_transport == null) {
                 return false;
             }
-            av_transport.begin_action ("GetPositionInfo", get_position_info_cb, "InstanceID", Type.UINT, 0);
+            var in_names = new GLib.List <string> ();
+            in_names.append ("InstanceID");
+            var in_values = new GLib.List<GLib.Value?> ();
+            Value valueinst = Value (Type.UINT);
+            valueinst.set_uint (0);
+            in_values.append (valueinst);
+            av_transport.begin_action_list ("GetPositionInfo", in_names, in_values, get_position_info_cb);
             return true;
         }
 
@@ -445,7 +521,13 @@ namespace niki {
             if (av_transport == null) {
                 return;
             }
-            av_transport.begin_action ("GetMediaInfo", get_next_info_cb, "InstanceID", Type.UINT, 0);
+            var in_names = new GLib.List <string> ();
+            in_names.append ("InstanceID");
+            var in_values = new GLib.List<GLib.Value?> ();
+            Value valueinst = Value (Type.UINT);
+            valueinst.set_uint (0);
+            in_values.append (valueinst);
+            av_transport.begin_action_list ("GetMediaInfo", in_names, in_values, get_next_info_cb);
         }
         private uint timeout_id = 0;
         private void add_timeout () {
@@ -503,7 +585,21 @@ namespace niki {
                 return;
             }
             liststore.get (iter, DlnaComboColumns.SERVICERENDER, out rendering_control);
-            rendering_control.begin_action ("SetMute", rendering_cb, "InstanceID", Type.UINT, 0, "Channel", Type.STRING, "Master", "DesiredMute", Type.BOOLEAN, NikiApp.settings.get_boolean ("dlna-muted"));
+            var in_names = new GLib.List <string> ();
+            in_names.append ("InstanceID");
+            in_names.append ("Channel");
+            in_names.append ("DesiredMute");
+            var in_values = new GLib.List<GLib.Value?> ();
+            Value valueinst = Value (Type.UINT);
+            valueinst.set_uint (0);
+            in_values.append (valueinst);
+            Value valuecann = Value (Type.STRING);
+            valuecann.set_string ("Master");
+            in_values.append (valuecann);
+            Value valuedesired = Value (Type.BOOLEAN);
+            valuedesired.set_boolean (NikiApp.settings.get_boolean ("dlna-muted"));
+            in_values.append (valuedesired);
+            rendering_control.begin_action_list ("SetMute", in_names, in_values, rendering_cb);
         }
         private void volume_changed () {
             if (get_selected_device ()) {
@@ -515,7 +611,21 @@ namespace niki {
                 return;
             }
             liststore.get (iter, DlnaComboColumns.SERVICERENDER, out rendering_control);
-            rendering_control.begin_action ("SetVolume", rendering_cb, "InstanceID", Type.UINT, 0, "Channel", Type.STRING, "Master", "DesiredVolume", Type.UINT, (uint)NikiApp.settings.get_int ("dlna-volume"));
+            var in_names = new GLib.List <string> ();
+            in_names.append ("InstanceID");
+            in_names.append ("Channel");
+            in_names.append ("DesiredVolume");
+            var in_values = new GLib.List<GLib.Value?> ();
+            Value valueinst = Value (Type.UINT);
+            valueinst.set_uint (0);
+            in_values.append (valueinst);
+            Value valuecann = Value (Type.STRING);
+            valuecann.set_string ("Master");
+            in_values.append (valuecann);
+            Value valuedesired = Value (Type.UINT);
+            valuedesired.set_uint ((uint)NikiApp.settings.get_int ("dlna-volume"));
+            in_values.append (valuedesired);
+            rendering_control.begin_action_list ("SetVolume", in_names, in_values, rendering_cb);
         }
     }
 }

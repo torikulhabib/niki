@@ -42,7 +42,6 @@ namespace niki {
             insert_column_with_attributes (-1, "pixbuf", new Gtk.CellRendererPixbuf (), "pixbuf", DlnaTreeColumns.ICON);
             insert_column_with_attributes (-1, "text", new Gtk.CellRendererText (), "text", DlnaTreeColumns.TITLE);
             model = treestore;
-            columns_autosize ();
             expand = show_expanders = show_expanders = true;
             can_focus = headers_visible = activate_on_single_click = false;
             NikiApp.settings.set_boolean ("spinner-wait", true);
@@ -116,16 +115,22 @@ namespace niki {
 
             button_press_event.connect ((event) => {
                 if (event.button == Gdk.BUTTON_SECONDARY && event.type != Gdk.EventType.2BUTTON_PRESS) {
-                    Gtk.TreeIter iter = selected_iter ();
-                    if (treestore.iter_is_valid (iter)) {
-                        string upnp_class;
-                        treestore.get (iter, DlnaTreeColumns.UPNPCLASS, out upnp_class);
-                        if (upnp_class == "object.item.videoItem" || upnp_class == "object.item.audioItem.musicTrack" || upnp_class == "object.item.imageItem.photo") {
-                            playing.show ();
-                            save_to.show ();
-                            if (!welcompage.dlnarendercontrol.get_selected_device ()) {
-                                next_playing.show ();
+                    Idle.add (()=> {
+                        Gtk.TreeIter iter = selected_iter ();
+                        if (treestore.iter_is_valid (iter)) {
+                            string upnp_class;
+                            treestore.get (iter, DlnaTreeColumns.UPNPCLASS, out upnp_class);
+                            if (upnp_class == "object.item.videoItem" || upnp_class == "object.item.audioItem.musicTrack" || upnp_class == "object.item.imageItem.photo") {
+                                playing.show ();
+                                save_to.show ();
+                                if (!welcompage.dlnarendercontrol.get_selected_device ()) {
+                                    next_playing.show ();
+                                } else {
+                                    next_playing.hide ();
+                                }
                             } else {
+                                playing.hide ();
+                                save_to.hide ();
                                 next_playing.hide ();
                             }
                         } else {
@@ -133,11 +138,8 @@ namespace niki {
                             save_to.hide ();
                             next_playing.hide ();
                         }
-                    } else {
-                        playing.hide ();
-                        save_to.hide ();
-                        next_playing.hide ();
-                    }
+                        return Gdk.EVENT_PROPAGATE;
+                    });
                     menu.popup_at_pointer (event);
                 }
                 return Gdk.EVENT_PROPAGATE;
@@ -321,7 +323,7 @@ namespace niki {
                 }
 
                 if (downloaded) {
-                    var download_dialog = new DownloadDialog (uri, title, mediatype);
+                    var download_dialog = new DownloadDialog (this, uri, title, mediatype);
                     download_dialog.show_all ();
                     downloaded = false;
                     return;
@@ -383,6 +385,7 @@ namespace niki {
                 treestore.append (out root_device, null);
                 treestore.set (root_device, DlnaTreeColumns.ICON, icon, DlnaTreeColumns.TITLE, friendly_name, DlnaTreeColumns.DEVICEINFO, info, DlnaTreeColumns.SERVICEPROXY, content_dir, DlnaTreeColumns.ID, "0");
                 browse ("0");
+                columns_autosize ();
             }
         }
 
@@ -401,6 +404,7 @@ namespace niki {
                 if (proxys != null) {
                     if (udn == proxys.get_udn ()) {
                         treestore.remove (ref iter);
+                        columns_autosize ();
                     }
                 }
             }

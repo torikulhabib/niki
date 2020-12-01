@@ -570,14 +570,7 @@ namespace niki {
         }
         return unknown_cover ();
     }
-    private Gdk.Pixbuf pix_mode_blur (Gdk.Pixbuf pixbuf) {
-        var surface = new BufferSurface ((int)pixbuf.get_width (), (int)pixbuf.get_height ());
-        Gdk.cairo_set_source_pixbuf (surface.context, pixbuf, 0, 0);
-        surface.context.paint ();
-        surface.exponential_blur (250);
-        surface.context.paint ();
-        return Gdk.pixbuf_get_from_surface (surface.surface, 0, 0, pixbuf.get_width (), pixbuf.get_height ());
-    }
+
     private Gst.Sample? get_cover_sample (Gst.TagList tag_list) {
         Gst.Sample sample;
         for (int i = 0; tag_list.get_sample_index (Gst.Tags.IMAGE, i, out sample); i++) {

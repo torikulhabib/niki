@@ -118,6 +118,7 @@ namespace niki {
                 info_button ();
             });
             tag_botton = new ButtonRevealer ("tag-symbolic");
+            tag_botton.tooltip_text = _("Audio Tags");
             tag_botton.button.get_style_context ().add_class ("button_action");
             tag_botton.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             tag_botton.transition_duration = 500;
@@ -125,12 +126,16 @@ namespace niki {
                 playerpage.right_bar.playlist.open_tag (playerpage.playback.uri);
             });
             crop_button = new ButtonRevealer ("image-crop-symbolic");
+            crop_button.tooltip_text = _("Video Crop");
             crop_button.button.get_style_context ().add_class ("button_action");
             crop_button.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             crop_button.transition_duration = 500;
             crop_button.clicked.connect (dialog_crop);
             var cropfull_button = new Gtk.Button.from_icon_name ("image-crop-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
+            cropfull_button.tooltip_text = _("Video Crop");
             cropfull_button.focus_on_click = false;
+            cropfull_button.margin_top = 4;
+            cropfull_button.margin_end = 4;
             cropfull_button.get_style_context ().add_class ("button_action");
             cropfull_button.clicked.connect (dialog_crop);
             notify["child-revealed"].connect (() => {
@@ -145,17 +150,20 @@ namespace niki {
             my_app.ellipsize = Pango.EllipsizeMode.END;
             my_app.use_markup = true;
 
-            var main_actionbar = new Gtk.ActionBar ();
+            var main_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+            main_actionbar.margin_top = 4;
+            main_actionbar.margin_start = 4;
+            main_actionbar.margin_end = 4;
             main_actionbar.hexpand = true;
             main_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             main_actionbar.get_style_context ().add_class ("transbgborder");
-            main_actionbar.pack_start (close_botton);
-            main_actionbar.pack_start (info_option);
-            main_actionbar.pack_start (home_button);
+            main_actionbar.pack_start (close_botton, false, false, 0);
+            main_actionbar.pack_start (info_option, false, false, 0);
+            main_actionbar.pack_start (home_button, false, false, 0);
             main_actionbar.set_center_widget (my_app);
-            main_actionbar.pack_end (maximize_button);
-            main_actionbar.pack_end (tag_botton);
-            main_actionbar.pack_end (crop_button);
+            main_actionbar.pack_end (maximize_button, false, false, 0);
+            main_actionbar.pack_end (tag_botton, false, false, 0);
+            main_actionbar.pack_end (crop_button, false, false, 0);
             main_actionbar.show_all ();
 
             label_info = new Gtk.Label (null);
@@ -166,7 +174,7 @@ namespace niki {
             label_info.selectable = true;
 
             menu_revealer = new Gtk.Revealer ();
-            menu_revealer.margin_start = 8;
+            menu_revealer.margin_start = 4;
             menu_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN;
             menu_revealer.transition_duration = 500;
             menu_revealer.hexpand = true;
@@ -182,18 +190,19 @@ namespace niki {
             grid.show_all ();
 
             info_label_full = new Gtk.Label (null);
+            info_label_full.margin_top = 4;
             info_label_full.margin_start = 8;
             info_label_full.get_style_context ().add_class ("selectedlabel");
             info_label_full.get_style_context ().add_class ("h2");
             info_label_full.ellipsize = Pango.EllipsizeMode.END;
             info_label_full.selectable = true;
 
-            var info_actionbar = new Gtk.ActionBar ();
+            var info_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
             info_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             info_actionbar.hexpand = true;
-            info_actionbar.get_style_context ().add_class ("info_topbar");
-            info_actionbar.pack_start (info_label_full);
-            info_actionbar.pack_end (cropfull_button);
+            info_actionbar.get_style_context ().add_class ("topbar");
+            info_actionbar.pack_start (info_label_full, false, false, 0);
+            info_actionbar.pack_end (cropfull_button, false, false, 0);
             info_actionbar.show_all ();
 
             stack = new Gtk.Stack ();

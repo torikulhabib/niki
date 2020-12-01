@@ -119,7 +119,7 @@ namespace niki {
             });
 
             scale_range = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, 0.0, 1.0, 0.01);
-            scale_range.get_style_context ().add_class ("seek_bar");
+            scale_range.get_style_context ().add_class ("dlna_seek_bar");
             scale_range.draw_value = false;
             scale_range.hexpand = true;
             scale_range.enter_notify_event.connect (() => {
@@ -137,7 +137,7 @@ namespace niki {
                 return false;
             });
             var grid_scale = new Gtk.Grid ();
-            grid_scale.get_style_context ().add_class ("seek_bar");
+            grid_scale.get_style_context ().add_class ("dlna_seek_bar");
             grid_scale.margin = grid_scale.row_spacing = grid_scale.column_spacing = 0;
             grid_scale.hexpand = true;
             grid_scale.add (scale_range);
@@ -147,19 +147,19 @@ namespace niki {
             progress_duration_label.selectable = true;
             progress_duration_label.halign = Gtk.Align.START;
 
-            var main_actionbar = new Gtk.ActionBar ();
+            var main_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
             main_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             main_actionbar.get_style_context ().add_class ("ground_dlna");
             main_actionbar.hexpand = true;
             main_actionbar.margin_bottom = 6;
-            main_actionbar.pack_start (previous_button);
-            main_actionbar.pack_start (play_button);
-            main_actionbar.pack_start (stop_revealer);
-            main_actionbar.pack_start (next_button);
-            main_actionbar.pack_start (volume_button);
-            main_actionbar.pack_start (dlnavolume);
-            main_actionbar.pack_start (progress_duration_label);
-            main_actionbar.pack_end (clear_button);
+            main_actionbar.pack_start (previous_button, false, false, 0);
+            main_actionbar.pack_start (play_button, false, false, 0);
+            main_actionbar.pack_start (stop_revealer, false, false, 0);
+            main_actionbar.pack_start (next_button, false, false, 0);
+            main_actionbar.pack_start (volume_button, false, false, 0);
+            main_actionbar.pack_start (dlnavolume, false, false, 0);
+            main_actionbar.pack_start (progress_duration_label, false, false, 0);
+            main_actionbar.pack_end (clear_button, false, false, 0);
             main_actionbar.show_all ();
 
 		    var grid = new Gtk.Grid ();

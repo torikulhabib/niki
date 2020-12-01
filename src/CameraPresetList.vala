@@ -113,7 +113,7 @@ namespace niki {
             store.get (it, ComboColumns.OBJECT, out o);
             if (o != null && o is CameraPreset) {
                 camera_preset = o as CameraPreset;
-                if (!(o as CameraPreset).is_default) {
+                if (!((CameraPreset)o).is_default) {
                     add_delete_preset_option ();
                 } else {
                     remove_delete_option ();
@@ -143,7 +143,7 @@ namespace niki {
                 for (int i = 0; store.get_iter_from_string (out iter, i.to_string ()); ++i) {
                     GLib.Object o;
                     store.get (iter, ComboColumns.OBJECT, out o);
-                    if (o != null && o is CameraPreset && (o as CameraPreset).name == preset_name) {
+                    if (o != null && o is CameraPreset && ((CameraPreset)o).name == preset_name) {
                         set_active_iter (iter);
                         preset_selected (o as CameraPreset);
                         return;

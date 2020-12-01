@@ -31,7 +31,7 @@ namespace niki {
 
         public Spectrum (PlaybackPlayer playback) {
             this.playback = playback;
-            set_size_request (250, 250);
+            set_size_request (240, 240);
             orientation = Gtk.Orientation.VERTICAL;
             m_bands = new Gtk.Grid ();
             m_bands.orientation = Gtk.Orientation.HORIZONTAL;

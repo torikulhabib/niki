@@ -34,13 +34,15 @@ namespace niki {
         public DialogImport (PlayerPage playerpage) {
             Object (
                 text_image: "com.github.torikulhabib.niki",
-                primary_text: _("Import Media"),
+                header: _("Import File"),
+                primary_text: _("Select Media"),
                 secondary_text: _("Select a source to playing."),
                 selectable_text: false,
                 deletable: false,
                 resizable: false,
                 border_width: 0,
-                transient_for: NikiApp.window,
+                use_header_bar: 1,
+                transient_for: (Gtk.Window) playerpage.get_toplevel (),
                 destroy_with_parent: true,
                 window_position: Gtk.WindowPosition.CENTER_ON_PARENT
             );
@@ -127,12 +129,20 @@ namespace niki {
                         break;
                 }
             });
-            add_button (_("Close"), Gtk.ResponseType.CLOSE);
-            response.connect ((source, response_id)=>{
-                if (response_id == Gtk.ResponseType.CLOSE) {
-                    destroy ();
-                }
+            var close_dialog = new Gtk.Button.with_label (_("Close"));
+            close_dialog.clicked.connect (() => {
+		        destroy ();
             });
+
+		    var box_action = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+            box_action.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            box_action.spacing = 5;
+            box_action.margin_top = 5;
+            box_action.margin_start = 10;
+            box_action.margin_end = 10;
+            box_action.margin_bottom = 10;
+            box_action.pack_end (close_dialog, false, true, 0);
+            get_content_area ().add (box_action);
         }
         private void list_append (string path) {
             Gtk.TreeIter iter;

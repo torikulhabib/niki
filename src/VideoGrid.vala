@@ -81,6 +81,7 @@ namespace niki {
                 scale.draw_value = false;
                 scale.hexpand = true;
                 var label_name = new Gtk.Label (croma);
+                label_name.get_style_context ().add_class ("selectedlabel");
                 bool in_scale = false;
                 scale.tooltip_text = croma;
                 scale.enter_notify_event.connect (() => {

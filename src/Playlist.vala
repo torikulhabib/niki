@@ -282,35 +282,30 @@ namespace niki {
             if (file_name == NikiApp.window.player_page.playback.uri) {
                 return;
             }
-            var message_dialog = new MessageDialog.with_image_from_icon_name (_("Do you really want to remove this from device?"), _("This will remove the file from your playlist and from any device."), File.new_for_uri (file_name).get_path (), "user-trash");
-            var move_trash = new Gtk.Button.with_label (_("Move Trash"));
-            var delete_permanent = new Gtk.Button.with_label (_("Delete Permanent"));
-            move_trash.get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
-            delete_permanent.get_style_context ().add_class (Gtk.STYLE_CLASS_DESTRUCTIVE_ACTION);
-            move_trash.show_all ();
-            delete_permanent.show_all ();
-            delete_permanent.clicked.connect (() => {
-		        permanent_delete (File.new_for_uri (file_name));
-                liststore.remove (ref iter_select);
+            var deletedialog = new DeleteDialog (this, file_name);
+            deletedialog.show_all ();
+            deletedialog.destroy.connect (()=>{
+                deletedialog = null;
             });
-            move_trash.clicked.connect (() => {
-		        delete_trash (File.new_for_uri (file_name));
+            deletedialog.permanents.connect (()=>{
                 liststore.remove (ref iter_select);
+                get_selection ().unselect_all ();
+                update_playlist (50);
             });
-            message_dialog.add_action_widget (move_trash, 0);
-            message_dialog.add_button (_("Close"), Gtk.ButtonsType.CANCEL);
-            message_dialog.add_action_widget (delete_permanent, 0);
-            message_dialog.run ();
-            message_dialog.show_all ();
-            message_dialog.destroy ();
-            update_playlist (50);
+            deletedialog.trash.connect (()=>{
+                liststore.remove (ref iter_select);
+                get_selection ().unselect_all ();
+                update_playlist (50);
+            });
+            deletedialog.run ();
+
         }
 
         private void save_to_computer (Gtk.TreeIter iter_select) {
             string file_name, titlename;
             int mediatype;
             liststore.get (iter_select, PlaylistColumns.FILENAME, out file_name, PlaylistColumns.TITLE, out titlename, PlaylistColumns.MEDIATYPE, out mediatype);
-            var download_dialog = new DownloadDialog (file_name, titlename, mediatype);
+            var download_dialog = new DownloadDialog (this, file_name, titlename, mediatype);
             download_dialog.show_all ();
         }
         public void open_tag (string tag_prop) {

@@ -107,10 +107,9 @@ namespace niki {
 
             var dlna_scrolled = new Gtk.ScrolledWindow (null, null);
             dlna_scrolled.get_style_context ().add_class ("dlna_scrollbar");
+            dlna_scrolled.get_style_context ().add_class ("frame");
+            dlna_scrolled.margin_bottom = 5;
             dlna_scrolled.add (treview);
-            var frame = new Gtk.Frame (null);
-            frame.margin_bottom = 5;
-            frame.add (dlna_scrolled);
 
             var welcome_drive = new Welcome ();
             welcome_drive.append ("media-optical", _("Browse"), _("DVD"));
@@ -123,7 +122,7 @@ namespace niki {
             var dlna_grid = new Gtk.Grid ();
             dlna_grid.orientation = Gtk.Orientation.VERTICAL;
             dlna_grid.margin = 10;
-            dlna_grid.add (frame);
+            dlna_grid.add (dlna_scrolled);
             dlna_grid.add (dlnaaction);
             dlna_grid.add (dlnarendercontrol);
 

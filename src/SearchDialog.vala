@@ -37,10 +37,16 @@ namespace niki {
             Object (
                 resizable: true,
                 deletable: false,
+                use_header_bar: 1,
                 skip_taskbar_hint: true,
                 transient_for: NikiApp.window,
                 destroy_with_parent: true
             );
+            var header_action = new Gtk.Label ("Lyric Downloader");
+            header_action.get_style_context ().add_class ("h4");
+            header_action.halign = Gtk.Align.CENTER;
+            header_action.hexpand = true;
+            get_header_bar ().set_custom_title (header_action);
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             get_style_context ().add_class ("niki");
             engineviewlrc = new EngineViewlyrics ();
@@ -140,6 +146,7 @@ namespace niki {
             box_action.margin_top = 5;
             box_action.margin_start = 10;
             box_action.margin_end = 10;
+            box_action.margin_bottom = 10;
             box_action.pack_end (close_button, false, true, 0);
             box_action.pack_end (search_button, false, true, 0);
             box_action.pack_end (download_button, false, true, 0);

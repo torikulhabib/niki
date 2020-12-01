@@ -170,20 +170,22 @@ namespace niki {
             label_make.get_style_context ().add_class ("button_action");
             label_make.ellipsize = Pango.EllipsizeMode.END;
 
-            var main_actionbar = new Gtk.ActionBar ();
+            var main_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
             main_actionbar.get_style_context ().add_class ("transbgborder");
             main_actionbar.hexpand = true;
-            main_actionbar.pack_start (add_doc);
-            main_actionbar.pack_start (add_but);
-            main_actionbar.pack_start (insert_aft);
-            main_actionbar.pack_start (insert_bef);
-            main_actionbar.pack_start (remove_but);
+            main_actionbar.margin_start = 4;
+            main_actionbar.margin_end = 4;
+            main_actionbar.pack_start (add_doc, false, false, 0);
+            main_actionbar.pack_start (add_but, false, false, 0);
+            main_actionbar.pack_start (insert_aft, false, false, 0);
+            main_actionbar.pack_start (insert_bef, false, false, 0);
+            main_actionbar.pack_start (remove_but, false, false, 0);
             main_actionbar.set_center_widget (label_make);
-            main_actionbar.pack_end (save_but);
-            main_actionbar.pack_end (loc_save ());
-            main_actionbar.pack_end (get_fol_rev);
-            main_actionbar.pack_end (load_but);
-            main_actionbar.pack_end (new_lrc_blk);
+            main_actionbar.pack_end (save_but, false, false, 0);
+            main_actionbar.pack_end (loc_save (), false, false, 0);
+            main_actionbar.pack_end (get_fol_rev, false, false, 0);
+            main_actionbar.pack_end (load_but, false, false, 0);
+            main_actionbar.pack_end (new_lrc_blk, false, false, 0);
 
             lrc_scr = new Gtk.ScrolledWindow (null, null);
             lrc_scr.set_policy (Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC);

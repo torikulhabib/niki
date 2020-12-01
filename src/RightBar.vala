@@ -105,9 +105,9 @@ namespace niki {
             repeat_button = new RepeatButton ();
             repeat_button.get_style_context ().add_class ("button_action");
             var repeat_button_revealer = new Gtk.Revealer ();
-            repeat_button_revealer.add (repeat_button);
             repeat_button_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
             repeat_button_revealer.transition_duration = 100;
+            repeat_button_revealer.add (repeat_button);
             repeat_button_revealer.set_reveal_child (!NikiApp.settings.get_boolean ("audio-video"));
             font_button_rev.set_reveal_child (NikiApp.settings.get_boolean ("audio-video") && NikiApp.settings.get_boolean ("lyric-available"));
             NikiApp.settings.changed["audio-video"].connect (() => {
@@ -120,11 +120,11 @@ namespace niki {
             });
 
             header_label = new Gtk.Label (null);
+            header_label.get_style_context ().add_class ("selectedlabel");
             header_label.get_style_context ().add_class ("h3");
             header_label.ellipsize = Pango.EllipsizeMode.END;
             var focus_button = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.play-symbolic", Gtk.IconSize.BUTTON);
             focus_button.focus_on_click = false;
-            focus_button.get_style_context ().add_class ("button_action");
             focus_button.get_style_context ().add_class ("button_action");
             focus_button.set_tooltip_text (_("Go to Play"));
 
@@ -146,13 +146,13 @@ namespace niki {
                     entry.text = "";
                 }
             });
-            var header = new Gtk.ActionBar ();
+            var header = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
             header.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             header.get_style_context ().add_class ("transbgborder");
             header.hexpand = true;
-            header.pack_start (focus_button);
+            header.pack_start (focus_button, false, false, 0);
             header.set_center_widget (header_label);
-            header.pack_end (search_button);
+            header.pack_end (search_button, false, false, 0);
 
 		    var box_action = new Gtk.Grid ();
             box_action.orientation = Gtk.Orientation.HORIZONTAL;
@@ -170,13 +170,14 @@ namespace niki {
                 playlist.scroll_to_cell (playlist.set_current (playerpage.playback.uri, playerpage), null, true, 0.5f, 0);
             });
 
-            var main_actionbar = new Gtk.ActionBar ();
+            var main_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
             main_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             main_actionbar.get_style_context ().add_class ("transbgborder");
             main_actionbar.hexpand = true;
-            main_actionbar.pack_start (box_action);
-            main_actionbar.pack_end (font_button_rev);
-            main_actionbar.pack_end (repeat_button_revealer);
+            main_actionbar.pack_start (box_action, false, false, 0);
+            main_actionbar.pack_end (font_button_rev, false, false, 0);
+            main_actionbar.pack_end (repeat_button_revealer, false, false, 0);
+
 		    content_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
             content_box.get_style_context ().add_class ("playlist");
             content_box.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);

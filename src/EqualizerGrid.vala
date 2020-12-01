@@ -93,7 +93,9 @@ namespace niki {
                     return false;
                 });
                 var label_value = new Gtk.Label (null);
+                label_value.get_style_context ().add_class ("selectedlabel");
                 var label = new Gtk.Label (decibel);
+                label.get_style_context ().add_class ("selectedlabel");
                 var holder = new Gtk.Grid ();
                 holder.orientation = Gtk.Orientation.VERTICAL;
                 holder.row_spacing = 6;

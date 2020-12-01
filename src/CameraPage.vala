@@ -108,7 +108,7 @@ namespace niki {
             NikiApp.settings.changed["camera-video"].connect (camera_record);
             NikiApp.settings.changed["fullscreen"].connect (() => {
                 if (!NikiApp.settings.get_boolean("fullscreen")) {
-                    string_notify (_("Press Esc"));
+                    string_notify (_("Press ESC to exit full screen"));
                 } else {
                     notify_blank ();
                     if (notify_timer != 0) {

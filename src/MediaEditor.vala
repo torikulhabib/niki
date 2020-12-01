@@ -63,6 +63,7 @@ namespace niki {
         private Gtk.Button save_button;
         private Gtk.Button clear_button;
         private Gtk.Label label;
+        private Gtk.Label header_label;
         private Gtk.Spinner spinner;
         private Gtk.Revealer prog_revealer;
         private uint hiding_timer = 0;
@@ -72,11 +73,17 @@ namespace niki {
             Object (
                 resizable: true,
                 deletable: false,
+                use_header_bar: 1,
                 skip_taskbar_hint: true,
                 transient_for: NikiApp.window,
                 destroy_with_parent: true
             );
             this.playlist = playlist;
+            header_label = new Gtk.Label (null);
+            header_label.get_style_context ().add_class ("h4");
+            header_label.halign = Gtk.Align.CENTER;
+            header_label.hexpand = true;
+            get_header_bar ().set_custom_title (header_label);
             resize (425, 380);
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             get_style_context ().add_class ("niki");
@@ -393,6 +400,7 @@ namespace niki {
             box_action.margin_top = 5;
             box_action.margin_start = 10;
             box_action.margin_end = 10;
+            box_action.margin_bottom = 10;
             box_action.pack_end (close_button, false, true, 0);
             box_action.pack_end (save_button, false, true, 0);
             box_action.pack_end (clear_button, false, true, 0);
@@ -575,12 +583,14 @@ namespace niki {
             var file = File.new_for_uri (file_name);
             if (get_mime_type (file).has_prefix ("video/")) {
 		        stack.visible_child_name = "video_info";
+		        header_label.label = _("Video Details");
                 video_info (file_name);
                 clear_button.hide ();
                 save_button.hide ();
             }
             if (get_mime_type (file).has_prefix ("audio/")) {
                 stack.visible_child_name = "audio_info";
+                header_label.label = _("Audio Tags");
                 audio_info (file_name);
                 clear_button.show ();
                 save_button.show ();
@@ -705,7 +715,7 @@ namespace niki {
 
         private void select_image (string inpu_data) {
             var crop_dialog = new CropDialog (inpu_data, this);
-            crop_dialog.show ();
+            crop_dialog.show_all ();
             crop_dialog.request_avatar_change.connect ((pixbuf)=> {
                 apply_cover_pixbuf (pixbuf);
                 string nameimage = cache_image ("setcover");

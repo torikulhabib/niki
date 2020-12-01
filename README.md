@@ -58,7 +58,6 @@ If you like Niki and you want to support its development,consider supporting via
 - [x] Apply album art as background.
 - [x] Mini cover.
 - [x] Volume button.
-- [x] Blur bacground.
 - [x] Info playing file.
 - [x] Keyboard key Notification.
 - [x] Auto resize window.

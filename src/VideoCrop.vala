@@ -26,13 +26,15 @@ namespace niki {
         public VideoCrop (PlayerPage playerpage) {
             Object (
                 text_image: "image-crop",
-                primary_text: _("Video Crop"),
-                secondary_text: _("Choose the part of the video to crop."),
+                header: _("Video Crop"),
+                primary_text: _("Crop Position"),
+                secondary_text: _("Choose the side of the video to crop."),
                 selectable_text: false,
                 deletable: false,
                 resizable: false,
+                use_header_bar: 1,
                 border_width: 0,
-                transient_for: NikiApp.window,
+                transient_for: (Gtk.Window) playerpage.get_toplevel (),
                 destroy_with_parent: true,
                 window_position: Gtk.WindowPosition.CENTER_ON_PARENT
             );
@@ -53,28 +55,36 @@ namespace niki {
             frame.add (right_label);
             custom_bin.add (frame);
             custom_bin.set_size_request (300, 150);
-            show_all ();
-            add_button (_("Close"), Gtk.ResponseType.CLOSE);
-            var button_change = add_button (_("Set Crop"), Gtk.ResponseType.OK);
-            button_change.has_default = true;
-            button_change.get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
             int top_value, bottom_value, left_value, right_value;
             playerpage.playback.videomix.videocrop.get ("top", out top_value, "bottom", out bottom_value, "left", out left_value, "right", out right_value);
             top_label.number_entry.value = top_value;
             bottom_label.number_entry.value = bottom_value;
             left_label.number_entry.value = left_value;
             right_label.number_entry.value = right_value;
-            response.connect ((source, response_id)=>{
-                if (response_id == Gtk.ResponseType.OK) {
-                    top_value = (int) top_label.number_entry.get_value ();
-                    bottom_value = (int) bottom_label.number_entry.get_value ();
-                    left_value = (int) left_label.number_entry.get_value ();
-                    right_value = (int) right_label.number_entry.get_value ();
-                    playerpage.playback.videomix.set_videocrp (top_value, bottom_value, left_value, right_value);
-                } else if (response_id == Gtk.ResponseType.CLOSE) {
-                    destroy ();
-                }
+            var applyset = new Gtk.Button.with_label (_("Apply"));
+            applyset.get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
+            applyset.clicked.connect (() => {
+                top_value = (int) top_label.number_entry.get_value ();
+                bottom_value = (int) bottom_label.number_entry.get_value ();
+                left_value = (int) left_label.number_entry.get_value ();
+                right_value = (int) right_label.number_entry.get_value ();
+                playerpage.playback.videomix.set_videocrp (top_value, bottom_value, left_value, right_value);
             });
+            var close_dialog = new Gtk.Button.with_label (_("Close"));
+            close_dialog.clicked.connect (() => {
+		        destroy ();
+            });
+
+		    var box_action = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+            box_action.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            box_action.spacing = 5;
+            box_action.margin_top = 5;
+            box_action.margin_start = 10;
+            box_action.margin_end = 10;
+            box_action.margin_bottom = 10;
+            box_action.pack_end (applyset, false, true, 0);
+            box_action.pack_end (close_dialog, false, true, 0);
+            get_content_area ().add (box_action);
         }
 
     }

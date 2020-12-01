@@ -95,14 +95,6 @@ namespace niki {
                 return false;
             });
 
-            var main_actionbar = new Gtk.ActionBar ();
-            main_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            main_actionbar.get_style_context ().add_class ("transbgborder");
-
-            var camera_actionbar = new Gtk.ActionBar ();
-            camera_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            camera_actionbar.get_style_context ().add_class ("transbgborder");
-
             option_button = new Gtk.Button.from_icon_name ("camera-photo-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
             option_button.focus_on_click = false;
             option_button.get_style_context ().add_class ("button_action");
@@ -128,8 +120,9 @@ namespace niki {
             });
 
             timer_button = new TimerButton ();
+            timer_button.focus_on_click = false;
             timer_label = new Gtk.Label (null);
-            timer_label.get_style_context ().add_class ("transbgborder");
+            timer_label.get_style_context ().add_class ("button_action");
             timer_label.get_style_context ().add_class ("h2");
             timer_label.ellipsize = Pango.EllipsizeMode.END;
             timer_revealer = new Gtk.Revealer ();
@@ -137,6 +130,9 @@ namespace niki {
 
             cameragrid = new CameraGrid (camerapage);
             cameragrid.init ();
+            var camera_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+            camera_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            camera_actionbar.get_style_context ().add_class ("transbgborder");
             camera_actionbar.set_center_widget (cameragrid);
             camera_actionbar.hexpand = true;
             setting_revealer = new Gtk.Revealer ();
@@ -152,26 +148,33 @@ namespace niki {
                 NikiApp.settings.set_boolean ("setting-camera", !NikiApp.settings.get_boolean ("setting-camera"));
                 setting_revealer.set_reveal_child (NikiApp.settings.get_boolean ("setting-camera"));
             });
+
             asyncimage = new AsyncImage (true);
             asyncimage.get_style_context ().add_class ("button_action");
             asyncimage.pixel_size = 48;
             asyncimage.valign = Gtk.Align.CENTER;
             asyncimage.valign = Gtk.Align.CENTER;
+
             var openimage = new Gtk.Button ();
             openimage.focus_on_click = false;
             openimage.tooltip_text = "Photos";
             openimage.valign = Gtk.Align.CENTER;
             openimage.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            openimage.get_style_context ().add_class ("transparantbg");
+            openimage.get_style_context ().add_class ("button_action");
             openimage.add (asyncimage);
 
+            var main_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+            main_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            main_actionbar.get_style_context ().add_class ("transbgborder");
             main_actionbar.set_center_widget (capture_button);
-            main_actionbar.pack_start (option_button);
-            main_actionbar.pack_start (timer_button);
-            main_actionbar.pack_end (openimage);
-            main_actionbar.pack_end (setting_button);
+            main_actionbar.pack_start (option_button, false, false, 0);
+            main_actionbar.pack_start (timer_button, false, false, 0);
+            main_actionbar.pack_end (openimage, false, false, 0);
+            main_actionbar.pack_end (setting_button, false, false, 0);
             main_actionbar.hexpand = true;
-            main_actionbar.margin_bottom = 15;
+            main_actionbar.margin_start = 4;
+            main_actionbar.margin_end = 4;
+            main_actionbar.margin_bottom = 10;
             main_actionbar.show_all ();
 
 		    var grid = new Gtk.Grid ();

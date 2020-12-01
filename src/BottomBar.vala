@@ -352,13 +352,15 @@ namespace niki {
                 settings_icon ();
             });
 
-            var setting_actionbar = new Gtk.ActionBar ();
+            var setting_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
             setting_actionbar.hexpand = true;
+            setting_actionbar.margin_start = 4;
+            setting_actionbar.margin_end = 4;
             setting_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             setting_actionbar.get_style_context ().add_class ("transbgborder");
-            setting_actionbar.pack_start (settings_prev_button);
+            setting_actionbar.pack_start (settings_prev_button, false, false, 0);
             setting_actionbar.set_center_widget (setting_stack);
-            setting_actionbar.pack_end (settings_next_button);
+            setting_actionbar.pack_end (settings_next_button, false, false, 0);
             setting_actionbar.show_all ();
 
             var settings_revealer = new Gtk.Revealer ();
@@ -421,22 +423,24 @@ namespace niki {
             box_set_list_rev.transition_duration = 50;
             box_set_list_rev.add (box_set_list);
 
-            var main_actionbar = new Gtk.ActionBar ();
+            var main_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
             main_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             main_actionbar.get_style_context ().add_class ("transbgborder");
             main_actionbar.hexpand = true;
-            main_actionbar.margin_bottom = 8;
+            main_actionbar.margin_start = 4;
+            main_actionbar.margin_end = 4;
+            main_actionbar.margin_bottom = 6;
             main_actionbar.set_center_widget (action_box_rev);
-            main_actionbar.pack_start (box_action_revealer);
-            main_actionbar.pack_start (volume_button);
-            main_actionbar.pack_start (volume_widget);
-            main_actionbar.pack_start (lyric_revealer);
-            main_actionbar.pack_start (time_video);
-            main_actionbar.pack_end (box_set_list_rev);
-            main_actionbar.pack_end (playlist_revealer);
-            main_actionbar.pack_end (font_but_rev);
-            main_actionbar.pack_end (setting_niki);
-            main_actionbar.pack_end (no_rep_rev);
+            main_actionbar.pack_start (box_action_revealer, false, false, 0);
+            main_actionbar.pack_start (volume_button, false, false, 0);
+            main_actionbar.pack_start (volume_widget, false, false, 0);
+            main_actionbar.pack_start (lyric_revealer, false, false, 0);
+            main_actionbar.pack_start (time_video, false, false, 0);
+            main_actionbar.pack_end (box_set_list_rev, false, false, 0);
+            main_actionbar.pack_end (playlist_revealer, false, false, 0);
+            main_actionbar.pack_end (font_but_rev, false, false, 0);
+            main_actionbar.pack_end (setting_niki, false, false, 0);
+            main_actionbar.pack_end (no_rep_rev, false, false, 0);
 
 		    var grid = new Gtk.Grid ();
             grid.orientation = Gtk.Orientation.VERTICAL;

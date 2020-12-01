@@ -152,7 +152,7 @@ namespace niki {
             store.get (it, ComboColumns.OBJECT, out objets);
             if (objets != null && objets is EqualizerPreset) {
                 equalizer_preset = objets as EqualizerPreset;
-                if (!(objets as EqualizerPreset).is_default) {
+                if (!((EqualizerPreset)objets).is_default) {
                     add_delete_preset_option ();
                 } else {
                     remove_delete_option ();
@@ -181,7 +181,7 @@ namespace niki {
                 for (int i = 0; store.get_iter_from_string (out iter, i.to_string ()); ++i) {
                     GLib.Object objets;
                     store.get (iter, ComboColumns.OBJECT, out objets);
-                    if (objets != null && objets is EqualizerPreset && (objets as EqualizerPreset).name == preset_name) {
+                    if (objets != null && objets is EqualizerPreset && ((EqualizerPreset) objets).name == preset_name) {
                         set_active_iter (iter);
                         preset_selected (objets as EqualizerPreset);
                         return;

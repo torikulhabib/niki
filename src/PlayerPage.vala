@@ -46,6 +46,7 @@ namespace niki {
         public Clutter.Point point;
         private Gdk.Geometry geometry;
         public MPRIS? mpris;
+        public Inhibitor? initbitor;
         public int video_height;
         public int video_width;
         private uint mouse_timer = 0;
@@ -71,6 +72,7 @@ namespace niki {
             events |= Gdk.EventMask.POINTER_MOTION_MASK;
             playback = new PlaybackPlayer ();
             playback.set_seek_flags (ClutterGst.SeekFlags.ACCURATE);
+            initbitor = new Inhibitor ();
             stage = get_stage () as Clutter.Stage;
             stage.background_color = Clutter.Color.from_string ("black") { alpha = 0 };
             stage.set_content_scaling_filters (Clutter.ScalingFilter.TRILINEAR, Clutter.ScalingFilter.LINEAR);
@@ -108,8 +110,8 @@ namespace niki {
             spectrum.contents = spectrum_grid;
             spectrum.background_color = Clutter.Color.from_string ("black") { alpha = 0 };
             cover_center = new Clutter.Actor ();
-            cover_center.width = 250;
-            cover_center.height = 250;
+            cover_center.width = 240;
+            cover_center.height = 240;
             cover_center.content = cover_img;
             cover_center.add_child (spectrum);
             cover_center.set_pivot_point (0.5f, 0.5f);
@@ -144,7 +146,7 @@ namespace niki {
             title_music.ellipsize = Pango.EllipsizeMode.END;
             title_music.color = Clutter.Color.from_string ("white");
             title_music.background_color = Clutter.Color.from_string ("black") { alpha = 100 };
-            title_music.font_name = "Bitstream Vera Sans Bold 16";
+            title_music.font_name = "Bitstream Vera Sans Bold 14";
             title_music.line_alignment = Pango.Alignment.CENTER;
             title_music.single_line_mode = true;
             title_music.use_markup = true;
@@ -154,7 +156,7 @@ namespace niki {
             artist_music.ellipsize = Pango.EllipsizeMode.END;
             artist_music.color = Clutter.Color.from_string ("white");
             artist_music.background_color = Clutter.Color.from_string ("black") { alpha = 100 };
-            artist_music.font_name = "Lato 17";
+            artist_music.font_name = "Lato 15";
             artist_music.line_alignment = Pango.Alignment.CENTER;
             artist_music.single_line_mode = true;
             artist_music.use_markup = true;
@@ -250,7 +252,7 @@ namespace niki {
                             bottom_bar.stop_revealer.set_reveal_child (false);
                             bottom_bar.previous_revealer.set_reveal_child (false);
                             bottom_bar.next_revealer.set_reveal_child (false);
-                            Inhibitor.instance.uninhibit ();
+                            initbitor.uninhibit ();
                         }
                         break;
                 }
@@ -302,15 +304,15 @@ namespace niki {
             NikiApp.settings.changed["home-signal"].connect (() => {
                 if (!NikiApp.settings.get_boolean("home-signal")) {
                     if (NikiApp.settings.get_boolean("audio-video")) {
-                        window.resize (420, 420);
-                        resize_player_page (420, 420);
+                        window.resize (400, 400);
+                        resize_player_page (400, 400);
                     }
                 }
             });
             NikiApp.settings.changed["audio-video"].connect (() => {
                 if (NikiApp.settings.get_boolean("audio-video")) {
-                    window.resize (420, 420);
-                    resize_player_page (420, 420);
+                    window.resize (400, 400);
+                    resize_player_page (400, 400);
                 }
                 audiovisualisation ();
             });
@@ -335,7 +337,7 @@ namespace niki {
             save_lasplay ();
             playback.playing = false;
             playback.uri = null;
-            Inhibitor.instance.uninhibit ();
+            initbitor.uninhibit ();
             if (NikiApp.window.main_stack.visible_child_name == "player") {
                 if (!NikiApp.settings.get_boolean("home-signal")) {
                     NikiApp.settings.set_boolean("home-signal", true);
@@ -395,7 +397,7 @@ namespace niki {
         public void get_first () {
             if (NikiApp.settings.get_boolean("audio-video")){
                 audio_banner ();
-                ((Gtk.Window) get_toplevel ()).resize (420, 420);
+                ((Gtk.Window) get_toplevel ()).resize (400, 400);
             }
             if (!NikiApp.settings.get_string("last-played").has_prefix ("http")) {
                 right_bar.playlist.play_starup (NikiApp.settings.get_string("last-played"), this);
@@ -519,9 +521,9 @@ namespace niki {
         private void audiovisualisation () {
             if (NikiApp.settings.get_boolean ("audio-video")) {
                 if (NikiApp.settings.get_int ("visualisation-options") == 0) {
-                    set_size_request (420, 420);
+                    set_size_request (400, 400);
                 } else {
-                    set_size_request (670, 420);
+                    set_size_request (640, 400);
                 }
             } else {
                 set_size_request (250, 150);
@@ -714,18 +716,18 @@ namespace niki {
                     NikiApp.settings.set_boolean("audio-video", false);
                 }
                 if (playback.playing) {
-                    Inhibitor.instance.inhibit ();
+                    initbitor.inhibit ();
                 } else {
-                    Inhibitor.instance.uninhibit ();
+                    initbitor.uninhibit ();
                 }
             } else {
                 if (!NikiApp.settings.get_boolean("audio-video")) {
                     NikiApp.settings.set_boolean("audio-video", true);
                 }
                 if (NikiApp.settings.get_boolean ("lyric-button") && NikiApp.settings.get_boolean ("lyric-available") && playback.playing && !return_hide_mode) {
-                    Inhibitor.instance.inhibit ();
+                    initbitor.inhibit ();
                 } else {
-                    Inhibitor.instance.uninhibit ();
+                    initbitor.uninhibit ();
                 }
                 title_music.text = @" $(NikiApp.settings.get_string ("title-playing")) ";
                 artist_music.text = @" $(NikiApp.settings.get_string ("artist-music")) ";

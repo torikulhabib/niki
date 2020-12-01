@@ -103,6 +103,7 @@ executable(
     'DialogImport.vala',
     'BufferSurface.vala',
     'Color.vala',
+    'DeleteDialog.vala',
 
     c_args: c_args,
     dependencies: [
@@ -125,9 +126,9 @@ executable(
         dependency('gstreamer-base-1.0'),
         dependency('gstreamer-pbutils-1.0'),
         dependency('gstreamer-tag-1.0'),
-        dependency('gupnp-1.0'),
+        dependency('gupnp-1.2'),
         dependency('gupnp-av-1.0'),
-        dependency('gssdp-1.0'),
+        dependency('gssdp-1.2'),
         dependency('libxml-2.0'),
         dependency('libcanberra'),
         dependency('inytag'),

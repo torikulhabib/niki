@@ -37,7 +37,7 @@ namespace niki {
             pipeline["audio-sink"] = audiomix;
             var iter = ((Gst.Bin)pipeline).iterate_sinks ();
             Value value;
-            while (iter.next (out value) == Gst.Iterator.OK) {
+            while (iter.next (out value) == Gst.IteratorResult.OK) {
                 playsink = (Gst.Element)value;
                 string sink_name = playsink.get_name ();
                 if (sink_name == "playsink") {

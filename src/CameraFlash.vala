@@ -53,7 +53,7 @@ namespace niki {
                 set_keep_above (false);
                 destroy ();
                 if (lid_detect ()) {
-                    brightness_settings.brightness = start_brighnest + 1;
+                    brightness_settings.brightness = start_brighnest;
                 }
                 Gtk.Settings.get_default ().gtk_application_prefer_dark_theme = NikiApp.settings.get_boolean ("dark-style");
                 fade_timeout = 0;

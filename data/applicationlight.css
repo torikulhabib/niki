@@ -68,29 +68,41 @@
 }
 
 .transbgborder {
-    border-color: @transparancyColor;
-    background: @transparancyColor;
+    border: @transparancyColor;
+    background-color: @transparancyColor;
+    color: @transparancyColor;
+    border-bottom-color: rgba (255, 255, 255, 0.0);
 }
 
+.progress_bar trough {
+    background: rgba (255, 255, 255, 0.2);
+    border: @transparancyColor;
+    box-shadow: none;
+}
 .progress_bar progress {
     background: rgba (255, 0, 0, 1);
-    border: none;
+    border: @transparancyColor;
     box-shadow: none;
 }
 
+.seek_bar {
+    background: @transparancyColor;
+    color: @transparancyColor;
+}
+
 .seek_bar trough highlight {
-    background-color: rgba (255, 0, 0, 1);
-    border-color: @SolidWhite;
+    background: rgba (255, 0, 0, 1);
+    border: rgba (255, 0, 0, 1);
 }
 
 .seek_bar trough {
-    border-color: @SolidWhite;
-    background-color: @SolidWhite;
+    border-color: rgba (255, 255, 255, 0.1);
+    background: rgba (255, 255, 255, 0.2);
 }
 
 .seek_bar trough fill {
-    border-color: @SolidWhite;
-    background-color: @transparancyColor;
+    border: @transparancyColor;
+    background: @transparancyColor;
 }
 
 .seek_bar scale slider {
@@ -100,19 +112,46 @@
     min-width: 0;
     min-height: 0;
 }
+.dlna_seek_bar {
+    background: @transparancyColor;
+    color: @transparancyColor;
+}
+
+.dlna_seek_bar trough highlight {
+    background: rgba (255, 0, 0, 1);
+    border: rgba (255, 0, 0, 1);
+}
+
+.dlna_seek_bar trough {
+    border-color: rgba (55, 55, 55, 0.2);
+    background: rgba (55, 55, 55, 0.2);
+}
+
+.dlna_seek_bar trough fill {
+    border: @transparancyColor;
+    background: @transparancyColor;
+}
+
+.dlna_seek_bar scale slider {
+    background: @transparancyColor;
+    border: @transparancyColor;
+    box-shadow: none;
+    min-width: 0;
+    min-height: 0;
+}
 .dlna_volume {
     color: @transparancyColor;
-    border-color: @transparancyColor;
+    border: @transparancyColor;
 }
 
 .dlna_volume slider {
-    background-color: @transparancyColor;
-    border-color: @transparancyColor;
+    background-color: rgba (56, 56, 56, 1);
+    border-color: rgba (56, 56, 56, 1);
 }
 
 .dlna_volume trough highlight {
-    background-color: @SemiBlack;
-    border-color: @SemiBlack;
+    background-color: rgba (56, 56, 56, 1);
+    border-color: rgba (56, 56, 56, 1);
 }
 
 .dlna_volume trough fill {
@@ -121,32 +160,30 @@
 }
 
 .dlna_volume trough {
-    border-color: rgba (255, 255, 255, 0.5);
-    background-color: rgba (255, 255, 255, 0.5);
+    border-color: rgba (56, 56, 56, 0.5);
+    background-color: rgba (56, 56, 56, 0.5);
 }
 .volume {
     color: @SolidWhite;
     border-color: @SolidWhite;
 }
-
 .volume slider {
-    background-color: @transparancyColor;
+    background-color: @SolidWhite;
     border-color: @transparancyColor;
 }
-
 .volume trough highlight {
     background-color: @SolidWhite;
-    border-color: @SolidWhite;
+    border-color: @transparancyColor;
 }
 
 .volume trough fill {
     background-color: @transparancyColor;
-    border-color: @transparancyColor;
+    border-color: @SolidWhite;
 }
 
 .volume trough {
-    border-color: rgba (255, 255, 255, 0.5);
-    background-color: rgba (255, 255, 255, 0.5);
+    border-color: @transparancyColor;
+    background-color: rgba (255, 255, 255, 0.2);
 }
 
 .scrollbar {
@@ -164,7 +201,7 @@
 
 .dlna_scrollbar {
     background-color: @transparancyColor;
-    border-color: @myColorPrimary;
+    border-color: rgba (56, 56, 56, 0.3);
 }
 
 .dlna_scrollbar trough slider {
@@ -178,13 +215,13 @@
 }
 
 .combox button.combo {
-    background-color: @SolidWhite;
-    border-color: @transparancyColor;
-    color: @SolidWhite;
+    background: @SolidWhite;
+    border: @transparancyColor;
+    color: @SemiBlack;
 }
 .combox arrow {
-    background-color: @transparancyColor;
-    border-color: @transparancyColor;
+    background: @transparancyColor;
+    border: @transparancyColor;
     color: @transparancyColor;
 }
 .transparantbg {

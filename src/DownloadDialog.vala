@@ -23,21 +23,29 @@ namespace niki {
     public class DownloadDialog : Gtk.Dialog {
         private Gtk.ProgressBar progress_bar;
         private Gtk.Label bottom_label;
-        private bool loop_run = false;
 	    private Cancellable cancellable;
+        private bool loop_run = false;
+        private int start_time = 0;
 
-        public DownloadDialog (string primary_text, string secondary_text, int mode_type) {
+        public DownloadDialog (Gtk.Widget widget, string primary_text, string secondary_text, int mode_type) {
             Object (
                 deletable: false,
                 skip_taskbar_hint: true,
-                transient_for: NikiApp.window,
+                transient_for: (Gtk.Window) widget.get_toplevel (),
                 destroy_with_parent: true,
+                use_header_bar: 1,
                 type_hint: Gdk.WindowTypeHint.DIALOG,
                 window_position: Gtk.WindowPosition.CENTER_ON_PARENT
             );
             set_size_request (600, 30);
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             get_style_context ().add_class ("niki");
+            var header_label = new Gtk.Label (_("Downloading..."));
+            header_label.get_style_context ().add_class ("h4");
+            header_label.halign = Gtk.Align.CENTER;
+            header_label.hexpand = true;
+            get_header_bar ().set_custom_title (header_label);
+
             var top_label = new Gtk.Label (null);
             top_label.ellipsize = Pango.EllipsizeMode.END;
             top_label.max_width_chars = 55;
@@ -50,7 +58,7 @@ namespace niki {
             image.valign = Gtk.Align.START;
             image.set_from_gicon (new ThemedIcon ("drive-harddisk"), Gtk.IconSize.DIALOG);
             bottom_label = new Gtk.Label (null);
-            bottom_label.ellipsize = Pango.EllipsizeMode.START;
+            bottom_label.ellipsize = Pango.EllipsizeMode.END;
             bottom_label.xalign = 0;
             var stop_button = new Gtk.Button.from_icon_name ("process-stop-symbolic");
             stop_button.get_style_context ().add_class ("transparantbg");
@@ -85,7 +93,7 @@ namespace niki {
                     file_save = GLib.Environment.get_user_special_dir (UserDirectory.PICTURES);
                     break;
             }
-            top_label.label = @"Save... $(secondary_text) to $(file_save)";
+            top_label.label = _("File: %s to %s").printf (secondary_text,file_save);
             string without_ext = primary_text.substring (primary_text.last_index_of ("."));
             string file_out = @"$(file_save)/$(secondary_text)$(without_ext)";
             show.connect (() => {
@@ -104,14 +112,11 @@ namespace niki {
             var file_path = File.new_for_path (uriout);
             var file_from_uri = File.new_for_uri (uri);
             cancellable = new Cancellable ();
-            double progress = 0.0;
             progress_bar.set_fraction (0);
-
-            file_from_uri.copy_async.begin (file_path, FileCopyFlags.BACKUP | FileCopyFlags.ALL_METADATA, GLib.Priority.DEFAULT, cancellable, (current_num_bytes, total_num_bytes) => {
+            start_time = (int) get_real_time ();
+            file_from_uri.copy_async.begin (file_path, FileCopyFlags.BACKUP | FileCopyFlags.ALL_METADATA, GLib.Priority.DEFAULT, cancellable, (transferred, total_size) => {
                 loop_run = true;
-                progress = (double) current_num_bytes / total_num_bytes;
-                progress_bar.set_fraction (progress);
-                bottom_label.label = @"$(GLib.format_size (current_num_bytes)) / $(GLib.format_size (total_num_bytes))";
+                on_transfer_progress (transferred, total_size);
 	        }, (obj, res) => {
 	            loop_run = false;
 		        try {
@@ -121,6 +126,50 @@ namespace niki {
 		        }
 		        destroy ();
 		    });
+        }
+        private void on_transfer_progress (uint64 transferred, uint64 total_size) {
+            bottom_label.label = _("%s received %s").printf (GLib.format_size (total_size), GLib.format_size (transferred));
+            progress_bar.fraction = (double) transferred / (double) total_size;
+	        int current_time = (int) get_real_time ();
+	        int elapsed_time = (current_time - start_time) / 1000000;
+	        if (current_time < start_time + 1000000) {
+		        return;
+		    }
+
+	        if (elapsed_time == 0) {
+		        return;
+            }
+	        uint64 transfer_rate = transferred / elapsed_time;
+	        if (transfer_rate == 0) {
+		        return;
+		    }
+
+	        uint64 remaining_time = (total_size - transferred) / transfer_rate;
+	        string time = format_time((int)remaining_time);
+            bottom_label.label = _("%s received %s speed %s remaining %s").printf (GLib.format_size (total_size), GLib.format_size (transferred), GLib.format_size (transfer_rate), time);
+        }
+
+        private string format_time (int seconds) {
+	        int minutes;
+	        if (seconds < 0) {
+		        seconds = 0;
+		    }
+	        if (seconds < 60) {
+		        return ngettext("%'d second", "%'d seconds", seconds).printf (seconds);
+		    }
+	        if (seconds < 60 * 60) {
+		        minutes = (seconds + 30) / 60;
+		        return ngettext("%'d minute", "%'d minutes", minutes).printf (minutes);
+	        }
+	        int hours = seconds / (60 * 60);
+	        if (seconds < 60 * 60 * 4) {
+		        minutes = (seconds - hours * 60 * 60 + 30) / 60;
+		        string h = ngettext("%'u hour", "%'u hours", hours).printf (hours);
+		        string m = ngettext("%'u minute", "%'u minutes", minutes).printf (minutes);
+		        string res = h.concat(", ", m);
+		        return res;
+	        }
+	        return ngettext("approximately %'d hour", "approximately %'d hours", hours).printf (hours);
         }
     }
 }

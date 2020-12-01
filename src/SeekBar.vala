@@ -67,6 +67,7 @@ namespace niki {
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, 0.0, 1.0, 0.01);
             scale.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            scale.get_style_context ().add_class ("seek_bar");
             scale.get_style_context ().add_class ("label");
             scale.hexpand = true;
             scale.draw_value = false;

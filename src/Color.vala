@@ -105,7 +105,7 @@ namespace niki {
          *
          * @param color the {@link Gdk.Color}
          */
-        public Color.from_gdk (Gdk.Color color) {
+        public Color.from_gdk (Gdk.RGBA color) {
             R = color.red / (double) uint16.MAX;
             G = color.green / (double) uint16.MAX;
             B = color.blue / (double) uint16.MAX;

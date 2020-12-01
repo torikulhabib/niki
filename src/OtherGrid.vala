@@ -133,6 +133,7 @@ namespace niki {
                         break;
                 }
                 var label = new Gtk.Label (setingall + " :");
+                label.get_style_context ().add_class ("selectedlabel");
                 label.ellipsize = Pango.EllipsizeMode.END;
                 label.halign = Gtk.Align.START;
                 var holder = new Gtk.Grid ();

@@ -42,7 +42,33 @@ namespace niki {
         }
  
         public void browse (string container_id) {
-            content_directory.begin_action ("Browse", on_browse, "ObjectID", Type.STRING, container_id, "BrowseFlag", Type.STRING, "BrowseDirectChildren", "Filter", Type.STRING, "@childCount", "StartingIndex", Type.UINT, 0, "RequestedCount", Type.UINT, 0, "SortCriteria", Type.STRING, "");
+            var in_names = new GLib.List <string> ();
+            in_names.append ("ObjectID");
+            in_names.append ("BrowseFlag");
+            in_names.append ("Filter");
+            in_names.append ("StartingIndex");
+            in_names.append ("RequestedCount");
+            in_names.append ("SortCriteria");
+            var in_values = new GLib.List<GLib.Value?> ();
+            Value valueid = Value (Type.STRING);
+            valueid.set_string (container_id);
+            in_values.append (valueid);
+            Value valuemet = Value (Type.STRING);
+            valuemet.set_string ("BrowseDirectChildren");
+            in_values.append (valuemet);
+            Value valuefil = Value (Type.STRING);
+            valuefil.set_string ("@childCount");
+            in_values.append (valuefil);
+            Value valuestart = Value (Type.UINT);
+            valuestart.set_uint (0);
+            in_values.append (valuestart);
+            Value valuereq = Value (Type.UINT);
+            valuereq.set_uint (0);
+            in_values.append (valuestart);
+            Value valuesort = Value (Type.STRING);
+            valuesort.set_string ("");
+            in_values.append (valuesort);
+            content_directory.begin_action_list ("Browse", in_names, in_values, on_browse);
         }
 
         private void on_browse_metadata (GUPnP.ServiceProxy content_dir, GUPnP.ServiceProxyAction action) {
@@ -56,11 +82,63 @@ namespace niki {
 	        }
         }
         public void browse_metadata (string id) {
-            content_directory.begin_action("Browse", on_browse_metadata, "ObjectID", Type.STRING, id, "BrowseFlag", Type.STRING, "BrowseMetadata", "Filter", Type.STRING, "*", "StartingIndex", Type.UINT, 0, "RequestedCount", Type.UINT, 0, "SortCriteria", Type.STRING, "");
+            var in_names = new GLib.List <string> ();
+            in_names.append ("ObjectID");
+            in_names.append ("BrowseFlag");
+            in_names.append ("Filter");
+            in_names.append ("StartingIndex");
+            in_names.append ("RequestedCount");
+            in_names.append ("SortCriteria");
+            var in_values = new GLib.List<GLib.Value?> ();
+            Value valueid = Value (Type.STRING);
+            valueid.set_string (id);
+            in_values.append (valueid);
+            Value valuemet = Value (Type.STRING);
+            valuemet.set_string ("BrowseMetadata");
+            in_values.append (valuemet);
+            Value valuefil = Value (Type.STRING);
+            valuefil.set_string ("*");
+            in_values.append (valuefil);
+            Value valuestart = Value (Type.UINT);
+            valuestart.set_uint (0);
+            in_values.append (valuestart);
+            Value valuereq = Value (Type.UINT);
+            valuereq.set_uint (0);
+            in_values.append (valuestart);
+            Value valuesort = Value (Type.STRING);
+            valuesort.set_string ("");
+            in_values.append (valuesort);
+            content_directory.begin_action_list("Browse", in_names, in_values, on_browse_metadata);
         }
 
         public void search_async (string container_id, string search_criteria, string filter, uint32 starting_index, uint32 requested_count) {
-            content_directory.begin_action ("Search", on_browse, "ContainerID", Type.STRING, container_id, "SearchCriteria", Type.STRING, search_criteria, "Filter", Type.STRING, "*", "StartingIndex", Type.UINT, starting_index, "RequestedCount", Type.UINT, requested_count, "SortCriteria", Type.STRING, "");
+            var in_names = new GLib.List <string> ();
+            in_names.append ("ContainerID");
+            in_names.append ("SearchCriteria");
+            in_names.append ("Filter");
+            in_names.append ("StartingIndex");
+            in_names.append ("RequestedCount");
+            in_names.append ("SortCriteria");
+            var in_values = new GLib.List<GLib.Value?> ();
+            Value valueid = Value (Type.STRING);
+            valueid.set_string (container_id);
+            in_values.append (valueid);
+            Value valuemet = Value (Type.STRING);
+            valuemet.set_string (search_criteria);
+            in_values.append (valuemet);
+            Value valuefil = Value (Type.STRING);
+            valuefil.set_string ("*");
+            in_values.append (valuefil);
+            Value valuestart = Value (Type.UINT);
+            valuestart.set_uint (starting_index);
+            in_values.append (valuestart);
+            Value valuereq = Value (Type.UINT);
+            valuereq.set_uint (requested_count);
+            in_values.append (valuestart);
+            Value valuesort = Value (Type.STRING);
+            valuesort.set_string ("");
+            in_values.append (valuesort);
+            content_directory.begin_action_list ("Search", in_names, in_values, on_browse);
         }
     }
 }

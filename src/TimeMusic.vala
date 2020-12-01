@@ -111,14 +111,17 @@ namespace niki {
             anim_area.height_request = height;
             anim_area.draw.connect (anim_draw);
 
-            var actionbar = new Gtk.ActionBar ();
+            var actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
             actionbar.get_style_context ().add_class ("transbgborder");
+            actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            actionbar.margin_start = 5;
+            actionbar.margin_end = 5;
             actionbar.hexpand = true;
-            actionbar.pack_start (progression_label);
-            actionbar.pack_start (search_time_lrc);
+            actionbar.pack_start (progression_label, false, false, 0);
+            actionbar.pack_start (search_time_lrc, false, false, 0);
             actionbar.set_center_widget (anim_area);
-            actionbar.pack_end (duration_label);
-            actionbar.pack_end (make_lrc_but);
+            actionbar.pack_end (duration_label, false, false, 0);
+            actionbar.pack_end (make_lrc_but, false, false, 0);
             add (actionbar);
             show_all ();
             NikiApp.settings.changed["make-lrc"].connect (seach_n_time);

@@ -32,6 +32,7 @@ namespace niki {
             timer_image.valign = Gtk.Align.CENTER;
             timer_label = new Gtk.Label (null);
             timer_label.valign = Gtk.Align.END;
+            timer_label.get_style_context ().add_class ("button_action");
             label_revealer = new Gtk.Revealer ();
             label_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
             label_revealer.add (timer_label);

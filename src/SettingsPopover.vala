@@ -228,17 +228,14 @@ namespace niki {
         }
 
         private GLib.List<string> get_subtitle_track_names () {
-            var subtitles_streams = get_discoverer_info (playerpage.playback.uri).get_subtitle_streams ();
-            GLib.List<string> subtitle_languages = null;
-            foreach (var subtitle_stream in subtitles_streams) {
-                unowned string language_code = (subtitle_stream as Gst.PbUtils.DiscovererSubtitleInfo).get_language ();
-                if (language_code == null) {
-                    continue;
+            GLib.List<string> subtitle_languages = new GLib.List<string> ();
+            foreach (var subtitle_stream in get_discoverer_info (playerpage.playback.uri).get_subtitle_streams ()) {
+                var track_name = ((Gst.PbUtils.DiscovererSubtitleInfo) subtitle_stream).get_language ();
+                if (track_name!= null) {
+                    var language_name = Gst.Tag.get_language_name (track_name);
+                    subtitle_languages.append (language_name);
                 }
-                var language_name = Gst.Tag.get_language_name (language_code);
-                subtitle_languages.append (language_name);
             }
-            subtitle_languages.reverse ();
             return subtitle_languages;
         }
 
@@ -282,17 +279,14 @@ namespace niki {
             languages.changed.connect (on_languages_changed);
         }
         private GLib.List<string> get_audio_track_names () {
-            var audio_streams = get_discoverer_info (playerpage.playback.uri).get_audio_streams ();
-            GLib.List<string> audio_languages = null;
-            foreach (var audio_stream in audio_streams) {
-                unowned string language_code = (audio_stream as Gst.PbUtils.DiscovererAudioInfo).get_language ();
-                if (language_code == null) {
-                    continue;
+            GLib.List<string> audio_languages = new GLib.List<string> ();
+            foreach (var audio_stream in get_discoverer_info (playerpage.playback.uri).get_audio_streams ()) {
+                var language_code = ((Gst.PbUtils.DiscovererAudioInfo) audio_stream).get_language ();
+                if (language_code != null) {
+                    var language_name = Gst.Tag.get_language_name (language_code);
+                    audio_languages.append (language_name);
                 }
-                var language_name = Gst.Tag.get_language_name (language_code);
-                audio_languages.append (language_name);
             }
-            audio_languages.reverse ();
             return audio_languages;
         }
     }

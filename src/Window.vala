@@ -40,7 +40,6 @@ namespace niki {
             player_page.playback.notify["playing"].connect (position_window);
             var home_button = new Gtk.Button.from_icon_name ("go-home-symbolic", Gtk.IconSize.BUTTON);
             home_button.focus_on_click = false;
-            home_button.get_style_context ().add_class ("button_action");
             home_button.tooltip_text = _("Home");
             var home_revealer = new Gtk.Revealer ();
             home_revealer.transition_type = Gtk.RevealerTransitionType.CROSSFADE;

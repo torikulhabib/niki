@@ -27,10 +27,12 @@ namespace niki {
         public string secondary_text { get; construct; }
         public string third_text { get; construct; }
         public string text_image { get; construct; }
+        public string header { get; construct; }
         public bool selectable_text { get; construct; }
 
-        public MessageDialog.with_image_from_icon_name (string primary_text, string secondary_text, string third_text, string image_icon_name = "dialog-information", bool selectable_text = true) {
+        public MessageDialog.with_image_from_icon_name (string header, string primary_text, string secondary_text, string third_text, string image_icon_name = "dialog-information", bool selectable_text = true) {
             Object (
+                header: header,
                 primary_text: primary_text,
                 secondary_text: secondary_text,
                 third_text: third_text,
@@ -39,9 +41,7 @@ namespace niki {
                 resizable: false,
                 deletable: false,
                 skip_taskbar_hint: true,
-                transient_for: NikiApp.window,
-                destroy_with_parent: true,
-                window_position: Gtk.WindowPosition.CENTER_ON_PARENT
+                destroy_with_parent: true
             );
         }
 
@@ -52,6 +52,11 @@ namespace niki {
             image.valign = Gtk.Align.START;
             image.can_focus = true;
             image.set_from_gicon (new ThemedIcon (text_image), Gtk.IconSize.DIALOG);
+
+            var header_label = new Gtk.Label (header);
+            header_label.get_style_context ().add_class ("h4");
+            header_label.ellipsize = Pango.EllipsizeMode.END;
+            get_header_bar ().set_custom_title (header_label);
 
             var primary_label = new Gtk.Label (primary_text);
             primary_label.get_style_context ().add_class ("primary");

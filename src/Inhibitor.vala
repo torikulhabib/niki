@@ -24,46 +24,46 @@ public interface ScreenSaverIface : Object {
 
 namespace niki {
     public class Inhibitor :  Object {
-        private uint32? inhibit_cookie = null;
+        private uint32? inhibit_cookie;
         private ScreenSaverIface? screensaver_iface = null;
         private bool inhibited = false;
-
-        private static Inhibitor _instance = null;
-        public static Inhibitor instance {
-            get {
-                if (_instance == null) {
-                    _instance = new Inhibitor ();
-                }
-                return _instance;
-            }
-        }
+        private bool nointerface = false;
 
         construct {
             try {
                 screensaver_iface = Bus.get_proxy_sync (BusType.SESSION, "org.freedesktop.ScreenSaver", "/ScreenSaver", DBusProxyFlags.NONE);
             } catch (Error e) {
+                nointerface = true;
                 warning ("Could not start screensaver interface: %s", e.message);
             }
         }
 
         public void inhibit () {
+            if (nointerface) {
+                return;
+            }
             if (screensaver_iface != null && !inhibited) {
                 try {
                     inhibited = true;
                     inhibit_cookie = screensaver_iface.Inhibit (NikiApp.instance.application_id, "Playing movie");
                     simulate_activity ();
                 } catch (Error e) {
+                    nointerface = true;
                     warning ("Could not inhibit screen: %s", e.message);
                 }
             }
         }
 
         public void uninhibit () {
+            if (nointerface) {
+                return;
+            }
             if (screensaver_iface != null && inhibited) {
                 try {
                     inhibited = false;
                     screensaver_iface.UnInhibit (inhibit_cookie);
                 } catch (Error e) {
+                    nointerface = true;
                     warning ("Could not uninhibit screen: %s", e.message);
                 }
             }

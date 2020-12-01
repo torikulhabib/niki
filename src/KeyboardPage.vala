@@ -46,7 +46,7 @@ namespace niki {
                     NikiApp.settings.set_boolean ("fullscreen", !NikiApp.settings.get_boolean ("fullscreen"));
                 }
             } else if (ctrl_pressed && match_keycode (Gdk.Key.o, keycode) && !NikiApp.settings.get_boolean ("make-lrc") && !window.player_page.right_bar.entry_rev.child_revealed && window.main_stack.visible_child_name == "player") {
-                NikiApp.window.player_page.right_bar.impor_file ();
+                window.player_page.right_bar.impor_file ();
             } else if (match_keycode (Gdk.Key.q, keycode) && !NikiApp.settings.get_boolean ("make-lrc")  && !window.player_page.right_bar.entry_rev.child_revealed) {
                 destroy_mode ();
             } else if (match_keycode (Gdk.Key.m, keycode) && !NikiApp.settings.get_boolean ("make-lrc")  && !window.player_page.right_bar.entry_rev.child_revealed) {

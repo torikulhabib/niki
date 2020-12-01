@@ -136,7 +136,7 @@ namespace niki {
                 source.@set ("device", "/dev/cdrom", null);
                 dynamic Gst.Element pipeline = new Gst.Pipeline (null);
                 dynamic Gst.Element sink = Gst.ElementFactory.make ("fakesink", null);
-                (pipeline as Gst.Bin).add_many (source, sink);
+                ((Gst.Bin)pipeline).add_many (source, sink);
                 source.link (sink);
                 pipeline.set_state (Gst.State.PAUSED);
                 Gst.Bus bus = pipeline.get_bus ();

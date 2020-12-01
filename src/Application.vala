@@ -58,7 +58,7 @@ namespace niki {
             Contractor.create_contract ();
         }
         private void on_shutdown () {
-            Inhibitor.instance.uninhibit ();
+            window.player_page.initbitor.uninhibit ();
             Contractor.remove_contract ();
         }
 

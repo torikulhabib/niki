@@ -1,5 +1,5 @@
 name: niki
-version: "0.7.11"
+version: "0.8.01"
 grade: stable
 base: core18
 summary: niki
@@ -13,7 +13,6 @@ description: |
     Equalizer.
     Video Balance.
     Music art as background.
-    Blur background.
     DLNA Explorer.
     DLNA Controller.
     Camera.
@@ -46,9 +45,9 @@ parts:
         - libcanberra-dev
         - libgstreamer-plugins-good1.0-dev
         - libgstreamer-plugins-bad1.0-dev
-        - libgupnp-1.0-dev
+        - libgupnp-1.2-dev
         - libgupnp-av-1.0-dev
-        - libgssdp-1.0-dev
+        - libgssdp-1.2-dev
         - libcairo2-dev
         - libsqlite3-dev
     stage-packages:
