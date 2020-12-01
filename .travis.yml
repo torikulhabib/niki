@@ -12,7 +12,7 @@ services:
 os:
 - linux
 
-dist: bionic
+dist: focal
 
 addons:
   apt:
