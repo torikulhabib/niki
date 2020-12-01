@@ -103,7 +103,7 @@ parts:
         - libgstreamer-plugins-base1.0-0
         - libgstreamer1.0-0
         - libgudev-1.0-0
-        - libgupnp-1.0-4
+        - libgupnp-1.2-0
         - libgupnp-av-1.0-2
         - libinput10
         - libltdl7
@@ -121,6 +121,7 @@ parts:
         - gstreamer1.0-plugins-bad
         - gstreamer1.0-plugins-good
         - gstreamer1.0-plugins-base
+        - gstreamer1.0-python3-plugin-loader
         - libslang2
         - libglu1-mesa
         - freeglut3
