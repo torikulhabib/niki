@@ -213,10 +213,10 @@ slots:
     bus: session
     name: com.github.torikulhabib.niki
 plugs:
-  gnome-3-28-1804:
+  gnome-3.36:
     interface: content
     target: $SNAP/gnome-platform
-    default-provider: gnome-3-28-1804
+    default-provider: gnome-3.36
   gtk-3-themes:
     interface: content
     target: $SNAP/data-dir/themes
