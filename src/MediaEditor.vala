@@ -60,12 +60,12 @@ namespace niki {
         private MediaEntry? audio_depth;
         private Gtk.Stack stack;
         private Playlist? playlist;
-        private Gtk.Button save_button;
-        private Gtk.Button clear_button;
         private Gtk.Label label;
         private Gtk.Label header_label;
         private Gtk.Spinner spinner;
         private Gtk.Revealer prog_revealer;
+        private Gtk.Revealer save_revealer;
+        private Gtk.Revealer clear_revealer;
         private uint hiding_timer = 0;
         public signal void update_file (string file_name);
 
@@ -362,7 +362,7 @@ namespace niki {
             grid_combine.add (stack);
             grid_combine.show_all ();
 
-            save_button = new Gtk.Button.with_label (_("Save"));
+            var save_button = new Gtk.Button.with_label (_("Save"));
             save_button.get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
             save_button.clicked.connect (save_to_file);
 
@@ -370,7 +370,7 @@ namespace niki {
             close_button.clicked.connect (()=>{
                 destroy();
             });
-            clear_button = new Gtk.Button.with_label (_("Clear"));
+            var clear_button = new Gtk.Button.with_label (_("Clear"));
             clear_button.get_style_context ().add_class (Gtk.STYLE_CLASS_DESTRUCTIVE_ACTION);
             clear_button.clicked.connect (clear_tags);
 
@@ -394,14 +394,22 @@ namespace niki {
             prog_revealer.margin_start = 10;
             prog_revealer.add (prog_grid);
 
+            save_revealer = new Gtk.Revealer ();
+            save_revealer.transition_type = Gtk.RevealerTransitionType.CROSSFADE;
+            save_revealer.add (save_button);
+
+            clear_revealer = new Gtk.Revealer ();
+            clear_revealer.transition_type = Gtk.RevealerTransitionType.CROSSFADE;
+            clear_revealer.add (clear_button);
+
 		    var box_action = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
             box_action.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             box_action.spacing = 5;
             box_action.margin_end = 10;
             box_action.homogeneous = true;
             box_action.pack_end (close_button, false, true, 0);
-            box_action.pack_end (save_button, false, true, 0);
-            box_action.pack_end (clear_button, false, true, 0);
+            box_action.pack_end (save_revealer, false, true, 0);
+            box_action.pack_end (clear_revealer, false, true, 0);
 
 		    var box_proaction = new Gtk.Grid ();
             box_proaction.orientation = Gtk.Orientation.HORIZONTAL;
@@ -591,15 +599,13 @@ namespace niki {
 		        stack.visible_child_name = "video_info";
 		        header_label.label = _("Video Details");
                 video_info (file_name);
-                clear_button.hide ();
-                save_button.hide ();
+                clear_revealer.reveal_child = save_revealer.reveal_child = false;
             }
             if (get_mime_type (file).has_prefix ("audio/")) {
                 stack.visible_child_name = "audio_info";
                 header_label.label = _("Audio Tags");
                 audio_info (file_name);
-                clear_button.show ();
-                save_button.show ();
+                clear_revealer.reveal_child = save_revealer.reveal_child = true;
             }
         }
         private void video_info (string file_name) {
