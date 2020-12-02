@@ -401,7 +401,6 @@ namespace niki {
             }
             if (!NikiApp.settings.get_string("last-played").has_prefix ("http")) {
                 right_bar.playlist.play_starup (NikiApp.settings.get_string("last-played"), this);
-                playback.playing = false;
             }
         }
         private void gohome () {

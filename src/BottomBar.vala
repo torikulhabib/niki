@@ -427,8 +427,7 @@ namespace niki {
             main_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             main_actionbar.get_style_context ().add_class ("transbgborder");
             main_actionbar.hexpand = true;
-            main_actionbar.margin_start = 4;
-            main_actionbar.margin_end = 4;
+            main_actionbar.margin_end = main_actionbar.margin_start = 4;
             main_actionbar.margin_bottom = 6;
             main_actionbar.set_center_widget (action_box_rev);
             main_actionbar.pack_start (box_action_revealer, false, false, 0);

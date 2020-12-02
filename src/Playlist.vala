@@ -266,7 +266,7 @@ namespace niki {
                 send_iter_to (iter);
             }
         }
-        private void send_iter_to (Gtk.TreeIter iter) {
+        private void send_iter_to (Gtk.TreeIter iter, bool playf = true) {
             string file_plying, titlename, album, artist, filesize;
             int mediatype;
             bool playnow;
@@ -274,7 +274,7 @@ namespace niki {
             NikiApp.settings.set_string ("title-playing", titlename);
             NikiApp.settings.set_string ("artist-music", artist);
             NikiApp.settings.set_string ("album-music", album);
-            play (file_plying, filesize, mediatype, playnow);
+            play (file_plying, filesize, mediatype, playf? playnow : false);
         }
         private void create_dialog (Gtk.TreeIter iter_select) {
             string file_name, titlename;
@@ -526,7 +526,7 @@ namespace niki {
         public void play_starup (string uri, PlayerPage player_page) {
             Gtk.TreeIter iter;
             liststore.get_iter (out iter, set_current (uri, player_page));
-            send_iter_to (iter);
+            send_iter_to (iter, false);
         }
         public bool get_has_previous () {
             return current > 0;

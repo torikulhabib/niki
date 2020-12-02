@@ -60,16 +60,15 @@ namespace niki {
 		        destroy ();
             });
 
-		    var box_action = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+		    var box_action = new Gtk.Grid ();
+            box_action.orientation = Gtk.Orientation.HORIZONTAL;
             box_action.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            box_action.spacing = 5;
-            box_action.margin_top = 5;
-            box_action.margin_start = 10;
-            box_action.margin_end = 10;
-            box_action.margin_bottom = 10;
-            box_action.pack_start (delete_permanent, true, true, 0);
-            box_action.pack_start (move_trash, true, true, 0);
-            box_action.pack_end (close_dialog, true, true, 0);
+            box_action.column_spacing = box_action.margin_top = 5;
+            box_action.margin_start = box_action.margin_bottom = box_action.margin_end = 10;
+            box_action.hexpand = box_action.column_homogeneous = true;
+            box_action.add (delete_permanent);
+            box_action.add (move_trash);
+            box_action.add (close_dialog);
             get_content_area ().add (box_action);
         }
 

@@ -137,25 +137,26 @@ namespace niki {
             prog_grid.add (label);
 
             prog_revealer = new Gtk.Revealer ();
-            prog_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
+            prog_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_UP;
+            prog_revealer.margin_top = 5;
+            prog_revealer.margin_start = 10;
             prog_revealer.add (prog_grid);
 
-		    var box_action = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+		    var box_action = new Gtk.Grid ();
+            box_action.orientation = Gtk.Orientation.HORIZONTAL;
             box_action.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            box_action.spacing = 5;
-            box_action.margin_top = 5;
-            box_action.margin_start = 10;
-            box_action.margin_end = 10;
-            box_action.margin_bottom = 10;
-            box_action.pack_end (close_button, false, true, 0);
-            box_action.pack_end (search_button, false, true, 0);
-            box_action.pack_end (download_button, false, true, 0);
-            box_action.pack_start (prog_revealer, false, false, 0);
+            box_action.column_spacing = box_action.margin_top = 5;
+            box_action.margin_start = box_action.margin_bottom = box_action.margin_end = 10;
+            box_action.column_homogeneous = true;
+            box_action.add (download_button);
+            box_action.add (search_button);
+            box_action.add (close_button);
 
 		    var grid_ver = new Gtk.Grid ();
             grid_ver.orientation = Gtk.Orientation.VERTICAL;
             grid_ver.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             grid_ver.add (grid_combine);
+            grid_ver.add (prog_revealer);
             grid_ver.add (box_action);
 
             get_content_area ().add (grid_ver);

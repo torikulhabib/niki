@@ -367,7 +367,6 @@ namespace niki {
             save_button.clicked.connect (save_to_file);
 
             var close_button = new Gtk.Button.with_label (_("Close"));
-            close_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FRAME);
             close_button.clicked.connect (()=>{
                 destroy();
             });
@@ -392,25 +391,32 @@ namespace niki {
 
             prog_revealer = new Gtk.Revealer ();
             prog_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
+            prog_revealer.margin_start = 10;
             prog_revealer.add (prog_grid);
 
 		    var box_action = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
             box_action.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             box_action.spacing = 5;
-            box_action.margin_top = 5;
-            box_action.margin_start = 10;
             box_action.margin_end = 10;
-            box_action.margin_bottom = 10;
+            box_action.homogeneous = true;
             box_action.pack_end (close_button, false, true, 0);
             box_action.pack_end (save_button, false, true, 0);
             box_action.pack_end (clear_button, false, true, 0);
-            box_action.pack_start (prog_revealer, false, false, 0);
+
+		    var box_proaction = new Gtk.Grid ();
+            box_proaction.orientation = Gtk.Orientation.HORIZONTAL;
+            box_proaction.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            box_proaction.margin_top = 5;
+            box_proaction.margin_bottom = 10;
+            box_proaction.column_homogeneous = true;
+            box_proaction.add (prog_revealer);
+            box_proaction.add (box_action);
 
 		    var grid_ver = new Gtk.Grid ();
             grid_ver.orientation = Gtk.Orientation.VERTICAL;
             grid_ver.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             grid_ver.add (grid_combine);
-            grid_ver.add (box_action);
+            grid_ver.add (box_proaction);
             get_content_area ().add (grid_ver);
             show.connect(()=>{
                 NikiApp.window.player_page.right_bar.set_reveal_child (false);

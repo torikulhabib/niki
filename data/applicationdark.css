@@ -58,7 +58,12 @@
         inset -1px 0 0 0 alpha (shade (@colorPrimary, 1.4), 0.6),
         inset 0 -1px 0 0 alpha (shade (@colorPrimary, 1.4), 0.8);
 }
-
+.button_action:active {
+    box-shadow:
+        inset 1px 0 0 0 alpha (shade (@colorPrimary, 1.4), 0.6),
+        inset -1px 0 0 0 alpha (shade (@colorPrimary, 1.4), 0.6),
+        inset 0 -1px 0 0 alpha (shade (@colorPrimary, 1.4), 0.8);
+}
 .dlnaplaylist:selected {
     color: @SolidWhite;
     background: @colorAccent;
@@ -107,6 +112,10 @@
 .seek_bar trough {
     border-color: rgba (56, 56, 56, 0.1);
     background: rgba (56, 56, 56, 0.2);
+    box-shadow:
+        inset 1px 0 0 0 alpha (shade (@colorPrimary, 1.4), 0.6),
+        inset -1px 0 0 0 alpha (shade (@colorPrimary, 1.4), 0.6),
+        inset 0 -1px 0 0 alpha (shade (@colorPrimary, 1.4), 0.8);
 }
 .seek_bar trough fill {
     border: transparent;
@@ -134,6 +143,10 @@
 .dlna_seek_bar trough {
     border-color: rgba (255, 255, 255, 0.2);
     background: rgba (255, 255, 255, 0.2);
+    box-shadow:
+        inset 1px 0 0 0 alpha (shade (@colorPrimary, 1.4), 0.6),
+        inset -1px 0 0 0 alpha (shade (@colorPrimary, 1.4), 0.6),
+        inset 0 -1px 0 0 alpha (shade (@colorPrimary, 1.4), 0.8);
 }
 
 .dlna_seek_bar trough fill {
@@ -157,6 +170,10 @@
 .dlna_volume slider {
     background-color: @SolidWhite;
     border-color: @SolidWhite;
+    box-shadow:
+        inset 1px 0 0 0 alpha (shade (@colorPrimary, 1.4), 0.6),
+        inset -1px 0 0 0 alpha (shade (@colorPrimary, 1.4), 0.6),
+        inset 0 -1px 0 0 alpha (shade (@colorPrimary, 1.4), 0.8);
 }
 
 .dlna_volume trough highlight {
@@ -172,6 +189,10 @@
 .dlna_volume trough {
     border-color: rgba (255, 255, 255, 0.5);
     background-color: rgba (255, 255, 255, 0.5);
+    box-shadow:
+        inset 1px 0 0 0 alpha (shade (@colorPrimary, 1.4), 0.6),
+        inset -1px 0 0 0 alpha (shade (@colorPrimary, 1.4), 0.6),
+        inset 0 -1px 0 0 alpha (shade (@colorPrimary, 1.4), 0.8);
 }
 .volume {
     color: @SolidWhite;
@@ -194,6 +215,10 @@
 .volume trough {
     border-color: transparent;
     background-color: rgba (255, 255, 255, 0.2);
+    box-shadow:
+        inset 1px 0 0 0 alpha (shade (@colorPrimary, 1.4), 0.6),
+        inset -1px 0 0 0 alpha (shade (@colorPrimary, 1.4), 0.6),
+        inset 0 -1px 0 0 alpha (shade (@colorPrimary, 1.4), 0.8);
 }
 .scrollbar:selected {
     color: @SolidWhite;
@@ -236,12 +261,12 @@
     border-color: transparent;
 }
 .spinbut {
-    background: @SemiBlack;
+    background: @DarkMode;
     border-color: transparent;
 }
 
 .combox button.combo {
-    background-color: @SemiBlack;
+    background-color: @DarkMode;
     border: transparent;
     color: @SolidWhite;
 }

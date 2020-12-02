@@ -73,7 +73,7 @@ namespace niki {
             progress_duration_label.halign = Gtk.Align.START;
             add (progress_duration_label);
             margin_top = 2;
-            margin_start = 0;
+            margin_start = 2;
             show_all ();
         }
     }

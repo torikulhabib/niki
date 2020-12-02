@@ -77,11 +77,9 @@ namespace niki {
 
 		    var box_action = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
             box_action.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            box_action.spacing = 5;
-            box_action.margin_top = 5;
-            box_action.margin_start = 10;
-            box_action.margin_end = 10;
-            box_action.margin_bottom = 10;
+            box_action.margin_top = box_action.spacing = 5;
+            box_action.margin_start = box_action.margin_bottom = box_action.margin_end = 10;
+            box_action.homogeneous = true;
             box_action.pack_end (applyset, false, true, 0);
             box_action.pack_end (close_dialog, false, true, 0);
             get_content_area ().add (box_action);

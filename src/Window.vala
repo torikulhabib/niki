@@ -164,13 +164,12 @@ namespace niki {
             set_keep_above (player_page.playback.playing);
         }
 
-        private bool headerbar_mode () {
+        private void headerbar_mode () {
             if (main_stack.visible_child_name == "welcome") {
                 headerbar.show ();
             } else {
                 headerbar.hide ();
             }
-            return false;
         }
 
         public void open_files (File[] files, bool clear_playlist = false, bool force_play = true) {
