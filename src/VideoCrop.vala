@@ -40,12 +40,17 @@ namespace niki {
             );
             this.playerpage = playerpage;
             var top_label = new LabelSpin (_("Top"), playerpage.video_height / 2);
+            top_label.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             var bottom_label = new LabelSpin (_("Bottom"), playerpage.video_height / 2);
+            bottom_label.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             var left_label = new LabelSpin (_("Left"), playerpage.video_width / 2);
+            left_label.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             var right_label = new LabelSpin (_("Right"), playerpage.video_width / 2);
+            right_label.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
 
             var frame = new Gtk.Grid ();
             frame.orientation = Gtk.Orientation.VERTICAL;
+            frame.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             frame.valign = Gtk.Align.CENTER;
             frame.halign = Gtk.Align.CENTER;
             frame.row_spacing = 5;

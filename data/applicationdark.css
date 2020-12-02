@@ -261,14 +261,23 @@
     border-color: transparent;
 }
 .spinbut {
-    background: @DarkMode;
+    background: transparent;
     border-color: transparent;
+    color: @SolidWhite;
+    box-shadow:
+        inset 1px 0 0 0 alpha (shade (@colorPrimary, 1.4), 0.6),
+        inset -1px 0 0 0 alpha (shade (@colorPrimary, 1.4), 0.6),
+        inset 0 -1px 0 0 alpha (shade (@colorPrimary, 1.4), 0.8);
 }
 
 .combox button.combo {
-    background-color: @DarkMode;
+    background: transparent;
     border: transparent;
     color: @SolidWhite;
+    box-shadow:
+        inset 1px 0 0 0 alpha (shade (@colorPrimary, 1.4), 0.6),
+        inset -1px 0 0 0 alpha (shade (@colorPrimary, 1.4), 0.6),
+        inset 0 -1px 0 0 alpha (shade (@colorPrimary, 1.4), 0.8);
 }
 .combox arrow {
     background-color: transparent;
