@@ -204,7 +204,7 @@
 }
 .volume trough highlight {
     background-color: @SolidWhite;
-    border-color: transparent;
+    border-color: @SolidWhite;
 }
 
 .volume trough fill {
@@ -279,6 +279,19 @@
         inset -1px 0 0 0 alpha (shade (@colorPrimary, 1.4), 0.6),
         inset 0 -1px 0 0 alpha (shade (@colorPrimary, 1.4), 0.8);
 }
+
+.entrycss {
+    background: transparent;
+    border: transparent;
+    color: @SolidWhite;
+}
+
+.entrycss image.left {
+    background: transparent;
+    border: transparent;
+    color: @SolidWhite;
+}
+
 .combox arrow {
     background-color: transparent;
     border: transparent;

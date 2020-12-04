@@ -284,13 +284,7 @@ namespace niki {
                 return;
             }
             if (NikiApp.settings.get_enum ("dlna-state") == PlaybackState.PLAYING && pause) {
-                var in_namesn = new GLib.List <string> ();
-                in_namesn.append ("InstanceID");
-                var in_valuesn = new GLib.List<GLib.Value?> ();
-                Value valueinstn = Value (Type.UINT);
-                valueinstn.set_uint (0);
-                in_valuesn.append (valueinstn);
-                av_transport.begin_action_list ("Pause", in_namesn, in_valuesn, av_transport_action_cb);
+                playback_control ("Pause");
             } else {
                 var in_names = new GLib.List <string> ();
                 in_names.append ("InstanceID");
@@ -329,7 +323,9 @@ namespace niki {
         private void set_av_transport_uri_cb (GUPnP.ServiceProxy av_transport, GUPnP.ServiceProxyAction action) {
             try {
                 if (av_transport.end_action (action)) {
-                    play (false);
+                    if (!welcompage.dlnaaction.playing) {
+                        play (false);
+                    }
                 }
             } catch (Error err) {
                 critical ("%s", err.message);
@@ -359,72 +355,69 @@ namespace niki {
                 try {
                     if (connection_manager.end_action (action, "Sink", Type.STRING, out sink_protocol)) {
                         if (sink_protocol != null) {
-                            GUPnP.DIDLLiteResource resource = null;
-                            string title = null;
-                            string upnp_class = null;
                             int mediatype = 0;
                             var parser = new GUPnP.DIDLLiteParser ();
                             parser.object_available.connect ((parser, object) => {
-                                resource = object.get_compat_resource (sink_protocol, false);
-                                title = object.get_title ();
-                                upnp_class = object.get_upnp_class ();
+                                GUPnP.DIDLLiteResource resource = object.get_compat_resource (sink_protocol, false);
+                                string title = object.get_title ();
+                                string upnp_class = object.get_upnp_class ();
+                                GUPnP.ServiceProxy av_transport;
+                                liststore.get (iter, DlnaComboColumns.SERVICEAVTRANS, out av_transport);
+                                string uri = resource.get_uri ();
+                                if (welcompage.treview.downloaded) {
+                                    if (upnp_class == "object.item.videoItem") {
+                                        mediatype = 0;
+                                    } else if (upnp_class == "object.item.audioItem.musicTrack") {
+                                        mediatype = 2;
+                                    } else if (upnp_class == "object.item.imageItem.photo") {
+                                        mediatype = 4;
+                                    } else {
+                                        mediatype = 0;
+                                    }
+                                    var download_dialog = new DownloadDialog (this, uri, title, mediatype);
+                                    download_dialog.show_all ();
+                                    welcompage.treview.downloaded = false;
+                                } else {
+                                    if (!next_uri) {
+                                        var in_namesf = new GLib.List <string> ();
+                                        in_namesf.append ("InstanceID");
+                                        in_namesf.append ("CurrentURI");
+                                        in_namesf.append ("CurrentURIMetaData");
+                                        var in_valuesf = new GLib.List<GLib.Value?> ();
+                                        Value valueinstf = Value (Type.UINT);
+                                        valueinstf.set_uint (0);
+                                        in_valuesf.append (valueinstf);
+                                        Value valuecur = Value (Type.STRING);
+                                        valuecur.set_string (uri);
+                                        in_valuesf.append (valuecur);
+                                        Value valuecmet = Value (Type.STRING);
+                                        valuecmet.set_string (metadata);
+                                        in_valuesf.append (valuecmet);
+                                        av_transport.begin_action_list ("SetAVTransportURI", in_namesf, in_valuesf, set_av_transport_uri_cb);
+                                    } else {
+                                        var in_namess = new GLib.List <string> ();
+                                        in_namess.append ("InstanceID");
+                                        in_namess.append ("NextURI");
+                                        in_namess.append ("NextURIMetaData");
+                                        var in_valuess = new GLib.List<GLib.Value?> ();
+                                        Value valueinsta = Value (Type.UINT);
+                                        valueinsta.set_uint (0);
+                                        in_valuess.append (valueinsta);
+                                        Value valuenext = Value (Type.STRING);
+                                        valuenext.set_string (uri);
+                                        in_valuess.append (valuenext);
+                                        Value valuenmet = Value (Type.STRING);
+                                        valuenmet.set_string (metadata);
+                                        in_valuess.append (valuenmet);
+                                        av_transport.begin_action_list ("SetNextAVTransportURI", in_namess, in_valuess, set_av_transport_uri_cb);
+                                        welcompage.treview.next_uri = false;
+                                    }
+                                }
                             });
                             try {
                                 parser.parse_didl (metadata);
                             } catch (Error err) {
                                 critical ("%s", err.message);
-                            }
-                            GUPnP.ServiceProxy av_transport;
-                            liststore.get (iter, DlnaComboColumns.SERVICEAVTRANS, out av_transport);
-                            string uri = resource.get_uri ();
-                            if (welcompage.treview.downloaded) {
-                                if (upnp_class == "object.item.videoItem") {
-                                    mediatype = 0;
-                                } else if (upnp_class == "object.item.audioItem.musicTrack") {
-                                    mediatype = 2;
-                                } else if (upnp_class == "object.item.imageItem.photo") {
-                                    mediatype = 4;
-                                } else {
-                                    mediatype = 0;
-                                }
-                                var download_dialog = new DownloadDialog (this, uri, title, mediatype);
-                                download_dialog.show_all ();
-                                welcompage.treview.downloaded = false;
-                            } else {
-                                if (!next_uri) {
-                                    var in_namesf = new GLib.List <string> ();
-                                    in_namesf.append ("InstanceID");
-                                    in_namesf.append ("CurrentURI");
-                                    in_namesf.append ("CurrentURIMetaData");
-                                    var in_valuesf = new GLib.List<GLib.Value?> ();
-                                    Value valueinstf = Value (Type.UINT);
-                                    valueinstf.set_uint (0);
-                                    in_valuesf.append (valueinstf);
-                                    Value valuecur = Value (Type.STRING);
-                                    valuecur.set_string (uri);
-                                    in_valuesf.append (valuecur);
-                                    Value valuecmet = Value (Type.STRING);
-                                    valuecmet.set_string (metadata);
-                                    in_valuesf.append (valuecmet);
-                                    av_transport.begin_action_list ("SetAVTransportURI", in_namesf, in_valuesf, set_av_transport_uri_cb);
-                                } else {
-                                    var in_namess = new GLib.List <string> ();
-                                    in_namess.append ("InstanceID");
-                                    in_namess.append ("NextURI");
-                                    in_namess.append ("NextURIMetaData");
-                                    var in_valuess = new GLib.List<GLib.Value?> ();
-                                    Value valueinsta = Value (Type.UINT);
-                                    valueinsta.set_uint (0);
-                                    in_valuess.append (valueinsta);
-                                    Value valuenext = Value (Type.STRING);
-                                    valuenext.set_string (uri);
-                                    in_valuess.append (valuenext);
-                                    Value valuenmet = Value (Type.STRING);
-                                    valuenmet.set_string (metadata);
-                                    in_valuess.append (valuenmet);
-                                    av_transport.begin_action_list ("SetNextAVTransportURI", in_namess, in_valuess, set_av_transport_uri_cb);
-                                    welcompage.treview.next_uri = false;
-                                }
                             }
                         }
                     }

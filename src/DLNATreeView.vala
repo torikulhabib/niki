@@ -143,12 +143,6 @@ namespace niki {
             });
 
             show_all ();
-            NikiApp.settings.changed["home-signal"].connect (() => {
-                if (time_outs > 0) {
-                    Source.remove (time_outs);
-                    time_outs = 0;
-                }
-            });
             test_collapse_row.connect (()=>{
                 columns_autosize ();
                 return false;
@@ -203,14 +197,17 @@ namespace niki {
             if (id == null || title == null) {
                 return;
             }
-            int child_count = ((GUPnP.DIDLLiteContainer)object).get_child_count ();
+            int child_count = 0;
+            if ((object as GUPnP.DIDLLiteContainer) != null) {
+                child_count = ((GUPnP.DIDLLiteContainer)object).child_count;
+            }
             if (!treestore.iter_is_valid (tree_all)) {
                 return;
             }
             treestore.set (tree_all, DlnaTreeColumns.ICON, icon, DlnaTreeColumns.TITLE, title, DlnaTreeColumns.ID, id, DlnaTreeColumns.DEVICEINFO, info, DlnaTreeColumns.CONTAINER, child_count, DlnaTreeColumns.UPNPCLASS, upnp_class);
         }
 
-        private void on_didl_object_available (GUPnP.DIDLLiteParser parser, GUPnP.DIDLLiteObject object) {
+        private void on_didl_object_available (GUPnP.DIDLLiteObject object) {
             Gtk.TreeIter iter;
             if (!get_selection ().get_selected (null, out iter)) {
                 treestore.append (out tree_all, root_device);
@@ -240,7 +237,7 @@ namespace niki {
             NikiApp.settings.set_boolean ("spinner-wait", sensitive = true);
             if (didl_xml != null) {
                 var parser = new GUPnP.DIDLLiteParser ();
-                    parser.object_available.connect (on_didl_object_available);
+                parser.object_available.connect (on_didl_object_available);
                 try {
                     parser.parse_didl (didl_xml);
 	            } catch (Error e) {
@@ -253,21 +250,16 @@ namespace niki {
             if (!welcompage.dlnarendercontrol.get_selected_device ()) {
                 welcompage.dlnarendercontrol.set_av_transport_uri (didl_xml, next_uri);
             } else {
-                GUPnP.DIDLLiteResource resource = null;
-                string title = null;
-                string preview_uri = null;
-                string upnp_class = null;
-                string artist = null;
-                string get_album = null;
-                int mediatype = 0;
-                bool playnow = false;
                 var parser = new GUPnP.DIDLLiteParser ();
-                parser.object_available.connect ((parser, object) => {
-                    resource = object.get_compat_resource (protocol_Info (), false);
-                    title = object.get_title ();
-                    upnp_class = object.get_upnp_class ();
-                    get_album = object.get_album ();
-                    artist = object.get_artists_xml_string ();
+                parser.object_available.connect ((object) => {
+                    GUPnP.DIDLLiteResource resource = object.get_compat_resource (protocol_Info (), false);
+                    string title = object.get_title ();
+                    string upnp_class = object.get_upnp_class ();
+                    string get_album = object.get_album ();
+                    string artist = object.get_artists_xml_string ();
+                    int mediatype = 0;
+                    bool playnow = false;
+                    string preview_uri = null;
                     Xml.Node* node = object.get_xml_node ();
 	                for (Xml.Node* iter = node->children; iter != null; iter = iter->next) {
 		                if (iter->type == Xml.ElementType.ELEMENT_NODE) {
@@ -275,68 +267,75 @@ namespace niki {
 	                        if (get_content != null) {
 	                            if (get_content.has_prefix ("http") && get_content.has_suffix ("png")) {
 	                                preview_uri = get_content;
+		                        } else if (get_content.has_prefix ("http") && get_content.has_suffix ("jpg")) {
+		                            preview_uri = get_content;
+		                        } else if (get_content.contains ("thumb")) {
+		                            preview_uri = get_content;
 		                        }
 	                        }
 		                }
 	                }
+                    string uri = resource.get_uri ();
+                    string size_file = _(" Size: %s").printf (GLib.format_size (resource.get_size64 ()));
+                    if (uri == null) {
+                        return;
+                    }
+                    if (title == null) {
+                        title = "";
+                    }
+                    if (get_album == null) {
+                        get_album = "";
+                    }
+                    if (artist == null) {
+                        artist = "";
+                    } else {
+                        string [] split_start = artist.split ("<upnp:artist>");
+                        string [] split_end = split_start[1].split ("</upnp:artist>");
+                        artist = split_end [0];
+                    }
+
+                    if (upnp_class == "object.item.videoItem") {
+                        mediatype = 0;
+                        playnow = true;
+                    } else if (upnp_class == "object.item.audioItem.musicTrack") {
+                        mediatype = 2;
+                        playnow = true;
+                    } else if (upnp_class == "object.item.imageItem.photo") {
+                        mediatype = 4;
+                        playnow = false;
+                    } else {
+                        mediatype = 0;
+                        playnow = true;
+                    }
+                    if (preview_uri == null) {
+                        preview_uri = "";
+                    }
+                    if (downloaded) {
+                        var download_dialog = new DownloadDialog (this, uri, title, mediatype);
+                        download_dialog.show_all ();
+                        downloaded = false;
+                        return;
+                    } else {
+                        NikiApp.settings.set_boolean ("spinner-wait", sensitive = false);
+                        NikiApp.window.player_page.right_bar.playlist.add_dlna (uri, title, get_album, artist, mediatype, playnow, upnp_class, size_file, preview_uri);
+                        next_signal ();
+                        if (time_outs != 0) {
+                            Source.remove (time_outs);
+                        }
+                        time_outs = GLib.Timeout.add (100, () => {
+		                    if (NikiApp.window.main_stack.visible_child_name == "welcome" && welcompage.dlnarendercontrol.get_selected_device ()) {
+                                NikiApp.window.player_page.right_bar.playlist.play_first ();
+                                NikiApp.settings.set_boolean ("spinner-wait", sensitive = true);
+                            }
+                            time_outs = 0;
+                            return false;
+                        });
+                    }
                 });
                 try {
                     parser.parse_didl (didl_xml);
                 } catch (Error err) {
                     critical ("%s", err.message);
-                }
-
-                string uri = resource.get_uri ();
-                string size_file = GLib.format_size (resource.get_size64 ());
-
-                if (uri == null) {
-                    return;
-                }
-                if (title == null) {
-                    title = "";
-                }
-                if (get_album == null) {
-                    get_album = "";
-                }
-                if (artist == null) {
-                    artist = "";
-                } else {
-                    string [] split_start = artist.split ("<upnp:artist>");
-                    string [] split_end = split_start[1].split ("</upnp:artist>");
-                    artist = split_end [0];
-                }
-                if (upnp_class == "object.item.videoItem") {
-                    mediatype = 0;
-                    playnow = true;
-                } else if (upnp_class == "object.item.audioItem.musicTrack") {
-                    mediatype = 2;
-                    playnow = true;
-                } else if (upnp_class == "object.item.imageItem.photo") {
-                    mediatype = 4;
-                    playnow = false;
-                } else {
-                    mediatype = 0;
-                    playnow = true;
-                }
-
-                if (downloaded) {
-                    var download_dialog = new DownloadDialog (this, uri, title, mediatype);
-                    download_dialog.show_all ();
-                    downloaded = false;
-                    return;
-                } else {
-                    NikiApp.window.player_page.right_bar.playlist.add_dlna (uri, title, get_album, artist, mediatype, playnow, upnp_class, size_file);
-		            if (NikiApp.window.main_stack.visible_child_name == "welcome" && welcompage.dlnarendercontrol.get_selected_device ()) {
-                        NikiApp.window.player_page.right_bar.playlist.play_first ();
-                    }
-                    time_outs = GLib.Timeout.add (100, () => {
-                        if (NikiApp.settings.get_boolean("home-signal")) {
-                            return false;
-                        }
-                        next_signal ();
-                        time_outs = 0;
-                        return false;
-                    });
                 }
             }
         }

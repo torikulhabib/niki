@@ -92,7 +92,11 @@ namespace niki {
             message_grid.attach (image, 0, 0, 1, 3);
             message_grid.attach (primary_label, 1, 0, 1, 1);
             message_grid.attach (secondary_label, 1, 1, 1, 1);
-            message_grid.attach (third_label, 1, 2, 1, 1);
+            if (third_label.label != "") {
+                message_grid.attach (third_label, 1, 2, 1, 1);
+            } else {
+                message_grid.margin_bottom = 10;
+            }
             message_grid.show_all ();
 
             var grid_combine = new Gtk.Grid ();

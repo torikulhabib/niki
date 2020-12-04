@@ -133,6 +133,7 @@ namespace niki {
             search_button.get_style_context ().add_class ("button_action");
             search_button.set_tooltip_text (_("Search"));
             entry = new SearchEntry (playlist);
+            entry.get_style_context ().add_class ("entrycss");
             entry_rev = new Gtk.Revealer ();
             entry_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN;
             entry_rev.transition_duration = 500;

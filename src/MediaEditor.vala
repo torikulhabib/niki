@@ -99,8 +99,11 @@ namespace niki {
             comment_textview.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             comment_textview.set_wrap_mode (Gtk.WrapMode.WORD_CHAR);
             var comment_scr = new Gtk.ScrolledWindow (null, null);
+            comment_scr.get_style_context ().add_class ("dlna_scrollbar");
+            comment_scr.get_style_context ().add_class ("frame");
             comment_scr.set_policy (Gtk.PolicyType.EXTERNAL, Gtk.PolicyType.AUTOMATIC);
-            comment_scr.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            comment_scr.expand = true;
+            comment_scr.margin_end = 10;
             comment_scr.add (comment_textview);
             var local_time = new DateTime.now_local ();
             date_spinbutton = new Gtk.SpinButton.with_range (0, local_time.get_year (), 1);
@@ -111,11 +114,6 @@ namespace niki {
             track_spinbutton.focus_on_click = false;
             track_spinbutton.margin_end = 10;
             track_spinbutton.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-
-            var comment_frame = new Gtk.Frame (null);
-            comment_frame.expand = true;
-            comment_frame.margin_end = 10;
-            comment_frame.add (comment_scr);
 
             asyncimage = new AsyncImage (true);
             asyncimage.pixel_size = 85;
@@ -170,7 +168,7 @@ namespace niki {
             grid.attach (new HeaderLabel (_("Cover:"), 200), 0, 0, 1, 1);
             grid.attach (imagege_box, 0, 1, 1, 1);
             grid.attach (new HeaderLabel (_("Comment:"), 200), 1, 0, 1, 1);
-            grid.attach (comment_frame, 1, 1, 1, 1);
+            grid.attach (comment_scr, 1, 1, 1, 1);
             grid.attach (new HeaderLabel (_("Tittle:"), 200), 0, 2, 1, 1);
             grid.attach (title_entry, 0, 3, 1, 1);
             grid.attach (new HeaderLabel (_("Artist:"), 200), 1, 2, 1, 1);

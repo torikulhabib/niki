@@ -367,7 +367,7 @@ namespace niki {
             liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, inputstream [2], PlaylistColumns.ARTISTTITLE, Markup.escape_text (inputstream [2]), PlaylistColumns.FILENAME, inputstream [0], PlaylistColumns.MEDIATYPE, mediatype, PlaylistColumns.FILESIZE, "", PlaylistColumns.ALBUMMUSIC, "", PlaylistColumns.ARTISTMUSIC, "", PlaylistColumns.PLAYNOW, true, PlaylistColumns.INPUTMODE, 1);
         }
 
-        public void add_dlna (string input_url, string input_title, string input_album, string input_artist, int mediatype, bool playnow, string upnp_class, string size_file) {
+        public void add_dlna (string input_url, string input_title, string input_album, string input_artist, int mediatype, bool playnow, string upnp_class, string size_file, string previewlink) {
             if (mediatype == 4) {
                 mediatype = 0;
             }
@@ -375,8 +375,12 @@ namespace niki {
             if (liststore_exist (PlaylistColumns.TITLE, filenamein)) {
                 return;
             }
-
-            Gdk.Pixbuf preview = icon_from_type (upnp_class, 48);
+            Gdk.Pixbuf preview = null;
+            if (previewlink != "") {
+                preview = get_pixbuf_from_url (previewlink, input_title);
+            } else {
+                preview = icon_from_type (upnp_class, 48);
+            }
             Gtk.TreeIter iter;
             liststore.append (out iter);
             liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, input_title, PlaylistColumns.ARTISTTITLE, mediatype == 2? @"<b>$(Markup.escape_text (input_title))</b>\n$(Markup.escape_text (input_artist)) - <i>$(Markup.escape_text (input_album))</i>" : Markup.escape_text (input_title), PlaylistColumns.FILENAME, input_url, PlaylistColumns.FILESIZE, size_file, PlaylistColumns.MEDIATYPE, mediatype, PlaylistColumns.ALBUMMUSIC, input_album, PlaylistColumns.ARTISTMUSIC, input_artist, PlaylistColumns.PLAYNOW, playnow, PlaylistColumns.INPUTMODE, 2);
