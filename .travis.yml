@@ -17,10 +17,8 @@ dist: focal
 addons:
   apt:
     sources:
-      - ubuntu-toolchain-r-test
       - sourceline: 'ppa:torik-habib/inytags'
     packages:
-      - libstdc++-6-dev
       - inytag
 
 install:

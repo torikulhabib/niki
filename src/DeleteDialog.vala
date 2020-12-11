@@ -31,7 +31,7 @@ namespace niki {
                 primary_text: _("Do you really want to remove this from device?"),
                 secondary_text: _("This will remove the file from your playlist and from any device."),
                 third_text: File.new_for_uri (file_name).get_path (),
-                selectable_text: false,
+                selectable_text: true,
                 deletable: false,
                 resizable: false,
                 use_header_bar: 1,

@@ -363,7 +363,7 @@ namespace niki {
             }
         }
         private void buffer_fill () {
-            string_notify (@"$(_("Buffering"))$(((int)(playback.get_buffer_fill () * 100)).to_string ())%" );
+            string_notify (_("Buffering: %s %").printf(((int)(playback.get_buffer_fill () * 100)).to_string ()));
         }
         public bool starting () {
             if (!playback.playing) {

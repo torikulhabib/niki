@@ -1252,9 +1252,6 @@ namespace niki {
         } else {
             opendb = Sqlite.Database.open (folder_db (), out db);
         }
-        if (opendb != Sqlite.OK) {
-            warning ("Can't open database: %s\n", db.errmsg ());
-        }
         return opendb;
     }
 

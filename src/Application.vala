@@ -67,7 +67,9 @@ namespace niki {
                 window = new Window ();
                 add_window (window);
                 window.show_all ();
-                open_database (out db);
+                if (open_database (out db) != Sqlite.OK) {
+                    notify_app (_("Database Error"), _("Can't open database: %s\n").printf(db.errmsg ()));
+                }
             } else {
                 if (NikiApp.settings.get_boolean ("audio-video") && window.main_stack.visible_child_name == "player") {
                     window.show ();
@@ -120,10 +122,8 @@ namespace niki {
             if (playlist) {
                 window.open_files (files, false, false);
                 arg_files = {};
-                return 0;
             } else if (showkey) {
                 keyboard_keys ();
-                return 0;
             } else {
                 active ();
                 if (files != null) {
@@ -132,8 +132,8 @@ namespace niki {
                 } else {
                     window.position_window ();
                 }
-                return 0;
             }
+            return 0;
         }
     }
 }

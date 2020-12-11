@@ -233,7 +233,7 @@ namespace niki {
         private void size_flexible (){
             int width;
             NikiApp.window.get_size (out width, null);
-            playlist_scrolled.set_min_content_width (90 + ((int)(width * 0.15)));
+            playlist_scrolled.set_min_content_width ((int)(width * 0.25));
         }
 
         public void reveal_control (bool button = true) {
