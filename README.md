@@ -44,7 +44,7 @@ To install, use `ninja install`, then execute with `com.github.torikulhabib.niki
 
 
 ## Support
-If you like Niki and you want to support its development,consider supporting via [PayPal](https://paypal.me/TorikulHabib?locale.x=id_ID), [Patreon](https://www.patreon.com/nikiplayer) or  [LiberPay](https://liberapay.com/Torikul_habib)
+If you like Niki and you want to support its development,consider supporting via [PayPal](https://paypal.me/TorikulHabib?locale.x=id_ID)
 
 ### Roadmap
 #### v0.5
