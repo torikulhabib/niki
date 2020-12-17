@@ -200,6 +200,9 @@ namespace niki {
                         bottom_bar.reveal_control ();
                     }
                 }
+                if (event.y < (stage.height - 30) && event.y > 20) {
+                    right_bar.hovered = top_bar.hovered = bottom_bar.hovered = false;
+                }
                 if (!top_bar.child_revealed) {
                     if (event.y < 20) {
                         top_bar.reveal_control ();

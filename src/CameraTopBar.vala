@@ -77,6 +77,7 @@ namespace niki {
             maximize_button = new Gtk.Button.from_icon_name ("view-fullscreen-symbolic", Gtk.IconSize.BUTTON);
             maximize_button.focus_on_click = false;
             maximize_button.get_style_context ().add_class ("button_action");
+            maximize_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             maximize_button.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("maximize", !NikiApp.settings.get_boolean ("maximize"));
             });
@@ -89,6 +90,7 @@ namespace niki {
             close_botton.focus_on_click = false;
             close_botton.tooltip_text = _("Close");
             close_botton.get_style_context ().add_class ("button_action");
+            close_botton.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             close_botton.clicked.connect (() => {
                 destroy_mode ();
             });
@@ -96,6 +98,7 @@ namespace niki {
             var home_button = new Gtk.Button.from_icon_name ("go-home-symbolic", Gtk.IconSize.BUTTON);
             home_button.focus_on_click = false;
             home_button.get_style_context ().add_class ("button_action");
+            home_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             home_button.tooltip_text = _("Home");
             home_button.clicked.connect (() => {
                 NikiApp.window.main_stack.visible_child_name = "welcome";
@@ -104,6 +107,7 @@ namespace niki {
 
             settingcombox = combox_res ();
             settingcombox.get_style_context ().add_class ("combox");
+            settingcombox.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             settingcombox.changed.connect (()=> {
             	NikiApp.window.camera_page.cameraplayer.set_null ();
                 Gtk.TreeIter iter;
@@ -130,6 +134,7 @@ namespace niki {
             var reso_button = new Gtk.Button.from_icon_name ("preferences-desktop-display-symbolic", Gtk.IconSize.BUTTON);
             reso_button.focus_on_click = false;
             reso_button.get_style_context ().add_class ("button_action");
+            reso_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             reso_button.tooltip_text = _("Resolution");
             reso_button.clicked.connect (() => {
                 menu_revealer.reveal_child = !menu_revealer.reveal_child;
@@ -137,6 +142,7 @@ namespace niki {
             my_app = new Gtk.Label (null);
             my_app.get_style_context ().add_class ("button_action");
             my_app.get_style_context ().add_class ("h3");
+            my_app.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             my_app.ellipsize = Pango.EllipsizeMode.END;
             my_app.use_markup = true;
             my_app.label = _("Niki Camera");
@@ -156,6 +162,7 @@ namespace niki {
 		    var grid = new Gtk.Grid ();
             grid.orientation = Gtk.Orientation.VERTICAL;
             grid.get_style_context ().add_class ("topbar");
+            grid.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             grid.margin = grid.row_spacing = grid.column_spacing = grid.margin_top = 0;
             grid.valign = Gtk.Align.CENTER;
             grid.add (main_actionbar);

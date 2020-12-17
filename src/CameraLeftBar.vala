@@ -126,6 +126,7 @@ namespace niki {
             });
             var content_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
             content_box.get_style_context ().add_class ("playlist");
+            content_box.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             content_box.margin = 5;
             content_box.pack_start (zoom_in_button, false, false, 0);
             content_box.pack_start (scale, true, true, 0);

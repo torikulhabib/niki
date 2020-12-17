@@ -68,7 +68,9 @@ namespace niki {
                 add_window (window);
                 window.show_all ();
                 if (open_database (out db) != Sqlite.OK) {
-                    notify_app (_("Database Error"), _("Can't open database: %s\n").printf(db.errmsg ()));
+                    notify_app (_("Database Error"),
+                                _("Can't open database: %s\n").printf(db.errmsg ())
+                    );
                 }
             } else {
                 if (NikiApp.settings.get_boolean ("audio-video") && window.main_stack.visible_child_name == "player") {

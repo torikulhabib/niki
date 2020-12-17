@@ -112,10 +112,12 @@ namespace niki {
             var file_path = File.new_for_path (uriout);
             var file_from_uri = File.new_for_uri (uri);
             cancellable = new Cancellable ();
-            progress_bar.set_fraction (0);
-            start_time = (int) get_real_time ();
+            progress_bar.set_fraction (0.0);
             file_from_uri.copy_async.begin (file_path, FileCopyFlags.BACKUP | FileCopyFlags.ALL_METADATA, GLib.Priority.DEFAULT, cancellable, (transferred, total_size) => {
                 loop_run = true;
+                if (progress_bar.fraction == 0.0) {
+                    start_time = (int) get_real_time ();
+                }
                 on_transfer_progress (transferred, total_size);
 	        }, (obj, res) => {
 	            loop_run = false;

@@ -75,11 +75,13 @@ namespace niki {
             });
 
             progression_label = new Gtk.Label (null);
+            progression_label.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             progression_label.get_style_context ().add_class ("selectedlabel");
             progression_label.get_style_context ().add_class ("h3");
             progression_label.selectable = true;
             progression_label.width_request = 50;
             duration_label = new Gtk.Label (null);
+            duration_label.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             duration_label.get_style_context ().add_class ("selectedlabel");
             duration_label.get_style_context ().add_class ("h3");
             duration_label.selectable = true;
@@ -88,6 +90,7 @@ namespace niki {
             make_lrc_but = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.make-lrc-symbolic", Gtk.IconSize.BUTTON);
             make_lrc_but.focus_on_click = false;
             make_lrc_but.get_style_context ().add_class ("button_action");
+            make_lrc_but.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             make_lrc_but.tooltip_text = _("Make Lyric");
             make_lrc_but.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("make-lrc", !NikiApp.settings.get_boolean ("make-lrc"));
@@ -95,6 +98,7 @@ namespace niki {
             search_time_lrc = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.time-lrc-symbolic", Gtk.IconSize.BUTTON);
             search_time_lrc.focus_on_click = false;
             search_time_lrc.get_style_context ().add_class ("button_action");
+            search_time_lrc.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             search_time_lrc.clicked.connect (() => {
                 if (NikiApp.settings.get_boolean ("make-lrc")) {
                     position_sec ((int64)(playback.get_position ()));

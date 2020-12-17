@@ -52,6 +52,7 @@ namespace niki {
             var add_doc = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.lrc-file-symbolic", Gtk.IconSize.BUTTON);
             add_doc.focus_on_click = false;
             add_doc.get_style_context ().add_class ("button_action");
+            add_doc.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             add_doc.tooltip_text = _("Open Text");
             add_doc.clicked.connect (()=> {
                 var file = run_open_file (this, false, 3);
@@ -62,6 +63,7 @@ namespace niki {
             var add_but = new Gtk.Button.from_icon_name ("list-add-symbolic", Gtk.IconSize.BUTTON);
             add_but.focus_on_click = false;
             add_but.get_style_context ().add_class ("button_action");
+            add_but.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             add_but.tooltip_text = _("Add List");
             add_but.clicked.connect (() => {
                 Gtk.TreeIter iter;
@@ -71,6 +73,7 @@ namespace niki {
             var insert_aft = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.insert-after-symbolic", Gtk.IconSize.BUTTON);
             insert_aft.focus_on_click = false;
             insert_aft.get_style_context ().add_class ("button_action");
+            insert_aft.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             insert_aft.tooltip_text = _("Insert After");
             insert_aft.clicked.connect (() => {
                 Gtk.TreeIter iter_in = selected_iter ();
@@ -84,6 +87,7 @@ namespace niki {
             var insert_bef = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.insert-before-symbolic", Gtk.IconSize.BUTTON);
             insert_bef.focus_on_click = false;
             insert_bef.get_style_context ().add_class ("button_action");
+            insert_bef.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             insert_bef.tooltip_text = _("Insert Before");
             insert_bef.clicked.connect (() => {
                 Gtk.TreeIter iter_in = selected_iter ();
@@ -97,6 +101,7 @@ namespace niki {
             var remove_but = new Gtk.Button.from_icon_name ("list-remove-symbolic", Gtk.IconSize.BUTTON);
             remove_but.focus_on_click = false;
             remove_but.get_style_context ().add_class ("button_action");
+            remove_but.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             remove_but.tooltip_text = _("Remove List");
             remove_but.clicked.connect (() => {
                 Gtk.TreeIter iter = selected_iter ();
@@ -109,10 +114,12 @@ namespace niki {
             new_lrc_blk = new Gtk.Button.from_icon_name ("document-new-symbolic", Gtk.IconSize.BUTTON);
             new_lrc_blk.focus_on_click = false;
             new_lrc_blk.get_style_context ().add_class ("button_action");
+            new_lrc_blk.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
 
             load_but = new Gtk.Button.from_icon_name ("edit-symbolic", Gtk.IconSize.BUTTON);
             load_but.focus_on_click = false;
             load_but.get_style_context ().add_class ("button_action");
+            load_but.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             load_but.tooltip_text = _("Edit Exist Lyric");
             load_but.clicked.connect (() => {
                 uri_this = NikiApp.settings.get_string ("uri-video");
@@ -131,6 +138,7 @@ namespace niki {
             var save_but = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.file-save-symbolic", Gtk.IconSize.BUTTON);
             save_but.focus_on_click = false;
             save_but.get_style_context ().add_class ("button_action");
+            save_but.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             save_but.tooltip_text = _("Save Lyric");
             save_but.clicked.connect (() => {
                 int b =listmodel.iter_n_children (null);
@@ -158,6 +166,7 @@ namespace niki {
 
             get_fol_rev = new ButtonRevealer ("com.github.torikulhabib.niki.folder-symbolic");
             get_fol_rev.button.get_style_context ().add_class ("button_action");
+            get_fol_rev.button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             get_fol_rev.button.tooltip_text = _("Folder Location");
             get_fol_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             get_fol_rev.transition_duration = 500;
@@ -169,10 +178,12 @@ namespace niki {
             });
             var label_make = new Gtk.Label (_("Niki Lyric Maker"));
             label_make.get_style_context ().add_class ("button_action");
+            label_make.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             label_make.ellipsize = Pango.EllipsizeMode.END;
 
             var main_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
             main_actionbar.get_style_context ().add_class ("transbgborder");
+            main_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             main_actionbar.hexpand = true;
             main_actionbar.margin_start = 4;
             main_actionbar.margin_end = 4;
@@ -311,6 +322,7 @@ namespace niki {
         private Gtk.Button loc_save () {
             var locat_button = new Gtk.Button ();
             locat_button.get_style_context ().add_class ("button_action");
+            locat_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             locat_button.clicked.connect (() => {
                 NikiApp.settings.set_int ("location-save", NikiApp.settings.get_int ("location-save") > 1? 0 : NikiApp.settings.get_int ("location-save") + 1);
                 but_symbol (locat_button);

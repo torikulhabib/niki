@@ -84,18 +84,21 @@ namespace niki {
             var open_button = new Gtk.Button.from_icon_name ("applications-multimedia-symbolic", Gtk.IconSize.BUTTON);
             open_button.focus_on_click = false;
             open_button.get_style_context ().add_class ("button_action");
+            open_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             open_button.set_tooltip_text (_("Open File"));
             open_button.clicked.connect (impor_file);
 
             remove_button = new Gtk.Button.from_icon_name ("list-remove-symbolic", Gtk.IconSize.BUTTON);
             remove_button.focus_on_click = false;
             remove_button.get_style_context ().add_class ("button_action");
+            remove_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             remove_button.clicked.connect ( () => {
                 NikiApp.settings.set_boolean ("edit-playlist", !NikiApp.settings.get_boolean ("edit-playlist")); 
             });
 
             font_button_rev = new ButtonRevealer ("font-x-generic-symbolic");
             font_button_rev.button.get_style_context ().add_class ("button_action");
+            font_button_rev.button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             font_button_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
             font_button_rev.transition_duration = 100;
             font_button_rev.clicked.connect (() => {
@@ -104,6 +107,7 @@ namespace niki {
             });
             repeat_button = new RepeatButton ();
             repeat_button.get_style_context ().add_class ("button_action");
+            repeat_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             var repeat_button_revealer = new Gtk.Revealer ();
             repeat_button_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
             repeat_button_revealer.transition_duration = 100;
@@ -122,18 +126,22 @@ namespace niki {
             header_label = new Gtk.Label (null);
             header_label.get_style_context ().add_class ("selectedlabel");
             header_label.get_style_context ().add_class ("h3");
+            header_label.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             header_label.ellipsize = Pango.EllipsizeMode.END;
             var focus_button = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.play-symbolic", Gtk.IconSize.BUTTON);
             focus_button.focus_on_click = false;
             focus_button.get_style_context ().add_class ("button_action");
+            focus_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             focus_button.set_tooltip_text (_("Go to Play"));
 
             var search_button = new Gtk.Button.from_icon_name ("system-search-symbolic", Gtk.IconSize.BUTTON);
             search_button.focus_on_click = false;
             search_button.get_style_context ().add_class ("button_action");
+            search_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             search_button.set_tooltip_text (_("Search"));
             entry = new SearchEntry (playlist);
             entry.get_style_context ().add_class ("entrycss");
+            entry.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             entry_rev = new Gtk.Revealer ();
             entry_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN;
             entry_rev.transition_duration = 500;
@@ -161,9 +169,11 @@ namespace niki {
 		    box_action.add (remove_button);
 
             playlist.get_style_context ().add_class ("scrollbar");
+            playlist.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             playlist.set_search_entry (entry);
             playlist_scrolled = new Gtk.ScrolledWindow (null, null);
             playlist_scrolled.get_style_context ().add_class ("scrollbar");
+            playlist_scrolled.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             playlist_scrolled.set_policy (Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC);
             playlist_scrolled.propagate_natural_height = true;
             playlist_scrolled.add (playlist);

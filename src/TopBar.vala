@@ -89,6 +89,7 @@ namespace niki {
             maximize_button = new Gtk.Button.from_icon_name ("view-fullscreen-symbolic", Gtk.IconSize.BUTTON);
             maximize_button.focus_on_click = false;
             maximize_button.get_style_context ().add_class ("button_action");
+            maximize_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             maximize_button.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("maximize", !NikiApp.settings.get_boolean ("maximize"));
             });
@@ -100,12 +101,14 @@ namespace niki {
             close_botton.focus_on_click = false;
             close_botton.tooltip_text = _("Close");
             close_botton.get_style_context ().add_class ("button_action");
+            close_botton.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             close_botton.clicked.connect (() => {
                 destroy_mode ();
             });
             var home_button = new Gtk.Button.from_icon_name ("go-home-symbolic", Gtk.IconSize.BUTTON);
             home_button.focus_on_click = false;
             home_button.get_style_context ().add_class ("button_action");
+            home_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             home_button.tooltip_text = _("Home");
             home_button.clicked.connect (() => {
                 playerpage.home_open ();
@@ -113,6 +116,7 @@ namespace niki {
             info_option = new Gtk.Button.from_icon_name ("dialog-information-symbolic", Gtk.IconSize.BUTTON);
             info_option.focus_on_click = false;
             info_option.get_style_context ().add_class ("button_action");
+            info_option.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             info_option.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("information-button", !NikiApp.settings.get_boolean ("information-button"));
                 info_button ();
@@ -120,6 +124,7 @@ namespace niki {
             tag_botton = new ButtonRevealer ("tag-symbolic");
             tag_botton.tooltip_text = _("Audio Tags");
             tag_botton.button.get_style_context ().add_class ("button_action");
+            tag_botton.button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             tag_botton.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             tag_botton.transition_duration = 500;
             tag_botton.clicked.connect (() => {
@@ -128,6 +133,7 @@ namespace niki {
             crop_button = new ButtonRevealer ("image-crop-symbolic");
             crop_button.tooltip_text = _("Video Crop");
             crop_button.button.get_style_context ().add_class ("button_action");
+            crop_button.button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             crop_button.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             crop_button.transition_duration = 500;
             crop_button.clicked.connect (dialog_crop);
@@ -137,6 +143,7 @@ namespace niki {
             cropfull_button.margin_top = 4;
             cropfull_button.margin_end = 4;
             cropfull_button.get_style_context ().add_class ("button_action");
+            cropfull_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             cropfull_button.clicked.connect (dialog_crop);
             notify["child-revealed"].connect (() => {
                 playerpage.right_bar.reveal_control (false);
@@ -147,6 +154,7 @@ namespace niki {
             my_app = new Gtk.Label (null);
             my_app.get_style_context ().add_class ("button_action");
             my_app.get_style_context ().add_class ("h3");
+            my_app.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             my_app.ellipsize = Pango.EllipsizeMode.END;
             my_app.use_markup = true;
 
@@ -169,6 +177,7 @@ namespace niki {
             label_info = new Gtk.Label (null);
             label_info.get_style_context ().add_class ("selectedlabel");
             label_info.get_style_context ().add_class ("h3");
+            label_info.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             label_info.ellipsize = Pango.EllipsizeMode.END;
             label_info.halign = Gtk.Align.START;
             label_info.selectable = true;
@@ -184,6 +193,7 @@ namespace niki {
 		    var grid = new Gtk.Grid ();
             grid.orientation = Gtk.Orientation.VERTICAL;
             grid.get_style_context ().add_class ("topbar");
+            grid.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             grid.margin = grid.row_spacing = grid.column_spacing = grid.margin_top = 0;
             grid.add (main_actionbar);
             grid.add (menu_revealer);
@@ -194,13 +204,14 @@ namespace niki {
             info_label_full.margin_start = 8;
             info_label_full.get_style_context ().add_class ("selectedlabel");
             info_label_full.get_style_context ().add_class ("h2");
+            info_label_full.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             info_label_full.ellipsize = Pango.EllipsizeMode.END;
             info_label_full.selectable = true;
 
             var info_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
             info_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            info_actionbar.hexpand = true;
             info_actionbar.get_style_context ().add_class ("topbar");
+            info_actionbar.hexpand = true;
             info_actionbar.pack_start (info_label_full, false, false, 0);
             info_actionbar.pack_end (cropfull_button, false, false, 0);
             info_actionbar.show_all ();

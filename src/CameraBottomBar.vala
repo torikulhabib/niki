@@ -98,6 +98,7 @@ namespace niki {
             option_button = new Gtk.Button.from_icon_name ("camera-photo-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
             option_button.focus_on_click = false;
             option_button.get_style_context ().add_class ("button_action");
+            option_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             option_button.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("camera-video", !NikiApp.settings.get_boolean ("camera-video"));
             });
@@ -105,6 +106,7 @@ namespace niki {
             capture_button = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.record-symbolic", Gtk.IconSize.DIALOG);
             capture_button.focus_on_click = false;
             capture_button.get_style_context ().add_class ("button_action");
+            capture_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             capture_button.clicked.connect (() => {
                 if (NikiApp.settings.get_boolean ("camera-video")) {
                     playing = !playing;
@@ -123,6 +125,7 @@ namespace niki {
             timer_button.focus_on_click = false;
             timer_label = new Gtk.Label (null);
             timer_label.get_style_context ().add_class ("button_action");
+            timer_label.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             timer_label.get_style_context ().add_class ("h2");
             timer_label.ellipsize = Pango.EllipsizeMode.END;
             timer_revealer = new Gtk.Revealer ();
@@ -142,6 +145,7 @@ namespace niki {
             setting_button = new Gtk.Button.from_icon_name ("applications-graphics-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
             setting_button.focus_on_click = false;
             setting_button.tooltip_text = _("Setting Filter");
+            setting_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             setting_button.get_style_context ().add_class ("button_action");
             setting_revealer.set_reveal_child (NikiApp.settings.get_boolean ("setting-camera"));
             setting_button.clicked.connect (() => {
@@ -151,6 +155,7 @@ namespace niki {
 
             asyncimage = new AsyncImage (true);
             asyncimage.get_style_context ().add_class ("button_action");
+            asyncimage.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             asyncimage.pixel_size = 48;
             asyncimage.valign = Gtk.Align.CENTER;
             asyncimage.valign = Gtk.Align.CENTER;
