@@ -111,8 +111,12 @@ namespace niki {
 
             var ex_subtitle_label = new Gtk.Label (_("External Subtitle"));
             ex_subtitle_label.halign = Gtk.Align.END;
-            file_chooser_subtitle = new Gtk.FileChooserButton (_("Pick File"), Gtk.FileChooserAction.OPEN);
 
+            var dialog = new Gtk.FileChooserDialog (
+            _("Pick File"), NikiApp.window, Gtk.FileChooserAction.OPEN,
+            _("Cancel"), Gtk.ResponseType.CANCEL,
+            _("Open"), Gtk.ResponseType.ACCEPT);
+            file_chooser_subtitle = new Gtk.FileChooserButton.with_dialog (dialog);
             var all_files_filter = new Gtk.FileFilter ();
             all_files_filter.set_filter_name (_("All Files"));
             all_files_filter.add_pattern ("*");
@@ -124,7 +128,6 @@ namespace niki {
             subtitle_files_filter.add_mime_type ("text/x-ssa");
             file_chooser_subtitle.add_filter (subtitle_files_filter);
             file_chooser_subtitle.add_filter (all_files_filter);
-
             file_chooser_subtitle.file_set.connect (() => {
                 if (is_subtitle (file_chooser_subtitle.get_uri())) {
                     if (!NikiApp.settings.get_boolean("subtitle-available")) {
