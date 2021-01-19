@@ -83,6 +83,7 @@ namespace niki {
             header_label.get_style_context ().add_class ("h4");
             header_label.halign = Gtk.Align.CENTER;
             header_label.hexpand = true;
+            header_label.can_focus = true;
             get_header_bar ().set_custom_title (header_label);
             resize (425, 380);
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);

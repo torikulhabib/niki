@@ -21,17 +21,15 @@
 
 namespace niki {
     public class Spectrum : Gtk.Grid {
-        private const int c_offset = 10;
         public PlaybackPlayer playback;
         private double[] m_magnitudes;
         private Gtk.Grid m_bands;
         private Gtk.Label label;
         private bool m_update;
-        public int nb_bands = 10;
 
         public Spectrum (PlaybackPlayer playback) {
             this.playback = playback;
-            set_size_request (240, 240);
+            set_size_request (210, 210);
             orientation = Gtk.Orientation.VERTICAL;
             m_bands = new Gtk.Grid ();
             m_bands.orientation = Gtk.Orientation.HORIZONTAL;
@@ -41,8 +39,8 @@ namespace niki {
             m_bands.margin = 5;
             m_bands.show_all ();
             playback.updated.connect (on_spectrum_updated);
-            m_magnitudes = new double[nb_bands];
-            for (int cpt = 0; cpt < nb_bands; ++cpt) {
+            m_magnitudes = new double[10];
+            for (int cpt = 0; cpt < 10; ++cpt) {
                 m_bands.add (level_music (this, cpt));
             }
             label = new Gtk.Label (null);
@@ -60,7 +58,7 @@ namespace niki {
 
         private void on_spectrum_updated () {
             unowned float[] magnitudes = playback.m_magnitudes;
-            for (int band = 0; band < nb_bands; ++band) {
+            for (int band = 0; band < 10; ++band) {
                 double val = magnitudes[band];
                 if (m_magnitudes[band] != val) {
                     m_magnitudes[band] = val;
@@ -96,7 +94,7 @@ namespace niki {
         }
 
         private new double @get (int in_index) requires (in_index >= 0 && in_index < m_magnitudes.length) {
-            return iec_scale (c_offset + m_magnitudes[in_index]);
+            return iec_scale (10 + m_magnitudes[in_index]);
         }
         private Gtk.DrawingArea level_music (Spectrum spectrum, int m_band) {
             var drawing = new Gtk.DrawingArea ();

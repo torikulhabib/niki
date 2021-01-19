@@ -110,8 +110,8 @@ namespace niki {
             spectrum.contents = spectrum_grid;
             spectrum.background_color = Clutter.Color.from_string ("black") { alpha = 0 };
             cover_center = new Clutter.Actor ();
-            cover_center.width = 240;
-            cover_center.height = 240;
+            cover_center.width = 210;
+            cover_center.height = 210;
             cover_center.content = cover_img;
             cover_center.add_child (spectrum);
             cover_center.set_pivot_point (0.5f, 0.5f);
