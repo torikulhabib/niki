@@ -1,0 +1,136 @@
+# Portuguese (Portugal) translations for com.github.torikulhabib.niki package.
+# Copyright (C) 2020 THE com.github.torikulhabib.niki'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the com.github.torikulhabib.niki package.
+# André Barata <andretiagob@protonmail.com>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: extra\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-03-14 13:29+0100\n"
+"PO-Revision-Date: 2020-08-31 21:05+0100\n"
+"Language-Team: none\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.1\n"
+"Last-Translator: André Barata <andretiagob@protonmail.com>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: pt\n"
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:7
+#: data/com.github.torikulhabib.niki.desktop.in:4
+msgid "Niki"
+msgstr "Niki"
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:8
+msgid "Media Player"
+msgstr "Leitor de Multimédia"
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:10
+msgid "DLNA Video Music and Streaming."
+msgstr "Vídeo e Música DLNA e Streaming."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:11
+msgid "Features:"
+msgstr "Funcionalidades:"
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:13
+msgid "Movie player."
+msgstr "Leitor de filmes."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:14
+msgid "Music player."
+msgstr "Leitor de música."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:15
+msgid "lyric Maker."
+msgstr "Criador de Letras de Música."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:16
+msgid "Lyric."
+msgstr "Letra de Música."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:17
+msgid "Equalizer."
+msgstr "Equalizador."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:18
+msgid "Video Balance."
+msgstr "Equilíbrio de Vídeo."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:19
+msgid "Album art as background."
+msgstr "Arte de álbum como fundo."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:20
+msgid "Blurred background."
+msgstr "Fundo desfocado."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:21
+msgid "DLNA Explorer."
+msgstr "Navegador de DLNA."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:22
+msgid "DLNA Controller."
+msgstr "Controlo de DLNA."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:23
+msgid "Camera."
+msgstr "Câmara."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:24
+msgid "Disk Drive."
+msgstr "Unidade de Disco."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:25
+msgid "MPRIS."
+msgstr "MPRIS."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:26
+msgid "Streaming."
+msgstr "Streaming."
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:36
+msgid "Fix and add Features!"
+msgstr "Correções e funcionalidades adicionadas!"
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:37
+msgid "Lyric Maker!"
+msgstr "Criador de Letras de Música!"
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:38
+msgid "Scr Lyric!"
+msgstr "Sincronização de Letras de Música!"
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:39
+msgid "Fix Typos by Nathan Bonnemains!"
+msgstr "Correção de erros de ortografia por Nathan Bonnemains!"
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:40
+msgid "Updated Dutch translation by Safak GENISOL!"
+msgstr "Tradução Holandesa atualizada por Safak GENISOL!"
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:45
+msgid "Hello Hera!"
+msgstr "Olá Hera!"
+
+#: data/com.github.torikulhabib.niki.appdata.xml.in:98
+msgid "Torikul Habib"
+msgstr "Torikul Habib"
+
+#: data/com.github.torikulhabib.niki.desktop.in:5
+msgid "Multimedia Player"
+msgstr "Leitor Multimédia"
+
+#: data/com.github.torikulhabib.niki.desktop.in:6
+msgid "Niki Player;"
+msgstr "Leitor Niki;"
+
+#: data/com.github.torikulhabib.niki.desktop.in:8
+msgid "com.github.torikulhabib.niki"
+msgstr "com.github.torikulhabib.niki"
+
+#: data/com.github.torikulhabib.niki.desktop.in:12
+msgid "videos;movies;shows;"
+msgstr "videos;vídeos;movies;filmes;shows;séries;"
