@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class MessageDialog : Gtk.Dialog {
         private class SingleWidgetBin : Gtk.Bin {}
         public Gtk.Bin custom_bin { get; construct; }

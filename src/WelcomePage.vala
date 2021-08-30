@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class WelcomePage : Gtk.Grid {
         public Welcome? welcome_rigth;
         public Welcome? welcome_left;
@@ -180,11 +180,11 @@ namespace niki {
                 welcome_left.sensitive = true;
                 welcome_rigth.sensitive = true;
                 NikiApp.settings.set_boolean ("spinner-wait", true);
-		        if (NikiApp.window.main_stack.visible_child_name == "welcome") {
+                if (NikiApp.window.main_stack.visible_child_name == "welcome") {
                     NikiApp.window.player_page.right_bar.playlist.play_first ();
                 }
             });
-            scanfolder.signal_notify.connect((notif)=> {
+            scanfolder.signal_notify.connect ((notif)=> {
                 if (stack.visible_child_name == "circular") {
                     stack.visible_child_name = "home";
                 }

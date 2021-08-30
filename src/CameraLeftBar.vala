@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class CameraLeftBar : Gtk.Revealer {
         private Gtk.Button zoom_in_button;
         private Gtk.Button zoom_out_button;

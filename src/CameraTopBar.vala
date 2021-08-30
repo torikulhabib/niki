@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class CameraTopBar : Gtk.EventBox {
         public Gtk.Button maximize_button;
         private Gtk.Button close_botton;
@@ -74,8 +74,9 @@ namespace niki {
                 return false;
             });
 
-            maximize_button = new Gtk.Button.from_icon_name ("view-fullscreen-symbolic", Gtk.IconSize.BUTTON);
-            maximize_button.focus_on_click = false;
+            maximize_button = new Gtk.Button.from_icon_name ("view-fullscreen-symbolic", Gtk.IconSize.BUTTON) {
+                focus_on_click = false
+            };
             maximize_button.get_style_context ().add_class ("button_action");
             maximize_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             maximize_button.clicked.connect (() => {
@@ -86,71 +87,80 @@ namespace niki {
                 maximize_button.sensitive = NikiApp.settings.get_boolean ("fullscreen")? true : false;
             });
 
-            close_botton = new Gtk.Button.from_icon_name ("window-close-symbolic", Gtk.IconSize.BUTTON);
-            close_botton.focus_on_click = false;
-            close_botton.tooltip_text = _("Close");
+            close_botton = new Gtk.Button.from_icon_name ("window-close-symbolic", Gtk.IconSize.BUTTON) {
+                focus_on_click = false,
+                tooltip_text = _("Close"),
+            };
             close_botton.get_style_context ().add_class ("button_action");
             close_botton.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             close_botton.clicked.connect (() => {
                 destroy_mode ();
             });
 
-            var home_button = new Gtk.Button.from_icon_name ("go-home-symbolic", Gtk.IconSize.BUTTON);
-            home_button.focus_on_click = false;
+            var home_button = new Gtk.Button.from_icon_name ("go-home-symbolic", Gtk.IconSize.BUTTON) {
+                focus_on_click = false,
+                tooltip_text = _("Home")
+            };
             home_button.get_style_context ().add_class ("button_action");
             home_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            home_button.tooltip_text = _("Home");
             home_button.clicked.connect (() => {
                 NikiApp.window.main_stack.visible_child_name = "welcome";
-		        NikiApp.window.camera_page.cameraplayer.set_null ();
+                NikiApp.window.camera_page.cameraplayer.set_null ();
             });
 
             settingcombox = combox_res ();
             settingcombox.get_style_context ().add_class ("combox");
             settingcombox.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             settingcombox.changed.connect (()=> {
-            	NikiApp.window.camera_page.cameraplayer.set_null ();
+                NikiApp.window.camera_page.cameraplayer.set_null ();
                 Gtk.TreeIter iter;
                 if (!settingcombox.get_active_iter (out iter)) {
                     return;
                 }
                 int height, width;
                 settingcombox.model.get (iter, ColumnResolution.WIDTH, out width, ColumnResolution.HEIGHT, out height);
-		        NikiApp.window.camera_page.cameraplayer.size_camera (width, height);
-		        NikiApp.window.camera_page.ready_play ();
+                NikiApp.window.camera_page.cameraplayer.size_camera (width, height);
+                NikiApp.window.camera_page.ready_play ();
             });
-            var res_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
-            res_actionbar.hexpand = true;
-            res_actionbar.margin_top = 4;
+            var res_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
+                hexpand = true,
+                margin_top = 4
+            };
             res_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             res_actionbar.get_style_context ().add_class ("transbgborder");
             res_actionbar.set_center_widget (settingcombox);
-            menu_revealer = new Gtk.Revealer ();
-            menu_revealer.margin_start = 4;
-            menu_revealer.margin_end = 4;
-            menu_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN;
-            menu_revealer.transition_duration = 500;
+            menu_revealer = new Gtk.Revealer () {
+                transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN,
+                transition_duration = 500,
+                margin_start = 4,
+                margin_end = 4
+            };
             menu_revealer.add (res_actionbar);
-            var reso_button = new Gtk.Button.from_icon_name ("preferences-desktop-display-symbolic", Gtk.IconSize.BUTTON);
-            reso_button.focus_on_click = false;
+
+            var reso_button = new Gtk.Button.from_icon_name ("preferences-desktop-display-symbolic", Gtk.IconSize.BUTTON) {
+                focus_on_click = false,
+                tooltip_text = _("Resolution")
+            };
             reso_button.get_style_context ().add_class ("button_action");
             reso_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            reso_button.tooltip_text = _("Resolution");
             reso_button.clicked.connect (() => {
                 menu_revealer.reveal_child = !menu_revealer.reveal_child;
             });
-            my_app = new Gtk.Label (null);
+            my_app = new Gtk.Label (null) {
+                ellipsize = Pango.EllipsizeMode.END,
+                use_markup = true,
+                label = _("Niki Camera")
+            };
             my_app.get_style_context ().add_class ("button_action");
             my_app.get_style_context ().add_class ("h3");
             my_app.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            my_app.ellipsize = Pango.EllipsizeMode.END;
-            my_app.use_markup = true;
-            my_app.label = _("Niki Camera");
-            var main_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
-            main_actionbar.margin_start = 4;
-            main_actionbar.margin_end = 4;
-            main_actionbar.margin_top = 4;
-            main_actionbar.hexpand = true;
+
+            var main_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
+                margin_start = 4,
+                margin_end = 4,
+                margin_top = 4,
+                hexpand = true
+            };
             main_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             main_actionbar.get_style_context ().add_class ("transbgborder");
             main_actionbar.pack_start (close_botton, false, false, 0);
@@ -159,33 +169,41 @@ namespace niki {
             main_actionbar.pack_end (maximize_button, false, false, 0);
             main_actionbar.pack_end (reso_button, false, false, 0);
 
-		    var grid = new Gtk.Grid ();
-            grid.orientation = Gtk.Orientation.VERTICAL;
+            var grid = new Gtk.Grid () {
+                orientation = Gtk.Orientation.VERTICAL,
+                valign = Gtk.Align.CENTER,
+                margin = 0,
+                row_spacing = 0,
+                column_spacing = 0,
+                margin_top = 0
+            };
             grid.get_style_context ().add_class ("topbar");
             grid.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            grid.margin = grid.row_spacing = grid.column_spacing = grid.margin_top = 0;
-            grid.valign = Gtk.Align.CENTER;
             grid.add (main_actionbar);
             grid.add (menu_revealer);
             grid.show_all ();
             add (grid);
             show_all ();
+
             NikiApp.settings.changed["maximize"].connect (maximized_button);
             maximized_button ();
         }
         private Gtk.ComboBox combox_res () {
-            var combo = new Gtk.ComboBox ();
-		    var cell = new Gtk.CellRendererText ();
-		    cell.ellipsize = Pango.EllipsizeMode.END;
-		    var cell_pb = new Gtk.CellRendererPixbuf ();
-		    combo.pack_start (cell_pb, false);
-		    combo.pack_start (cell, false);
-		    combo.set_attributes (cell_pb, "gicon", ColumnResolution.ICON);
-		    combo.set_attributes (cell, "text", ColumnResolution.NAME);
-		    combo.hexpand = true;
-		    combo.show_all ();
-		    return combo;
+            var combo = new Gtk.ComboBox () {
+                hexpand = true
+            };
+            var cell = new Gtk.CellRendererText () {
+                ellipsize = Pango.EllipsizeMode.END
+            };
+            var cell_pb = new Gtk.CellRendererPixbuf ();
+            combo.pack_start (cell_pb, false);
+            combo.pack_start (cell, false);
+            combo.set_attributes (cell_pb, "gicon", ColumnResolution.ICON);
+            combo.set_attributes (cell, "text", ColumnResolution.NAME);
+            combo.show_all ();
+            return combo;
         }
+
         public void menu_res (Gtk.ListStore liststore) {
             settingcombox.model = liststore;
             settingcombox.set_active (0);

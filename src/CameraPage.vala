@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class CameraPage : GtkClutter.Embed {
         public CameraPlayer? cameraplayer;
         public Clutter.Stage stage;
@@ -41,60 +41,68 @@ namespace niki {
             cameraplayer = new CameraPlayer (this);
             stage = get_stage () as Clutter.Stage;
             stage.background_color = Clutter.Color.from_string ("black");
-            aspect_ratio = new ClutterGst.Aspectratio ();
-            aspect_ratio.sink = cameraplayer.videosink as ClutterGst.VideoSink;
+            aspect_ratio = new ClutterGst.Aspectratio () {
+                sink = cameraplayer.videosink as ClutterGst.VideoSink
+            };
             stage.content = aspect_ratio;
             set_size_request (570, 450);
 
-            notify_text = new Clutter.Text ();
-            notify_text.ellipsize = Pango.EllipsizeMode.END;
-            notify_text.color = Clutter.Color.from_string ("white");
-            notify_text.background_color = Clutter.Color.from_string ("black") { alpha = 80 };
-            notify_text.font_name = "Bitstream Vera Sans Bold 10";
-            notify_text.line_alignment = Pango.Alignment.CENTER;
-            notify_text.use_markup = true;
+            notify_text = new Clutter.Text () {
+                ellipsize = Pango.EllipsizeMode.END,
+                color = Clutter.Color.from_string ("white"),
+                background_color = Clutter.Color.from_string ("black") { alpha = 80 },
+                font_name = "Bitstream Vera Sans Bold 10",
+                line_alignment = Pango.Alignment.CENTER,
+                use_markup = true
+            };
             stage.add_child (notify_text);
 
-            notify_center = new Clutter.Text ();
-            notify_center.ellipsize = Pango.EllipsizeMode.END;
-            notify_center.color = Clutter.Color.from_string ("white");
-            notify_center.background_color = Clutter.Color.from_string ("black") { alpha = 0 };
-            notify_center.font_name = "Lato Bold 70";
-            notify_center.line_alignment = Pango.Alignment.CENTER;
+            notify_center = new Clutter.Text () {
+                ellipsize = Pango.EllipsizeMode.END,
+                color = Clutter.Color.from_string ("white"),
+                background_color = Clutter.Color.from_string ("black") { alpha = 0 },
+                font_name = "Lato Bold 70",
+                line_alignment = Pango.Alignment.CENTER
+            };
             stage.add_child (notify_center);
 
             camerarightbar = new CameraRightBar (this);
-            right_actor = new GtkClutter.Actor ();
-            right_actor.contents = camerarightbar;
-            right_actor.background_color = Clutter.Color.from_string ("black") { alpha = 0 };
+            right_actor = new GtkClutter.Actor () {
+                background_color = Clutter.Color.from_string ("black") { alpha = 0 },
+                contents = camerarightbar
+            };
             right_actor.add_constraint (new Clutter.AlignConstraint (stage, Clutter.AlignAxis.X_AXIS, 1));
             right_actor.add_constraint (new Clutter.BindConstraint (stage, Clutter.BindCoordinate.HEIGHT, 1));
             stage.add_child (right_actor);
 
             cameraleftbar = new CameraLeftBar (this);
-            left_actor = new GtkClutter.Actor ();
-            left_actor.contents = cameraleftbar;
-            left_actor.background_color = Clutter.Color.from_string ("black") { alpha = 0 };
+            left_actor = new GtkClutter.Actor () {
+                background_color = Clutter.Color.from_string ("black") { alpha = 0 },
+                contents = cameraleftbar
+            };
             left_actor.add_constraint (new Clutter.AlignConstraint (stage, Clutter.AlignAxis.X_AXIS, 0));
             left_actor.add_constraint (new Clutter.BindConstraint (stage, Clutter.BindCoordinate.HEIGHT, 1));
             stage.add_child (left_actor);
 
             cameratopbar = new CameraTopBar ();
-            top_actor = new GtkClutter.Actor ();
-            top_actor.contents = cameratopbar;
-            top_actor.background_color = Clutter.Color.from_string ("black") { alpha = 0 };
+            top_actor = new GtkClutter.Actor () {
+                background_color = Clutter.Color.from_string ("black") { alpha = 0 },
+                contents = cameratopbar
+            };
             top_actor.add_constraint (new Clutter.AlignConstraint (stage, Clutter.AlignAxis.Y_AXIS, 0));
             top_actor.add_constraint (new Clutter.BindConstraint (stage, Clutter.BindCoordinate.WIDTH, 0));
             stage.add_child (top_actor);
 
             camerabottombar = new CameraBottomBar (this);
-            bottom_actor = new GtkClutter.Actor ();
-            bottom_actor.contents = camerabottombar;
-            bottom_actor.background_color = Clutter.Color.from_string ("black") { alpha = 0 };
+            bottom_actor = new GtkClutter.Actor () {
+                background_color = Clutter.Color.from_string ("black") { alpha = 0 },
+                contents = camerabottombar
+            };
             bottom_actor.add_constraint (new Clutter.AlignConstraint (stage, Clutter.AlignAxis.Y_AXIS, 1));
             bottom_actor.add_constraint (new Clutter.BindConstraint (stage, Clutter.BindCoordinate.WIDTH, 1));
-            stage.add_child (bottom_actor); 
+            stage.add_child (bottom_actor);
             show_all ();
+
             button_press_event.connect ((event) => {
                 if (event.button == Gdk.BUTTON_PRIMARY && event.type == Gdk.EventType.2BUTTON_PRESS && !cameraleftbar.hovered && !camerarightbar.hovered && !cameratopbar.hovered && !camerabottombar.hovered) {
                     NikiApp.settings.set_boolean ("fullscreen", !NikiApp.settings.get_boolean ("fullscreen"));
@@ -107,7 +115,7 @@ namespace niki {
             size_allocate.connect (reposition);
             NikiApp.settings.changed["camera-video"].connect (camera_record);
             NikiApp.settings.changed["fullscreen"].connect (() => {
-                if (!NikiApp.settings.get_boolean("fullscreen")) {
+                if (!NikiApp.settings.get_boolean ("fullscreen")) {
                     string_notify (_("Press ESC to exit full screen"));
                 } else {
                     notify_blank ();
@@ -118,6 +126,7 @@ namespace niki {
                 }
             });
         }
+
         public void string_notify (string notify_string) {
             notify_text.text = @"\n     $(notify_string)     \n";
             notify_control ();
@@ -146,7 +155,7 @@ namespace niki {
         }
         private void reposition () {
             notify_blank ();
-            transition.set_to_value(stage.height - notify_center.width);
+            transition.set_to_value (stage.height - notify_center.width);
             if (notify_timer > 0 ) {
                 notify_text.x = (stage.width / 2) - (notify_text.width / 2);
                 notify_text.y = ((stage.height / 8) - (notify_text.height / 2));
@@ -165,17 +174,17 @@ namespace niki {
             animation_on = true;
         }
         private void animation_run () {
-            transition.set_to_value(stage.height - notify_center.width);
-            transition.set_progress_mode(Clutter.AnimationMode.EASE_IN_OUT_SINE);
-            transition.set_direction(Clutter.TimelineDirection.FORWARD);
+            transition.set_to_value (stage.height - notify_center.width);
+            transition.set_progress_mode (Clutter.AnimationMode.EASE_IN_OUT_SINE);
+            transition.set_direction (Clutter.TimelineDirection.FORWARD);
             transition.set_duration (2100);
             transition.repeat_count = NikiApp.settings.get_enum ("camera-delay") - 1;
-            notify_center.add_transition("animation", transition);
+            notify_center.add_transition ("animation", transition);
         }
         private void transition_stoped () {
             notify_center.x = -notify_center.width;
             notify_center.y = -notify_center.height;
-            notify_center.remove_transition("animation");
+            notify_center.remove_transition ("animation");
             animation_on = false;
         }
         public void capture_record (bool input) {
@@ -217,8 +226,8 @@ namespace niki {
             }
         }
         public void ready_play () {
-		    cameraplayer.init_open ();
-		    camerabottombar.load_all ();
+            cameraplayer.init_open ();
+            camerabottombar.load_all ();
         }
         public void zoom_in_out (double zoom) {
             string_notify ("%s %2.1f".printf (_("Zoom X"), zoom));

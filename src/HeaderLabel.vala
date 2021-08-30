@@ -18,7 +18,7 @@
 *
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
-namespace niki {
+namespace Niki {
     public class HeaderLabel : Gtk.Label {
         public HeaderLabel (string label, int wrequest) {
             Object (

@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class DLNAServer : Object {
         private GUPnP.ServiceProxy content_directory;
         public signal void browse_finish (string didl_xml);
@@ -36,11 +36,11 @@ namespace niki {
                 if (content_dir.end_action (action, "Result", Type.STRING, out didl_xml)) {
                     browse_finish (didl_xml);
                 }
-	        } catch (Error e) {
+            } catch (Error e) {
                 GLib.warning (e.message);
-	        }
+            }
         }
- 
+
         public void browse (string container_id) {
             var in_names = new GLib.List <string> ();
             in_names.append ("ObjectID");
@@ -77,9 +77,9 @@ namespace niki {
                 if (content_dir.end_action (action, "Result", Type.STRING, out didl_xml)) {
                     browse_metadata_finish (didl_xml);
                 }
-	        } catch (Error e) {
+            } catch (Error e) {
                 GLib.warning (e.message);
-	        }
+            }
         }
         public void browse_metadata (string id) {
             var in_names = new GLib.List <string> ();
@@ -108,7 +108,7 @@ namespace niki {
             Value valuesort = Value (Type.STRING);
             valuesort.set_string ("");
             in_values.append (valuesort);
-            content_directory.begin_action_list("Browse", in_names, in_values, on_browse_metadata);
+            content_directory.begin_action_list ("Browse", in_names, in_values, on_browse_metadata);
         }
 
         public void search_async (string container_id, string search_criteria, string filter, uint32 starting_index, uint32 requested_count) {

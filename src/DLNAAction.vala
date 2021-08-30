@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class DLNAAction : Gtk.Revealer {
         public Gtk.Label progress_duration_label;
         private DLNAVolume? dlnavolume;
@@ -70,10 +70,11 @@ namespace niki {
             events |= Gdk.EventMask.LEAVE_NOTIFY_MASK;
             events |= Gdk.EventMask.ENTER_NOTIFY_MASK;
 
-            stop_revealer = new ButtonRevealer ("media-playback-stop-symbolic");
-            stop_revealer.tooltip_text = _("Stop");
-            stop_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
-            stop_revealer.transition_duration = 500;
+            stop_revealer = new ButtonRevealer ("media-playback-stop-symbolic") {
+                tooltip_text = _("Stop"),
+                transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT,
+                transition_duration = 500
+            };
             stop_revealer.clicked.connect (() => {
                 welcompage.dlnarendercontrol.playback_control ("Stop");
             });
@@ -83,13 +84,15 @@ namespace niki {
                 welcompage.dlnarendercontrol.play ();
             });
 
-            previous_button = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.previous-symbolic", Gtk.IconSize.BUTTON);
-            previous_button.tooltip_text = _("Previous");
+            previous_button = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.previous-symbolic", Gtk.IconSize.BUTTON) {
+                tooltip_text = _("Previous")
+            };
             previous_button.clicked.connect (() => {
                 welcompage.treview.previous_signal ();
             });
-            next_button = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.next-symbolic", Gtk.IconSize.BUTTON);
-            next_button.tooltip_text = _("Next");
+            next_button = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.next-symbolic", Gtk.IconSize.BUTTON) {
+                tooltip_text = _("Next")
+            };
             next_button.clicked.connect (() => {
                 welcompage.dlnarendercontrol.next_media ();
             });
@@ -97,8 +100,9 @@ namespace niki {
             volume_button.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("dlna-muted", !NikiApp.settings.get_boolean ("dlna-muted"));
             });
-            var clear_button = new Gtk.Button.from_icon_name ("view-refresh-symbolic", Gtk.IconSize.BUTTON);
-            clear_button.tooltip_text = _("Reload");
+            var clear_button = new Gtk.Button.from_icon_name ("view-refresh-symbolic", Gtk.IconSize.BUTTON) {
+                tooltip_text = _("Reload")
+            };
             clear_button.clicked.connect (() => {
                 welcompage.dlnarendercontrol.clear_selected_renderer_state ();
             });
@@ -118,10 +122,11 @@ namespace niki {
                 return false;
             });
 
-            scale_range = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, 0.0, 1.0, 0.01);
+            scale_range = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, 0.0, 1.0, 0.01) {
+                draw_value = false,
+                hexpand = true
+            };
             scale_range.get_style_context ().add_class ("dlna_seek_bar");
-            scale_range.draw_value = false;
-            scale_range.hexpand = true;
             scale_range.enter_notify_event.connect (() => {
                 return cursor_hand_mode (0);
             });
@@ -136,10 +141,13 @@ namespace niki {
                 }
                 return false;
             });
-            var grid_scale = new Gtk.Grid ();
+            var grid_scale = new Gtk.Grid () {
+                margin = 0,
+                row_spacing = 0,
+                column_spacing = 0,
+                hexpand = true
+            };
             grid_scale.get_style_context ().add_class ("dlna_seek_bar");
-            grid_scale.margin = grid_scale.row_spacing = grid_scale.column_spacing = 0;
-            grid_scale.hexpand = true;
             grid_scale.add (scale_range);
             progress_duration_label = new Gtk.Label (null);
             progress_duration_label.get_style_context ().add_class ("h3");
@@ -147,11 +155,12 @@ namespace niki {
             progress_duration_label.selectable = true;
             progress_duration_label.halign = Gtk.Align.START;
 
-            var main_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+            var main_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
+                hexpand = true,
+                margin_bottom = 6
+            };
             main_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             main_actionbar.get_style_context ().add_class ("ground_dlna");
-            main_actionbar.hexpand = true;
-            main_actionbar.margin_bottom = 6;
             main_actionbar.pack_start (previous_button, false, false, 0);
             main_actionbar.pack_start (play_button, false, false, 0);
             main_actionbar.pack_start (stop_revealer, false, false, 0);
@@ -162,10 +171,14 @@ namespace niki {
             main_actionbar.pack_end (clear_button, false, false, 0);
             main_actionbar.show_all ();
 
-		    var grid = new Gtk.Grid ();
-            grid.orientation = Gtk.Orientation.VERTICAL;
+            var grid = new Gtk.Grid () {
+                orientation = Gtk.Orientation.VERTICAL,
+                margin = 0,
+                row_spacing = 0,
+                column_spacing = 0,
+                margin_top = 0
+            };
             grid.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            grid.margin = grid.row_spacing = grid.column_spacing = grid.margin_top = 0;
             grid.add (grid_scale);
             grid.add (main_actionbar);
             grid.show_all ();

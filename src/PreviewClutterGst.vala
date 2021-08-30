@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class PreviewClutterGst : ClutterGst.Playback {
         public dynamic Gst.Element pipeline;
         private dynamic Gst.Element playsink;

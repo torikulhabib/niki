@@ -20,7 +20,7 @@
 
 using Gdk;
 
-namespace niki {
+namespace Niki {
     /**
      * A class containing an RGBA color and methods for more powerful color manipulation.
      */

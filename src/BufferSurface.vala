@@ -22,7 +22,7 @@
 using Cairo;
 using Posix;
 
-namespace niki {
+namespace Niki {
     /**
      * A buffer containing an internal Cairo-usable surface and context, designed
      * for usage with large, rarely updated draw operations.

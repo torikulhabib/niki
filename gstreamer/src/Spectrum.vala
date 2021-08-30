@@ -21,8 +21,7 @@
 
 
 public class Niki.Gst.Spectrum : global::Gst.Audio.Filter {
-    public static global::Gst.DebugCategory? s_Debug;
-
+    public static global::Gst.DebugCategory? s_debug;
     private GLib.Mutex m_lock;
     private Slice m_slice;
     private float[] m_magnitudes;
@@ -56,7 +55,7 @@ public class Niki.Gst.Spectrum : global::Gst.Audio.Filter {
                 m_frames_per_interval = global::Gst.Util.uint64_scale (m_interval, m_frame_rate, global::Gst.SECOND / 10);
                 flush ();
 
-                global::Gst.Debug.log (s_Debug, global::Gst.DebugLevel.DEBUG, GLib.Log.FILE, GLib.Log.METHOD, GLib.Log.LINE, this, @"interval: $m_interval frames_per_interval: $m_frames_per_interval");
+                global::Gst.Debug.log (s_debug, global::Gst.DebugLevel.DEBUG, GLib.Log.FILE, GLib.Log.METHOD, GLib.Log.LINE, this, @"interval: $m_interval frames_per_interval: $m_frames_per_interval");
             }
             m_lock.unlock ();
         }
@@ -68,7 +67,7 @@ public class Niki.Gst.Spectrum : global::Gst.Audio.Filter {
     public float gamma { get; set; default = 2.0f; }
 
     static construct {
-        s_Debug.init ("HOTTOE_SPECTRUM", 0, "hottoe audio spectrum analyser element");
+        s_debug.init ("HOTTOE_SPECTRUM", 0, "hottoe audio spectrum analyser element");
 
         passthrough_on_same_caps = true;
 
@@ -100,7 +99,7 @@ public class Niki.Gst.Spectrum : global::Gst.Audio.Filter {
     }
 
     public override bool setup (global::Gst.Audio.Info in_info) {
-        global::Gst.Debug.log (s_Debug, global::Gst.DebugLevel.DEBUG, GLib.Log.FILE, GLib.Log.METHOD, GLib.Log.LINE, this, "setup spectrum");
+        global::Gst.Debug.log (s_debug, global::Gst.DebugLevel.DEBUG, GLib.Log.FILE, GLib.Log.METHOD, GLib.Log.LINE, this, "setup spectrum");
 
         bool ret = true;
 
@@ -137,7 +136,7 @@ public class Niki.Gst.Spectrum : global::Gst.Audio.Filter {
         m_frames_per_interval = global::Gst.Util.uint64_scale (m_interval, m_frame_rate, global::Gst.SECOND / 10);
         flush ();
 
-        global::Gst.Debug.log (s_Debug, global::Gst.DebugLevel.DEBUG, GLib.Log.FILE, GLib.Log.METHOD, GLib.Log.LINE, this, @"interval: $m_interval frames_per_interval: $m_frames_per_interval");
+        global::Gst.Debug.log (s_debug, global::Gst.DebugLevel.DEBUG, GLib.Log.FILE, GLib.Log.METHOD, GLib.Log.LINE, this, @"interval: $m_interval frames_per_interval: $m_frames_per_interval");
 
         m_lock.unlock ();
 
@@ -145,20 +144,20 @@ public class Niki.Gst.Spectrum : global::Gst.Audio.Filter {
     }
 
     public override bool start () {
-        global::Gst.Debug.log (s_Debug, global::Gst.DebugLevel.DEBUG, GLib.Log.FILE, GLib.Log.METHOD, GLib.Log.LINE, this, "start spectrum");
+        global::Gst.Debug.log (s_debug, global::Gst.DebugLevel.DEBUG, GLib.Log.FILE, GLib.Log.METHOD, GLib.Log.LINE, this, "start spectrum");
 
         flush ();
         return true;
     }
 
     public override bool stop () {
-        global::Gst.Debug.log (s_Debug, global::Gst.DebugLevel.DEBUG, GLib.Log.FILE, GLib.Log.METHOD, GLib.Log.LINE, this, "stop spectrum");
+        global::Gst.Debug.log (s_debug, global::Gst.DebugLevel.DEBUG, GLib.Log.FILE, GLib.Log.METHOD, GLib.Log.LINE, this, "stop spectrum");
 
         flush ();
         return true;
     }
 
-    public override  global::Gst.FlowReturn transform_ip (global::Gst.Buffer in_buf) {
+    public override global::Gst.FlowReturn transform_ip (global::Gst.Buffer in_buf) {
         m_lock.lock ();
 
         global::Gst.MapInfo info;

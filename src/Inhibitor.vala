@@ -17,13 +17,12 @@
 
 [DBus (name = "org.freedesktop.ScreenSaver")]
 public interface ScreenSaverIface : Object {
-    public abstract uint32 Inhibit (string app_name, string reason) throws Error;
-    public abstract void UnInhibit (uint32 cookie) throws Error;
-    public abstract void SimulateUserActivity () throws Error;
+    public abstract uint32 inhibit (string app_name, string reason) throws Error;
+    public abstract void un_inhibit (uint32 cookie) throws Error;
 }
 
-namespace niki {
-    public class Inhibitor :  Object {
+namespace Niki {
+    public class Inhibitor : Object {
         private uint32? inhibit_cookie;
         private ScreenSaverIface? screensaver_iface = null;
         private bool inhibited = false;
@@ -45,8 +44,7 @@ namespace niki {
             if (screensaver_iface != null && !inhibited) {
                 try {
                     inhibited = true;
-                    inhibit_cookie = screensaver_iface.Inhibit (NikiApp.instance.application_id, "Playing movie");
-                    simulate_activity ();
+                    inhibit_cookie = screensaver_iface.inhibit (NikiApp.instance.application_id, "Playing movie");
                 } catch (Error e) {
                     nointerface = true;
                     warning ("Could not inhibit screen: %s", e.message);
@@ -61,32 +59,12 @@ namespace niki {
             if (screensaver_iface != null && inhibited) {
                 try {
                     inhibited = false;
-                    screensaver_iface.UnInhibit (inhibit_cookie);
+                    screensaver_iface.un_inhibit (inhibit_cookie);
                 } catch (Error e) {
                     nointerface = true;
                     warning ("Could not uninhibit screen: %s", e.message);
                 }
             }
-        }
-
-        private bool simulator_started = false;
-        private void simulate_activity () {
-            if (simulator_started){
-                return;
-            }
-            simulator_started = true;
-            Timeout.add_full (Priority.LOW, 120000, ()=> {
-                if (inhibited) {
-                    try {
-                        screensaver_iface.SimulateUserActivity ();
-                    } catch (Error e) {
-                        warning ("Could not simulate user activity: %s", e.message);
-                    }
-                } else {
-                    simulator_started = false;
-                }
-                return inhibited;
-            });
         }
     }
 }

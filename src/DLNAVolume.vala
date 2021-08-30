@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class DLNAVolume : Gtk.Revealer {
         public Gtk.Scale scale { get; construct set; }
         public bool hovering_grabing { get; construct set; }

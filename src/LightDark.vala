@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class LightDark : Gtk.Button {
         private Gtk.Image icon_image;
 

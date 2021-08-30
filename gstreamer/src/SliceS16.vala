@@ -21,7 +21,7 @@
 
 public class Niki.Gst.SliceS16 : Niki.Gst.Slice {
     public SliceS16 (int in_rate, int in_sample_rate) {
-        global::Gst.Debug.log (Spectrum.s_Debug, global::Gst.DebugLevel.DEBUG, GLib.Log.FILE, GLib.Log.METHOD, GLib.Log.LINE, this, @"create S16 slice with rate: $in_rate, sample_rate: $in_sample_rate");
+        global::Gst.Debug.log (Spectrum.s_debug, global::Gst.DebugLevel.DEBUG, GLib.Log.FILE, GLib.Log.METHOD, GLib.Log.LINE, this, @"create S16 slice with rate: $in_rate, sample_rate: $in_sample_rate");
         GLib.Object (
             rate: in_rate,
             sample_rate: in_sample_rate

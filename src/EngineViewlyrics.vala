@@ -19,43 +19,45 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class EngineViewlyrics : Object {
         public signal void send_data (string title, string artist, string type, string text, string server);
         public signal void send_lrc (string lrc, string filename);
 
         public void download_lyric (string lrc_location, string filename) {
             var msg = new Soup.Message ("GET", @"http://search.crintsoft.com/l/$(lrc_location)");
-            var session = new Soup.Session ();
-            session.user_agent = "Niki/0.5";
+            var session = new Soup.Session () {
+                user_agent = "Niki/0.5"
+            };
             session.queue_message (msg, (sess, mess) => {
-	            send_lrc ((string)mess.response_body.flatten ().data, filename);
+                send_lrc ((string)mess.response_body.flatten ().data, filename);
             });
         }
 
         public void search_lyrics (string title, string artist) {
             var msg = new Soup.Message ("POST", "http://search.crintsoft.com/searchlyrics.htm");
             msg.set_request (Soup.FORM_MIME_TYPE_MULTIPART, Soup.MemoryUse.COPY, string_to_uint8 (mount_query (title, artist)));
-            var session = new Soup.Session ();
-            session.user_agent = "Niki/0.5";
-            session.queue_message (msg, (sess, mess) => {
+            var session = new Soup.Session () {
+                user_agent = "Niki/0.5"
+            };
+            session.queue_message (msg, (sess, mess)=> {
                 for (int niki = 0; niki < 5000; niki++) {
-	                string get_url = uint8_to_string (mess.response_body.flatten ().data, niki);
-	                if (get_url != null) {
-	                    if (niki == get_url.char_count () + niki ) {
-	                        string found = uint8_to_string (mess.response_body.flatten ().data, niki + 1);
-	                        if (found.has_prefix ("CT")) {
-	                            return;
-	                        }
-	                        if (found.down ().has_suffix ("lrc")) {
-	                            send_data (title, artist, "LRC", found, "ViewLRC");
-	                        }
-	                        if (found.down ().has_suffix ("txt")) {
-	                            send_data (title, artist, "TXT", found, "ViewLRC");
-	                        }
-	                    }
-	                }
-	            }
+                    string get_url = uint8_to_string (mess.response_body.flatten ().data, niki);
+                    if (get_url != null) {
+                        if (niki == get_url.char_count () + niki ) {
+                            string found = uint8_to_string (mess.response_body.flatten ().data, niki + 1);
+                            if (found.has_prefix ("CT")) {
+                                return;
+                            }
+                            if (found.down ().has_suffix ("lrc")) {
+                                send_data (title, artist, "LRC", found, "ViewLRC");
+                            }
+                            if (found.down ().has_suffix ("txt")) {
+                                send_data (title, artist, "TXT", found, "ViewLRC");
+                            }
+                        }
+                    }
+                }
             });
         }
 

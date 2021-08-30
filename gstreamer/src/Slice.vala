@@ -41,7 +41,7 @@ public abstract class Niki.Gst.Slice : GLib.Object {
             samples <<= 1;
         }
 
-        global::Gst.Debug.log (Spectrum.s_Debug, global::Gst.DebugLevel.DEBUG, GLib.Log.FILE, GLib.Log.METHOD, GLib.Log.LINE, this, @"create slice with rate: $rate, sample_rate: $sample_rate, samples: $samples");
+        global::Gst.Debug.log (Spectrum.s_debug, global::Gst.DebugLevel.DEBUG, GLib.Log.FILE, GLib.Log.METHOD, GLib.Log.LINE, this, @"create slice with rate: $rate, sample_rate: $sample_rate, samples: $samples");
         m_length = 0;
         // allocate slice buffer
         m_buffer = new float[samples];

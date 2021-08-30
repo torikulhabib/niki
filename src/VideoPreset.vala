@@ -1,4 +1,4 @@
-namespace niki {
+namespace Niki {
     public class VideoPreset : Object {
         public string name { get; construct set; }
         public Gee.ArrayList<int> gains = new Gee.ArrayList<int> ();

@@ -1,4 +1,4 @@
-namespace niki {
+namespace Niki {
     public class VideoGrid : Gtk.Grid {
         private PlayerPage? playerpage;
         private Gtk.Entry new_preset_entry;
@@ -29,7 +29,7 @@ namespace niki {
         public void init () {
             build_ui ();
             load_presets ();
-            var preset = NikiApp.settingsVf.get_string ("selected-preset");
+            var preset = NikiApp.settings_vf.get_string ("selected-preset");
             if (preset != null) {
                 videopresetlist.select_preset (preset);
             }
@@ -48,7 +48,7 @@ namespace niki {
         }
         private void save_close () {
             var selected_preset = videopresetlist.get_selected_preset ();
-            NikiApp.settingsVf.set_string ("selected-preset", selected_preset != null ? selected_preset.name : "");
+            NikiApp.settings_vf.set_string ("selected-preset", selected_preset != null ? selected_preset.name : "");
         }
 
         public bool verify_preset_name (string preset_name) {
@@ -151,8 +151,8 @@ namespace niki {
             add (layout);
             show_all ();
 
-            NikiApp.settingsVf.bind ("videofilter-enabled", scale_container, "sensitive", GLib.SettingsBindFlags.GET);
-            NikiApp.settingsVf.changed["videofilter-enabled"].connect (video_switch);
+            NikiApp.settings_vf.bind ("videofilter-enabled", scale_container, "sensitive", GLib.SettingsBindFlags.GET);
+            NikiApp.settings_vf.changed["videofilter-enabled"].connect (video_switch);
 
             videopresetlist.delete_preset_chosen.connect (remove_preset_clicked);
             videopresetlist.preset_selected.connect (preset_selected);
@@ -168,7 +168,7 @@ namespace niki {
 
         private void video_switch () {
             in_transition = false;
-            if (NikiApp.settingsVf.get_boolean ("videofilter-enabled")) {
+            if (NikiApp.settings_vf.get_boolean ("videofilter-enabled")) {
                 var selected_preset = videopresetlist.get_selected_preset ();
                 if (selected_preset != null) {
                     for (int i = 0; i < scales.size; ++i) {
@@ -201,7 +201,7 @@ namespace niki {
                     val += preset.to_string ();
                 }
             }
-            NikiApp.settingsVf.set_strv ("custom-presets", val);
+            NikiApp.settings_vf.set_strv ("custom-presets", val);
         }
 
         private void preset_selected (VideoPreset videoprest) {
@@ -257,7 +257,7 @@ namespace niki {
         }
 
         private void notify_current_preset () {
-            if (NikiApp.settingsVf.get_boolean ("videofilter-enabled")) {
+            if (NikiApp.settings_vf.get_boolean ("videofilter-enabled")) {
                 NikiApp.settings.set_string ("tooltip-videos", videopresetlist.get_selected_preset ().name);
             } else {
                 NikiApp.settings.set_string ("tooltip-videos", _("Off"));
@@ -292,13 +292,13 @@ namespace niki {
                 return;
             }
             var new_name = new_preset_entry.get_text ();
-            if (verify_preset_name (new_name)){
+            if (verify_preset_name (new_name)) {
                 new_preset_name = new_name;
             }
 
             int[] gains = new int [scales.size];
 
-            for (int i = 0; i < scales.size; i++){
+            for (int i = 0; i < scales.size; i++) {
                 gains[i] = (int) scales.get (i).get_value ();
             }
 

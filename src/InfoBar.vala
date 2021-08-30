@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class InfoBar : Gtk.Revealer {
         private Gtk.Label notification_label;
         private uint hiding_timer = 0;

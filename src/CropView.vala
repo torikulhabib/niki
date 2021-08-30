@@ -20,7 +20,7 @@
 *              Marvin Beckers <beckersmarvin@gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class CropView : Gtk.EventBox {
         public signal void area_changed ();
         private Gdk.Pixbuf _pixbuf;
@@ -49,11 +49,12 @@ namespace niki {
             { 0, 0 },
             { 0, 0 }
         };
+
         private int temp_x = 0;
         private int temp_y = 0;
         private int offset_x = 0;
         private int offset_y = 0;
-        private const int r = 12;
+        private int r = 12;
 
         construct {
             events |= Gdk.EventMask.POINTER_MOTION_MASK;
@@ -78,7 +79,7 @@ namespace niki {
             motion_notify_event.connect ((event)=> {
                 if (!mouse_button_down) {
                     bool determined_cursortype = false;
-                    const Gdk.CursorType[] cursor = {
+                    Gdk.CursorType[] cursor = {
                         Gdk.CursorType.TOP_LEFT_CORNER,
                         Gdk.CursorType.TOP_SIDE,
                         Gdk.CursorType.TOP_RIGHT_CORNER,
@@ -388,7 +389,7 @@ namespace niki {
                 cr.stroke ();
 
                 if (handles_visible) {
-                    for (var i = 0;i < 8; i++){
+                    for (var i = 0; i < 8; i++) {
                         cr.arc (pos[i,0], pos[i,1], r, 0.0, 2 * Math.PI);
                         cr.set_source_rgb (0.7, 0.7, 0.7);
                         cr.fill ();

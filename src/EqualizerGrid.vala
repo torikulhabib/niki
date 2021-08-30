@@ -1,4 +1,4 @@
-namespace niki {
+namespace Niki {
     public class EqualizerGrid : Gtk.Grid {
         private PlayerPage? playerpage;
         private Gtk.Entry new_preset_entry;
@@ -31,7 +31,7 @@ namespace niki {
         public void init () {
             build_ui ();
             load_presets ();
-            var preset = NikiApp.settingsEq.get_string ("selected-preset");
+            var preset = NikiApp.settings_eq.get_string ("selected-preset");
             if (preset != null) {
                 equalizerpresetlist.select_preset (preset);
             }
@@ -50,7 +50,7 @@ namespace niki {
         }
         private void save_close () {
             var selected_preset = equalizerpresetlist.get_selected_preset ();
-            NikiApp.settingsEq.set_string ("selected-preset", selected_preset != null ? selected_preset.name : "");
+            NikiApp.settings_eq.set_string ("selected-preset", selected_preset != null ? selected_preset.name : "");
         }
         public bool verify_preset_name (string preset_name) {
             if (preset_name == null) {
@@ -67,19 +67,21 @@ namespace niki {
 
         private void build_ui () {
             height_request = 200;
-            scale_container = new Gtk.Grid ();
-            scale_container.hexpand = true;
-            scale_container.column_spacing = 10;
-            scale_container.margin_top = 2;
-            scale_container.margin_bottom = 2;
+            scale_container = new Gtk.Grid () {
+                hexpand = true,
+                column_spacing = 10,
+                margin_top = 2,
+                margin_bottom = 2
+            };
 
             foreach (string decibel in DECIBELS) {
-                var scale = new Gtk.Scale.with_range (Gtk.Orientation.VERTICAL, -85, 85, 0.1);
+                var scale = new Gtk.Scale.with_range (Gtk.Orientation.VERTICAL, -85, 85, 0.1) {
+                    draw_value = false,
+                    inverted = true,
+                    vexpand = true
+                };
                 scale.get_style_context ().add_class ("volume");
                 scale.add_mark (0, Gtk.PositionType.LEFT, null);
-                scale.draw_value = false;
-                scale.inverted = true;
-                scale.vexpand = true;
                 scale.enter_notify_event.connect (() => {
                     cursor_hand_mode (3);
                     return false;
@@ -96,9 +98,10 @@ namespace niki {
                 label_value.get_style_context ().add_class ("selectedlabel");
                 var label = new Gtk.Label (decibel);
                 label.get_style_context ().add_class ("selectedlabel");
-                var holder = new Gtk.Grid ();
-                holder.orientation = Gtk.Orientation.VERTICAL;
-                holder.row_spacing = 6;
+                var holder = new Gtk.Grid () {
+                    orientation = Gtk.Orientation.VERTICAL,
+                    row_spacing = 6
+                };
                 holder.add (label);
                 holder.add (scale);
                 holder.add (label_value);
@@ -126,27 +129,29 @@ namespace niki {
             side_list = new Gtk.Grid ();
             side_list.add (equalizerpresetlist);
 
-            new_preset_entry = new Gtk.Entry ();
-            new_preset_entry.hexpand = true;
-            new_preset_entry.secondary_icon_name = "document-save-symbolic";
-            new_preset_entry.secondary_icon_tooltip_text = _("Save Preset");
+            new_preset_entry = new Gtk.Entry () {
+                hexpand = true,
+                secondary_icon_name = "document-save-symbolic",
+                secondary_icon_tooltip_text = _("Save Preset")
+            };
 
             var size_group = new Gtk.SizeGroup (Gtk.SizeGroupMode.BOTH);
             size_group.add_widget (equalizerpresetlist);
             size_group.add_widget (new_preset_entry);
 
-            var layout = new Gtk.Grid ();
-            layout.orientation = Gtk.Orientation.VERTICAL;
-            layout.row_spacing = 0;
-            layout.margin_bottom = 2;
+            var layout = new Gtk.Grid () {
+                orientation = Gtk.Orientation.VERTICAL,
+                row_spacing = 0,
+                margin_bottom = 2
+            };
             layout.add (scale_container);
             layout.add (side_list);
             layout.show_all ();
             add (layout);
             show_all ();
 
-            NikiApp.settingsEq.bind ("equalizer-enabled", scale_container, "sensitive", GLib.SettingsBindFlags.GET);
-            NikiApp.settingsEq.changed["equalizer-enabled"].connect (on_eq_switch);
+            NikiApp.settings_eq.bind ("equalizer-enabled", scale_container, "sensitive", GLib.SettingsBindFlags.GET);
+            NikiApp.settings_eq.changed["equalizer-enabled"].connect (on_eq_switch);
 
             equalizerpresetlist.delete_preset_chosen.connect (remove_preset_clicked);
             equalizerpresetlist.preset_selected.connect (preset_selected);
@@ -162,7 +167,7 @@ namespace niki {
 
         private void on_eq_switch () {
             in_transition = false;
-            if (NikiApp.settingsEq.get_boolean ("equalizer-enabled")) {
+            if (NikiApp.settings_eq.get_boolean ("equalizer-enabled")) {
                 var selected_preset = equalizerpresetlist.get_selected_preset ();
                 if (selected_preset != null) {
                     for (int i = 0; i < scales.size; ++i) {
@@ -195,7 +200,7 @@ namespace niki {
                     val += preset.to_string ();
                 }
             }
-            NikiApp.settingsEq.set_strv ("custom-presets", val);
+            NikiApp.settings_eq.set_strv ("custom-presets", val);
         }
 
         private void preset_selected (EqualizerPreset p) {
@@ -256,7 +261,7 @@ namespace niki {
         }
 
         private void notify_current_preset () {
-            if (NikiApp.settingsEq.get_boolean ("equalizer-enabled")) {
+            if (NikiApp.settings_eq.get_boolean ("equalizer-enabled")) {
                 NikiApp.settings.set_string ("tooltip-equalizer", equalizerpresetlist.get_selected_preset ().name);
             } else {
                 NikiApp.settings.set_string ("tooltip-equalizer", _("Off"));
@@ -291,13 +296,13 @@ namespace niki {
                 return;
             }
             var new_name = new_preset_entry.get_text ();
-            if (verify_preset_name (new_name)){
+            if (verify_preset_name (new_name)) {
                 new_preset_name = new_name;
             }
 
             int[] gains = new int[scales.size];
 
-            for (int i = 0; i < scales.size; i++){
+            for (int i = 0; i < scales.size; i++) {
                 gains[i] = (int) scales.get (i).get_value ();
             }
 

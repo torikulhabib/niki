@@ -17,7 +17,7 @@
  *
  * Authored by: Corentin Noël <corentin@elementaryos.org>
  */
-namespace niki {
+namespace Niki {
     public class DVDManager : GLib.Object {
         private static DVDManager _instance = null;
         public static DVDManager instance {

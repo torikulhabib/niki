@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class RepeatButton : Gtk.Button {
         private Gtk.Image repeat_image;
         construct {

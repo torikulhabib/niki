@@ -13,6 +13,7 @@
       <li>Movie player.</li>
       <li>Music player.</li>
       <li>lyric Maker.</li>
+      <li>lyric Downloader.</li>
       <li>Lyric.</li>
       <li>Equalizer.</li>
       <li>Video Balance.</li>
@@ -31,6 +32,13 @@
   <provides>
     <binary>com.github.torikulhabib.niki</binary>
   </provides>
+    <release version="0.9.20" date="2021-08-10">
+      <description>
+        <p>Fix and add Features!</p>
+        <p>Lyric Downloader!</p>
+        <p>Taglib!</p>
+      </description>
+    </release>
 ​  <releases>
     <release version="0.7.36" date="2020-4-6">
       <description>

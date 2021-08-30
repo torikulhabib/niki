@@ -1,4 +1,4 @@
-namespace niki {
+namespace Niki {
     public class WelcomeButton : Gtk.Button {
         public string title {get; construct;}
         public string description {get; construct;}

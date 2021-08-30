@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class SeekTimeMusic : Gtk.Grid {
         public Gtk.Label progression_label;
         public Gtk.Label duration_label;

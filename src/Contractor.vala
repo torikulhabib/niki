@@ -19,11 +19,11 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class Contractor {
         public static string cont_dir () {
             string build_path = Path.build_filename (Environment.get_home_dir (), ".local", "share", "contractor");
-            if (!File.new_for_path(build_path).query_exists ()) {
+            if (!File.new_for_path (build_path).query_exists ()) {
                 DirUtils.create (build_path, 0700);
             }
             return build_path;
@@ -35,18 +35,18 @@ namespace niki {
             try {
                 File file = file_contr ();
                 permanent_delete (file);
-        		FileOutputStream out_stream = file.create (FileCreateFlags.PRIVATE);
-                string str_name=@"Name=$(_("Add Niki Playlist"))\n";
-                string str_desc=@"Description=$(_("Add Niki Playlist"))\n";
-                string str_command ="Exec=com.github.torikulhabib.niki --playlist %U \n";
-        		out_stream.write ("[Contractor Entry]\n".data);
+                FileOutputStream out_stream = file.create (FileCreateFlags.PRIVATE);
+                string str_name = @"Name=$(_("Add Niki Playlist"))\n";
+                string str_desc = @"Description=$(_("Add Niki Playlist"))\n";
+                string str_command = "Exec=com.github.torikulhabib.niki --playlist %U \n";
+                out_stream.write ("[Contractor Entry]\n".data);
                 out_stream.write (str_name.data);
                 out_stream.write (str_desc.data);
                 out_stream.write (str_command.data);
                 out_stream.write (@"$(niki_mime_type ())\n".data);
-        	} catch (Error e) {
-        		warning ("Error: %s\n", e.message);
-        	}
+            } catch (Error e) {
+                warning ("Error: %s\n", e.message);
+            }
         }
 
         public static void remove_contract () {

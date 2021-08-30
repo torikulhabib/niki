@@ -1,7 +1,7 @@
 gstreamer_dep = dependency('gstreamer-1.0')
 
 shared_module(
-    'niki',
+    'Niki',
     [
         'src/Slice.vala',
         'src/SliceS16.vala',

@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class DialogImport : MessageDialog {
         private PlayerPage? playerpage;
         public Welcome? welcome_rigth;
@@ -84,9 +84,11 @@ namespace niki {
             vertical_grid.add (grid_home);
             vertical_grid.add (progress_rev);
             vertical_grid.show_all ();
+
             custom_bin.add (vertical_grid);
             custom_bin.show_all ();
-            show.connect(()=>{
+
+            show.connect (()=> {
                 NikiApp.window.player_page.right_bar.set_reveal_child (false);
             });
             scanfolder.signal_succes.connect ((store_uri)=>{
@@ -131,10 +133,10 @@ namespace niki {
             });
             var close_dialog = new Gtk.Button.with_label (_("Close"));
             close_dialog.clicked.connect (() => {
-		        destroy ();
+                destroy ();
             });
 
-		    var box_action = new Gtk.Grid ();
+            var box_action = new Gtk.Grid ();
             box_action.orientation = Gtk.Orientation.HORIZONTAL;
             box_action.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             box_action.margin_top = 5;

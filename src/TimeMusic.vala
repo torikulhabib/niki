@@ -19,13 +19,14 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class TimeMusic : Gtk.Revealer {
         public signal void position_sec (int64 position);
         public Gtk.Label progression_label;
         public Gtk.Label duration_label;
         private Gtk.Button make_lrc_but;
         private Gtk.Button search_time_lrc;
+        private Gtk.Box actionbar;
         private Pango.Layout layout;
         private Gtk.DrawingArea anim_area;
         private uint remove_time = 0;
@@ -115,7 +116,7 @@ namespace niki {
             anim_area.height_request = height;
             anim_area.draw.connect (anim_draw);
 
-            var actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+            actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
             actionbar.get_style_context ().add_class ("transbgborder");
             actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             actionbar.margin_start = 5;
@@ -130,12 +131,14 @@ namespace niki {
             show_all ();
             NikiApp.settings.changed["make-lrc"].connect (seach_n_time);
             seach_n_time ();
-            Timeout.add (40, animation_timer);
+            Timeout.add (50, animation_timer);
         }
+
         private void seach_n_time () {
             ((Gtk.Image) search_time_lrc.image).icon_name = NikiApp.settings.get_boolean ("make-lrc")? "com.github.torikulhabib.niki.time-lrc-symbolic" : "system-search-symbolic";
             search_time_lrc.tooltip_text = NikiApp.settings.get_boolean ("make-lrc")? _("Set Time Lyric") : _("Search Lyrics");
         }
+
         private bool anim_draw (Cairo.Context cr) {
             double alpha = 0;
             if (animstep < 16) {
@@ -150,47 +153,50 @@ namespace niki {
             Gdk.RGBA color = style.get_color (style.get_state ());
             Gdk.cairo_set_source_rgba (cr, color);
             Gtk.Allocation allocation;
-            get_allocation (out allocation);
-            int height, y;
-            layout.get_pixel_size (null, out height);
-            y = (allocation.height - height) / 2;
-            cr.move_to (-1, y);
+            actionbar.get_allocation (out allocation);
+            int width, height;
+            layout.get_pixel_size (out width, out height);
+            int y = (allocation.height - height) / 2;
+            int x = ((allocation.width / 2) - width) / 2;
+            cr.move_to (x, y);
             cr.push_group ();
             Pango.cairo_show_layout (cr, layout);
             cr.pop_group_to_source ();
             cr.paint_with_alpha (alpha);
             return false;
         }
-        private void decorate_text (int anim_type, double time) {
+
+        private void decorate_text (int anim_type, double time, int state) {
             Pango.Attribute attr;
             string text = layout.get_text ();
-            int width;
-            layout.get_pixel_size (out width, null);
-            anim_area.width_request = width;
+            if (NikiApp.settings.get_boolean ("audio-video")) {
+                anim_area.width_request = (actionbar.get_allocated_width () / 2);
+            }
             Pango.AttrList attrlist = new Pango.AttrList ();
 
             switch (anim_type) {
                 case 0:
                     break;
                 case 1:
-                    for (int i = 0; i < text.char_count (); i++) {
-                        attr = Pango.attr_rise_new ((int)((1.0 -time) * 60000));
-                        attrlist.change ((owned) attr);
-                    }
+                    attr = Pango.attr_letter_spacing_new ((int)((1.0 - time) * 60000));
+                    attrlist.change ((owned) attr);
                     break;
                 case 2:
-                    int letter_count = 0;
                     for (int i = 0; i < text.char_count (); i++) {
-                        attr = Pango.attr_rise_new ((int)((1.0 -time) * 18000 * GLib.Math.sin (6.0 * time + letter_count * 0.7)));
+                        attr = Pango.attr_rise_new ((int)((1.0 - time) * 18000 * GLib.Math.sin (6.0 * time + i * 0.7)));
                         attr.start_index = i;
                         attr.end_index = text.char_count ();
                         attrlist.change ((owned) attr);
-                        letter_count++;
                     }
                     break;
             }
+            if (state % 2 == 0 && state != 0) {
+                attr = Pango.attr_weight_new (Pango.Weight.SEMIBOLD);
+                attrlist.change ((owned) attr);
+            }
             layout.set_attributes (attrlist);
         }
+
         private bool animation_timer () {
             int timeout = 0;
             if (animstep == 0) {
@@ -233,18 +239,18 @@ namespace niki {
                         state = 0;
                         break;
                 }
-                layout.set_text (NikiApp.settings.get_boolean("audio-video") && NikiApp.window.main_stack.visible_child_name == "player"? text : "Niki", -1);
+                layout.set_text (NikiApp.settings.get_boolean ("audio-video") && NikiApp.window.main_stack.visible_child_name == "player"? text : "Niki", -1);
                 layout.set_attributes (null);
             }
 
             if (animstep < 16) {
-                decorate_text (2, (animstep) / 15.0);
+                decorate_text (2, (animstep) / 15.0, state);
             } else if (animstep == 16) {
                 timeout = 900;
             } else if (animstep == 17) {
                 timeout = 40;
             } else if (animstep < 35) {
-                decorate_text (1, 1.0 - (animstep - 17) / 15.0);
+                decorate_text (1, 1.0 - (animstep - 17) / 15.0, state);
             } else if (animstep == 35) {
                 timeout = 300;
             } else {
@@ -253,7 +259,7 @@ namespace niki {
             }
             animstep++;
             anim_area.queue_draw ();
-            if (timeout > 0) { 
+            if (timeout > 0) {
                 remove_time = Timeout.add (timeout, animation_timer);
                 return false;
             }

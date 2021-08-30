@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class MPRIS : GLib.Object {
         private ClutterGst.Playback playback;
         private unowned DBusConnection connecting;
@@ -27,7 +27,7 @@ namespace niki {
         private uint root_id;
         private uint player_id;
 
-        public void bus_acive (ClutterGst.Playback playback){
+        public void bus_acive (ClutterGst.Playback playback) {
             this.playback = playback;
             initialize ();
             NikiApp.settings.changed["next-status"].connect (initialize);

@@ -24,7 +24,7 @@
  * statement from your version.
  */
 
-namespace niki {
+namespace Niki {
     [DBus (name = "org.mpris.MediaPlayer2")]
     public class MprisRoot : GLib.Object {
         public bool can_quit {

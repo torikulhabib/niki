@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     [DBus (name = "org.mpris.MediaPlayer2.Player")]
     public class MprisPlayer : GLib.Object {
         [DBus (visible = false)]
@@ -57,7 +57,7 @@ namespace niki {
 
         private void update_metadata () {
             playing_changed ();
-            string album_path = cache_image (NikiApp.settings.get_string("title-playing"));
+            string album_path = cache_image (NikiApp.settings.get_string ("title-playing"));
             switch (NikiApp.settings.get_enum ("player-mode")) {
                 case PlayerMode.VIDEO :
                     string hash_file_poster = GLib.Checksum.compute_for_string (ChecksumType.MD5, NikiApp.settings.get_string ("uri-video"), NikiApp.settings.get_string ("uri-video").length);
@@ -65,13 +65,13 @@ namespace niki {
                     metadata = new HashTable<string, Variant> (null, null);
                     metadata.insert ("mpris:length", playback.duration * 1000000);
                     metadata.insert ("mpris:artUrl", @"file://$(preview_path)");
-                    metadata.insert ("xesam:title", NikiApp.settings.get_string("title-playing"));
+                    metadata.insert ("xesam:title", NikiApp.settings.get_string ("title-playing"));
                     metadata.insert ("xesam:album", "Unknown");
                     metadata.insert ("xesam:artist", get_simple_string_array ("Unknown"));
                     metadata.insert ("xesam:url", NikiApp.settings.get_string ("uri-video"));
                     break;
                 case PlayerMode.AUDIO :
-                    string imagep = cache_image (@"$(NikiApp.settings.get_string("title-playing")) $(NikiApp.settings.get_string ("artist-music")) $(File.new_for_uri (NikiApp.settings.get_string ("uri-video")).get_basename())");
+                    string imagep = cache_image (@"$(NikiApp.settings.get_string ("title-playing")) $(NikiApp.settings.get_string ("artist-music")) $(File.new_for_uri (NikiApp.settings.get_string ("uri-video")).get_basename())");
                     metadata = new HashTable<string, Variant> (null, null);
                     metadata.insert ("mpris:length", playback.duration * 1000000);
                     metadata.insert ("mpris:artUrl", @"file://$(imagep)");
@@ -84,13 +84,13 @@ namespace niki {
                     metadata = new HashTable<string, Variant> (null, null);
                     metadata.insert ("mpris:length", playback.duration * 1000000);
                     metadata.insert ("mpris:artUrl", @"file://$(album_path)");
-                    metadata.insert ("xesam:title", NikiApp.settings.get_string("title-playing"));
+                    metadata.insert ("xesam:title", NikiApp.settings.get_string ("title-playing"));
                     break;
                 case PlayerMode.STREAMVID :
                     metadata = new HashTable<string, Variant> (null, null);
                     metadata.insert ("mpris:length", playback.duration * 1000000);
                     metadata.insert ("mpris:artUrl", @"file://$(album_path)");
-                    metadata.insert ("xesam:title", NikiApp.settings.get_string("title-playing"));
+                    metadata.insert ("xesam:title", NikiApp.settings.get_string ("title-playing"));
                     break;
             }
         }
@@ -164,27 +164,27 @@ namespace niki {
                 return ((int64)(playback.get_position () * 1000000));
             }
         }
-        public bool CanGoNext {
+        public bool can_go_next {
             get {
-                return NikiApp.settings.get_boolean ("next-status"); 
+                return NikiApp.settings.get_boolean ("next-status");
             }
         }
-        public bool CanGoPrevious {
+        public bool can_go_previous {
             get {
                 return NikiApp.settings.get_boolean ("previous-status");
             }
         }
-        public bool CanPlay {
+        public bool can_play {
             get {
                 return true;
             }
         }
-        public bool CanPause {
+        public bool can_pause {
             get {
                 return true;
             }
         }
-        public signal void seeked (int64 Position);
+        public signal void seeked (int64 position);
 
         public void previous () throws GLib.Error {
             if (NikiApp.settings.get_boolean ("previous-status")) {
@@ -194,7 +194,7 @@ namespace niki {
         }
 
         public void next () throws GLib.Error {
-            if (NikiApp.settings.get_boolean("next-status")) {
+            if (NikiApp.settings.get_boolean ("next-status")) {
                 NikiApp.window.player_page.next ();
                 NikiApp.window.player_page.string_notify (_("Next"));
             }
@@ -216,7 +216,7 @@ namespace niki {
             NikiApp.window.player_page.string_notify (_("Stop"));
         }
 
-        public void PlayPause () throws GLib.Error {
+        public void play_pause () throws GLib.Error {
             playback.playing = playback.playing? false : true;
             NikiApp.window.player_page.string_notify (playback.playing? _("Play") : _("Pause"));
         }
@@ -224,12 +224,12 @@ namespace niki {
         public void seek (int64 offset) throws GLib.Error {
             var duration = playback.duration;
             var progress = playback.progress;
-            var new_progress = ((duration * progress) + ((double)(offset/1000000))/duration);
+            var new_progress = ((duration * progress) + ((double)(offset / 1000000)) / duration);
             playback.progress = new_progress.clamp (0.0, 1.0);
         }
 
-        public void set_position (string dobj, int64 Position) throws GLib.Error {
-            playback.progress = ((double)(Position/1000000)).clamp (0.0, 1.0);
+        public void set_position (string dobj, int64 position) throws GLib.Error {
+            playback.progress = ((double)(position / 1000000)).clamp (0.0, 1.0);
         }
     }
 }

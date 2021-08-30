@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class NotifyBottomBar : Gtk.Revealer {
         private Gtk.ProgressBar progress_bar;
         private PlayerPage? playerpage;

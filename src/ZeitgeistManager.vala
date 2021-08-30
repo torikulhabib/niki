@@ -24,7 +24,7 @@ interface BlacklistInterface : Object {
     public abstract Variant get_templates () throws Error;
 }
 
-namespace niki {
+namespace Niki {
     public class ZeitgeistManager : Object {
         private BlacklistInterface apps;
         construct {
@@ -37,7 +37,7 @@ namespace niki {
 
         public bool app_into_blacklist (string app_name) {
             try {
-                foreach(Variant key in apps.get_templates ()) {
+                foreach (Variant key in apps.get_templates ()) {
                     VariantIter iter = key.iterator ();
                     string template_id = iter.next_value ().get_string ();
                     if (template_id == @"app-$(app_name).desktop") {

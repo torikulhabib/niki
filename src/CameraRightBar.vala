@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class CameraRightBar : Gtk.Revealer {
         public Gtk.Button profile_button;
         private Gtk.Button flip_button;
@@ -104,8 +104,9 @@ namespace niki {
                 return false;
             });
 
-            profile_button = new Gtk.Button.from_icon_name ("document-save-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-            profile_button.focus_on_click = false;
+            profile_button = new Gtk.Button.from_icon_name ("document-save-symbolic", Gtk.IconSize.LARGE_TOOLBAR) {
+                focus_on_click = false
+            };
             profile_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             profile_button.get_style_context ().add_class ("button_action");
             profile_button.clicked.connect (() => {
@@ -121,8 +122,9 @@ namespace niki {
             });
             profile_grid.add (profile_list);
 
-            profile_popover = new Gtk.Popover (profile_button);
-            profile_popover.position = Gtk.PositionType.LEFT;
+            profile_popover = new Gtk.Popover (profile_button) {
+                position = Gtk.PositionType.LEFT
+            };
             profile_popover.add (profile_grid);
             profile_popover.show.connect (() => {
                 if (selected_profile != null) {
@@ -139,16 +141,18 @@ namespace niki {
             }
             profile_grid.show_all ();
 
-            flip_button = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.flip-on-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-            flip_button.focus_on_click = false;
+            flip_button = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.flip-on-symbolic", Gtk.IconSize.LARGE_TOOLBAR) {
+                focus_on_click = false
+            };
             flip_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             flip_button.get_style_context ().add_class ("button_action");
             flip_button.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("mode-flip", !NikiApp.settings.get_boolean ("mode-flip"));
                 camerapage.string_notify (flip_button.tooltip_text);
             });
-            coloreffect_button = new Gtk.Button.from_icon_name ("applications-graphics-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-            coloreffect_button.focus_on_click = false;
+            coloreffect_button = new Gtk.Button.from_icon_name ("applications-graphics-symbolic", Gtk.IconSize.LARGE_TOOLBAR) {
+                focus_on_click = false
+            };
             coloreffect_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             coloreffect_button.get_style_context ().add_class ("button_action");
             coloreffect_button.clicked.connect (() => {
@@ -164,8 +168,9 @@ namespace niki {
             });
             effect_grid.add (effect_list);
 
-            coloreffect_popover = new Gtk.Popover (coloreffect_button);
-            coloreffect_popover.position = Gtk.PositionType.LEFT;
+            coloreffect_popover = new Gtk.Popover (coloreffect_button) {
+                position = Gtk.PositionType.LEFT
+            };
             coloreffect_popover.add (effect_grid);
             coloreffect_popover.show.connect (() => {
                 if (selected_effect != null) {
@@ -181,20 +186,22 @@ namespace niki {
                 effect_list.add (item);
             }
             effect_grid.show_all ();
-            flash_button = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.flash-on-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-            flash_button.focus_on_click = false;
+            flash_button = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.flash-on-symbolic", Gtk.IconSize.LARGE_TOOLBAR) {
+                focus_on_click = false
+            };
             flash_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             flash_button.get_style_context ().add_class ("button_action");
             flash_button.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("flash-camera", !NikiApp.settings.get_boolean ("flash-camera"));
                 camerapage.string_notify (flash_button.tooltip_text);
             });
-            var content_box = new Gtk.Grid ();
+            var content_box = new Gtk.Grid () {
+                orientation = Gtk.Orientation.VERTICAL,
+                valign = Gtk.Align.CENTER,
+                margin = 2
+            };
             content_box.get_style_context ().add_class ("playlist");
             content_box.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            content_box.margin = 2;
-            content_box.valign = Gtk.Align.CENTER;
-            content_box.orientation = Gtk.Orientation.VERTICAL;
             content_box.add (profile_button);
             content_box.add (flip_button);
             content_box.add (coloreffect_button);
@@ -207,8 +214,8 @@ namespace niki {
             mode_flip ();
             flash_on ();
             profil_sensitive ();
-            selected_effect = effect_list.get_child_at_index(NikiApp.settings.get_int ("coloreffect-mode")) as EffectColor;
-            selected_profile = profile_list.get_child_at_index(NikiApp.settings.get_enum ("camera-profile")) as ProfileCamera;
+            selected_effect = effect_list.get_child_at_index (NikiApp.settings.get_int ("coloreffect-mode")) as EffectColor;
+            selected_profile = profile_list.get_child_at_index (NikiApp.settings.get_enum ("camera-profile")) as ProfileCamera;
         }
 
         private void profil_sensitive () {

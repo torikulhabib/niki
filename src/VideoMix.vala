@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class VideoMix : Gst.Bin {
         private dynamic Gst.Element videoqueue;
         private dynamic Gst.Element videosink;
@@ -34,15 +34,15 @@ namespace niki {
         private const string [] VIDEORENDER = {"autovideosink", "vaapisink", "ximagesink", "xvimagesink"};
 
         public VideoMix (ClutterGst.Playback playback) {
-            videotee = Gst.ElementFactory.make("tee", "tee");
-            videocrop = Gst.ElementFactory.make("videocrop","videocrop");
-            videoqueue = Gst.ElementFactory.make("queue","queue");
+            videotee = Gst.ElementFactory.make ("tee", "tee");
+            videocrop = Gst.ElementFactory.make ("videocrop", "videocrop");
+            videoqueue = Gst.ElementFactory.make ("queue", "queue");
             videoqueue["flush-on-eos"] = true;
             flip_filter = Gst.ElementFactory.make ("videoflip", "videoflip");
-            gamma = Gst.ElementFactory.make ("gamma","gamma");
-            color_balance = Gst.ElementFactory.make ("videobalance","videobalance");
-            coloreffects = Gst.ElementFactory.make ("coloreffects","coloreffects");
-            videoscale = Gst.ElementFactory.make ("videoscale","videoscale");
+            gamma = Gst.ElementFactory.make ("gamma", "gamma");
+            color_balance = Gst.ElementFactory.make ("videobalance", "videobalance");
+            coloreffects = Gst.ElementFactory.make ("coloreffects", "coloreffects");
+            videoscale = Gst.ElementFactory.make ("videoscale", "videoscale");
             videoscale["gamma-decode"] = true;
             videoscale["sharpen"] = 1.0;
             videoscale["sharpness"] = 1.5;
@@ -50,16 +50,17 @@ namespace niki {
             Gst.Util.set_object_arg ((GLib.Object) capsfilter, "caps", "video/x-raw, format={ RGBA, RGB, I420, YV12, YUY2, UYVY, AYUV, Y41B, Y42B, YVYU, Y444, v210, v216, NV12, NV21, UYVP, A420, YUV9, YVU9, IYU1, VUYA, BGR, Y210, Y410, GRAY8, GRAY16_BE, GRAY16_LE, v308, RGB16, BGR16, RGB15, BGR15, UYVP, RGB8P, ARGB64, AYUV64, r210, I420_10BE, I420_10LE, I422_10BE, I422_10LE, Y444_10BE, Y444_10LE, GBR, GBR_10BE, GBR_10LE, NV16, NV24, NV12_64Z32, A420_10BE, A420_10LE, A422_10BE, A422_10LE, A444_10BE, A444_10LE, NV61, P010_10BE, P010_10LE, IYU2, VYUY, GBRA, GBRA_10BE, GBRA_10LE, BGR10A2_LE, RGB10A2_LE, GBR_12BE, GBR_12LE, GBRA_12BE, GBRA_12LE, I420_12BE, I420_12LE, I422_12BE, I422_12LE, Y444_12BE, Y444_12LE, GRAY10_LE32, NV12_10LE32, NV16_10LE32, NV12_10LE40 }");
             videosink = Gst.ElementFactory.make (VIDEORENDER [NikiApp.settings.get_int ("videorender-options")], VIDEORENDER [NikiApp.settings.get_int ("videorender-options")]);
             videosink = playback.get_video_sink ();
-            add_many(videoqueue, videotee, capsfilter, videoscale, videocrop, coloreffects, flip_filter, color_balance, gamma, videosink);
+            add_many (videoqueue, videotee, capsfilter, videoscale, videocrop, coloreffects, flip_filter, color_balance, gamma, videosink);
             add_pad (new Gst.GhostPad ("sink", videotee.get_static_pad ("sink")));
             videoqueue.link_many (capsfilter, videoscale, videocrop, coloreffects, flip_filter, color_balance, gamma, videosink);
             Gst.Pad sinkpad = videoqueue.get_static_pad ("sink");
             Gst.Pad pad = videotee.get_request_pad ("src_%u");
-            pad.link(sinkpad);
+            pad.link (sinkpad);
             videotee["alloc-pad"] = pad;
             coloreffect ();
             NikiApp.settings.changed["coloreffects-options"].connect (coloreffect);
         }
+
         public void set_videocrp (int top, int bottom, int left, int right) {
             videocrop.set_state (Gst.State.PAUSED);
             videocrop["top"] = top;
@@ -68,22 +69,24 @@ namespace niki {
             videocrop["right"] = right;
             videocrop.set_state (Gst.State.PLAYING);
         }
+
         private void coloreffect () {
             coloreffects["preset"] = NikiApp.settings.get_int ("coloreffects-options");
         }
+
         public void setvalue (int index, int valuescale) {
             switch (index) {
                 case 0 :
-                    gamma["gamma"] = (double) ((101.1 + valuescale)/100.0);
+                    gamma["gamma"] = (double) ((101.1 + valuescale) / 100.0);
                     break;
                 case 1 :
                     color_balance["brightness"] = (double) valuescale / 100.0;
                     break;
                 case 2 :
-                    color_balance["contrast"] = (double) ((100.0 + valuescale)/100.0);
+                    color_balance["contrast"] = (double) ((100.0 + valuescale) / 100.0);
                     break;
                 case 3 :
-                    color_balance["saturation"] = (double) ((100.0 + valuescale)/100.0);
+                    color_balance["saturation"] = (double) ((100.0 + valuescale) / 100.0);
                     break;
                 case 4 :
                     color_balance["hue"] = (double) valuescale / 100.0;
@@ -93,7 +96,7 @@ namespace niki {
 
         public Gee.Collection<VideoPreset> get_presets () {
             var video_preset = new Gee.TreeSet<VideoPreset> ();
-            foreach (string preset in NikiApp.settingsVf.get_strv ("custom-presets")) {
+            foreach (string preset in NikiApp.settings_vf.get_strv ("custom-presets")) {
                 video_preset.add (new VideoPreset.from_string (preset));
             }
             return video_preset;

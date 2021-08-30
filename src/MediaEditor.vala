@@ -19,13 +19,13 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class MediaEditor : Gtk.Dialog {
         private Gtk.TextView comment_textview;
         private Gtk.SpinButton date_spinbutton;
         private Gtk.SpinButton track_spinbutton;
-        private AsyncImage? asyncimage;
-        private AsyncImage? video_asyncimage;
+        private Gtk.Image? asyncimage;
+        private Gtk.Image? video_asyncimage;
         private Gtk.Label label_duration;
         private Gtk.Label label_bitrate;
         private Gtk.Label label_chanel;
@@ -79,15 +79,17 @@ namespace niki {
                 destroy_with_parent: true
             );
             this.playlist = playlist;
-            header_label = new Gtk.Label (null);
-            header_label.get_style_context ().add_class ("h4");
-            header_label.halign = Gtk.Align.CENTER;
-            header_label.hexpand = true;
-            header_label.can_focus = true;
-            get_header_bar ().set_custom_title (header_label);
-            resize (425, 380);
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             get_style_context ().add_class ("niki");
+            resize (425, 380);
+
+            header_label = new Gtk.Label (null) {
+                halign = Gtk.Align.CENTER,
+                hexpand = true,
+                can_focus = true
+            };
+            header_label.get_style_context ().add_class ("h4");
+
             title_entry = new MediaEntry ("com.github.torikulhabib.niki.title-symbolic","edit-paste-symbolic");
             title_entry.tooltip_notify.connect (info_send);
             artist_entry = new MediaEntry ("avatar-default-symbolic", "edit-paste-symbolic");
@@ -96,31 +98,41 @@ namespace niki {
             album_entry.tooltip_notify.connect (info_send);
             genre_entry = new MediaEntry ("audio-x-generic-symbolic", "edit-paste-symbolic");
             genre_entry.tooltip_notify.connect (info_send);
+
             comment_textview = new Gtk.TextView ();
             comment_textview.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             comment_textview.set_wrap_mode (Gtk.WrapMode.WORD_CHAR);
-            var comment_scr = new Gtk.ScrolledWindow (null, null);
+
+            var comment_scr = new Gtk.ScrolledWindow (null, null) {
+                expand = true,
+                margin_end = 10
+            };
             comment_scr.get_style_context ().add_class ("dlna_scrollbar");
             comment_scr.get_style_context ().add_class ("frame");
             comment_scr.set_policy (Gtk.PolicyType.EXTERNAL, Gtk.PolicyType.AUTOMATIC);
-            comment_scr.expand = true;
-            comment_scr.margin_end = 10;
             comment_scr.add (comment_textview);
+
             var local_time = new DateTime.now_local ();
-            date_spinbutton = new Gtk.SpinButton.with_range (0, local_time.get_year (), 1);
-            date_spinbutton.focus_on_click = false;
-            date_spinbutton.margin_end = 10;
+            date_spinbutton = new Gtk.SpinButton.with_range (0, local_time.get_year (), 1) {
+                focus_on_click = false,
+                margin_end = 10
+            };
             date_spinbutton.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            track_spinbutton = new Gtk.SpinButton.with_range (0, 500, 1);
-            track_spinbutton.focus_on_click = false;
-            track_spinbutton.margin_end = 10;
+
+            track_spinbutton = new Gtk.SpinButton.with_range (0, 500, 1) {
+                focus_on_click = false,
+                margin_end = 10
+            };
             track_spinbutton.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
 
-            asyncimage = new AsyncImage (true);
-            asyncimage.pixel_size = 85;
-            asyncimage.margin_end = 5;
-            var openimage = new Gtk.Button ();
-            openimage.focus_on_click = false;
+            asyncimage = new Gtk.Image () {
+                pixel_size = 85,
+                margin_end = 5
+            };
+
+            var openimage = new Gtk.Button () {
+                focus_on_click = false
+            };
             openimage.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             openimage.get_style_context ().add_class ("transparantbg");
             openimage.add (asyncimage);
@@ -131,41 +143,48 @@ namespace niki {
                 }
             });
 
-            label_duration = new Gtk.Label (null);
-            label_duration.halign = Gtk.Align.START;
-            label_duration.ellipsize = Pango.EllipsizeMode.END;
-            label_bitrate = new Gtk.Label (null);
-            label_bitrate.halign = Gtk.Align.START;
-            label_bitrate.ellipsize = Pango.EllipsizeMode.END;
-            label_sample = new Gtk.Label (null);
-            label_sample.halign = Gtk.Align.START;
-            label_sample.ellipsize = Pango.EllipsizeMode.END;
-            label_chanel = new Gtk.Label (null);
-            label_chanel.halign = Gtk.Align.START;
-            label_chanel.ellipsize = Pango.EllipsizeMode.END;
+            label_duration = new Gtk.Label (null) {
+                halign = Gtk.Align.START,
+                ellipsize = Pango.EllipsizeMode.END
+            };
+            label_bitrate = new Gtk.Label (null) {
+                halign = Gtk.Align.START,
+                ellipsize = Pango.EllipsizeMode.END
+            };
+            label_sample = new Gtk.Label (null) {
+                halign = Gtk.Align.START,
+                ellipsize = Pango.EllipsizeMode.END
+            };
+            label_chanel = new Gtk.Label (null) {
+                halign = Gtk.Align.START,
+                ellipsize = Pango.EllipsizeMode.END
+            };
 
-            var grid_label = new Gtk.Grid ();
-            grid_label.orientation = Gtk.Orientation.VERTICAL;
-            grid_label.valign = Gtk.Align.CENTER;
+            var grid_label = new Gtk.Grid () {
+                orientation = Gtk.Orientation.VERTICAL,
+                valign = Gtk.Align.CENTER
+            };
             grid_label.add (label_duration);
             grid_label.add (label_bitrate);
             grid_label.add (label_sample);
             grid_label.add (label_chanel);
             grid_label.show_all ();
 
-            var imagege_box = new Gtk.Grid ();
+            var imagege_box = new Gtk.Grid () {
+                orientation = Gtk.Orientation.HORIZONTAL,
+                valign = Gtk.Align.CENTER,
+                halign = Gtk.Align.CENTER,
+                hexpand = true
+            };
             imagege_box.get_style_context ().add_class ("ground_action_button");
-            imagege_box.orientation = Gtk.Orientation.HORIZONTAL;
-            imagege_box.valign = Gtk.Align.CENTER;
-            imagege_box.halign = Gtk.Align.CENTER;
-            imagege_box.hexpand = true;
             imagege_box.add (openimage);
             imagege_box.add (grid_label);
 
-            var grid = new Gtk.Grid ();
+            var grid = new Gtk.Grid () {
+                expand = true,
+                margin_start = 10
+            };
             grid.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            grid.expand = true;
-            grid.margin_start = 10;
             grid.attach (new HeaderLabel (_("Cover:"), 200), 0, 0, 1, 1);
             grid.attach (imagege_box, 0, 1, 1, 1);
             grid.attach (new HeaderLabel (_("Comment:"), 200), 1, 0, 1, 1);
@@ -183,47 +202,50 @@ namespace niki {
             grid.attach (new HeaderLabel (_("Date:"), 200), 1, 6, 1, 1);
             grid.attach (date_spinbutton, 1, 7, 1, 1);
 
-            label_name = new Gtk.Label (null);
-            label_name.hexpand = true;
-            label_name.halign = Gtk.Align.CENTER;
-            label_name.ellipsize = Pango.EllipsizeMode.MIDDLE;
+            label_name = new Gtk.Label (null) {
+                hexpand = true,
+                halign = Gtk.Align.CENTER,
+                ellipsize = Pango.EllipsizeMode.MIDDLE
+            };
             label_name.get_style_context ().add_class ("h4");
 
-            var previous_button = new Gtk.Button.from_icon_name ("go-previous-symbolic");
-            previous_button.focus_on_click = false;
+            var previous_button = new Gtk.Button.from_icon_name ("go-previous-symbolic") {
+                focus_on_click = false
+            };
             previous_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             previous_button.get_style_context ().add_class ("transparantbg");
             previous_button.clicked.connect (previous_track);
 
-            var next_button = new Gtk.Button.from_icon_name ("go-next-symbolic");
-            next_button.focus_on_click = false;
+            var next_button = new Gtk.Button.from_icon_name ("go-next-symbolic") {
+                focus_on_click = false
+            };
             next_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             next_button.get_style_context ().add_class ("transparantbg");
             next_button.clicked.connect (next_track);
 
-            var arrows_grid = new Gtk.Grid ();
-            arrows_grid.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            arrows_grid.orientation = Gtk.Orientation.HORIZONTAL;
-            arrows_grid.margin_start = arrows_grid.margin_end = 5;
-            arrows_grid.add (previous_button);
-            arrows_grid.add (label_name);
-            arrows_grid.add (next_button);
+            var header = get_header_bar ();
+            header.set_custom_title (header_label);
+            header.pack_start (previous_button);
+            header.pack_end (next_button);
 
-            container = new Gtk.Label (null);
-            container.ellipsize = Pango.EllipsizeMode.END;
-            container.halign = Gtk.Align.START;
-            container.margin = 2;
-            container.margin_end = 10;
-            container_audio = new Gtk.Label (null);
-            container_audio.ellipsize = Pango.EllipsizeMode.END;
-            container_audio.halign = Gtk.Align.START;
-            container_audio.margin = 2;
-            container_audio.margin_end = 10;
-            container_video = new Gtk.Label (null);
-            container_video.ellipsize = Pango.EllipsizeMode.END;
-            container_video.halign = Gtk.Align.START;
-            container_video.margin = 2;
-            container_video.margin_end = 10;
+            container = new Gtk.Label (null) {
+                ellipsize = Pango.EllipsizeMode.END,
+                halign = Gtk.Align.START,
+                margin = 2,
+                margin_end = 10
+            };
+            container_audio = new Gtk.Label (null) {
+                ellipsize = Pango.EllipsizeMode.END,
+                halign = Gtk.Align.START,
+                margin = 2,
+                margin_end = 10
+            };
+            container_video = new Gtk.Label (null) {
+                ellipsize = Pango.EllipsizeMode.END,
+                halign = Gtk.Align.START,
+                margin = 2,
+                margin_end = 10
+            };
 
             duration_video = new MediaEntry ("tools-timer-symbolic", "", false);
             duration_video.tooltip_notify.connect (info_send);
@@ -266,36 +288,41 @@ namespace niki {
             audio_depth = new MediaEntry ("audio-x-generic-symbolic", "", false);
             audio_depth.tooltip_notify.connect (info_send);
 
-            video_asyncimage = new AsyncImage (true);
-            video_asyncimage.pixel_size = 85;
-            video_asyncimage.margin_end = 5;
-            video_asyncimage.valign = Gtk.Align.CENTER;
+            video_asyncimage = new Gtk.Image () {
+                pixel_size = 85,
+                margin_end = 5,
+                valign = Gtk.Align.CENTER
+            };
 
-            var thumbnail = new Gtk.Grid ();
+            var thumbnail = new Gtk.Grid () {
+                orientation = Gtk.Orientation.HORIZONTAL,
+                valign = Gtk.Align.CENTER,
+                halign = Gtk.Align.CENTER,
+                margin_top = 5,
+                margin_bottom = 5,
+                hexpand = true
+            };
             thumbnail.get_style_context ().add_class ("ground_action_button");
-            thumbnail.orientation = Gtk.Orientation.HORIZONTAL;
-            thumbnail.valign = Gtk.Align.CENTER;
-            thumbnail.halign = Gtk.Align.CENTER;
-            thumbnail.margin_top = thumbnail.margin_bottom = 5;
-            thumbnail.hexpand = true;
             thumbnail.add (video_asyncimage);
 
-            var topology_box = new Gtk.Grid ();
+            var topology_box = new Gtk.Grid () {
+                orientation = Gtk.Orientation.VERTICAL,
+                halign = Gtk.Align.START,
+                valign = Gtk.Align.CENTER,
+                margin = 5,
+                hexpand = true,
+                vexpand = true
+            };
             topology_box.get_style_context ().add_class ("ground_action_button");
-            topology_box.orientation = Gtk.Orientation.VERTICAL;
-            topology_box.halign = Gtk.Align.START;
-            topology_box.valign = Gtk.Align.CENTER;
-            topology_box.margin = 5;
-            topology_box.hexpand = true;
-            topology_box.vexpand = true;
             topology_box.add (container);
             topology_box.add (container_audio);
             topology_box.add (container_video);
 
-            var video_grid = new Gtk.Grid ();
+            var video_grid = new Gtk.Grid () {
+                expand = true,
+                margin_start = 10
+            };
             video_grid.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            video_grid.expand = true;
-            video_grid.margin_start = 10;
             video_grid.attach (new HeaderLabel (_("Thumbnail:"), 200), 0, 0, 1, 1);
             video_grid.attach (thumbnail, 0, 1, 1, 1);
             video_grid.attach (new HeaderLabel (_("Topology:"), 200), 1, 0, 1, 1);
@@ -345,19 +372,22 @@ namespace niki {
             viscrolledwindow.set_policy (Gtk.PolicyType.EXTERNAL, Gtk.PolicyType.AUTOMATIC);
             viscrolledwindow.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             viscrolledwindow.add (video_grid);
-            stack = new Gtk.Stack ();
-            stack.transition_duration = 500;
+
+            stack = new Gtk.Stack () {
+                transition_duration = 500,
+                vhomogeneous = false,
+                hhomogeneous = false
+            };
             stack.add_named (grid, "audio_info");
             stack.add_named (viscrolledwindow, "video_info");
-            stack.vhomogeneous = false;
-            stack.hhomogeneous = false;
             stack.show_all ();
 
-            var grid_combine = new Gtk.Grid ();
+            var grid_combine = new Gtk.Grid () {
+                orientation = Gtk.Orientation.VERTICAL,
+                valign = Gtk.Align.FILL
+            };
             grid_combine.set_size_request (425, 380);
-            grid_combine.orientation = Gtk.Orientation.VERTICAL;
-            grid_combine.valign = Gtk.Align.FILL;
-            grid_combine.add (arrows_grid);
+            grid_combine.add (label_name);
             grid_combine.add (stack);
             grid_combine.show_all ();
 
@@ -366,72 +396,87 @@ namespace niki {
             save_button.clicked.connect (save_to_file);
 
             var close_button = new Gtk.Button.with_label (_("Close"));
-            close_button.clicked.connect (()=>{
-                destroy();
+            close_button.clicked.connect (()=> {
+                destroy ();
             });
+
             var clear_button = new Gtk.Button.with_label (_("Clear"));
             clear_button.get_style_context ().add_class (Gtk.STYLE_CLASS_DESTRUCTIVE_ACTION);
             clear_button.clicked.connect (clear_tags);
 
             move_widget (this);
 
-            label = new Gtk.Label (null);
-            label.valign = Gtk.Align.CENTER;
-            label.ellipsize = Pango.EllipsizeMode.END;
-            spinner = new Gtk.Spinner ();
-            spinner.margin_end = 5;
-            spinner.valign = Gtk.Align.CENTER;
+            label = new Gtk.Label (null) {
+                valign = Gtk.Align.CENTER,
+                ellipsize = Pango.EllipsizeMode.END
+            };
 
-            var prog_grid = new Gtk.Grid ();
-            prog_grid.orientation = Gtk.Orientation.HORIZONTAL;
-            prog_grid.valign = Gtk.Align.CENTER;
+            spinner = new Gtk.Spinner () {
+                margin_end = 5,
+                valign = Gtk.Align.CENTER
+            };
+
+            var prog_grid = new Gtk.Grid () {
+                orientation = Gtk.Orientation.HORIZONTAL,
+                valign = Gtk.Align.CENTER
+            };
             prog_grid.add (spinner);
             prog_grid.add (label);
 
-            prog_revealer = new Gtk.Revealer ();
-            prog_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
-            prog_revealer.margin_start = 10;
+            prog_revealer = new Gtk.Revealer () {
+                transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT,
+                margin_start = 10
+            };
             prog_revealer.add (prog_grid);
 
-            save_revealer = new Gtk.Revealer ();
-            save_revealer.transition_type = Gtk.RevealerTransitionType.CROSSFADE;
+            save_revealer = new Gtk.Revealer () {
+                transition_type = Gtk.RevealerTransitionType.CROSSFADE
+            };
             save_revealer.add (save_button);
 
-            clear_revealer = new Gtk.Revealer ();
-            clear_revealer.transition_type = Gtk.RevealerTransitionType.CROSSFADE;
+            clear_revealer = new Gtk.Revealer () {
+                transition_type = Gtk.RevealerTransitionType.CROSSFADE
+            };
             clear_revealer.add (clear_button);
 
-		    var box_action = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+            var box_action = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
+                spacing = 5,
+                margin_end = 10,
+                homogeneous = true
+            };
             box_action.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            box_action.spacing = 5;
-            box_action.margin_end = 10;
-            box_action.homogeneous = true;
             box_action.pack_end (close_button, false, true, 0);
             box_action.pack_end (save_revealer, false, true, 0);
             box_action.pack_end (clear_revealer, false, true, 0);
 
-		    var box_proaction = new Gtk.Grid ();
-            box_proaction.orientation = Gtk.Orientation.HORIZONTAL;
+            var box_proaction = new Gtk.Grid () {
+                orientation = Gtk.Orientation.HORIZONTAL,
+                margin_top = 5,
+                margin_bottom = 10,
+                column_homogeneous = true
+            };
             box_proaction.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            box_proaction.margin_top = 5;
-            box_proaction.margin_bottom = 10;
-            box_proaction.column_homogeneous = true;
             box_proaction.add (prog_revealer);
             box_proaction.add (box_action);
 
-		    var grid_ver = new Gtk.Grid ();
-            grid_ver.orientation = Gtk.Orientation.VERTICAL;
+            var grid_ver = new Gtk.Grid () {
+                orientation = Gtk.Orientation.VERTICAL
+            };
             grid_ver.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             grid_ver.add (grid_combine);
             grid_ver.add (box_proaction);
+
             get_content_area ().add (grid_ver);
-            show.connect(()=>{
+
+            show.connect (()=> {
                 NikiApp.window.player_page.right_bar.set_reveal_child (false);
             });
-            destroy.connect(()=>{
+
+            destroy.connect (()=> {
                 permanent_delete (File.new_for_path (cache_image ("setcover")));
             });
         }
+
         public void info_send (string text) {
             spinner.active = true;
             prog_revealer.reveal_child = true;
@@ -450,7 +495,7 @@ namespace niki {
         private void previous_track () {
             Gtk.TreeIter iter = playlist.selected_iter ();
             if (playlist.model.iter_previous (ref iter)) {
-                playlist.get_selection().select_iter (iter);
+                playlist.get_selection ().select_iter (iter);
             }
             if (!playlist.liststore.iter_is_valid (iter)) {
                 return;
@@ -465,7 +510,7 @@ namespace niki {
         private void next_track () {
             Gtk.TreeIter iter = playlist.selected_iter ();
             if (playlist.model.iter_next (ref iter)) {
-                playlist.get_selection().select_iter (iter);
+                playlist.get_selection ().select_iter (iter);
             }
             if (!playlist.liststore.iter_is_valid (iter)) {
                 return;
@@ -595,8 +640,8 @@ namespace niki {
             }
             var file = File.new_for_uri (file_name);
             if (get_mime_type (file).has_prefix ("video/")) {
-		        stack.visible_child_name = "video_info";
-		        header_label.label = _("Video Details");
+                stack.visible_child_name = "video_info";
+                header_label.label = _("Video Details");
                 video_info (file_name);
                 clear_revealer.reveal_child = save_revealer.reveal_child = false;
             }
@@ -612,9 +657,9 @@ namespace niki {
             label_name.label = path.get_basename ();
             label_name.tooltip_text = path.get_path ();
             if (!FileUtils.test (large_thumb (path), FileTest.EXISTS)) {
-                var dbus_Thum = new DbusThumbnailer ().instance;
-                dbus_Thum.instand_thumbler (path, "large");
-                dbus_Thum.load_finished.connect (()=>{
+                var dbus_thumbler = new DbusThumbnailer ().instance;
+                dbus_thumbler.instand_thumbler (path, "large");
+                dbus_thumbler.load_finished.connect (()=> {
                     video_asyncimage.set_from_pixbuf (pix_scale (large_thumb (path), 128));
                     video_asyncimage.show ();
                 });
@@ -625,18 +670,18 @@ namespace niki {
             var info = get_discoverer_info (file_name);
             var stream_info = info.get_stream_info ();
             Gst.Caps caps = stream_info.get_caps ();
-            container.tooltip_text = container.label = "%s: %s".printf(stream_info.get_stream_type_nick (), caps.is_fixed () == true? Gst.PbUtils.get_codec_description (caps) : caps.to_string ());
+            container.tooltip_text = container.label = "%s: %s".printf (stream_info.get_stream_type_nick (), caps.is_fixed () == true? Gst.PbUtils.get_codec_description (caps) : caps.to_string ());
             ((Gst.PbUtils.DiscovererContainerInfo) stream_info).get_streams ().foreach ((list)=> {
                 if (list.get_stream_type_nick () == "audio") {
                     Gst.Caps acaps = list.get_caps ();
-                    container_audio.tooltip_text = container_audio.label = "%s: %s".printf(list.get_stream_type_nick (), acaps.is_fixed () == true? Gst.PbUtils.get_codec_description (acaps) : acaps.to_string ());
+                    container_audio.tooltip_text = container_audio.label = "%s: %s".printf (list.get_stream_type_nick (), acaps.is_fixed () == true? Gst.PbUtils.get_codec_description (acaps) : acaps.to_string ());
                 }
                 if (list.get_stream_type_nick () == "video") {
                     Gst.Caps vcaps = list.get_caps ();
-                    container_video.tooltip_text = container_video.label = "%s: %s".printf(list.get_stream_type_nick (), vcaps.is_fixed () == true? Gst.PbUtils.get_codec_description (vcaps) : vcaps.to_string ());
+                    container_video.tooltip_text = container_video.label = "%s: %s".printf (list.get_stream_type_nick (), vcaps.is_fixed () == true? Gst.PbUtils.get_codec_description (vcaps) : vcaps.to_string ());
                 }
             });
-            duration_video.text = seconds_to_time ((int)(info.get_duration ()/1000000000));
+            duration_video.text = seconds_to_time ((int)(info.get_duration () / 1000000000));
             sekable_video.text = info.get_seekable ()? _("Yes") : _("No");
             info.get_video_streams ().foreach ((list)=> {
                 var stream_video = (Gst.PbUtils.DiscovererVideoInfo)list;

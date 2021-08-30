@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class CircularGrid : Gtk.Grid {
         private CircularProgressBar circularprogressbar;
         private string [] audio_video = {};
@@ -96,11 +96,12 @@ namespace niki {
                                     NikiApp.window.player_page.right_bar.playlist.add_item (File.new_for_uri (filename));
                                 }
                             }
+
                             count ++;
                             count_pro = count_pro + count_to;
                             if (count > n_child) {
-		                        if (NikiApp.window.main_stack.visible_child_name == "welcome") {
-		                            if (NikiApp.window.welcome_page.index_but == 2) {
+                                if (NikiApp.window.main_stack.visible_child_name == "welcome") {
+                                    if (NikiApp.window.welcome_page.index_but == 2) {
                                         NikiApp.window.main_stack.visible_child_name = "player";
                                         NikiApp.window.player_page.get_first ();
                                     } else {

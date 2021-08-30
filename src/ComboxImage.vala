@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class ComboxImage : Gtk.ComboBox {
         private Gtk.ListStore store;
 
@@ -27,19 +27,22 @@ namespace niki {
             store = new Gtk.ListStore (ComboIcon.N_COLUMNS, typeof (Icon), typeof (string));
             model = store;
 
-		    var cell = new Gtk.CellRendererText ();
-		    cell.ellipsize = Pango.EllipsizeMode.END;
-		    var cell_pb = new Gtk.CellRendererPixbuf ();
-		    pack_start (cell_pb, false);
-		    pack_start (cell, false);
-		    set_attributes (cell_pb, "gicon", 0);
-		    set_attributes (cell, "text", 1);
+            var cell = new Gtk.CellRendererText () {
+                ellipsize = Pango.EllipsizeMode.END
+            };
+            var cell_pb = new Gtk.CellRendererPixbuf ();
+            pack_start (cell_pb, false);
+            pack_start (cell, false);
+            set_attributes (cell_pb, "gicon", 0);
+            set_attributes (cell, "text", 1);
         }
+
         public void appending (string image_icon, string label_text) {
             Gtk.TreeIter iter;
             store.append (out iter);
             store.set (iter, ComboIcon.ICON, new ThemedIcon (image_icon), ComboIcon.STRING, label_text);
         }
+
         public int get_active_int () {
             return active;
         }
@@ -59,7 +62,7 @@ namespace niki {
             int b = model.iter_n_children (null);
             for (int i = 0; i < b; i++) {
                 Gtk.TreeIter iter;
-                if (store.get_iter_first (out iter)){
+                if (store.get_iter_first (out iter)) {
                     store.remove (ref iter);
                 }
             }

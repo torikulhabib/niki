@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class ACDManager : GLib.Object {
         private static ACDManager _instance = null;
         public static ACDManager instance {
@@ -117,7 +117,8 @@ namespace niki {
                     warning (err.message);
                 }
             });
-		    if (NikiApp.window.player_page.right_bar.playlist.liststore.iter_n_children (null) > 0 && NikiApp.window.main_stack.visible_child_name == "welcome") {
+
+            if (NikiApp.window.player_page.right_bar.playlist.liststore.iter_n_children (null) > 0 && NikiApp.window.main_stack.visible_child_name == "welcome") {
                 NikiApp.window.player_page.right_bar.playlist.play_first ();
             }
         }

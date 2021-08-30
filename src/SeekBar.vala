@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class SeekBar : Gtk.Grid {
         public PreviewPopover? preview_popover;
         private Gtk.Scale scale;
@@ -56,7 +56,7 @@ namespace niki {
                     progress = 1.0;
                 }
                 _playback_progress = progress;
-                duration_n_progress = seconds_to_time ((int) (progress * playback_duration)) +" / " + duration_string;
+                duration_n_progress = seconds_to_time ((int) (progress * playback_duration)) + " / " + duration_string;
                 scale.set_value (progress);
             }
         }
@@ -65,14 +65,16 @@ namespace niki {
             get_style_context ().add_class ("transparantbg");
             get_style_context ().add_class ("seek_bar");
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, 0.0, 1.0, 0.01);
+            scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, 0.0, 1.0, 0.01) {
+                hexpand = true,
+                draw_value = false
+            };
             scale.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             scale.get_style_context ().add_class ("seek_bar");
             scale.get_style_context ().add_class ("label");
-            scale.hexpand = true;
-            scale.draw_value = false;
-            preview_popover = new PreviewPopover ();
-            preview_popover.relative_to = scale;
+            preview_popover = new PreviewPopover () {
+                relative_to = scale
+            };
 
             playerpage.playback.notify["progress"].connect (() => {
                 playback_progress = playerpage.playback.progress;
@@ -131,7 +133,7 @@ namespace niki {
         public void on_lyric_update (Lyric lyric, PlayerPage playerpage) {
             this.lyric = lyric;
             int count = 0;
-		    List<string> list_lyric = new List<string> ();
+            List<string> list_lyric = new List<string> ();
             sc_lyric = new Gee.HashMap<string, int> ();
             lyric.foreach ((item) => {
                 list_lyric.append (item.value);
@@ -145,7 +147,7 @@ namespace niki {
         }
 
         public void start (PlayerPage playerpage) {
-            if (NikiApp.settings.get_boolean("lyric-available") && NikiApp.settings.get_boolean("audio-video")) {
+            if (NikiApp.settings.get_boolean ("lyric-available") && NikiApp.settings.get_boolean ("audio-video")) {
                 if (playerpage.playback.playing && lyric.is_map_valid ()) {
                     var seconds_time = ((int64)(playerpage.playback.get_position () * 1000000));
                     int currentline = sc_lyric[lyric.get_lyric_timestamp (seconds_time, true).to_string ()];

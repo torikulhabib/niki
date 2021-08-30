@@ -23,7 +23,7 @@
 private interface BrightnessSettings : GLib.Object {
     public abstract int brightness {owned get; set; }
 }
-namespace niki {
+namespace Niki {
     public class CameraFlash : Gtk.Window {
         private uint fade_timeout = 0;
         private uint flash_timeout = 0;
@@ -86,7 +86,7 @@ namespace niki {
                 Source.remove (fade_timeout);
                 fade_timeout = 0;
             }
-            Gdk.Screen screen_win  = NikiApp.window.get_toplevel ().get_screen ();
+            Gdk.Screen screen_win = NikiApp.window.get_toplevel ().get_screen ();
             Gdk.Monitor monitor_primary = screen_win.get_display ().get_primary_monitor ();
             Gdk.Rectangle rect = monitor_primary.get_workarea ();
             set_transient_for (NikiApp.window);

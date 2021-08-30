@@ -19,32 +19,35 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class OtherGrid : Gtk.Grid {
         private Gtk.Grid combox_container;
-        private const string [] SETTINGALL = {"Video Flip","Video Render","Color Effects","Audio Render","Audio Visualisation","Visualisation Mode","Visualisation Shader","Visualisation Amount"};
-        private const string [] FLIPVIDEO = {"None","Rotate 90 Right","Rotate 180","Rotate 90 Left","Flip_Horizontal","Flip Vertical","Across Upper Left","Across Upper Right","Automatic"};
-        private const string [] FLIPVIDEO_ICON = {"system-shutdown-symbolic", "object-rotate-right-symbolic", "com.github.torikulhabib.niki.refresh-180-symbolic", "object-rotate-left-symbolic", "object-flip-horizontal-symbolic", "object-flip-vertical-symbolic", "com.github.torikulhabib.niki.refresh-left-symbolic", "com.github.torikulhabib.niki.refresh-right-symbolic", "com.github.torikulhabib.niki.auto-symbolic"};
-        private const string [] VISUALISATION = {"Disabled","Enabled"};
-        private const string [] VISUALISATION_ICON = {"system-shutdown-symbolic", "video-x-generic-symbolic"};
-        private const string [] VISUALMODE = {"GOOM","GOOM 2","MONOSCOPE"};
-        private const string [] SHADER = {"None","Fade","Fade Move UP","Fade Move Down","Fade Move Left","Fade Move Right","Fade Vertical Out","Fade Vertical In"};
-        private const string [] VIDEORENDER = {"Auto", "Vaapi", "Ximage", "Xvimage"};
-        private const string [] AUDIORENDER = {"Auto","Alsa","Pulse"};
-        private const string [] COLOREFFECTS = {"Disabled","Heat","Sepia","X-Ray","X-Pro","Yellow Blue"};
+        private const string[] SETTINGALL = {"Video Flip", "Video Render", "Color Effects", "Audio Render", "Audio Visualisation", "Visualisation Mode", "Visualisation Shader", "Visualisation Amount"};
+        private const string[] FLIPVIDEO = {"None", "Rotate 90 Right", "Rotate 180", "Rotate 90 Left", "Flip_Horizontal", "Flip Vertical", "Across Upper Left", "Across Upper Right", "Automatic"};
+        private const string[] FLIPVIDEO_ICON = {"system-shutdown-symbolic", "object-rotate-right-symbolic", "com.github.torikulhabib.niki.refresh-180-symbolic", "object-rotate-left-symbolic", "object-flip-horizontal-symbolic", "object-flip-vertical-symbolic", "com.github.torikulhabib.niki.refresh-left-symbolic", "com.github.torikulhabib.niki.refresh-right-symbolic", "com.github.torikulhabib.niki.auto-symbolic"};
+        private const string[] VISUALISATION = {"Disabled", "Enabled"};
+        private const string[] VISUALISATION_ICON = {"system-shutdown-symbolic", "video-x-generic-symbolic"};
+        private const string[] VISUALMODE = {"GOOM", "GOOM 2", "MONOSCOPE"};
+        private const string[] SHADER = {"None", "Fade", "Fade Move UP", "Fade Move Down", "Fade Move Left", "Fade Move Right", "Fade Vertical Out", "Fade Vertical In"};
+        private const string[] VIDEORENDER = {"Auto", "Vaapi", "Ximage", "Xvimage"};
+        private const string[] AUDIORENDER = {"Auto", "Alsa", "Pulse"};
+        private const string[] COLOREFFECTS = {"Disabled", "Heat", "Sepia", "X-Ray", "X-Pro", "Yellow Blue"};
 
         construct {
             valign = Gtk.Align.END;
             height_request = 235;
             margin_bottom = 2;
-            combox_container = new Gtk.Grid ();
-            combox_container.vexpand = true;
-            combox_container.row_spacing = 2;
-            combox_container.margin_top = 4;
+            combox_container = new Gtk.Grid () {
+                orientation = Gtk.Orientation.VERTICAL,
+                vexpand = true,
+                row_spacing = 2,
+                margin_top = 4
+            };
 
             foreach (string setingall in SETTINGALL) {
-                var settingcombox = new ComboxImage ();
-                settingcombox.hexpand = true;
+                var settingcombox = new ComboxImage () {
+                    hexpand = true
+                };
                 settingcombox.get_style_context ().add_class ("combox");
                 var number_entry = new Gtk.SpinButton.with_range (0, 1000000, 1);
                 number_entry.get_style_context ().add_class ("spinbut");
@@ -120,9 +123,9 @@ namespace niki {
                     case "Visualisation Amount":
                         number_entry.hexpand = true;
                         number_entry.value = NikiApp.settings.get_int ("amount-entry");
-		                number_entry.value_changed.connect (() => {
-			                NikiApp.settings.set_int ("amount-entry", number_entry.get_value_as_int ());
-		                });
+                        number_entry.value_changed.connect (() => {
+                            NikiApp.settings.set_int ("amount-entry", number_entry.get_value_as_int ());
+                        });
                         NikiApp.settings.changed["visualisation-options"].connect (() => {
                             number_entry.sensitive = NikiApp.settings.get_int ("visualisation-options") == 0 || VISUALMODE [NikiApp.settings.get_int ("visualmode-options")] == VISUALMODE [6] ? false : true;
                         });
@@ -132,14 +135,16 @@ namespace niki {
                         number_entry.sensitive = NikiApp.settings.get_int ("visualisation-options") == 0 || VISUALMODE [NikiApp.settings.get_int ("visualmode-options")] == VISUALMODE [6] ? false : true;
                         break;
                 }
-                var label = new Gtk.Label (setingall + " :");
+                var label = new Gtk.Label (setingall + " :") {
+                    ellipsize = Pango.EllipsizeMode.END,
+                    halign = Gtk.Align.START
+                };
                 label.get_style_context ().add_class ("selectedlabel");
-                label.ellipsize = Pango.EllipsizeMode.END;
-                label.halign = Gtk.Align.START;
-                var holder = new Gtk.Grid ();
-                holder.orientation = Gtk.Orientation.HORIZONTAL;
-                holder.column_homogeneous = true;
-                holder.row_spacing = 6;
+                var holder = new Gtk.Grid () {
+                    orientation = Gtk.Orientation.HORIZONTAL,
+                    column_homogeneous = true,
+                    row_spacing = 6
+                };
                 holder.add (label);
                 if (setingall == "Visualisation Amount") {
                     holder.add (number_entry);
@@ -147,7 +152,6 @@ namespace niki {
                     holder.add (settingcombox);
                 }
                 combox_container.add (holder);
-                combox_container.orientation = Gtk.Orientation.VERTICAL;
             }
             add (combox_container);
             show_all ();

@@ -19,9 +19,9 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class Window : Gtk.Window {
-	    private static Gtk.TargetEntry [] target_list;
+        private static Gtk.TargetEntry [] target_list;
         public PlayerPage? player_page;
         public CameraPage? camera_page;
         public WelcomePage? welcome_page;
@@ -29,48 +29,64 @@ namespace niki {
         private Gtk.HeaderBar headerbar;
 
         construct {
-	        Gtk.TargetEntry string_entry = { "STRING", 0, Target.STRING};
-	        Gtk.TargetEntry urilist_entry = { "text/uri-list", 0, Target.URILIST};
-	        target_list += string_entry;
-	        target_list += urilist_entry;
-            set_default_size (570, 430);
-            welcome_page = new WelcomePage ();
-            player_page = new PlayerPage (this);
-            camera_page = new CameraPage ();
-            player_page.playback.notify["playing"].connect (position_window);
-            var home_button = new Gtk.Button.from_icon_name ("go-home-symbolic", Gtk.IconSize.BUTTON);
-            home_button.focus_on_click = false;
-            home_button.tooltip_text = _("Home");
-            var home_revealer = new Gtk.Revealer ();
-            home_revealer.transition_type = Gtk.RevealerTransitionType.CROSSFADE;
-            home_revealer.add (home_button);
-            var light_dark = new LightDark ();
-            light_dark.focus_on_click = false;
-            var spinner = new Gtk.Spinner ();
-            var spinner_revealer = new Gtk.Revealer ();
-            spinner_revealer.transition_type = Gtk.RevealerTransitionType.CROSSFADE;
-            spinner_revealer.add (spinner);
-            headerbar = new Gtk.HeaderBar ();
-            headerbar.title = _("Niki");
-            headerbar.has_subtitle = false;
-            headerbar.show_close_button = true;
-            headerbar.decoration_layout = "close:maximize";
-            headerbar.pack_start (home_revealer);
-            headerbar.pack_end (light_dark);
-            headerbar.pack_end (spinner_revealer);
-            headerbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            headerbar.get_style_context ().add_class ("default-decoration");
-            set_titlebar (headerbar);
-            NikiApp.settings.changed["spinner-wait"].connect (() => {
-                spinner_revealer.set_reveal_child (spinner.active = !NikiApp.settings.get_boolean ("spinner-wait")? true : false);
-            });
+            Gtk.TargetEntry string_entry = { "STRING", 0, Target.STRING};
+            Gtk.TargetEntry urilist_entry = { "text/uri-list", 0, Target.URILIST};
+            target_list += string_entry;
+            target_list += urilist_entry;
             get_style_context ().add_class ("rounded");
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             get_style_context ().add_class ("niki");
-            main_stack = new Gtk.Stack ();
-            main_stack.transition_type = Gtk.StackTransitionType.SLIDE_LEFT_RIGHT;
-            main_stack.transition_duration = 500;
-            main_stack.homogeneous = false;
+
+            set_default_size (570, 430);
+
+            welcome_page = new WelcomePage ();
+            player_page = new PlayerPage (this);
+            camera_page = new CameraPage ();
+
+            player_page.playback.notify["playing"].connect (position_window);
+
+            var home_button = new Gtk.Button.from_icon_name ("go-home-symbolic", Gtk.IconSize.BUTTON) {
+                focus_on_click = false,
+                tooltip_text = _("Home")
+            };
+
+            var home_revealer = new Gtk.Revealer () {
+                transition_type = Gtk.RevealerTransitionType.CROSSFADE
+            };
+            home_revealer.add (home_button);
+
+            var light_dark = new LightDark () {
+                focus_on_click = false
+            };
+
+            var spinner = new Gtk.Spinner ();
+            var spinner_revealer = new Gtk.Revealer () {
+                transition_type = Gtk.RevealerTransitionType.CROSSFADE
+            };
+            spinner_revealer.add (spinner);
+
+            headerbar = new Gtk.HeaderBar () {
+                title = _("Niki"),
+                has_subtitle = false,
+                show_close_button = true,
+                decoration_layout = "close:maximize"
+            };
+            headerbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            headerbar.get_style_context ().add_class ("default-decoration");
+            headerbar.pack_start (home_revealer);
+            headerbar.pack_end (light_dark);
+            headerbar.pack_end (spinner_revealer);
+            set_titlebar (headerbar);
+
+            NikiApp.settings.changed["spinner-wait"].connect (() => {
+                spinner_revealer.set_reveal_child (spinner.active = !NikiApp.settings.get_boolean ("spinner-wait")? true : false);
+            });
+
+            main_stack = new Gtk.Stack () {
+                transition_type = Gtk.StackTransitionType.SLIDE_LEFT_RIGHT,
+                transition_duration = 500,
+                homogeneous = false
+            };
             main_stack.add_named (welcome_page, "welcome");
             main_stack.add_named (player_page, "player");
             main_stack.add_named (camera_page, "camera");
@@ -81,6 +97,7 @@ namespace niki {
                 home_revealer.set_reveal_child (welcome_page.stack.visible_child_name == "dlna" || welcome_page.stack.visible_child_name == "dvd" || welcome_page.stack.visible_child_name == "device"? true : false);
                 headerbar.title = welcome_page.stack.visible_child_name == "dlna"? _("Niki DLNA Browser") : _("Niki");
             });
+
             main_stack.notify["visible-child"].connect (() => {
                 headerbar_mode ();
                 if (welcome_page.stack.visible_child_name == "circular") {
@@ -104,6 +121,7 @@ namespace niki {
                     fullscreen ();
                 }
             });
+
             NikiApp.settings.changed["maximize"].connect (() => {
                 if (NikiApp.settings.get_boolean ("maximize")) {
                     unmaximize ();
@@ -133,6 +151,7 @@ namespace niki {
                 });
                 return false;
             });
+
             uint maximize_window = 0;
             window_state_event.connect ((state)=> {
                 if (state.new_window_state.to_string () == Gdk.WindowState.MAXIMIZED.to_string ()) {
@@ -149,6 +168,7 @@ namespace niki {
                 }
                 return false;
             });
+
             delete_event.connect (() => {
                 if (NikiApp.settings.get_boolean ("audio-video") && player_page.playback.playing) {
                     return hide_on_delete ();
@@ -195,29 +215,29 @@ namespace niki {
         }
 
         private void on_drag_data_received (Gtk.Widget widget, Gdk.DragContext drag_context, int x, int y, Gtk.SelectionData selection_data, uint target_type, uint time) {
-		    if ((selection_data == null) || !(selection_data.get_length () >= 0)) {
-			    return;
-		    }
-		    switch (target_type) {
-		        case Target.STRING:
-		            if (main_stack.visible_child_name == "welcome") {
+            if ((selection_data == null) || !(selection_data.get_length () >= 0)) {
+                return;
+            }
+            switch (target_type) {
+                case Target.STRING:
+                    if (main_stack.visible_child_name == "welcome") {
                         player_page.right_bar.playlist.clear_items ();
                     }
-			        string data = (string) selection_data.get_data ();
+                    string data = (string) selection_data.get_data ();
                     welcome_page.getlink.get_link_stream (data);
                     welcome_page.welcome_left.sensitive = false;
                     welcome_page.welcome_rigth.sensitive = false;
                     NikiApp.settings.set_boolean ("spinner-wait", false);
-			        break;
-		        case Target.URILIST:
+                    break;
+                case Target.URILIST:
                     File [] files = null;
                     foreach (var uri in selection_data.get_uris ()) {
                         File file = File.new_for_uri (uri);
                         if (get_mime_type (file).has_prefix ("video/") || get_mime_type (file).has_prefix ("audio/")) {
                             files += file;
                         }
-                        if (player_page.playback.playing && main_stack.visible_child_name == "player" && is_subtitle (uri) == true && !NikiApp.settings.get_boolean("audio-video")) {
-                            if (!NikiApp.settings.get_boolean("subtitle-available")) {
+                        if (player_page.playback.playing && main_stack.visible_child_name == "player" && is_subtitle (uri) == true && !NikiApp.settings.get_boolean ("audio-video")) {
+                            if (!NikiApp.settings.get_boolean ("subtitle-available")) {
                                 NikiApp.settings.set_boolean ("subtitle-available", true);
                             }
                             player_page.bottom_bar.menu_popover.file_chooser_subtitle.select_uri (uri);
@@ -225,14 +245,14 @@ namespace niki {
                         }
                     };
                     if (files != null) {
-		                if (main_stack.visible_child_name == "welcome") {
+                        if (main_stack.visible_child_name == "welcome") {
                             open_files (files, true);
                         } else if (main_stack.visible_child_name == "player") {
                             open_files (files, false, false);
                         }
                     }
-			        break;
-		    }
+                break;
+            }
         }
     }
 }

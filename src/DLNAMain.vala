@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class DLNAMain : Object {
         private WelcomePage? welcompage;
         public GUPnP.ContextManager contextmanager_media_server;

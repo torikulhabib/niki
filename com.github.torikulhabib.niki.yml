@@ -1,0 +1,27 @@
+app-id: com.github.torikulhabib.niki
+
+runtime: io.elementary.Platform
+runtime-version: '6'
+sdk: io.elementary.Sdk
+
+command: com.github.torikulhabib.niki
+
+finish-args:
+  - '--share=ipc'
+  - '--socket=fallback-x11'
+  - '--socket=wayland'
+  - '--filesystem=home'
+
+modules:
+  - name: InyTag
+    buildsystem: meson
+    sources:
+      - type: git
+      url: https://github.com/torikulhabib/InyTag.git
+      tag: 'v1.0'
+  
+  - name: niki
+    buildsystem: meson
+    sources:
+      - type: dir
+        path: .

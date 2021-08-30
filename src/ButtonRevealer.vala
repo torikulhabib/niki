@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class ButtonRevealer : Gtk.Revealer {
         public Gtk.Button button;
         public signal void clicked ();

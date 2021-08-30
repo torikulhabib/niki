@@ -19,11 +19,11 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class DownloadDialog : Gtk.Dialog {
         private Gtk.ProgressBar progress_bar;
         private Gtk.Label bottom_label;
-	    private Cancellable cancellable;
+        private Cancellable cancellable;
         private bool loop_run = false;
         private int start_time = 0;
 
@@ -40,47 +40,71 @@ namespace niki {
             set_size_request (600, 30);
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             get_style_context ().add_class ("niki");
-            var header_label = new Gtk.Label (_("Downloading..."));
+
+            var header_label = new Gtk.Label (_("Downloading…")) {
+                halign = Gtk.Align.CENTER,
+                hexpand = true
+            };
             header_label.get_style_context ().add_class ("h4");
-            header_label.halign = Gtk.Align.CENTER;
-            header_label.hexpand = true;
             get_header_bar ().set_custom_title (header_label);
 
-            var top_label = new Gtk.Label (null);
-            top_label.ellipsize = Pango.EllipsizeMode.END;
-            top_label.max_width_chars = 55;
-            top_label.xalign = 0;
+            var top_label = new Gtk.Label (null) {
+                ellipsize = Pango.EllipsizeMode.END,
+                max_width_chars = 45,
+                xalign = 0
+            };
 
-            progress_bar = new Gtk.ProgressBar ();
-            progress_bar.hexpand = true;
+            progress_bar = new Gtk.ProgressBar () {
+                hexpand = true
+            };
 
-            var image = new Gtk.Image ();
-            image.valign = Gtk.Align.START;
-            image.set_from_gicon (new ThemedIcon ("drive-harddisk"), Gtk.IconSize.DIALOG);
-            bottom_label = new Gtk.Label (null);
-            bottom_label.ellipsize = Pango.EllipsizeMode.END;
-            bottom_label.xalign = 0;
+            var image = new Gtk.Image () {
+                halign = Gtk.Align.END,
+                valign = Gtk.Align.END
+            };
+            image.set_from_gicon (new ThemedIcon ("go-down"), Gtk.IconSize.DIALOG);
+
+            var device_image = new Gtk.Image () {
+                halign = Gtk.Align.END,
+                valign = Gtk.Align.END
+            };
+            device_image.set_from_gicon (new ThemedIcon ("computer"), Gtk.IconSize.BUTTON);
+
+            var overlay = new Gtk.Overlay ();
+            overlay.add (image);
+            overlay.add_overlay (device_image);
+
+            bottom_label = new Gtk.Label (null) {
+                ellipsize = Pango.EllipsizeMode.END,
+                xalign = 0
+            };
+
             var stop_button = new Gtk.Button.from_icon_name ("process-stop-symbolic");
             stop_button.get_style_context ().add_class ("transparantbg");
             stop_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            var start_holder = new Gtk.Grid ();
-            start_holder.orientation = Gtk.Orientation.VERTICAL;
-            start_holder.margin = start_holder.margin_start = start_holder.margin_end = 6;
+
+            var start_holder = new Gtk.Grid () {
+                orientation = Gtk.Orientation.VERTICAL,
+                margin_start = 6,
+                margin_end = 6
+            };
             start_holder.add (top_label);
             start_holder.add (progress_bar);
             start_holder.add (bottom_label);
-            var holder = new Gtk.Grid ();
-            holder.margin = holder.margin_start = holder.margin_end = 6;
-            holder.orientation = Gtk.Orientation.HORIZONTAL;
-            holder.add (image);
+
+            var holder = new Gtk.Grid () {
+                orientation = Gtk.Orientation.HORIZONTAL,
+                margin_start = 6,
+                margin_end = 6
+            };
+            holder.add (overlay);
             holder.add (start_holder);
             holder.add (stop_button);
-            holder.show_all ();
 
             var content = get_content_area () as Gtk.Box;
             content.margin = 6;
-            content.margin_top = 0;
             content.add (holder);
+
             string file_save = null;
             switch (mode_type) {
                 case 0 :
@@ -93,21 +117,25 @@ namespace niki {
                     file_save = GLib.Environment.get_user_special_dir (UserDirectory.PICTURES);
                     break;
             }
-            top_label.label = _("File: %s to %s").printf (secondary_text,file_save);
+
+            top_label.label = _("File: %s to %s").printf (secondary_text, file_save);
             string without_ext = primary_text.substring (primary_text.last_index_of ("."));
             string file_out = @"$(file_save)/$(secondary_text)$(without_ext)";
+
             show.connect (() => {
                 download_dlna (primary_text, file_out);
             });
+
             stop_button.clicked.connect (() => {
-				cancellable.cancel ();
+                cancellable.cancel ();
                 if (loop_run) {
                     permanent_delete (File.new_for_path (file_out));
-		        }
-		        destroy ();
+                }
+                destroy ();
             });
             move_widget (this);
         }
+
         public void download_dlna (string uri, string uriout) {
             var file_path = File.new_for_path (uriout);
             var file_from_uri = File.new_for_uri (uri);
@@ -119,59 +147,62 @@ namespace niki {
                     start_time = (int) get_real_time ();
                 }
                 on_transfer_progress (transferred, total_size);
-	        }, (obj, res) => {
-	            loop_run = false;
-		        try {
-			        file_from_uri.copy_async.end (res);
-		        } catch (Error e) {
-			        notify_app (_("Niki DLNA Browser"), e.message);
-		        }
-		        destroy ();
-		    });
+            }, (obj, res) => {
+                loop_run = false;
+                try {
+                    file_from_uri.copy_async.end (res);
+                } catch (Error e) {
+                    notify_app (_("Niki DLNA Browser"), e.message);
+                }
+                destroy ();
+            });
         }
+
         private void on_transfer_progress (uint64 transferred, uint64 total_size) {
             bottom_label.label = _("%s received %s").printf (GLib.format_size (total_size), GLib.format_size (transferred));
             progress_bar.fraction = (double) transferred / (double) total_size;
-	        int current_time = (int) get_real_time ();
-	        int elapsed_time = (current_time - start_time) / 1000000;
-	        if (current_time < start_time + 1000000) {
-		        return;
-		    }
-
-	        if (elapsed_time == 0) {
-		        return;
+            int current_time = (int) get_real_time ();
+            int elapsed_time = (current_time - start_time) / 1000000;
+            if (current_time < start_time + 1000000) {
+                return;
             }
-	        uint64 transfer_rate = transferred / elapsed_time;
-	        if (transfer_rate == 0) {
-		        return;
-		    }
+            if (elapsed_time == 0) {
+                return;
+            }
 
-	        uint64 remaining_time = (total_size - transferred) / transfer_rate;
-	        string time = format_time((int)remaining_time);
+            uint64 transfer_rate = transferred / elapsed_time;
+            if (transfer_rate == 0) {
+                return;
+            }
+            uint64 remaining_time = (total_size - transferred) / transfer_rate;
+            string time = format_time ((int)remaining_time);
             bottom_label.label = _("%s received %s speed %s remaining %s").printf (GLib.format_size (total_size), GLib.format_size (transferred), GLib.format_size (transfer_rate), time);
         }
 
         private string format_time (int seconds) {
-	        int minutes;
-	        if (seconds < 0) {
-		        seconds = 0;
-		    }
-	        if (seconds < 60) {
-		        return ngettext("%'d second", "%'d seconds", seconds).printf (seconds);
-		    }
-	        if (seconds < 60 * 60) {
-		        minutes = (seconds + 30) / 60;
-		        return ngettext("%'d minute", "%'d minutes", minutes).printf (minutes);
-	        }
-	        int hours = seconds / (60 * 60);
-	        if (seconds < 60 * 60 * 4) {
-		        minutes = (seconds - hours * 60 * 60 + 30) / 60;
-		        string h = ngettext("%'u hour", "%'u hours", hours).printf (hours);
-		        string m = ngettext("%'u minute", "%'u minutes", minutes).printf (minutes);
-		        string res = h.concat(", ", m);
-		        return res;
-	        }
-	        return ngettext("approximately %'d hour", "approximately %'d hours", hours).printf (hours);
+            if (seconds < 0) {
+                seconds = 0;
+            }
+
+            if (seconds < 60) {
+                return ngettext ("%'d second", "%'d seconds", seconds).printf (seconds);
+            }
+
+            int minutes;
+            if (seconds < 60 * 60) {
+                minutes = (seconds + 30) / 60;
+                return ngettext ("%'d minute", "%'d minutes", minutes).printf (minutes);
+            }
+
+            int hours = seconds / (60 * 60);
+            if (seconds < 60 * 60 * 4) {
+                minutes = (seconds - hours * 60 * 60 + 30) / 60;
+                string h = ngettext ("%'u hour", "%'u hours", hours).printf (hours);
+                string m = ngettext ("%'u minute", "%'u minutes", minutes).printf (minutes);
+                return h.concat (", ", m);
+            }
+
+            return ngettext ("approximately %'d hour", "approximately %'d hours", hours).printf (hours);
         }
     }
 }

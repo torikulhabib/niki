@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class CameraBottomBar : Gtk.EventBox {
         private Gtk.Revealer timer_revealer;
         private Gtk.Revealer setting_revealer;
@@ -30,7 +30,7 @@ namespace niki {
         public Gtk.Button setting_button;
         public Gtk.Button option_button;
         private Gtk.ListStore liststrore;
-        private AsyncImage? asyncimage;
+        private Gtk.Image asyncimage;
         private uint video_timer = 0;
         private uint image_timer = 0;
         private bool _hovered = false;
@@ -95,16 +95,18 @@ namespace niki {
                 return false;
             });
 
-            option_button = new Gtk.Button.from_icon_name ("camera-photo-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-            option_button.focus_on_click = false;
+            option_button = new Gtk.Button.from_icon_name ("camera-photo-symbolic", Gtk.IconSize.LARGE_TOOLBAR) {
+                focus_on_click = false
+            };
             option_button.get_style_context ().add_class ("button_action");
             option_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             option_button.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("camera-video", !NikiApp.settings.get_boolean ("camera-video"));
             });
 
-            capture_button = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.record-symbolic", Gtk.IconSize.DIALOG);
-            capture_button.focus_on_click = false;
+            capture_button = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.record-symbolic", Gtk.IconSize.DIALOG) {
+                focus_on_click = false
+            };
             capture_button.get_style_context ().add_class ("button_action");
             capture_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             capture_button.clicked.connect (() => {
@@ -121,54 +123,69 @@ namespace niki {
                 }
             });
 
-            timer_button = new TimerButton ();
-            timer_button.focus_on_click = false;
-            timer_label = new Gtk.Label (null);
+            timer_button = new TimerButton () {
+                focus_on_click = false
+
+            };
+            timer_label = new Gtk.Label (null) {
+                ellipsize = Pango.EllipsizeMode.END
+            };
             timer_label.get_style_context ().add_class ("button_action");
             timer_label.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             timer_label.get_style_context ().add_class ("h2");
-            timer_label.ellipsize = Pango.EllipsizeMode.END;
             timer_revealer = new Gtk.Revealer ();
             timer_revealer.add (timer_label);
 
             cameragrid = new CameraGrid (camerapage);
             cameragrid.init ();
-            var camera_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+            var camera_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
+                hexpand = true
+            };
+
             camera_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             camera_actionbar.get_style_context ().add_class ("transbgborder");
             camera_actionbar.set_center_widget (cameragrid);
-            camera_actionbar.hexpand = true;
-            setting_revealer = new Gtk.Revealer ();
+            setting_revealer = new Gtk.Revealer () {
+                transition_type = Gtk.RevealerTransitionType.SLIDE_UP,
+                transition_duration = 500,
+                reveal_child = NikiApp.settings.get_boolean ("setting-camera")
+            };
             setting_revealer.add (camera_actionbar);
-            setting_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_UP;
-            setting_revealer.transition_duration = 500;
-            setting_button = new Gtk.Button.from_icon_name ("applications-graphics-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-            setting_button.focus_on_click = false;
-            setting_button.tooltip_text = _("Setting Filter");
+
+            setting_button = new Gtk.Button.from_icon_name ("applications-graphics-symbolic", Gtk.IconSize.LARGE_TOOLBAR) {
+                focus_on_click = false,
+                tooltip_text = _("Setting Filter"),
+            };
             setting_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             setting_button.get_style_context ().add_class ("button_action");
-            setting_revealer.set_reveal_child (NikiApp.settings.get_boolean ("setting-camera"));
             setting_button.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("setting-camera", !NikiApp.settings.get_boolean ("setting-camera"));
                 setting_revealer.set_reveal_child (NikiApp.settings.get_boolean ("setting-camera"));
             });
 
-            asyncimage = new AsyncImage (true);
+            asyncimage = new Gtk.Image () {
+                pixel_size = 48,
+                valign = Gtk.Align.CENTER,
+                valign = Gtk.Align.CENTER
+            };
             asyncimage.get_style_context ().add_class ("button_action");
             asyncimage.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            asyncimage.pixel_size = 48;
-            asyncimage.valign = Gtk.Align.CENTER;
-            asyncimage.valign = Gtk.Align.CENTER;
 
-            var openimage = new Gtk.Button ();
-            openimage.focus_on_click = false;
-            openimage.tooltip_text = "Photos";
-            openimage.valign = Gtk.Align.CENTER;
+            var openimage = new Gtk.Button () {
+                focus_on_click = false,
+                tooltip_text = "Photos",
+                valign = Gtk.Align.CENTER
+            };
             openimage.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             openimage.get_style_context ().add_class ("button_action");
             openimage.add (asyncimage);
 
-            var main_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+            var main_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
+                hexpand = true,
+                margin_start = 4,
+                margin_end = 4,
+                margin_bottom = 10
+            };
             main_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             main_actionbar.get_style_context ().add_class ("transbgborder");
             main_actionbar.set_center_widget (capture_button);
@@ -176,18 +193,18 @@ namespace niki {
             main_actionbar.pack_start (timer_button, false, false, 0);
             main_actionbar.pack_end (openimage, false, false, 0);
             main_actionbar.pack_end (setting_button, false, false, 0);
-            main_actionbar.hexpand = true;
-            main_actionbar.margin_start = 4;
-            main_actionbar.margin_end = 4;
-            main_actionbar.margin_bottom = 10;
             main_actionbar.show_all ();
 
-		    var grid = new Gtk.Grid ();
-            grid.orientation = Gtk.Orientation.VERTICAL;
+            var grid = new Gtk.Grid () {
+                orientation = Gtk.Orientation.VERTICAL,
+                margin = 10,
+                row_spacing = 10,
+                column_spacing = 10,
+                margin_top = 0,
+                hexpand = true
+            };
             grid.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             grid.get_style_context ().add_class ("bottombar");
-            grid.margin = grid.row_spacing = grid.column_spacing = grid.margin_top = 0;
-            grid.hexpand = true;
             grid.add (timer_revealer);
             grid.add (main_actionbar);
             grid.add (setting_revealer);
@@ -209,16 +226,16 @@ namespace niki {
             int img_s = liststrore.iter_n_children (null);
             for (int i = 0; i < img_s; i++) {
                 Gtk.TreeIter iter;
-                if (liststrore.get_iter_first (out iter)){
+                if (liststrore.get_iter_first (out iter)) {
                     liststrore.remove (ref iter);
                 }
             }
-	        File file = File.new_for_path (get_media_directory ());
-	        file.enumerate_children_async.begin ("standard::*", FileQueryInfoFlags.NOFOLLOW_SYMLINKS, Priority.DEFAULT, null, (obj, res) => {
-		        try {
-			        FileEnumerator enumerator = file.enumerate_children_async.end (res);
-			        FileInfo info;
-			        while ((info = enumerator.next_file (null)) != null) {
+            File file = File.new_for_path (get_media_directory ());
+            file.enumerate_children_async.begin ("standard::*", FileQueryInfoFlags.NOFOLLOW_SYMLINKS, Priority.DEFAULT, null, (obj, res) => {
+                try {
+                    FileEnumerator enumerator = file.enumerate_children_async.end (res);
+                    FileInfo info;
+                    while ((info = enumerator.next_file (null)) != null) {
                         if (info.get_content_type ().has_prefix ("video/") && NikiApp.settings.get_boolean ("camera-video")) {
                             var found_path = GLib.File.new_build_filename (file.get_path (), info.get_name ());
                             prev_liststore (found_path.get_uri (), found_path.get_basename ());
@@ -227,11 +244,11 @@ namespace niki {
                             var found_path = GLib.File.new_build_filename (file.get_path (), info.get_name ());
                             prev_liststore (found_path.get_uri (), found_path.get_basename ());
                         }
-			        }
-		        } catch (Error e) {
-			        warning ("Error: %s\n", e.message);
-		        }
-        	});
+                    }
+                } catch (Error e) {
+                    warning ("Error: %s\n", e.message);
+                }
+            });
         }
         private void prev_liststore (string file_name, string title_name) {
             bool exist = false;
@@ -273,9 +290,9 @@ namespace niki {
                     if (file_stored () != null) {
                         var video_file = File.new_for_uri (file_stored ());
                         if (!FileUtils.test (normal_thumb (video_file), FileTest.EXISTS)) {
-                            var dbus_Thum = new DbusThumbnailer ().instance;
-                            dbus_Thum.instand_thumbler (video_file, "normal");
-                            dbus_Thum.load_finished.connect (()=>{
+                            var dbus_thum = new DbusThumbnailer ().instance;
+                            dbus_thum.instand_thumbler (video_file, "normal");
+                            dbus_thum.load_finished.connect (()=>{
                                 if (pix_file (normal_thumb (video_file)) != null) {
                                     pix_loader (pix_file (normal_thumb (video_file)));
                                 }
@@ -297,7 +314,7 @@ namespace niki {
 
         public string? file_stored () {
             Gtk.TreeIter iter;
-            if (liststrore.get_iter_first (out iter)){
+            if (liststrore.get_iter_first (out iter)) {
                 string filename;
                 liststrore.get (iter, ColumnCamPre.FILENAME, out filename);
                 return filename;

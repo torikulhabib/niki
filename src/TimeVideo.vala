@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class TimeVideo : Gtk.Revealer {
         public Gtk.Label progress_duration_label { get; construct set; }
         private string duration_string;
@@ -52,7 +52,7 @@ namespace niki {
                     progress = 1.0;
                 }
                 _playback_progress = progress;
-                progress_duration_label.label = seconds_to_time ((int) (progress * playback_duration)) +" / " + duration_string;
+                progress_duration_label.label = seconds_to_time ((int) (progress * playback_duration)) + " / " + duration_string;
             }
         }
 

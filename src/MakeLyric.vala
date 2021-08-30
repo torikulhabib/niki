@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class MakeLyric : Gtk.Grid {
         private Gtk.TreeView tree_view;
         private Gtk.ScrolledWindow lrc_text;
@@ -33,15 +33,18 @@ namespace niki {
         private string uri_this;
 
         public MakeLyric (BottomBar bottombar, PlayerPage playerpage) {
-            tree_view = new Gtk.TreeView ();
-            tree_view.get_style_context ().add_class ("makerlyric");
             listmodel = new Gtk.ListStore (LyricColumns.N_COLUMNS, typeof (string), typeof (string));
-            tree_view.model = listmodel;
-            tree_view.reorderable = true;
-            var text_render = new Gtk.CellRendererText ();
-            text_render.editable = true;
-            text_render.text = null;
-            tree_view.headers_visible = true;
+            tree_view = new Gtk.TreeView () {
+                model = listmodel,
+                reorderable = true,
+                headers_visible = true
+            };
+            tree_view.get_style_context ().add_class ("makerlyric");
+
+            var text_render = new Gtk.CellRendererText () {
+                editable = true
+            };
+
             tree_view.set_search_column (LyricColumns.LYRIC);
             tree_view.insert_column_with_attributes (-1, _("Time"), new Gtk.CellRendererText (), "markup", LyricColumns.TIMEVIEW);
             tree_view.insert_column_with_attributes (-1, _("Lyric"), text_render, "text", LyricColumns.LYRIC);
@@ -49,32 +52,35 @@ namespace niki {
             text_render.edited.connect ((path, new_text) => {
                 listmodel.set (selected_iter (), LyricColumns.LYRIC, new_text);
             });
-            var add_doc = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.lrc-file-symbolic", Gtk.IconSize.BUTTON);
-            add_doc.focus_on_click = false;
+            var add_doc = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.lrc-file-symbolic", Gtk.IconSize.BUTTON) {
+                focus_on_click = false,
+                tooltip_text = _("Open Text")
+            };
             add_doc.get_style_context ().add_class ("button_action");
             add_doc.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            add_doc.tooltip_text = _("Open Text");
             add_doc.clicked.connect (()=> {
                 var file = run_open_file (this, false, 3);
                 if (file != null) {
                     load_text (file[0]);
                 }
             });
-            var add_but = new Gtk.Button.from_icon_name ("list-add-symbolic", Gtk.IconSize.BUTTON);
-            add_but.focus_on_click = false;
+            var add_but = new Gtk.Button.from_icon_name ("list-add-symbolic", Gtk.IconSize.BUTTON) {
+                focus_on_click = false,
+                tooltip_text = _("Add List")
+            };
             add_but.get_style_context ().add_class ("button_action");
             add_but.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            add_but.tooltip_text = _("Add List");
             add_but.clicked.connect (() => {
                 Gtk.TreeIter iter;
                 listmodel.append (out iter);
                 listmodel.set (iter, LyricColumns.TIMEVIEW, "00:00", LyricColumns.LYRIC, "Niki Lyric");
             });
-            var insert_aft = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.insert-after-symbolic", Gtk.IconSize.BUTTON);
-            insert_aft.focus_on_click = false;
+            var insert_aft = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.insert-after-symbolic", Gtk.IconSize.BUTTON) {
+                focus_on_click = false,
+                tooltip_text = _("Insert After")
+            };
             insert_aft.get_style_context ().add_class ("button_action");
             insert_aft.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            insert_aft.tooltip_text = _("Insert After");
             insert_aft.clicked.connect (() => {
                 Gtk.TreeIter iter_in = selected_iter ();
                 if (!listmodel.iter_is_valid (iter_in)) {
@@ -84,11 +90,12 @@ namespace niki {
                 listmodel.insert_after (out iter, iter_in);
                 listmodel.set (iter, LyricColumns.TIMEVIEW, "00:00", LyricColumns.LYRIC, "Niki Lyric");
             });
-            var insert_bef = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.insert-before-symbolic", Gtk.IconSize.BUTTON);
-            insert_bef.focus_on_click = false;
+            var insert_bef = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.insert-before-symbolic", Gtk.IconSize.BUTTON) {
+                focus_on_click = false,
+                tooltip_text = _("Insert Before")
+            };
             insert_bef.get_style_context ().add_class ("button_action");
             insert_bef.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            insert_bef.tooltip_text = _("Insert Before");
             insert_bef.clicked.connect (() => {
                 Gtk.TreeIter iter_in = selected_iter ();
                 if (!listmodel.iter_is_valid (iter_in)) {
@@ -98,11 +105,12 @@ namespace niki {
                 listmodel.insert_before (out iter, iter_in);
                 listmodel.set (iter, LyricColumns.TIMEVIEW, "00:00", LyricColumns.LYRIC, "Niki Lyric");
             });
-            var remove_but = new Gtk.Button.from_icon_name ("list-remove-symbolic", Gtk.IconSize.BUTTON);
-            remove_but.focus_on_click = false;
+            var remove_but = new Gtk.Button.from_icon_name ("list-remove-symbolic", Gtk.IconSize.BUTTON) {
+                focus_on_click = false,
+                tooltip_text = _("Remove List")
+            };
             remove_but.get_style_context ().add_class ("button_action");
             remove_but.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            remove_but.tooltip_text = _("Remove List");
             remove_but.clicked.connect (() => {
                 Gtk.TreeIter iter = selected_iter ();
                 if (!listmodel.iter_is_valid (iter)) {
@@ -111,21 +119,24 @@ namespace niki {
                 listmodel.remove (ref iter);
             });
 
-            new_lrc_blk = new Gtk.Button.from_icon_name ("document-new-symbolic", Gtk.IconSize.BUTTON);
-            new_lrc_blk.focus_on_click = false;
+            new_lrc_blk = new Gtk.Button.from_icon_name ("document-new-symbolic", Gtk.IconSize.BUTTON) {
+                focus_on_click = false
+            };
             new_lrc_blk.get_style_context ().add_class ("button_action");
             new_lrc_blk.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
 
-            load_but = new Gtk.Button.from_icon_name ("edit-symbolic", Gtk.IconSize.BUTTON);
-            load_but.focus_on_click = false;
+            load_but = new Gtk.Button.from_icon_name ("edit-symbolic", Gtk.IconSize.BUTTON) {
+                focus_on_click = false,
+                tooltip_text = _("Edit Exist Lyric")
+            };
             load_but.get_style_context ().add_class ("button_action");
             load_but.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            load_but.tooltip_text = _("Edit Exist Lyric");
             load_but.clicked.connect (() => {
                 uri_this = NikiApp.settings.get_string ("uri-video");
-                if (!NikiApp.settings.get_boolean("lyric-available")) {
+                if (!NikiApp.settings.get_boolean ("lyric-available")) {
                     return;
                 }
+
                 clear_listmodel ();
                 bottombar.seekbar_widget.lyric.foreach ((item) => {
                     Gtk.TreeIter iter;
@@ -135,11 +146,12 @@ namespace niki {
                 });
             });
 
-            var save_but = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.file-save-symbolic", Gtk.IconSize.BUTTON);
-            save_but.focus_on_click = false;
+            var save_but = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.file-save-symbolic", Gtk.IconSize.BUTTON) {
+                focus_on_click = false,
+                tooltip_text = _("Save Lyric")
+            };
             save_but.get_style_context ().add_class ("button_action");
             save_but.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            save_but.tooltip_text = _("Save Lyric");
             save_but.clicked.connect (() => {
                 int b =listmodel.iter_n_children (null);
                 if (b < 2) {
@@ -148,45 +160,48 @@ namespace niki {
                 switch (NikiApp.settings.get_int ("location-save")) {
                     case 0 :
                         var lrc_file = Path.build_filename (get_path_noname (uri_this), @"$(get_name_noext (uri_this)).lrc");
-                    	save_to_file (lrc_file);
+                        save_to_file (lrc_file);
                         break;
                     case 1 :
                         var lrc_file = Path.build_filename (NikiApp.settings.get_string ("lyric-location"), get_name_noext (uri_this) + ".lrc");
-                    	save_to_file (lrc_file);
+                        save_to_file (lrc_file);
                         break;
                     case 2 :
                         var file = run_open_folder (this);
                         if (file != null) {
                             var lrc_file = Path.build_filename (file.get_path (), get_name_noext (uri_this) + ".lrc");
-                    	    save_to_file (lrc_file);
+                            save_to_file (lrc_file);
                         }
                         break;
                 }
             });
 
-            get_fol_rev = new ButtonRevealer ("com.github.torikulhabib.niki.folder-symbolic");
+            get_fol_rev = new ButtonRevealer ("com.github.torikulhabib.niki.folder-symbolic") {
+                transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT,
+                transition_duration = 500
+            };
+            get_fol_rev.button.tooltip_text = _("Folder Location");
             get_fol_rev.button.get_style_context ().add_class ("button_action");
             get_fol_rev.button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            get_fol_rev.button.tooltip_text = _("Folder Location");
-            get_fol_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
-            get_fol_rev.transition_duration = 500;
             get_fol_rev.clicked.connect (() => {
                 var file = run_open_folder (this);
                 if (file != null) {
                     NikiApp.settings.set_string ("lyric-location", file.get_path ());
                 }
             });
-            var label_make = new Gtk.Label (_("Niki Lyric Maker"));
+            var label_make = new Gtk.Label (_("Niki Lyric Maker")) {
+                ellipsize = Pango.EllipsizeMode.END
+            };
             label_make.get_style_context ().add_class ("button_action");
             label_make.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            label_make.ellipsize = Pango.EllipsizeMode.END;
 
-            var main_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+            var main_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
+                hexpand = true,
+                margin_start = 4,
+                margin_end = 4
+            };
             main_actionbar.get_style_context ().add_class ("transbgborder");
             main_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            main_actionbar.hexpand = true;
-            main_actionbar.margin_start = 4;
-            main_actionbar.margin_end = 4;
             main_actionbar.pack_start (add_doc, false, false, 0);
             main_actionbar.pack_start (add_but, false, false, 0);
             main_actionbar.pack_start (insert_aft, false, false, 0);
@@ -199,34 +214,39 @@ namespace niki {
             main_actionbar.pack_end (load_but, false, false, 0);
             main_actionbar.pack_end (new_lrc_blk, false, false, 0);
 
-            lrc_scr = new Gtk.ScrolledWindow (null, null);
+            lrc_scr = new Gtk.ScrolledWindow (null, null) {
+                propagate_natural_width = true,
+                margin_start = 10,
+                margin_end = 10
+            };
             lrc_scr.set_policy (Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC);
             lrc_scr.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            lrc_scr.propagate_natural_width = true;
             lrc_scr.size_allocate.connect (resize_scr);
-            lrc_scr.margin_start = 10;
-            lrc_scr.margin_end = 10;
             lrc_scr.add (tree_view);
 
             text_lrc = new Gtk.TextView ();
             text_lrc.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             text_lrc.set_wrap_mode (Gtk.WrapMode.WORD_CHAR);
-            lrc_text = new Gtk.ScrolledWindow (null, null);
+
+            lrc_text = new Gtk.ScrolledWindow (null, null) {
+                propagate_natural_width = true,
+                margin_start = 10,
+                margin_end = 10
+            };
             lrc_text.set_policy (Gtk.PolicyType.EXTERNAL, Gtk.PolicyType.AUTOMATIC);
             lrc_text.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            lrc_text.propagate_natural_width = true;
-            lrc_text.margin_start = 10;
-            lrc_text.margin_end = 10;
             lrc_text.add (text_lrc);
 
-            stack = new Gtk.Stack ();
-            stack.transition_type = Gtk.StackTransitionType.SLIDE_LEFT_RIGHT;
-            stack.transition_duration = 500;
+            stack = new Gtk.Stack () {
+                transition_type = Gtk.StackTransitionType.SLIDE_LEFT_RIGHT,
+                transition_duration = 500,
+                vhomogeneous = false
+            };
             stack.add_named (lrc_scr, "lyric");
             stack.add_named (lrc_text, "lrctext");
             stack.visible_child = lrc_scr;
-            stack.vhomogeneous = false;
             stack.show_all ();
+
             new_lrc_blk.clicked.connect (() => {
                 uri_this = NikiApp.window.player_page.playback.uri;
                 stack.visible_child = stack.visible_child == lrc_scr? lrc_text : lrc_scr;
@@ -235,7 +255,7 @@ namespace niki {
                 new_img_but ();
                 clear_listmodel ();
                 if (stack.visible_child == lrc_scr) {
-	                string[] datains = text_lrc.buffer.text.split ("\n");
+                    string[] datains = text_lrc.buffer.text.split ("\n");
                     List<string> text_list = new List<string> ();
                     for (int i = 0; i < text_lrc.buffer.get_line_count (); i++) {
                         text_list.append (datains [i]);
@@ -248,8 +268,9 @@ namespace niki {
                 }
             });
 
-            var layout = new Gtk.Grid ();
-            layout.orientation = Gtk.Orientation.VERTICAL;
+            var layout = new Gtk.Grid () {
+                orientation = Gtk.Orientation.VERTICAL
+            };
             layout.add (stack);
             layout.add (main_actionbar);
             layout.show_all ();
@@ -261,6 +282,7 @@ namespace niki {
                 uri_this = NikiApp.window.player_page.playback.uri;
             });
         }
+
         public void set_time_sec (int64 time_in) {
             Gtk.TreeIter iter = selected_iter ();
             if (!listmodel.iter_is_valid (iter)) {
@@ -273,32 +295,37 @@ namespace niki {
                 tree_view.scroll_to_cell (listmodel.get_path (iter), null, true, 0.5f, 0);
             }
         }
+
         public void resize_scr () {
-            if (NikiApp.settings.get_boolean("audio-video")) {
+            if (NikiApp.settings.get_boolean ("audio-video")) {
                 int height;
                 NikiApp.window.get_size (null, out height);
                 lrc_scr.height_request = height - 158;
                 lrc_text.height_request = height - 158;
             }
         }
+
         private Gtk.TreeIter selected_iter () {
             Gtk.TreeIter iter;
             tree_view.get_selection ().get_selected (null, out iter);
             return iter;
         }
+
         public void clear_listmodel () {
             int b = listmodel.iter_n_children (null);
             for (int i = 0; i < b; i++) {
                 Gtk.TreeIter iter;
-                if (listmodel.get_iter_first (out iter)){
+                if (listmodel.get_iter_first (out iter)) {
                     listmodel.remove (ref iter);
                 }
             }
         }
+
         private void new_img_but () {
             ((Gtk.Image) new_lrc_blk.image).icon_name = stack.visible_child_name == "lyric"? "document-new-symbolic" : "go-previous-symbolic";
             new_lrc_blk.tooltip_text = stack.visible_child_name == "lyric"? _("Writer") : _("Maker");
         }
+
         private void save_to_file (string filename) {
             var builder = new StringBuilder ();
             listmodel.foreach ((model, path, iter) => {
@@ -311,14 +338,15 @@ namespace niki {
             File file = File.new_for_path (filename);
             permanent_delete (file);
             try {
-            	FileOutputStream out_stream = file.create (FileCreateFlags.REPLACE_DESTINATION);
-            	out_stream.write (builder.str.data);
+                FileOutputStream out_stream = file.create (FileCreateFlags.REPLACE_DESTINATION);
+                out_stream.write (builder.str.data);
             } catch (Error e) {
-                notify_app (_("Error Make"), @"$(e.message)");
+                notify_app (_("Error Make"), _("%s").printf (e.message));
                 return;
             }
             notify_app (_("Succes Make"), @"$(_("Save_to")) $(filename)");
         }
+
         private Gtk.Button loc_save () {
             var locat_button = new Gtk.Button ();
             locat_button.get_style_context ().add_class ("button_action");

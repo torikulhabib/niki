@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class ScanFolder : GLib.Object {
         public signal void signal_notify (string output);
         public signal void signal_succes (Gtk.ListStore liststore);
@@ -52,11 +52,11 @@ namespace niki {
                 check_count = 0;
                 return Source.REMOVE;
             });
-	        directory.enumerate_children_async.begin ("standard::*", FileQueryInfoFlags.NONE, Priority.DEFAULT, null, (obj, res) => {
-		        try {
-			        FileEnumerator enumerator = directory.enumerate_children_async.end (res);
-			        FileInfo file_info;
-			        while ((file_info = enumerator.next_file (null)) != null) {
+            directory.enumerate_children_async.begin ("standard::*", FileQueryInfoFlags.NONE, Priority.DEFAULT, null, (obj, res) => {
+                try {
+                    FileEnumerator enumerator = directory.enumerate_children_async.end (res);
+                    FileInfo file_info;
+                    while ((file_info = enumerator.next_file (null)) != null) {
                         if (file_info.get_is_hidden ()) {
                             continue;
                         }
@@ -67,25 +67,25 @@ namespace niki {
                         }
                         content_count = GLib.Timeout.add (50, () => {
                             bool content_video = false;
-                            bool content_Audio = false;
+                            bool content_audio = false;
                             foreach (string mime_content in mimetype_contents) {
                                 if (mime_content.has_prefix ("video/")) {
                                     content_video = true;
                                 }
                                 if (mime_content.has_prefix ("audio/")) {
-                                    content_Audio = true;
+                                    content_audio = true;
                                 }
                             }
                             if (mode_scan == 1 && !content_video) {
                                 signal_notify (_("Empty Video"));
                             }
-                            if (mode_scan == 2 && !content_Audio) {
+                            if (mode_scan == 2 && !content_audio) {
                                 signal_notify (_("Empty Audio"));
                             }
-                            if (mode_scan == 0 && !content_Audio && !content_video) {
+                            if (mode_scan == 0 && !content_audio && !content_video) {
                                 signal_notify (_("Empty Folder"));
                             }
-                            if (content_video || content_Audio) {
+                            if (content_video || content_audio) {
                                 signal_succes (liststore);
                             }
                             mimetype_contents = {};
@@ -107,13 +107,13 @@ namespace niki {
                         }
                         string mime_type = file_info.get_content_type ();
                         bool video_file = !file_info.get_is_hidden () && mime_type.has_prefix ("video/");
-                        bool Audio_file = !file_info.get_is_hidden () && mime_type.has_prefix ("audio/");
+                        bool audio_file = !file_info.get_is_hidden () && mime_type.has_prefix ("audio/");
                         switch (mode_scan) {
                             case 0:
                                 if (video_file) {
                                     list_append (path, file_info);
                                 }
-                                if (Audio_file) {
+                                if (audio_file) {
                                     list_append (path, file_info);
                                 }
                                 break;
@@ -123,17 +123,18 @@ namespace niki {
                                 }
                                 break;
                             case 2:
-                                if (Audio_file) {
+                                if (audio_file) {
                                     list_append (path, file_info);
                                 }
                                 break;
                         }
                     }
-		        } catch (Error e) {
-			        warning ("Error: %s\n", e.message);
-		        }
-        	});
+                } catch (Error e) {
+                    warning ("Error: %s\n", e.message);
+                }
+            });
         }
+
         private void list_append (string path, FileInfo info) {
             Gtk.TreeIter iter;
             liststore.append (out iter);

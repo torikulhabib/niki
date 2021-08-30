@@ -1,4 +1,4 @@
-namespace niki {
+namespace Niki {
     public class CircularProgressBar : Gtk.DrawingArea {
         public bool center_filled = false;
         public bool radius_filled = false;
@@ -45,7 +45,7 @@ namespace niki {
                 Gdk.RGBA color = Gdk.RGBA ();
                 var center_x = get_allocated_width () / 2;
                 var center_y = get_allocated_height () / 2;
-                var radius =  calculate_radius ();
+                var radius = calculate_radius ();
                 int line_width = 15;
                 var d = radius - line_width;
                 int delta = radius - line_width / 2;
@@ -55,7 +55,7 @@ namespace niki {
                 }
                 Cairo.LineCap line_cap = Cairo.LineCap.BUTT;
                 color = Gdk.RGBA ();
-                cr.set_line_cap  (line_cap);
+                cr.set_line_cap (line_cap);
                 cr.set_line_width (line_width);
 
                 if (center_filled == true) {
@@ -74,7 +74,7 @@ namespace niki {
 
                 var progress = ((double) percentage);
                 if (progress > 0) {
-                    cr.arc (center_x, center_y, delta, 1.5  * Math.PI, (1.5 + progress * 2 ) * Math.PI);
+                    cr.arc (center_x, center_y, delta, 1.5 * Math.PI, (1.5 + progress * 2 ) * Math.PI);
                     color.parse ("#f37329");
                     Gdk.cairo_set_source_rgba (cr, color);
                     cr.stroke ();
@@ -92,7 +92,7 @@ namespace niki {
                 layout.set_font_description (desc);
                 Pango.cairo_update_layout (cr, layout);
                 int w, h;
-                layout.get_size (out w, out h); 
+                layout.get_size (out w, out h);
                 cr.move_to (center_x - ((w / Pango.SCALE) / 2), center_y - 27 );
                 Pango.cairo_show_layout (cr, layout);
 
@@ -100,7 +100,7 @@ namespace niki {
                 desc = Pango.FontDescription.from_string ("Bitstream Vera Sans 14");
                 layout.set_font_description (desc);
                 Pango.cairo_update_layout (cr, layout);
-                layout.get_size (out w, out h); 
+                layout.get_size (out w, out h);
                 cr.move_to (center_x - ((w / Pango.SCALE) / 2), center_y + 13);
                 Pango.cairo_show_layout (cr, layout);
 

@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class TimerButton : Gtk.Button {
         private Gtk.Label timer_label;
         private Gtk.Revealer label_revealer;

@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class DeleteDialog : MessageDialog {
         public signal void permanents ();
         public signal void trash ();
@@ -44,28 +44,35 @@ namespace niki {
             var delete_permanent = new Gtk.Button.with_label (_("Delete Permanent"));
             delete_permanent.get_style_context ().add_class (Gtk.STYLE_CLASS_DESTRUCTIVE_ACTION);
             delete_permanent.clicked.connect (() => {
-		        permanent_delete (File.new_for_uri (file_name));
+                permanent_delete (File.new_for_uri (file_name));
                 permanents ();
-		        destroy ();
+                destroy ();
             });
+
             var move_trash = new Gtk.Button.with_label (_("Move Trash"));
             move_trash.get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
             move_trash.clicked.connect (() => {
-		        delete_trash (File.new_for_uri (file_name));
+                delete_trash (File.new_for_uri (file_name));
                 trash ();
-		        destroy ();
-            });
-            var close_dialog = new Gtk.Button.with_label (_("Close"));
-            close_dialog.clicked.connect (() => {
-		        destroy ();
+                destroy ();
             });
 
-		    var box_action = new Gtk.Grid ();
+            var close_dialog = new Gtk.Button.with_label (_("Close"));
+            close_dialog.clicked.connect (() => {
+                destroy ();
+            });
+
+            var box_action = new Gtk.Grid () {
+                column_spacing = 5,
+                margin_top = 5,
+                margin_start = 10,
+                margin_bottom = 10,
+                margin_end = 10,
+                hexpand = true,
+                column_homogeneous = true
+            };
             box_action.orientation = Gtk.Orientation.HORIZONTAL;
             box_action.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            box_action.column_spacing = box_action.margin_top = 5;
-            box_action.margin_start = box_action.margin_bottom = box_action.margin_end = 10;
-            box_action.hexpand = box_action.column_homogeneous = true;
             box_action.add (delete_permanent);
             box_action.add (move_trash);
             box_action.add (close_dialog);

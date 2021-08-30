@@ -1,4 +1,4 @@
-namespace niki {
+namespace Niki {
     public class CameraGrid : Gtk.Grid {
         private CameraPage? camerapage;
         private Gtk.Entry new_preset_entry;
@@ -27,7 +27,7 @@ namespace niki {
         public void init () {
             build_ui ();
             load_presets ();
-            var preset = NikiApp.settingsCv.get_string ("selected-preset");
+            var preset = NikiApp.settings_cv.get_string ("selected-preset");
             if (preset != null) {
                 camera_preset_list.select_preset (preset);
             }
@@ -43,7 +43,7 @@ namespace niki {
             }
             save_presets ();
             var selected_preset = camera_preset_list.get_selected_preset ();
-            NikiApp.settingsCv.set_string ("selected-preset", selected_preset != null ? selected_preset.name : "");
+            NikiApp.settings_cv.set_string ("selected-preset", selected_preset != null ? selected_preset.name : "");
         }
 
         public bool verify_preset_name (string preset_name) {
@@ -144,8 +144,8 @@ namespace niki {
             add (layout);
             show_all ();
             width_request = 400;
-            NikiApp.settingsCv.bind ("videocamera-enabled", scale_container, "sensitive", GLib.SettingsBindFlags.GET);
-            NikiApp.settingsCv.changed["videocamera-enabled"].connect (video_switch);
+            NikiApp.settings_cv.bind ("videocamera-enabled", scale_container, "sensitive", GLib.SettingsBindFlags.GET);
+            NikiApp.settings_cv.changed["videocamera-enabled"].connect (video_switch);
 
             camera_preset_list.delete_preset_chosen.connect (remove_preset_clicked);
             camera_preset_list.preset_selected.connect (preset_selected);
@@ -161,7 +161,7 @@ namespace niki {
 
         private void video_switch () {
             in_transition = false;
-            if (NikiApp.settingsCv.get_boolean ("videocamera-enabled")) {
+            if (NikiApp.settings_cv.get_boolean ("videocamera-enabled")) {
                 var selected_preset = camera_preset_list.get_selected_preset ();
                 if (selected_preset != null) {
                     for (int i = 0; i < scales.size; ++i) {
@@ -194,7 +194,7 @@ namespace niki {
                     val += preset.to_string ();
                 }
             }
-            NikiApp.settingsCv.set_strv ("custom-presets", val);
+            NikiApp.settings_cv.set_strv ("custom-presets", val);
         }
 
         private void preset_selected (CameraPreset videoprest) {
@@ -250,7 +250,7 @@ namespace niki {
         }
 
         private void notify_current_preset () {
-            if (NikiApp.settingsCv.get_boolean ("videocamera-enabled")) {
+            if (NikiApp.settings_cv.get_boolean ("videocamera-enabled")) {
                 NikiApp.settings.set_string ("tooltip-videos", camera_preset_list.get_selected_preset ().name);
             } else {
                 NikiApp.settings.set_string ("tooltip-videos", _("None"));
@@ -283,13 +283,13 @@ namespace niki {
                 return;
             }
             var new_name = new_preset_entry.get_text ();
-            if (verify_preset_name (new_name)){
+            if (verify_preset_name (new_name)) {
                 new_preset_name = new_name;
             }
 
             int[] gains = new int [scales.size];
 
-            for (int i = 0; i < scales.size; i++){
+            for (int i = 0; i < scales.size; i++) {
                 gains[i] = (int) scales.get (i).get_value ();
             }
 

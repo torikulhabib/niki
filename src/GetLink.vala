@@ -19,10 +19,10 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class GetLink : Object {
-		public signal void errormsg (string msg);
-		public signal void process_all (string [] msg);
+        public signal void errormsg (string msg);
+        public signal void process_all (string [] msg);
 
         private bool process_line (IOChannel channel, IOCondition condition, string stream_name) {
             if (condition == IOCondition.HUP) {
@@ -32,13 +32,13 @@ namespace niki {
                 string line;
                 channel.read_line (out line, null, null);
                 switch (stream_name) {
-                	case "stdout":
-                		sendata (line);
-                		break;
-                	case "stderr":
-                		errormsg (line);
-                		break;
-                }
+                    case "stdout":
+                        sendata (line);
+                        break;
+                    case "stderr":
+                        errormsg (line);
+                        break;
+                    }
             } catch (IOChannelError e) {
                 warning ("%s %s\n", stream_name, e.message);
                 return false;
@@ -49,13 +49,13 @@ namespace niki {
             return true;
         }
 
-	    public void get_link_stream (string url) {
+        public void get_link_stream (string url) {
             string [] spawn_args;
             if (url.contains ("youtu")) {
                 if (url.contains ("&" + "list")) {
-		            spawn_args = {"youtube-dl", "--get-thumbnail", "--write-thumbnail", "--get-filename", "-f", "18", "-o", "%(title)s.%(ext)s", "--skip-download", "--playlist-items", "1-5", "--get-url", url};
+                    spawn_args = {"youtube-dl", "--get-thumbnail", "--write-thumbnail", "--get-filename", "-f", "18", "-o", "%(title)s.%(ext)s", "--skip-download", "--playlist-items", "1-5", "--get-url", url};
                 } else if (url.contains ("?" + "list")) {
-		            spawn_args = {"youtube-dl", "--get-thumbnail", "--get-filename", "-f", "18", "-o", "%(title)s.%(ext)s", "--skip-download", "--playlist-items", "1-5", "--get-url", url};
+                    spawn_args = {"youtube-dl", "--get-thumbnail", "--get-filename", "-f", "18", "-o", "%(title)s.%(ext)s", "--skip-download", "--playlist-items", "1-5", "--get-url", url};
                 } else {
                     spawn_args = {"youtube-dl", "--get-thumbnail", "--get-filename", "-f", "18", "-o", "%(title)s.%(ext)s", "--skip-download", "--get-url", url};
                 }
@@ -79,7 +79,7 @@ namespace niki {
         }
         private string[] string_list = {};
         private void sendata (string datain) {
-	        string[] datains = datain.split ("\n");
+            string[] datains = datain.split ("\n");
             string_list += datains [0];
             if (string_list.length > 2) {
                 process_all (string_list);

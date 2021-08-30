@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class VideoCrop : MessageDialog {
         private PlayerPage? playerpage;
 
@@ -48,24 +48,27 @@ namespace niki {
             var right_label = new LabelSpin (_("Right"), playerpage.video_width / 2);
             right_label.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
 
-            var frame = new Gtk.Grid ();
-            frame.orientation = Gtk.Orientation.VERTICAL;
+            var frame = new Gtk.Grid () {
+                orientation = Gtk.Orientation.VERTICAL,
+                valign = Gtk.Align.CENTER,
+                halign = Gtk.Align.CENTER,
+                row_spacing = 5
+            };
             frame.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            frame.valign = Gtk.Align.CENTER;
-            frame.halign = Gtk.Align.CENTER;
-            frame.row_spacing = 5;
             frame.add (top_label);
             frame.add (bottom_label);
             frame.add (left_label);
             frame.add (right_label);
             custom_bin.add (frame);
             custom_bin.set_size_request (300, 150);
+
             int top_value, bottom_value, left_value, right_value;
             playerpage.playback.videomix.videocrop.get ("top", out top_value, "bottom", out bottom_value, "left", out left_value, "right", out right_value);
             top_label.number_entry.value = top_value;
             bottom_label.number_entry.value = bottom_value;
             left_label.number_entry.value = left_value;
             right_label.number_entry.value = right_value;
+
             var applyset = new Gtk.Button.with_label (_("Apply"));
             applyset.get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
             applyset.clicked.connect (() => {
@@ -75,20 +78,24 @@ namespace niki {
                 right_value = (int) right_label.number_entry.get_value ();
                 playerpage.playback.videomix.set_videocrp (top_value, bottom_value, left_value, right_value);
             });
+
             var close_dialog = new Gtk.Button.with_label (_("Close"));
             close_dialog.clicked.connect (() => {
-		        destroy ();
+                destroy ();
             });
 
-		    var box_action = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+            var box_action = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
+                margin_top = 5,
+                spacing = 5,
+                margin_start = 10,
+                margin_bottom = 10,
+                margin_end = 10,
+                homogeneous = true
+            };
             box_action.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            box_action.margin_top = box_action.spacing = 5;
-            box_action.margin_start = box_action.margin_bottom = box_action.margin_end = 10;
-            box_action.homogeneous = true;
             box_action.pack_end (applyset, false, true, 0);
             box_action.pack_end (close_dialog, false, true, 0);
             get_content_area ().add (box_action);
         }
-
     }
 }

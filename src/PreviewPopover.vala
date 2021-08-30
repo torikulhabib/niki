@@ -19,13 +19,13 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class PreviewPopover : Gtk.Popover {
         public PreviewClutterGst? playback;
         public Gtk.Label label_progress;
         public GtkClutter.Embed clutter;
         private double clutter_height;
-        private double clutter_width; 
+        private double clutter_width;
         private uint loop_timer_id = 0;
         private uint show_timer_id = 0;
         private uint hide_timer_id = 0;
@@ -37,22 +37,26 @@ namespace niki {
             playback = new PreviewClutterGst ();
             playback.set_seek_flags (ClutterGst.SeekFlags.ACCURATE);
             playback.size_change.connect ((width, height) => {
-                clutter_height = height; 
-                clutter_width = width; 
+                clutter_height = height;
+                clutter_width = width;
             });
-            clutter = new GtkClutter.Embed ();
-            clutter.margin = 1;
+            clutter = new GtkClutter.Embed () {
+                margin = 1
+            };
             var stage = (Clutter.Stage)clutter.get_stage ();
             stage.set_content_scaling_filters (Clutter.ScalingFilter.TRILINEAR, Clutter.ScalingFilter.LINEAR);
             stage.set_content_gravity (Clutter.ContentGravity.RESIZE_ASPECT);
             stage.background_color = Clutter.Color.from_string ("black") { alpha = 0 };
-            var aspectratio = new ClutterGst.Content ();
-            aspectratio.player = playback;
+            var aspectratio = new ClutterGst.Content () {
+                player = playback
+            };
             stage.content = aspectratio;
 
-            label_progress = new Gtk.Label (null);
+            label_progress = new Gtk.Label (null) {
+                halign = Gtk.Align.CENTER
+            };
             label_progress.get_style_context ().add_class ("label_popover");
-            label_progress.halign = Gtk.Align.CENTER;
+
             var label_progress_actor = new GtkClutter.Actor.with_contents (label_progress);
             label_progress_actor.add_constraint (new Clutter.AlignConstraint (stage, Clutter.AlignAxis.Y_AXIS, 1));
             label_progress_actor.add_constraint (new Clutter.BindConstraint (stage, Clutter.BindCoordinate.WIDTH, 1));
@@ -64,19 +68,20 @@ namespace niki {
             NikiApp.settings.changed["uri-video"].connect (load_playback);
             load_playback ();
         }
+
         private void clutter_resize () {
             if (clutter_width > 0 && clutter_height > 0 && !NikiApp.settings.get_boolean ("audio-video")) {
                 int height, width;
                 ((Gtk.Window) get_toplevel ()).get_size (out width, out height);
                 double diagonal_window = GLib.Math.sqrt ((GLib.Math.pow (width, 2) + GLib.Math.pow (height, 2)) / 45);
-                double diagonal = Math.sqrt (GLib.Math.pow (clutter_width, 2)  + GLib.Math.pow(clutter_height, 2));
+                double diagonal = Math.sqrt (GLib.Math.pow (clutter_width, 2) + GLib.Math.pow (clutter_height, 2));
                 double k = (diagonal_window / diagonal);
                 clutter.set_size_request ((int)(clutter_width * k), (int)(clutter_height * k));
             }
         }
         public void load_playback () {
             Idle.add (() => {
-                if (NikiApp.settings.get_boolean("home-signal") || NikiApp.settings.get_boolean("audio-video")) {
+                if (NikiApp.settings.get_boolean ("home-signal") || NikiApp.settings.get_boolean ("audio-video")) {
                     playback.uri = null;
                 } else {
                     playback.uri = NikiApp.settings.get_string ("uri-video");

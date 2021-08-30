@@ -33,7 +33,7 @@
  * }}}
  *
  */
-namespace niki {
+namespace Niki {
     public class AccelLabel : Gtk.Grid {
         public string action_name { get; construct set; }
         public string? accel_string { get; construct set; }
@@ -42,16 +42,17 @@ namespace niki {
         public AccelLabel (string label, string? accel_string = null) {
             Object (
                 label: label,
-                accel_string: accel_string
+                accel_string: accel_string,
+                column_spacing: 3
             );
         }
 
         construct {
-            var label = new Gtk.Label (label);
-            label.hexpand = true;
-            label.margin_end = 6;
-            label.xalign = 0;
-            column_spacing = 3;
+            var label = new Gtk.Label (label) {
+                hexpand = true,
+                margin_end = 6,
+                xalign = 0
+            };
             add (label);
             update_accels ();
             notify["accel-string"].connect (update_accels);

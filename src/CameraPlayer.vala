@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class CameraPlayer : GLib.Object {
         public dynamic Gst.Element videosink;
         private dynamic Gst.Element camera_source;
@@ -111,14 +111,14 @@ namespace niki {
             videobalance = Gst.ElementFactory.make ("videobalance", "videobalance");
             videoconvert = Gst.ElementFactory.make ("videoconvert", "videoconvert");
             flip_filter = Gst.ElementFactory.make ("videoflip", "videoflip");
-            gaussianblur = Gst.ElementFactory.make("gaussianblur","gaussianblur");
-            coloreffects = Gst.ElementFactory.make ("coloreffects","coloreffects");
+            gaussianblur = Gst.ElementFactory.make ("gaussianblur", "gaussianblur");
+            coloreffects = Gst.ElementFactory.make ("coloreffects", "coloreffects");
             filter = Gst.ElementFactory.make ("capsfilter", "capsfilter");
             Gst.Element bin = new Gst.Bin ("video_filter");
-            ((Gst.Bin) bin).add_many (queue, filter, coloreffects, flip_filter, gamma,  videobalance, gaussianblur, videoconvert);
+            ((Gst.Bin) bin).add_many (queue, filter, coloreffects, flip_filter, gamma, videobalance, gaussianblur, videoconvert);
             bin.add_pad (new Gst.GhostPad ("sink", queue.get_static_pad ("sink")));
             bin.add_pad (new Gst.GhostPad ("src", videoconvert.get_static_pad ("src")));
-            queue.link_many (filter, coloreffects, flip_filter, gamma,  videobalance, gaussianblur, videoconvert);
+            queue.link_many (filter, coloreffects, flip_filter, gamma, videobalance, gaussianblur, videoconvert);
             return bin;
         }
         public void size_camera (int width, int height) {
@@ -228,29 +228,29 @@ namespace niki {
         public void setvalue (int index, int valuescale) {
             switch (index) {
                 case 0 :
-                    gamma["gamma"] = (double) ((101.1 + valuescale)/100.0);
+                    gamma["gamma"] = (double) ((101.1 + valuescale) / 100.0);
                     break;
                 case 1 :
                     videobalance["brightness"] = (double) valuescale / 100.0;
                     break;
                 case 2 :
-                    videobalance["contrast"] = (double) ((100.0 + valuescale)/100.0);
+                    videobalance["contrast"] = (double) ((100.0 + valuescale) / 100.0);
                     break;
                 case 3 :
-                    videobalance["saturation"] = (double) ((100.0 + valuescale)/100.0);
+                    videobalance["saturation"] = (double) ((100.0 + valuescale) / 100.0);
                     break;
                 case 4 :
                     videobalance["hue"] = (double) valuescale / 100.0;
                     break;
                 case 5 :
-                    gaussianblur["sigma"] = (double) ((valuescale)/100.0);
+                    gaussianblur["sigma"] = (double) ((valuescale) / 100.0);
                     break;
             }
         }
 
         public Gee.Collection<CameraPreset> get_presets () {
             var camera_preset = new Gee.TreeSet<CameraPreset> ();
-            foreach (string preset in NikiApp.settingsCv.get_strv ("custom-presets")) {
+            foreach (string preset in NikiApp.settings_cv.get_strv ("custom-presets")) {
                 camera_preset.add (new CameraPreset.from_string (preset));
             }
             return camera_preset;

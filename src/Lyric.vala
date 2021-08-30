@@ -1,4 +1,4 @@
-namespace niki {
+namespace Niki {
     public class Lyric : Gee.TreeMap<int64?, string> {
         public Gtk.ListStore meta_data;
         private Gee.BidirMapIterator<int64?, string> lrc_iterator;

@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class MusicList : Gtk.Grid {
         private Gtk.TreeView tree_view;
         private Gtk.ListStore listmodel;

@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class CropDialog : MessageDialog {
         public signal void request_avatar_change (Gdk.Pixbuf pixbuf);
         public string pixbuf_path { get; construct; }
@@ -44,17 +44,20 @@ namespace niki {
 
         construct {
             try {
-                cropview = new CropView.from_pixbuf_with_size (new Gdk.Pixbuf.from_file (pixbuf_path), 450, 350);
-                cropview.quadratic_selection = true;
-                cropview.handles_visible = false;
+                cropview = new CropView.from_pixbuf_with_size (new Gdk.Pixbuf.from_file (pixbuf_path), 450, 350) {
+                    quadratic_selection = true,
+                    handles_visible = false
+                };
 
-                var frame = new Gtk.Grid ();
+                var frame = new Gtk.Grid () {
+                    valign = Gtk.Align.CENTER,
+                    halign = Gtk.Align.CENTER
+                };
                 frame.get_style_context ().add_class ("card");
                 frame.get_style_context ().add_class ("checkerboard");
-                frame.valign = Gtk.Align.CENTER;
-                frame.halign = Gtk.Align.CENTER;
                 frame.add (cropview);
                 custom_bin.add (frame);
+
                 var applyset = new Gtk.Button.with_label (_("Apply"));
                 applyset.get_style_context ().add_class (Gtk.STYLE_CLASS_SUGGESTED_ACTION);
                 applyset.clicked.connect (() => {
@@ -66,19 +69,25 @@ namespace niki {
                     }
                     destroy ();
                 });
+
                 var close_dialog = new Gtk.Button.with_label (_("Close"));
                 close_dialog.clicked.connect (() => {
-		            destroy ();
+                    destroy ();
                 });
 
-		        var box_action = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+                var box_action = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
+                    margin_top = 5,
+                    spacing = 5,
+                    margin_start = 10,
+                    margin_bottom = 10,
+                    margin_end = 10,
+                    homogeneous = true
+                };
                 box_action.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-                box_action.margin_top = box_action.spacing = 5;
-                box_action.margin_start = box_action.margin_bottom = box_action.margin_end = 10;
-                box_action.homogeneous = true;
                 box_action.pack_end (applyset, false, true, 0);
                 box_action.pack_end (close_dialog, false, true, 0);
                 get_content_area ().add (box_action);
+
             } catch (Error e) {
                 critical (e.message);
             }

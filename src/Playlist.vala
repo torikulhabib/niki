@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class Playlist : Gtk.TreeView {
         public signal void play (string path, string size, int mediatype, bool playnow);
         public signal void item_added ();
@@ -34,14 +34,15 @@ namespace niki {
             model = liststore;
             headers_visible = activate_on_single_click = false;
 
-            var text_render = new Gtk.CellRendererText ();
-            text_render.ellipsize = Pango.EllipsizeMode.END;
+            var text_render = new Gtk.CellRendererText () {
+                ellipsize = Pango.EllipsizeMode.END
+            };
 
             insert_column_with_attributes (-1, "Playing", new Gtk.CellRendererPixbuf (), "gicon", PlaylistColumns.PLAYING);
             insert_column_with_attributes (-1, "Preview", new Gtk.CellRendererPixbuf (), "pixbuf", PlaylistColumns.PREVIEW);
             insert_column_with_attributes (-1, "Title", text_render, "markup", PlaylistColumns.ARTISTTITLE);
             set_tooltip_column (3);
-		    set_enable_search (true);
+            set_enable_search (true);
             row_activated.connect ((path, column) => {
                 if (!NikiApp.settings.get_boolean ("edit-playlist")) {
                     Gtk.TreeIter iter;
@@ -117,14 +118,14 @@ namespace niki {
             var sub_asc = new MenuLabelRadio ("view-sort-descending-symbolic", _("Ascending"));
             ascending_short.add (sub_asc);
             ascending_short.activate.connect (() => {
-                NikiApp.settings.set_boolean("ascen-descen", true);
+                NikiApp.settings.set_boolean ("ascen-descen", true);
             });
 
             var descending_short = new Gtk.MenuItem ();
             var sub_des = new MenuLabelRadio ("view-sort-ascending-symbolic", _("Descending"));
             descending_short.add (sub_des);
             descending_short.activate.connect (() => {
-                NikiApp.settings.set_boolean("ascen-descen", false);
+                NikiApp.settings.set_boolean ("ascen-descen", false);
             });
             var submenu_menu2 = new Gtk.Menu ();
             submenu_menu2.add (title_short);
@@ -214,7 +215,7 @@ namespace niki {
         }
         public Gtk.TreeIter selected_iter () {
             Gtk.TreeIter iter;
-            get_selection().get_selected(null, out iter);
+            get_selection ().get_selected (null, out iter);
             return iter;
         }
         private void remove_playlist () {
@@ -253,7 +254,7 @@ namespace niki {
         }
         public bool next () {
             Gtk.TreeIter iter;
-            if (liststore.get_iter_from_string (out iter, (current + 1).to_string ())){
+            if (liststore.get_iter_from_string (out iter, (current + 1).to_string ())) {
                 send_iter_to (iter);
                 return true;
             }
@@ -262,7 +263,7 @@ namespace niki {
 
         public void previous () {
             Gtk.TreeIter iter;
-            if (liststore.get_iter_from_string (out iter, (current - 1).to_string ())){
+            if (liststore.get_iter_from_string (out iter, (current - 1).to_string ())) {
                 send_iter_to (iter);
             }
         }
@@ -414,7 +415,7 @@ namespace niki {
             if (get_mime_type (path).has_prefix ("video/")) {
                 if (!videos_file_exists (file_name)) {
                     var info = get_discoverer_info (file_name);
-                    duration = seconds_to_time ((int)(info.get_duration ()/1000000000));
+                    duration = seconds_to_time ((int)(info.get_duration () / 1000000000));
                     progress = "00:00";
                     insert_video (file_name, progress, duration, 0.0);
                 } else {
@@ -422,8 +423,8 @@ namespace niki {
                 }
                 info_songs = get_song_info (path);
                 if (!FileUtils.test (normal_thumb (path), FileTest.EXISTS)) {
-                    var dbus_Thum = new DbusThumbnailer ().instance;
-                    dbus_Thum.instand_thumbler (path, "normal");
+                    var dbus_thum = new DbusThumbnailer ().instance;
+                    dbus_thum.instand_thumbler (path, "normal");
                 }
                 preview = pix_scale (normal_thumb (path), 48);
                 if (preview == null) {
@@ -444,12 +445,12 @@ namespace niki {
                     pix_to_file (pixbuf, nameimage);
                     preview = circle_pix (pixbuf);
                 } else {
-                    preview = circle_pix (pix_file(nameimage));
-	            }
-	        }
+                    preview = circle_pix (pix_file (nameimage));
+                }
+            }
             Gtk.TreeIter iter;
             liststore.append (out iter);
-            liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE,  info_songs, PlaylistColumns.ARTISTTITLE, file_type (path) == 0? @"$(Markup.escape_text (info_songs))\n $(progress) / $(duration)" : @"<b>$(Markup.escape_text (info_songs))</b>\n$(Markup.escape_text (artist_music)) - <i>$(Markup.escape_text (album_music))</i>", PlaylistColumns.FILENAME, path.get_uri (), PlaylistColumns.FILESIZE, get_info_size (path.get_uri ()), PlaylistColumns.MEDIATYPE, file_type (path), PlaylistColumns.ALBUMMUSIC, album_music, PlaylistColumns.ARTISTMUSIC, artist_music, PlaylistColumns.PLAYNOW, true, PlaylistColumns.INPUTMODE, 0);
+            liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, info_songs, PlaylistColumns.ARTISTTITLE, file_type (path) == 0? @"$(Markup.escape_text (info_songs))\n $(progress) / $(duration)" : @"<b>$(Markup.escape_text (info_songs))</b>\n$(Markup.escape_text (artist_music)) - <i>$(Markup.escape_text (album_music))</i>", PlaylistColumns.FILENAME, path.get_uri (), PlaylistColumns.FILESIZE, get_info_size (path.get_uri ()), PlaylistColumns.MEDIATYPE, file_type (path), PlaylistColumns.ALBUMMUSIC, album_music, PlaylistColumns.ARTISTMUSIC, artist_music, PlaylistColumns.PLAYNOW, true, PlaylistColumns.INPUTMODE, 0);
         }
         private bool liststore_exist (PlaylistColumns column, string file_name) {
             bool exist = false;
@@ -468,7 +469,7 @@ namespace niki {
                 string filename;
                 model.get (iter, PlaylistColumns.FILENAME, out filename);
                 if (filename == uri) {
-                    liststore.set (iter, PlaylistColumns.ARTISTTITLE,  @"$(Markup.escape_text (get_song_info (File.new_for_uri (uri))))\n $(progress) / $(duration)");
+                    liststore.set (iter, PlaylistColumns.ARTISTTITLE, @"$(Markup.escape_text (get_song_info (File.new_for_uri (uri))))\n $(progress) / $(duration)");
                 }
                 return false;
             });
@@ -493,13 +494,13 @@ namespace niki {
         }
         public void play_first () {
             Gtk.TreeIter iter;
-            if (liststore.get_iter_first (out iter)){
+            if (liststore.get_iter_first (out iter)) {
                 send_iter_to (iter);
             }
         }
         public void play_end () {
             Gtk.TreeIter iter;
-            if (liststore.get_iter_from_string (out iter, (total - 1).to_string ())){
+            if (liststore.get_iter_from_string (out iter, (total - 1).to_string ())) {
                 send_iter_to (iter);
             }
         }
@@ -527,6 +528,7 @@ namespace niki {
             get_status_list ();
             return liststore.get_path (new_iter);
         }
+
         public void play_starup (string uri, PlayerPage player_page) {
             Gtk.TreeIter iter;
             liststore.get_iter (out iter, set_current (uri, player_page));
@@ -540,21 +542,21 @@ namespace niki {
         }
         public void get_status_list () {
             if (get_has_previous () || NikiApp.settings.get_enum ("repeat-mode") == 1) {
-                if (!NikiApp.settings.get_boolean("previous-status")) {
-                    NikiApp.settings.set_boolean("previous-status", true);
+                if (!NikiApp.settings.get_boolean ("previous-status")) {
+                    NikiApp.settings.set_boolean ("previous-status", true);
                 }
             } else {
-                if (NikiApp.settings.get_boolean("previous-status")) {
-                    NikiApp.settings.set_boolean("previous-status", false);
+                if (NikiApp.settings.get_boolean ("previous-status")) {
+                    NikiApp.settings.set_boolean ("previous-status", false);
                 }
             }
             if (get_has_next () || NikiApp.settings.get_enum ("repeat-mode") == 1) {
-                if (!NikiApp.settings.get_boolean("next-status")) {
-                    NikiApp.settings.set_boolean("next-status",  true);
+                if (!NikiApp.settings.get_boolean ("next-status")) {
+                    NikiApp.settings.set_boolean ("next-status", true);
                 }
             } else {
-                if (NikiApp.settings.get_boolean("next-status")) {
-                    NikiApp.settings.set_boolean("next-status", false);
+                if (NikiApp.settings.get_boolean ("next-status")) {
+                    NikiApp.settings.set_boolean ("next-status", false);
                 }
             }
         }

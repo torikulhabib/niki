@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     private class MediaEntry : Gtk.Entry {
         public string first_label { get; construct; }
         public string second_label { get; construct; }

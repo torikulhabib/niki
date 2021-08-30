@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class DLNATreeView : Gtk.TreeView {
         private WelcomePage? welcompage;
         public DLNAServer? serverdlna;
@@ -56,7 +56,7 @@ namespace niki {
 
             cursor_changed.connect (() => {
                 Gtk.TreeIter iter;
-                if (!get_selection ().get_selected(null, out iter)) {
+                if (!get_selection ().get_selected (null, out iter)) {
                     return;
                 }
                 string id;
@@ -74,7 +74,7 @@ namespace niki {
                 string id;
                 treestore.get (selected_iter (), DlnaTreeColumns.ID, out id, DlnaTreeColumns.DEVICEINFO, out device_all);
                 browse_metadata (id);
-                if (!get_selection().get_selected (null, out active_iter)) {
+                if (!get_selection ().get_selected (null, out active_iter)) {
                     return;
                 }
                 get_selection ().select_iter (active_iter);
@@ -101,7 +101,7 @@ namespace niki {
                 int b = treestore.iter_n_children (null);
                 for (int i = 0; i < b; i++) {
                     Gtk.TreeIter iter;
-                    if (treestore.get_iter_first (out iter)){
+                    if (treestore.get_iter_first (out iter)) {
                         treestore.remove (ref iter);
                     }
                 }
@@ -240,9 +240,9 @@ namespace niki {
                 parser.object_available.connect (on_didl_object_available);
                 try {
                     parser.parse_didl (didl_xml);
-	            } catch (Error e) {
+                } catch (Error e) {
                     GLib.warning (e.message);
-	            }
+                }
             }
         }
 
@@ -252,7 +252,7 @@ namespace niki {
             } else {
                 var parser = new GUPnP.DIDLLiteParser ();
                 parser.object_available.connect ((object) => {
-                    GUPnP.DIDLLiteResource resource = object.get_compat_resource (protocol_Info (), false);
+                    GUPnP.DIDLLiteResource resource = object.get_compat_resource (protocol_info (), false);
                     string title = object.get_title ();
                     string upnp_class = object.get_upnp_class ();
                     string get_album = object.get_album ();
@@ -261,20 +261,20 @@ namespace niki {
                     bool playnow = false;
                     string preview_uri = null;
                     Xml.Node* node = object.get_xml_node ();
-	                for (Xml.Node* iter = node->children; iter != null; iter = iter->next) {
-		                if (iter->type == Xml.ElementType.ELEMENT_NODE) {
-	                        string? get_content = iter->get_content ();
-	                        if (get_content != null) {
-	                            if (get_content.has_prefix ("http") && get_content.has_suffix ("png")) {
-	                                preview_uri = get_content;
-		                        } else if (get_content.has_prefix ("http") && get_content.has_suffix ("jpg")) {
-		                            preview_uri = get_content;
-		                        } else if (get_content.contains ("thumb")) {
-		                            preview_uri = get_content;
-		                        }
-	                        }
-		                }
-	                }
+                    for (Xml.Node* iter = node->children; iter != null; iter = iter->next) {
+                        if (iter->type == Xml.ElementType.ELEMENT_NODE) {
+                            string? get_content = iter->get_content ();
+                            if (get_content != null) {
+                                if (get_content.has_prefix ("http") && get_content.has_suffix ("png")) {
+                                    preview_uri = get_content;
+                                } else if (get_content.has_prefix ("http") && get_content.has_suffix ("jpg")) {
+                                    preview_uri = get_content;
+                                } else if (get_content.contains ("thumb")) {
+                                    preview_uri = get_content;
+                                }
+                            }
+                        }
+                    }
                     string uri = resource.get_uri ();
                     string size_file = _(" Size: %s").printf (GLib.format_size (resource.get_size64 ()));
                     if (uri == null) {
@@ -323,7 +323,7 @@ namespace niki {
                             Source.remove (time_outs);
                         }
                         time_outs = GLib.Timeout.add (100, () => {
-		                    if (NikiApp.window.main_stack.visible_child_name == "welcome" && welcompage.dlnarendercontrol.get_selected_device ()) {
+                            if (NikiApp.window.main_stack.visible_child_name == "welcome" && welcompage.dlnarendercontrol.get_selected_device ()) {
                                 NikiApp.window.player_page.right_bar.playlist.play_first ();
                                 NikiApp.settings.set_boolean ("spinner-wait", sensitive = true);
                             }
@@ -374,7 +374,7 @@ namespace niki {
                 icon = align_and_scale_pixbuf (get_pixbuf_device_info (info), 28);
             } else {
                 icon = pix_scale (nameimage, 28);
-	        }
+            }
             if (friendly_name != null && content_dir != null) {
                 inseted = true;
                 device_all = info;

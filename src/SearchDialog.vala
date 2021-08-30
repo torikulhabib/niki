@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class SearchDialog : Gtk.Dialog {
         private Gtk.Entry title_entry;
         private Gtk.Entry artist_entry;
@@ -31,6 +31,8 @@ namespace niki {
         private Gtk.Revealer prog_revealer;
         private EngineViewlyrics? engineviewlrc;
         private EngineNetease? enginenetease;
+        private EngineMegalobiz? enginemegalobiz;
+        private EngineSubtittle4Songs? enginesubtittle4songs;
         private uint hiding_timer = 0;
 
         public SearchDialog (string playfile) {
@@ -42,13 +44,23 @@ namespace niki {
                 transient_for: NikiApp.window,
                 destroy_with_parent: true
             );
-            var header_action = new Gtk.Label ("Lyric Downloader");
-            header_action.get_style_context ().add_class ("h4");
-            header_action.halign = Gtk.Align.CENTER;
-            header_action.hexpand = true;
-            get_header_bar ().set_custom_title (header_action);
+            var tittle_header = new Gtk.Label ("Lyric Downloader");
+            tittle_header.get_style_context ().add_class ("h4");
+            tittle_header.halign = Gtk.Align.CENTER;
+            tittle_header.hexpand = true;
+
+            var open_menu = new Gtk.Button.from_icon_name ("open-menu-symbolic", Gtk.IconSize.BUTTON);
+            open_menu.focus_on_click = false;
+            open_menu.tooltip_text = _("Home");
+
+            var header = get_header_bar ();
+            header.set_custom_title (tittle_header);
+            header.pack_end (open_menu);
+
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             get_style_context ().add_class ("niki");
+            enginesubtittle4songs = new EngineSubtittle4Songs ();
+            enginemegalobiz = new EngineMegalobiz ();
             engineviewlrc = new EngineViewlyrics ();
             enginenetease = new EngineNetease ();
             title_entry = new Gtk.Entry ();
@@ -142,7 +154,7 @@ namespace niki {
             prog_revealer.margin_start = 10;
             prog_revealer.add (prog_grid);
 
-		    var box_action = new Gtk.Grid ();
+            var box_action = new Gtk.Grid ();
             box_action.orientation = Gtk.Orientation.HORIZONTAL;
             box_action.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             box_action.column_spacing = box_action.margin_top = 5;
@@ -152,7 +164,7 @@ namespace niki {
             box_action.add (search_button);
             box_action.add (close_button);
 
-		    var grid_ver = new Gtk.Grid ();
+            var grid_ver = new Gtk.Grid ();
             grid_ver.orientation = Gtk.Orientation.VERTICAL;
             grid_ver.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             grid_ver.add (grid_combine);
@@ -161,13 +173,17 @@ namespace niki {
 
             get_content_area ().add (grid_ver);
 
-            show.connect(()=>{
+            show.connect (()=> {
                 NikiApp.window.player_page.bottom_bar.set_reveal_child (false);
             });
+            enginesubtittle4songs.send_data.connect (get_engindata);
+            enginemegalobiz.send_data.connect (get_engindata);
             enginenetease.send_data.connect (get_engindata);
             engineviewlrc.send_data.connect (get_engindata);
             enginenetease.send_lrc.connect (save_to_file);
             engineviewlrc.send_lrc.connect (save_to_file);
+            enginemegalobiz.send_lrc.connect (save_to_file);
+            enginesubtittle4songs.send_lrc.connect (save_to_file);
         }
         public void send_notification (string text) {
             spinner.active = true;
@@ -192,7 +208,6 @@ namespace niki {
             server_coll.sort_indicator = true;
             server_coll.sort_column_id = column;
             server_coll.min_width = 20;
-            server_coll.sizing = Gtk.TreeViewColumnSizing.GROW_ONLY;
             return server_coll;
         }
 
@@ -201,12 +216,16 @@ namespace niki {
             listmodel.get (iter, SearchLyric.LINKFILE, out linkfile, SearchLyric.TYPEFILE, out ext, SearchLyric.SERVER, out server);
             save_lrc (uri, linkfile, ext, server);
         }
+
         private void search_lrc () {
             listmodel.clear ();
-            send_notification ("Searching...");
+            send_notification (_("Searching…"));
             enginenetease.search_lyrics (title_entry.text, artist_entry.text);
             engineviewlrc.search_lyrics (title_entry.text, artist_entry.text);
+            enginemegalobiz.search_lyrics (title_entry.text, artist_entry.text);
+            enginesubtittle4songs.search_lyrics (title_entry.text, artist_entry.text);
         }
+
         private void get_engindata (string title, string artist, string type, string linkfile, string server) {
             bool exist = false;
             listmodel.foreach ((model, path, iter) => {
@@ -239,18 +258,22 @@ namespace niki {
                     var file = run_open_folder (this);
                     if (file != null) {
                         var lrc_file = Path.build_filename (file.get_path (), @"$(get_name_noext (uri)).$(ext.down ())");
-                    	down_load (lrc_file, link, server);
+                        down_load (lrc_file, link, server);
                     }
                     break;
             }
         }
 
         private void down_load (string uri, string link, string server) {
-            send_notification ("Downloading...");
+            send_notification ("Downloading…");
             if (server == "NetEase") {
                 enginenetease.download_lyric (link, uri);
             } else if (server == "ViewLRC") {
                 engineviewlrc.download_lyric (link, uri);
+            } else if (server == "MegaLobiz") {
+                enginemegalobiz.download_lyric (link, uri);
+            } else if (server == "Subtittle4Songs") {
+                enginesubtittle4songs.download_lyric (link, uri);
             }
         }
 
@@ -258,8 +281,8 @@ namespace niki {
             try {
                 File file = File.new_for_path (uri);
                 permanent_delete (file);
-            	FileOutputStream out_stream = file.create (FileCreateFlags.REPLACE_DESTINATION);
-            	out_stream.write (lrc.data);
+                FileOutputStream out_stream = file.create (FileCreateFlags.REPLACE_DESTINATION);
+                out_stream.write (lrc.data);
                 send_notification ("Downloaded");
                 NikiApp.window.player_page.reloadlrc ();
             } catch (Error e) {

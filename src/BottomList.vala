@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class BottomList : Gtk.Grid {
         public SettingsPopover? menu_popover;
         public SeekTimeMusic? seektimemusic;
@@ -83,16 +83,16 @@ namespace niki {
             volumelistmode = new VolumeListMode ();
             volumelistmode.halign = Gtk.Align.CENTER;
 
-		    var action_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
-		    action_box.spacing = 10;
+            var action_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+            action_box.spacing = 10;
             action_box.halign = Gtk.Align.CENTER;
-		    action_box.pack_start (shuffle_button, false, false, 0);
-		    action_box.pack_start (previous_button_center, false, false, 0);
-		    action_box.pack_start (play_but_cen, false, false, 0);
-		    action_box.pack_start (next_button_center, false, false, 0);
-		    action_box.pack_start (repeat_button, false, false, 0);
+            action_box.pack_start (shuffle_button, false, false, 0);
+            action_box.pack_start (previous_button_center, false, false, 0);
+            action_box.pack_start (play_but_cen, false, false, 0);
+            action_box.pack_start (next_button_center, false, false, 0);
+            action_box.pack_start (repeat_button, false, false, 0);
 
-		    var grid_seek = new Gtk.Grid ();
+            var grid_seek = new Gtk.Grid ();
             grid_seek.orientation = Gtk.Orientation.VERTICAL;
             grid_seek.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             grid_seek.hexpand = true;

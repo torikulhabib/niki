@@ -19,33 +19,35 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class DLNARenderControl : Gtk.ComboBox {
         private WelcomePage? welcompage;
         private static Gtk.ListStore liststore;
         private static GUPnP.ServiceProxy connection_manager;
-        private const string SEPARATOR_NAME = "<separator_item_unique_name>";
-        private static string NIKI_MODE = _("Niki Player");
+        private string separator_name = "<separator_item_unique_name>";
+        private static string niki_mode = _("Niki Player");
 
         public DLNARenderControl (WelcomePage welcompage) {
             this.welcompage = welcompage;
             liststore = new Gtk.ListStore (DlnaComboColumns.N_COLUMNS, typeof (Gdk.Pixbuf), typeof (string), typeof (GUPnP.DeviceProxy), typeof (GUPnP.ServiceProxy), typeof (GUPnP.ServiceProxy));
             model = liststore;
-		    var cell = new Gtk.CellRendererText ();
-		    cell.ellipsize = Pango.EllipsizeMode.END;
-		    var cell_pb = new Gtk.CellRendererPixbuf ();
-		    pack_start (cell_pb, false);
-		    pack_start (cell, false);
-		    set_attributes (cell_pb, "pixbuf", DlnaComboColumns.PIXBUF);
-		    set_attributes (cell, "text", DlnaComboColumns.DEVICENAME);
-		    show_all ();
+            var cell = new Gtk.CellRendererText () {
+                ellipsize = Pango.EllipsizeMode.END
+            };
+            var cell_pb = new Gtk.CellRendererPixbuf ();
+            pack_start (cell_pb, false);
+            pack_start (cell, false);
+            set_attributes (cell_pb, "pixbuf", DlnaComboColumns.PIXBUF);
+            set_attributes (cell, "text", DlnaComboColumns.DEVICENAME);
+            show_all ();
+
             Gtk.TreeIter iter;
             liststore.append (out iter);
-            liststore.set (iter, DlnaComboColumns.PIXBUF, from_theme_icon ("com.github.torikulhabib.niki", 64, 16), DlnaComboColumns.DEVICENAME, NIKI_MODE);
+            liststore.set (iter, DlnaComboColumns.PIXBUF, from_theme_icon ("com.github.torikulhabib.niki", 64, 16), DlnaComboColumns.DEVICENAME, niki_mode);
             set_row_separator_func ((model, iter) => {
                 string content;
                 model.get (iter, DlnaComboColumns.DEVICENAME, out content);
-                return content == SEPARATOR_NAME;
+                return content == separator_name;
             });
 
             Idle.add (()=> {
@@ -72,7 +74,7 @@ namespace niki {
                 return false;
             }
             liststore.get (iter, DlnaComboColumns.DEVICENAME, out device_name);
-            if (device_name == NIKI_MODE) {
+            if (device_name == niki_mode) {
                 return true;
             }
             return false;
@@ -167,7 +169,7 @@ namespace niki {
                 icon = align_and_scale_pixbuf (get_pixbuf_device_info (info), 16);
             } else {
                 icon = pix_scale (nameimage, 16);
-	        }
+            }
             if (name == null) {
                 return;
             }
@@ -206,7 +208,7 @@ namespace niki {
                 if (udn == proxy_udn.get_udn ()) {
                     exist = true;
                 }
-                if (sparator == SEPARATOR_NAME) {
+                if (sparator == separator_name) {
                     sparat_bool = true;
                 }
                 return false;
@@ -223,7 +225,7 @@ namespace niki {
         public void add_separator () {
             Gtk.TreeIter iter;
             liststore.append (out iter);
-            liststore.set (iter, DlnaComboColumns.PIXBUF, null, DlnaComboColumns.DEVICENAME, SEPARATOR_NAME);
+            liststore.set (iter, DlnaComboColumns.PIXBUF, null, DlnaComboColumns.DEVICENAME, separator_name);
         }
 
         public void remove_media_renderer (GUPnP.DeviceProxy proxy) {
@@ -256,7 +258,7 @@ namespace niki {
                     }
                     string sparator;
                     liststore.get (iter, DlnaComboColumns.DEVICENAME, out sparator);
-                    if (sparator == SEPARATOR_NAME) {
+                    if (sparator == separator_name) {
                         liststore.remove (ref iter);
                         set_active (0);
                     }
@@ -461,7 +463,7 @@ namespace niki {
                 if (av_transport.end_action (action, "AbsTime", Type.STRING, out position, "TrackDuration", Type.STRING, out duration)) {
                     string [] position_split = position.split (".");
                     string [] duration_split = duration.split (".");
-                    welcompage.dlnaaction.progress_duration_label.label = position_split [0] +" / " +  duration_split [0];
+                    welcompage.dlnaaction.progress_duration_label.label = position_split [0] + " / " + duration_split [0];
                     welcompage.dlnaaction.scale_range.set_range (0, (double) seconds_from_time (duration) / 100);
                     welcompage.dlnaaction.scale_range.set_value ((double) seconds_from_time (position) / 100);
                 }
@@ -494,7 +496,7 @@ namespace niki {
             string uri_next;
             try {
                 if (av_transport.end_action (action, "NextURI", Type.STRING, out uri_next)) {
-                    if (!File.new_for_uri  (uri_next).query_exists ()) {
+                    if (!File.new_for_uri (uri_next).query_exists ()) {
                         welcompage.treview.next_signal ();
                     } else {
                         playback_control ("Next");

@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class VolumeButton : Gtk.Button {
         private Gtk.Image volume_image;
 
@@ -47,7 +47,7 @@ namespace niki {
                     ((Gtk.Image) volume_image).icon_name = "audio-volume-low-symbolic";
                 } else if (NikiApp.settings.get_double ("volume-adjust") > 0.35 && NikiApp.settings.get_double ("volume-adjust") <= 0.75) {
                     ((Gtk.Image) volume_image).icon_name = "audio-volume-medium-symbolic";
-                } else if (NikiApp.settings.get_double ("volume-adjust") > 0.75){
+                } else if (NikiApp.settings.get_double ("volume-adjust") > 0.75) {
                     ((Gtk.Image) volume_image).icon_name = "audio-volume-high-symbolic";
                 } else {
                     ((Gtk.Image) volume_image).icon_name = "audio-volume-muted-symbolic";

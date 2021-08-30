@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class PlaybackPlayer : ClutterGst.Playback {
         public dynamic Gst.Element pipeline;
         private dynamic Gst.Element playsink;
@@ -51,7 +51,7 @@ namespace niki {
             notify["idle"].connect (do_step);
             NikiApp.settings.changed["speed-playing"].connect (() => {
                 pipeline.set_state (Gst.State.PAUSED);
-                var new_progress = ((duration * progress) + 0.0)/ duration;
+                var new_progress = ((duration * progress) + 0.0) / duration;
                 progress = new_progress.clamp (0.0, 1.0);
                 do_step ();
                 pipeline.set_state (Gst.State.PLAYING);
@@ -88,6 +88,7 @@ namespace niki {
             if (message.type == Gst.MessageType.STEP_DONE) {
                 do_step ();
             }
+
             if (message.type == Gst.MessageType.ELEMENT) {
                 unowned Gst.Structure struct = message.get_structure ();
                 string name = struct.get_name ();
@@ -144,7 +145,7 @@ namespace niki {
                     playsink["flags"] = stopsink;
                     break;
                 case 1 :
-                    visualmode = Gst.ElementFactory.make(VISUALMODE [NikiApp.settings.get_int ("visualmode-options")], VISUALMODE [NikiApp.settings.get_int ("visualmode-options")]);
+                    visualmode = Gst.ElementFactory.make (VISUALMODE [NikiApp.settings.get_int ("visualmode-options")], VISUALMODE [NikiApp.settings.get_int ("visualmode-options")]);
                     if (VISUALMODE [NikiApp.settings.get_int ("visualmode-options")] != VISUALMODE [2]) {
                         shader_chage ();
                     }

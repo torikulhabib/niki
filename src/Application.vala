@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class NikiApp : Gtk.Application {
         private static NikiApp _instance = null;
         public static NikiApp instance {
@@ -31,7 +31,7 @@ namespace niki {
             }
         }
         public NikiApp () {
-            Object(
+            Object (
                 application_id: "com.github.torikulhabib.niki",
                 flags: ApplicationFlags.HANDLES_COMMAND_LINE
             );
@@ -42,9 +42,9 @@ namespace niki {
         public static Window? window;
         public static KeyboardInfo? keyboardinfo;
         public static GLib.Settings settings = new GLib.Settings ("com.github.torikulhabib.niki");
-        public static GLib.Settings settingsEq = new GLib.Settings ("com.github.torikulhabib.equalizer");
-        public static GLib.Settings settingsVf = new GLib.Settings ("com.github.torikulhabib.videofilter");
-        public static GLib.Settings settingsCv = new GLib.Settings ("com.github.torikulhabib.videocamera");
+        public static GLib.Settings settings_eq = new GLib.Settings ("com.github.torikulhabib.equalizer");
+        public static GLib.Settings settings_vf = new GLib.Settings ("com.github.torikulhabib.videofilter");
+        public static GLib.Settings settings_cv = new GLib.Settings ("com.github.torikulhabib.videocamera");
 
         construct {
             startup.connect (on_startup);
@@ -69,7 +69,7 @@ namespace niki {
                 window.show_all ();
                 if (open_database (out db) != Sqlite.OK) {
                     notify_app (_("Database Error"),
-                                _("Can't open database: %s\n").printf(db.errmsg ())
+                                _("Can't open database: %s\n").printf (db.errmsg ())
                     );
                 }
             } else {
@@ -141,7 +141,7 @@ namespace niki {
 }
 
 public static int main (string []? args) {
-    var app = new niki.NikiApp ().instance;
+    var app = new Niki.NikiApp ().instance;
     ClutterGst.init (ref args);
     return app.run (args);
 }

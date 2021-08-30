@@ -25,7 +25,7 @@ private interface Tumbler : GLib.Object {
     public abstract uint32 queue (string[] uris, string [] mime_types, string flavor, string scheduler, uint32 dequeue) throws GLib.Error;
 }
 
-namespace niki {
+namespace Niki {
     public class DbusThumbnailer : GLib.Object {
         private Tumbler tumbler = null;
         public signal void load_finished ();
@@ -49,7 +49,7 @@ namespace niki {
             }
         }
 
-        public void instand_thumbler (File filename, string size){
+        public void instand_thumbler (File filename, string size) {
             Gee.ArrayList<string> uris = new Gee.ArrayList<string> ();
             Gee.ArrayList<string> mimes = new Gee.ArrayList<string> ();
             uris.add (filename.get_uri ());
@@ -57,7 +57,7 @@ namespace niki {
             try {
                 tumbler.queue (uris.to_array (), mimes.to_array (), size, "default", 0);
             } catch (Error e) {
-                warning ("Error loading thumbnail for: %s",  e.message);
+                warning ("Error loading thumbnail for: %s", e.message);
             }
         }
     }

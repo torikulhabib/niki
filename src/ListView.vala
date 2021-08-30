@@ -19,10 +19,10 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class ListView : Gtk.Grid {
         public Gtk.Stack stack;
-        public MusicList musicList;
+        public musiclist musiclist;
         public BottomList bottomlist;
 
         public ListView (PlayerPage playerpage) {
@@ -58,14 +58,14 @@ namespace niki {
             source_list.root.add (library_category);
             source_list.root.add (play_item);
 
-            musicList = new MusicList ();
+            musiclist = new musiclist ();
             bottomlist = new BottomList (playerpage);
 
             stack = new Gtk.Stack ();
             stack.transition_type = Gtk.StackTransitionType.SLIDE_LEFT_RIGHT;
             stack.homogeneous = false;
             stack.transition_duration = 500;
-            stack.add_named (musicList, "musicList");
+            stack.add_named (musiclist, "musiclist");
 
             var paned = new Gtk.Paned (Gtk.Orientation.HORIZONTAL);
             paned.position = 130;
@@ -85,7 +85,7 @@ namespace niki {
                 if (item.badge != "" && item.badge != null) {
                     item.badge = "";
                 }
-                stack.visible_child_name = item.parent.name == "Libraries" && item.name == "Music"? "musicList" : "sdf";
+                stack.visible_child_name = item.parent.name == "Libraries" && item.name == "Music"? "musiclist" : "sdf";
             });
         }
     }

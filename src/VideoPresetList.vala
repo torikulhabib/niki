@@ -1,12 +1,12 @@
-namespace niki {
+namespace Niki {
     public class VideoPresetList : Gtk.ComboBox {
         public signal void preset_selected (VideoPreset p);
         public signal void delete_preset_chosen ();
         public VideoPreset? video_preset;
         private Gtk.ListStore store;
         private const string SEPARATOR_NAME = "<separator_item_unique_name>";
-        private static string OFF_MODE = _("OFF");
-        private static string DELETE_PRESET = _("Delete Current");
+        private static string off_mode = _("OFF");
+        private static string delete_preset = _("Delete Current");
         private int ncustompresets {get; set;}
         private bool modifying_list;
 
@@ -22,20 +22,21 @@ namespace niki {
                 model.get (iter, 1, out content);
                 return content == SEPARATOR_NAME;
             });
-		    var cell = new Gtk.CellRendererText ();
-		    cell.ellipsize = Pango.EllipsizeMode.END;
-		    var cell_pb = new Gtk.CellRendererPixbuf ();
-		    pack_start (cell_pb, false);
-		    pack_start (cell, false);
-		    set_attributes (cell_pb, "gicon", 2);
-		    set_attributes (cell, "text", 1);
+            var cell = new Gtk.CellRendererText () {
+                ellipsize = Pango.EllipsizeMode.END
+            };
+            var cell_pb = new Gtk.CellRendererPixbuf ();
+            pack_start (cell_pb, false);
+            pack_start (cell, false);
+            set_attributes (cell_pb, "gicon", 2);
+            set_attributes (cell, "text", 1);
             changed.connect (selection_change);
             show_all ();
             store.clear ();
 
             Gtk.TreeIter iter;
             store.append (out iter);
-            store.set (iter, ComboColumns.OBJECT, null, ComboColumns.STRING, OFF_MODE, ComboColumns.ICON, new ThemedIcon ("system-shutdown-symbolic"));
+            store.set (iter, ComboColumns.OBJECT, null, ComboColumns.STRING, off_mode, ComboColumns.ICON, new ThemedIcon ("system-shutdown-symbolic"));
             add_separator ();
         }
 
@@ -114,8 +115,8 @@ namespace niki {
             }
         }
         public void selection_change () {
-            if (!NikiApp.settingsVf.get_boolean ("videofilter-enabled")) {
-                NikiApp.settingsVf.set_boolean ("videofilter-enabled", true);
+            if (!NikiApp.settings_vf.get_boolean ("videofilter-enabled")) {
+                NikiApp.settings_vf.set_boolean ("videofilter-enabled", true);
             }
             if (modifying_list) {
                 return;
@@ -140,10 +141,10 @@ namespace niki {
 
             string option;
             store.get (it, ComboColumns.STRING, out option);
-            if (option == OFF_MODE) {
-                NikiApp.settingsVf.set_boolean ("videofilter-enabled", false);
+            if (option == off_mode) {
+                NikiApp.settings_vf.set_boolean ("videofilter-enabled", false);
                 remove_delete_option ();
-            } else if (option == DELETE_PRESET) {
+            } else if (option == delete_preset) {
                 delete_preset_chosen ();
             }
         }
@@ -200,7 +201,7 @@ namespace niki {
                 string text;
                 store.get (iter, ComboColumns.STRING, out text);
 
-                if (text != null && text == DELETE_PRESET) {
+                if (text != null && text == delete_preset) {
                     store.remove (ref iter);
                     remove_separator_item (1);
                 }
@@ -236,7 +237,7 @@ namespace niki {
 
                     if (store.iter_next (ref new_iter)) {
                         store.get (new_iter, ComboColumns.STRING, out text);
-                        already_added = (text == DELETE_PRESET);
+                        already_added = (text == delete_preset);
                     }
                     break;
                 }
@@ -246,7 +247,7 @@ namespace niki {
                 return;
             }
             store.insert_after (out new_iter, last_iter);
-            store.set (new_iter, ComboColumns.OBJECT, null, ComboColumns.STRING, DELETE_PRESET, ComboColumns.ICON, new ThemedIcon ("edit-delete-symbolic"));
+            store.set (new_iter, ComboColumns.OBJECT, null, ComboColumns.STRING, delete_preset, ComboColumns.ICON, new ThemedIcon ("edit-delete-symbolic"));
             last_iter = new_iter;
             store.insert_after (out new_iter, last_iter);
             store.set (new_iter, ComboColumns.OBJECT, null, ComboColumns.STRING, SEPARATOR_NAME, ComboColumns.ICON, null);

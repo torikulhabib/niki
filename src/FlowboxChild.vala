@@ -19,44 +19,52 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
-    public class EffectColor : Gtk.FlowBoxChild  {
+namespace Niki {
+    public class EffectColor : Gtk.FlowBoxChild {
         public ColorEffects coloreffects;
 
         public EffectColor (ColorEffects coloreffects) {
             this.coloreffects = coloreffects;
-            var title = new Gtk.Label (coloreffects.get_effect ());
-            title.margin_top = 6;
-            title.margin_bottom = 6;
-            title.margin_start = 6;
-            title.margin_end = 12;
-            var image_menu = new Gtk.Image ();
-            image_menu.margin_start = 4;
+            var title = new Gtk.Label (coloreffects.get_effect ()) {
+                margin_top = 6,
+                margin_bottom = 6,
+                margin_start = 6,
+                margin_end = 12
+            };
+
+            var image_menu = new Gtk.Image () {
+                margin_start = 4
+            };
             image_menu.set_from_gicon (new ThemedIcon ("applications-graphics-symbolic"), Gtk.IconSize.BUTTON);
-            var content = new Gtk.Grid ();
-            content.row_spacing = 12;
-            content.valign = Gtk.Align.CENTER;
+            var content = new Gtk.Grid () {
+                valign = Gtk.Align.CENTER,
+                row_spacing = 12
+            };
             content.add (image_menu);
             content.add (title);
             add (content);
         }
     }
-    public class ProfileCamera : Gtk.FlowBoxChild  {
+
+    public class ProfileCamera : Gtk.FlowBoxChild {
         public CameraProfile cameraprofile;
 
         public ProfileCamera (CameraProfile cameraprofile) {
             this.cameraprofile = cameraprofile;
-            var title = new Gtk.Label (cameraprofile.get_profile ());
-            title.margin_top = 6;
-            title.margin_bottom = 6;
-            title.margin_start = 6;
-            title.margin_end = 12;
-            var image_menu = new Gtk.Image ();
-            image_menu.margin_start = 4;
+            var title = new Gtk.Label (cameraprofile.get_profile ()) {
+                margin_top = 6,
+                margin_bottom = 6,
+                margin_start = 6,
+                margin_end = 12
+            };
+            var image_menu = new Gtk.Image () {
+                margin_start = 4
+            };
             image_menu.set_from_gicon (new ThemedIcon ("document-save-symbolic"), Gtk.IconSize.BUTTON);
-            var content = new Gtk.Grid ();
-            content.row_spacing = 12;
-            content.valign = Gtk.Align.CENTER;
+            var content = new Gtk.Grid () {
+                valign = Gtk.Align.CENTER,
+                row_spacing = 12
+            };
             content.add (image_menu);
             content.add (title);
             add (content);

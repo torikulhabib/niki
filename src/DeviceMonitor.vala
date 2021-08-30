@@ -19,7 +19,7 @@
 * Authored by: torikulhabib <torik.habib@Gmail.com>
 */
 
-namespace niki {
+namespace Niki {
     public class DeviceMonitor : Gtk.Stack {
         public Gtk.ListStore liststore;
         public Welcome devibut;
@@ -32,10 +32,10 @@ namespace niki {
             devibut.get_style_context ().add_class ("card");
             devibut.margin = 4;
             devibut.activated.connect ((index) => {
-		        NikiApp.window.main_stack.visible_child_name = "camera";
-		        NikiApp.window.camera_page.cameraplayer.video_source (get_device (index));
-		        NikiApp.window.camera_page.cameratopbar.menu_res (get_model (index));
-		        NikiApp.window.camera_page.ready_play ();
+                NikiApp.window.main_stack.visible_child_name = "camera";
+                NikiApp.window.camera_page.cameraplayer.video_source (get_device (index));
+                NikiApp.window.camera_page.cameratopbar.menu_res (get_model (index));
+                NikiApp.window.camera_page.ready_play ();
             });
             monitor = new Gst.DeviceMonitor ();
             Gst.Bus bus = monitor.get_bus ();
