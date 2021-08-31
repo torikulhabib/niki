@@ -210,19 +210,17 @@ namespace Niki {
         }
 
         private void bus_message_cb (Gst.Message message) {
-            switch (message.type) {
-                case Gst.MessageType.ELEMENT:
-                    if (message.src.name == "camerabin") {
-                        unowned Gst.Structure structure = message.get_structure ();
-                        if (structure.get_name () == "image-done") {
-                            camerapage.string_notify (_("Photo Saved"));
-                            was_capture ();
-                        } else if (structure.get_name () == "video-done") {
-                            camerapage.string_notify (_("Video Saved"));
-                            was_capture ();
-                        }
+            if (message.type == Gst.MessageType.ELEMENT) {
+                if (message.src.name == "camerabin") {
+                    unowned Gst.Structure structure = message.get_structure ();
+                    if (structure.get_name () == "image-done") {
+                        camerapage.string_notify (_("Photo Saved"));
+                        was_capture ();
+                    } else if (structure.get_name () == "video-done") {
+                        camerapage.string_notify (_("Video Saved"));
+                        was_capture ();
                     }
-                    break;
+                }
             }
         }
         public void setvalue (int index, int valuescale) {
