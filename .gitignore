@@ -6,3 +6,4 @@ snap/*
 prime/*
 *.snap
 stage/*
+.flatpak-builder

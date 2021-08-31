@@ -26,9 +26,9 @@
 * libtag1-dev
 * libcanberra-dev
 * gstreamer1.0-plugins-bad
-* libgupnp-1.0-dev,
+* libgupnp-1.2-dev,
 * libgupnp-av-1.0-dev,
-* libgssdp-1.0-dev,
+* libgssdp-1.2-dev,
 * libcairo2-dev,
 * libsqlite3-dev
 

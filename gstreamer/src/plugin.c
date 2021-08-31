@@ -20,7 +20,7 @@
 
 #include <gst/gst.h>
 
-#include "niki.h"
+#include "Niki.h"
 
 GST_PLUGIN_DEFINE(
     GST_VERSION_MAJOR,

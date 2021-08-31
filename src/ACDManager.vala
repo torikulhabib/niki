@@ -149,22 +149,19 @@ namespace Niki {
                     if (msg == null) {
                         break;
                     }
-                    switch (msg.type) {
-                        case Gst.MessageType.TAG :
-                            msg.parse_tag (out tags);
-                            string s;
-                            if (tags.get_string (Gst.Tag.CDDA.MUSICBRAINZ_DISCID, out s)) {
-                                mb_disc_id = s;
-                            }
-                            done = true;
-                            break;
-                        case Gst.MessageType.ERROR :
-                            string debug;
-                            GLib.Error err;
-                            msg.parse_error (out err, out debug);
-                            warning ("Error: %s\n%s\n", err.message, debug);
-                            done = true;
-                            break;
+                    if (msg.type == Gst.MessageType.TAG) {
+                        msg.parse_tag (out tags);
+                        string s;
+                        if (tags.get_string (Gst.Tag.CDDA.MUSICBRAINZ_DISCID, out s)) {
+                            mb_disc_id = s;
+                        }
+                        done = true;
+                    } else if (msg.type == Gst.MessageType.ERROR) {
+                        string debug;
+                        GLib.Error err;
+                        msg.parse_error (out err, out debug);
+                        warning ("Error: %s\n%s\n", err.message, debug);
+                        done = true;
                     }
                 }
                 pipeline.set_state (Gst.State.NULL);
