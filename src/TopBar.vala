@@ -201,7 +201,7 @@ namespace Niki {
                 transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN,
                 transition_duration = 500,
                 hexpand = true,
-                reveal_child = false,
+                reveal_child = false
             };
             menu_revealer.add (label_info);
 

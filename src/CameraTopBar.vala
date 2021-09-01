@@ -89,7 +89,7 @@ namespace Niki {
 
             close_botton = new Gtk.Button.from_icon_name ("window-close-symbolic", Gtk.IconSize.BUTTON) {
                 focus_on_click = false,
-                tooltip_text = _("Close"),
+                tooltip_text = _("Close")
             };
             close_botton.get_style_context ().add_class ("button_action");
             close_botton.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);

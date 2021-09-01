@@ -154,7 +154,7 @@ namespace Niki {
 
             setting_button = new Gtk.Button.from_icon_name ("applications-graphics-symbolic", Gtk.IconSize.LARGE_TOOLBAR) {
                 focus_on_click = false,
-                tooltip_text = _("Setting Filter"),
+                tooltip_text = _("Setting Filter")
             };
             setting_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             setting_button.get_style_context ().add_class ("button_action");
