@@ -49,38 +49,44 @@ namespace Niki {
             this.playerpage = playerpage;
             liststore = new Gtk.ListStore (ColumnScanF.N_COLUMNS, typeof (string));
             scanfolder = new ScanFolder ();
-            welcome_rigth = new Welcome ();
-            welcome_rigth.focus_on_click = false;
+            welcome_rigth = new Welcome () {
+                focus_on_click = false
+            };
             welcome_rigth.append ("applications-multimedia", _("Open File"), _("Open File"));
             welcome_rigth.append ("edit-paste", _("Paste URL"), _("Play Stream"));
             welcome_rigth.append ("document-open", _("Open Folder"), _("Open Folder"));
 
-            welcome_left = new Welcome ();
-            welcome_left.focus_on_click = false;
+            welcome_left = new Welcome () {
+                valign = Gtk.Align.START,
+                focus_on_click = false
+            };
             welcome_left.append ("folder-videos", _("Browse Library"), _("Movie Library"));
             welcome_left.append ("folder-music", _("Browse Library"), _("Music Library"));
-            welcome_left.valign = Gtk.Align.START;
 
-            var grid_home = new Gtk.Grid ();
+            var grid_home = new Gtk.Grid () {
+                orientation = Gtk.Orientation.HORIZONTAL
+            };
             grid_home.get_style_context ().add_class ("widget_background");
-            grid_home.orientation = Gtk.Orientation.HORIZONTAL;
             grid_home.add (welcome_rigth);
             grid_home.add (welcome_left);
 
-            progress_bar = new Gtk.ProgressBar ();
+            progress_bar = new Gtk.ProgressBar () {
+                hexpand = true
+            };
             progress_bar.get_style_context ().add_class ("progress_bar");
-            progress_bar.hexpand = true;
 
-            progress_rev = new Gtk.Revealer ();
-            progress_rev.transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN;
-            progress_rev.transition_duration = 100;
+            progress_rev = new Gtk.Revealer () {
+                transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN,
+                transition_duration = 100
+            };
             progress_rev.add (progress_bar);
 
-            var vertical_grid = new Gtk.Grid ();
+            var vertical_grid = new Gtk.Grid () {
+                orientation = Gtk.Orientation.VERTICAL,
+                valign = Gtk.Align.CENTER
+            };
             vertical_grid.get_style_context ().add_class ("widget_background");
             vertical_grid.get_style_context ().add_class ("card");
-            vertical_grid.orientation = Gtk.Orientation.VERTICAL;
-            vertical_grid.valign = Gtk.Align.CENTER;
             vertical_grid.add (grid_home);
             vertical_grid.add (progress_rev);
             vertical_grid.show_all ();
@@ -88,9 +94,6 @@ namespace Niki {
             custom_bin.add (vertical_grid);
             custom_bin.show_all ();
 
-            show.connect (()=> {
-                NikiApp.window.player_page.right_bar.set_reveal_child (false);
-            });
             scanfolder.signal_succes.connect ((store_uri)=>{
                 count_uri (store_uri);
             });
@@ -136,12 +139,16 @@ namespace Niki {
                 destroy ();
             });
 
-            var box_action = new Gtk.Grid ();
-            box_action.orientation = Gtk.Orientation.HORIZONTAL;
+            var box_action = new Gtk.Grid () {
+                orientation = Gtk.Orientation.HORIZONTAL,
+                margin_top = 5,
+                margin_start = 10,
+                margin_bottom = 10,
+                margin_end = 10,
+                hexpand = true,
+                column_homogeneous = true
+            };
             box_action.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            box_action.margin_top = 5;
-            box_action.margin_start = box_action.margin_bottom = box_action.margin_end = 10;
-            box_action.hexpand = box_action.column_homogeneous = true;
             box_action.add (close_dialog);
             get_content_area ().add (box_action);
         }

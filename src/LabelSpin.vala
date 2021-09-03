@@ -33,8 +33,9 @@ namespace Niki {
         }
 
         construct {
-            var label = new Gtk.Label (slabel);
-            label.halign = Gtk.Align.START;
+            var label = new Gtk.Label (slabel) {
+                halign = Gtk.Align.START
+            };
             number_entry = new Gtk.SpinButton.with_range (0, max_spin, 1);
             orientation = Gtk.Orientation.HORIZONTAL;
             column_homogeneous = true;

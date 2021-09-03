@@ -29,14 +29,17 @@ namespace Niki {
             get_style_context ().add_class ("dlna_volume");
             transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
             transition_duration = 500;
-            scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, 0, 100, 1);
-            scale.get_style_context ().add_class ("dlna_volume");
-            scale.draw_value = scale.can_focus = false;
-            scale.set_show_fill_level (true);
-            scale.set_margin_start (2);
-            scale.set_margin_end (2);
-            scale.width_request = 81;
+            scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, 0, 100, 1) {
+                draw_value = false,
+                can_focus = false,
+                show_fill_level = true,
+                margin_start = 2,
+                margin_end = 2,
+                width_request = 81,
+            };
             scale.set_value (NikiApp.settings.get_int ("dlna-volume"));
+            scale.get_style_context ().add_class ("dlna_volume");
+
             scale.events |= Gdk.EventMask.POINTER_MOTION_MASK;
             scale.events |= Gdk.EventMask.LEAVE_NOTIFY_MASK;
             scale.events |= Gdk.EventMask.ENTER_NOTIFY_MASK;

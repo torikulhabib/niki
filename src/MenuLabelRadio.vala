@@ -46,9 +46,11 @@ namespace Niki {
         }
 
         construct {
-            var label = new Gtk.Label (label);
-            label.hexpand = true;
-            label.xalign = 0;
+            var label = new Gtk.Label (label) {
+                hexpand = true,
+                xalign = 0
+            };
+
             var image_menu = new Gtk.Image ();
             image_menu.set_from_gicon (new ThemedIcon (image_name), Gtk.IconSize.BUTTON);
             column_spacing = 3;

@@ -181,7 +181,7 @@ namespace Niki {
             if (msg.type == Gst.MessageType.DEVICE_ADDED) {
                 msg.parse_device_added (out device);
                 device_added (device);
-            } else if (msg.type == Gst.MessageType.DEVICE_REMOVED){
+            } else if (msg.type == Gst.MessageType.DEVICE_REMOVED) {
                 msg.parse_device_removed (out device);
                 device_removed (device);
             }

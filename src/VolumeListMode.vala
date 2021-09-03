@@ -27,13 +27,14 @@ namespace Niki {
 
         construct {
             get_style_context ().add_class ("dlna_volume");
-            scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, 0.0, 1.0, 0.01);
-            scale.valign = Gtk.Align.CENTER;
-            scale.draw_value = scale.can_focus = false;
-            scale.set_show_fill_level (true);
-            scale.set_margin_start (2);
-            scale.set_margin_end (2);
-            scale.width_request = 350;
+            scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, 0.0, 1.0, 0.01) {
+                draw_value = false,
+                can_focus = false,
+                show_fill_level = true,
+                margin_start = 2,
+                margin_end = 2,
+                width_request = 350
+            };
             scale.set_value (NikiApp.settings.get_double ("volume-adjust"));
 
             NikiApp.settings.changed["status-muted"].connect (() => {
@@ -64,14 +65,16 @@ namespace Niki {
                 leave_scale ();
                 return cursor_hand_mode (2);
             });
-            var volume_button = new VolumeButton ();
-            volume_button.valign = Gtk.Align.CENTER;
+            var volume_button = new VolumeButton () {
+                valign = Gtk.Align.CENTER
+            };
             volume_button.get_style_context ().add_class ("transbgborder");
             volume_button.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("status-muted", !NikiApp.settings.get_boolean ("status-muted"));
             });
-            var volume_buttonmax = new VolumeButton ();
-            volume_buttonmax.valign = Gtk.Align.CENTER;
+            var volume_buttonmax = new VolumeButton () {
+                valign = Gtk.Align.CENTER
+            };
             scale.get_style_context ().add_class ("transbgborder");
             volume_buttonmax.get_style_context ().add_class ("transbgborder");
             volume_buttonmax.clicked.connect (() => {

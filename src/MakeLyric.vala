@@ -189,11 +189,6 @@ namespace Niki {
                     NikiApp.settings.set_string ("lyric-location", file.get_path ());
                 }
             });
-            var label_make = new Gtk.Label (_("Niki Lyric Maker")) {
-                ellipsize = Pango.EllipsizeMode.END
-            };
-            label_make.get_style_context ().add_class ("button_action");
-            label_make.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
 
             var main_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
                 hexpand = true,
@@ -202,17 +197,16 @@ namespace Niki {
             };
             main_actionbar.get_style_context ().add_class ("transbgborder");
             main_actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
+            main_actionbar.pack_start (new_lrc_blk, false, false, 0);
+            main_actionbar.pack_start (load_but, false, false, 0);
             main_actionbar.pack_start (add_doc, false, false, 0);
             main_actionbar.pack_start (add_but, false, false, 0);
             main_actionbar.pack_start (insert_aft, false, false, 0);
             main_actionbar.pack_start (insert_bef, false, false, 0);
             main_actionbar.pack_start (remove_but, false, false, 0);
-            main_actionbar.set_center_widget (label_make);
             main_actionbar.pack_end (save_but, false, false, 0);
             main_actionbar.pack_end (loc_save (), false, false, 0);
             main_actionbar.pack_end (get_fol_rev, false, false, 0);
-            main_actionbar.pack_end (load_but, false, false, 0);
-            main_actionbar.pack_end (new_lrc_blk, false, false, 0);
 
             lrc_scr = new Gtk.ScrolledWindow (null, null) {
                 propagate_natural_width = true,
@@ -300,8 +294,8 @@ namespace Niki {
             if (NikiApp.settings.get_boolean ("audio-video")) {
                 int height;
                 NikiApp.window.get_size (null, out height);
-                lrc_scr.height_request = height - 158;
-                lrc_text.height_request = height - 158;
+                lrc_scr.height_request = height - 160;
+                lrc_text.height_request = height - 160;
             }
         }
 

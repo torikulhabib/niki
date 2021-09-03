@@ -60,19 +60,19 @@ namespace Niki {
         }
 
         private void pattern_check (string new_line) {
-            if (Regex.match_simple (METADATA_PATTERN, new_line)) {
+            if (is_match (METADATA_PATTERN, new_line)) {
                 get_meta (new_line, METADATA_PATTERN);
-            } else if (Regex.match_simple (SIMPLIFIED_LYRIC_PATTERN, new_line)) {
+            } else if (is_match (SIMPLIFIED_LYRIC_PATTERN, new_line)) {
                 get_lyric (new_line, SIMPLIFIED_LYRIC_PATTERN);
-            } else if (Regex.match_simple (MILI_LYRIC_PATTERN, new_line)) {
+            } else if (is_match (MILI_LYRIC_PATTERN, new_line)) {
                 get_lyric (new_line, MILI_LYRIC_PATTERN);
-            } else if (Regex.match_simple (LYRIC_PATTERN, new_line)) {
+            } else if (is_match (LYRIC_PATTERN, new_line)) {
                 get_lyric (new_line, LYRIC_PATTERN);
             }
         }
 
         private void get_meta (string new_line, string pattern) {
-            if (!Regex.match_simple (LYRIC_PATTERN, new_line) && !Regex.match_simple (MILI_LYRIC_PATTERN, new_line) && !Regex.match_simple (SIMPLIFIED_LYRIC_PATTERN, new_line)) {
+            if (!is_match (LYRIC_PATTERN, new_line) && !is_match (MILI_LYRIC_PATTERN, new_line) && !is_match (SIMPLIFIED_LYRIC_PATTERN, new_line)) {
                 string metadata = new_line.replace ("[", "").replace ("]", "");
                 int last_time = metadata.index_of (":");
                 if (last_time > 0) {
@@ -90,7 +90,7 @@ namespace Niki {
             int last_time = new_line.last_index_of ("]");
             string only_lyric = new_line.slice (last_time + 1, new_line.length);
             foreach (string time_lyric in split_lyric) {
-                if (is_time (pattern, time_lyric) && only_lyric != "") {
+                if (is_match (pattern, time_lyric) && only_lyric != "") {
                     Gtk.TreeIter iter;
                     lrc_store.append (out iter);
                     lrc_store.set (iter, 0, int_from_time (time_lyric), 1, only_lyric, 2, "", 3, "");
@@ -98,7 +98,7 @@ namespace Niki {
             }
         }
 
-        private bool is_time (string pattern, string new_line) {
+        private bool is_match (string pattern, string new_line) {
             return Regex.match_simple (pattern, new_line);
         }
     }

@@ -1,17 +1,9 @@
 namespace Niki {
     public class Lyric : Gee.TreeMap<int64?, string> {
-        public Gtk.ListStore meta_data;
         private Gee.BidirMapIterator<int64?, string> lrc_iterator;
         private int offset = 0;
 
-        construct {
-            meta_data = new Gtk.ListStore (2, typeof (string), typeof (string));
-        }
-
         public void add_metadata (string _tag, string _info) {
-            Gtk.TreeIter iter;
-            meta_data.append (out iter);
-            meta_data.set (iter, 0, _tag, 1, _info);
             if (_tag == "offset") {
                 offset = int.parse (_info);
             }

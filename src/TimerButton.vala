@@ -28,22 +28,27 @@ namespace Niki {
         construct {
             get_style_context ().add_class ("button_action");
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            timer_image = new Gtk.Image.from_icon_name ("tools-timer-symbolic", Gtk.IconSize.LARGE_TOOLBAR);
-            timer_image.valign = Gtk.Align.CENTER;
-            timer_label = new Gtk.Label (null);
-            timer_label.valign = Gtk.Align.END;
+            timer_image = new Gtk.Image.from_icon_name ("tools-timer-symbolic", Gtk.IconSize.LARGE_TOOLBAR) {
+                valign = Gtk.Align.CENTER
+            };
+
+            timer_label = new Gtk.Label (null) {
+                valign = Gtk.Align.CENTER
+            };
             timer_label.get_style_context ().add_class ("button_action");
-            label_revealer = new Gtk.Revealer ();
-            label_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
+            label_revealer = new Gtk.Revealer () {
+                transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT
+            };
             label_revealer.add (timer_label);
 
             clicked.connect (() => {
                 cameradelay.switch_delay ();
             });
             load_label ();
-            var main_grid = new Gtk.Grid ();
-            main_grid.orientation = Gtk.Orientation.HORIZONTAL;
-            main_grid.valign = Gtk.Align.CENTER;
+            var main_grid = new Gtk.Grid () {
+                orientation = Gtk.Orientation.HORIZONTAL,
+                valign = Gtk.Align.CENTER
+            };
             main_grid.add (timer_image);
             main_grid.add (label_revealer);
             add (main_grid);

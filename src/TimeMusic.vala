@@ -75,53 +75,60 @@ namespace Niki {
                 playback_duration = playback.duration;
             });
 
-            progression_label = new Gtk.Label (null);
+            progression_label = new Gtk.Label (null) {
+                selectable = true,
+                width_request = 50
+            };
             progression_label.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             progression_label.get_style_context ().add_class ("selectedlabel");
             progression_label.get_style_context ().add_class ("h3");
-            progression_label.selectable = true;
-            progression_label.width_request = 50;
-            duration_label = new Gtk.Label (null);
+
+            duration_label = new Gtk.Label (null) {
+                selectable = true,
+                width_request = 50
+            };
             duration_label.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             duration_label.get_style_context ().add_class ("selectedlabel");
             duration_label.get_style_context ().add_class ("h3");
-            duration_label.selectable = true;
-            duration_label.width_request = 50;
 
-            make_lrc_but = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.make-lrc-symbolic", Gtk.IconSize.BUTTON);
-            make_lrc_but.focus_on_click = false;
+            make_lrc_but = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.make-lrc-symbolic", Gtk.IconSize.BUTTON) {
+                focus_on_click = false,
+                tooltip_text = _("Make Lyric")
+            };
             make_lrc_but.get_style_context ().add_class ("button_action");
             make_lrc_but.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            make_lrc_but.tooltip_text = _("Make Lyric");
             make_lrc_but.clicked.connect (() => {
                 NikiApp.settings.set_boolean ("make-lrc", !NikiApp.settings.get_boolean ("make-lrc"));
             });
-            search_time_lrc = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.time-lrc-symbolic", Gtk.IconSize.BUTTON);
-            search_time_lrc.focus_on_click = false;
+            search_time_lrc = new Gtk.Button.from_icon_name ("com.github.torikulhabib.niki.time-lrc-symbolic", Gtk.IconSize.BUTTON) {
+                focus_on_click = false
+            };
             search_time_lrc.get_style_context ().add_class ("button_action");
             search_time_lrc.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             search_time_lrc.clicked.connect (() => {
                 if (NikiApp.settings.get_boolean ("make-lrc")) {
                     position_sec ((int64)(playback.get_position ()));
                 } else {
-                    var search_lrc = new SearchDialog (playback.uri);
+                    var search_lrc = new SearchDialog ();
                     search_lrc.show_all ();
                 }
             });
-            anim_area = new Gtk.DrawingArea ();
-            anim_area.halign = Gtk.Align.CENTER;
+            anim_area = new Gtk.DrawingArea () {
+                halign = Gtk.Align.CENTER
+            };
             layout = anim_area.create_pango_layout (null);
             int height;
             layout.get_pixel_size (null, out height);
             anim_area.height_request = height;
             anim_area.draw.connect (anim_draw);
 
-            actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0);
+            actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
+                margin_start = 5,
+                margin_end = 5,
+                hexpand = true
+            };
             actionbar.get_style_context ().add_class ("transbgborder");
             actionbar.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            actionbar.margin_start = 5;
-            actionbar.margin_end = 5;
-            actionbar.hexpand = true;
             actionbar.pack_start (progression_label, false, false, 0);
             actionbar.pack_start (search_time_lrc, false, false, 0);
             actionbar.set_center_widget (anim_area);
@@ -236,6 +243,22 @@ namespace Niki {
                         break;
                     case 8:
                         text = NikiApp.settings.get_string ("tooltip-equalizer");
+                        state += 1;
+                        break;
+                    case 9:
+                        if (NikiApp.settings.get_boolean ("make-lrc")) {
+                            text = _("Lyric Make ON");
+                        } else {
+                            text = _("Lyric Make OFF");
+                        }
+                        state += 1;
+                        break;
+                    case 10:
+                        if (NikiApp.settings.get_boolean ("make-lrc")) {
+                            text = _("Lets Make Lyric");
+                        } else {
+                            text = _("Need Help!");
+                        }
                         state = 0;
                         break;
                 }

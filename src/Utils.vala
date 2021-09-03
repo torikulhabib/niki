@@ -374,7 +374,7 @@ namespace Niki {
         }
 
         foreach (string ext in SUBTITLE_EXTENSIONS) {
-            string sub_uri = without_ext + "." + ext;
+            string sub_uri = @"$(without_ext).$(ext)";
             if (File.new_for_uri (sub_uri).query_exists ()) {
                 return sub_uri;
             }
@@ -790,6 +790,20 @@ namespace Niki {
         context.set_source_surface (draw_surface.surface, 0, 0);
         context.paint ();
         return Gdk.pixbuf_get_from_surface (surface, 0, 0, min_size, min_size);
+    }
+
+    private Gdk.Pixbuf circle_vid (Gdk.Pixbuf pixbuf) {
+        int min_size = int.min (pixbuf.width, pixbuf.height);
+        int max_size = int.max (pixbuf.width, pixbuf.height);
+        Gdk.Pixbuf new_pix = new Gdk.Pixbuf.subpixbuf (pixbuf, min_size == pixbuf.width? 0 : (int) (max_size / 2) - (min_size / 2), pixbuf.get_height () == min_size? 0 : (int) (max_size / 2) - (min_size / 2), min_size, min_size);
+        var draw_surface = new BufferSurface ((int)min_size, (int)min_size);
+        Gdk.cairo_set_source_pixbuf (draw_surface.context, new_pix, 0, 0);
+        draw_surface.context.paint ();
+        Cairo.ImageSurface surface = new Cairo.ImageSurface (Cairo.Format.ARGB32, min_size, min_size);
+        Cairo.Context context = new Cairo.Context (surface);
+        context.set_source_surface (draw_surface.surface, 0, 0);
+        context.paint ();
+        return align_and_scale_pixbuf (Gdk.pixbuf_get_from_surface (surface, 0, 0, min_size, min_size), 48);
     }
 
     private Lyric file_lyric (string lyric_file) {

@@ -16,8 +16,9 @@ namespace Niki {
 
         public EqualizerGrid (PlayerPage playerpage) {
             this.playerpage = playerpage;
-            equalizerpresetlist = new EqualizerPresetList ();
-            equalizerpresetlist.hexpand = true;
+            equalizerpresetlist = new EqualizerPresetList () {
+                hexpand = true
+            };
             scales = new Gee.ArrayList<Gtk.Scale> ();
             label_values = new Gee.ArrayList<Gtk.Label> ();
             target_levels = new Gee.ArrayList<int> ();

@@ -35,7 +35,7 @@ namespace Niki {
         private EngineSubtittle4Songs? enginesubtittle4songs;
         private uint hiding_timer = 0;
 
-        public SearchDialog (string playfile) {
+        public SearchDialog () {
             Object (
                 resizable: true,
                 deletable: false,
@@ -44,38 +44,52 @@ namespace Niki {
                 transient_for: NikiApp.window,
                 destroy_with_parent: true
             );
-            var tittle_header = new Gtk.Label ("Lyric Downloader");
-            tittle_header.get_style_context ().add_class ("h4");
-            tittle_header.halign = Gtk.Align.CENTER;
-            tittle_header.hexpand = true;
+        }
 
-            var open_menu = new Gtk.Button.from_icon_name ("open-menu-symbolic", Gtk.IconSize.BUTTON);
-            open_menu.focus_on_click = false;
-            open_menu.tooltip_text = _("Home");
+        construct {
+            var open_menu = new ButtonRevealer ("open-menu-symbolic") {
+                transition_type = Gtk.RevealerTransitionType.CROSSFADE,
+                transition_duration = 500
+            };
+            var back_download = new ButtonRevealer ("open-menu-symbolic") {
+                transition_type = Gtk.RevealerTransitionType.CROSSFADE,
+                transition_duration = 500
+            };
+            var tittle_header = new Gtk.Label ("Lyric Downloader") {
+                halign = Gtk.Align.CENTER,
+                hexpand = true
+            };
+            tittle_header.get_style_context ().add_class ("h4");
 
             var header = get_header_bar ();
+            header.pack_start (back_download);
             header.set_custom_title (tittle_header);
             header.pack_end (open_menu);
 
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             get_style_context ().add_class ("niki");
+
             enginesubtittle4songs = new EngineSubtittle4Songs ();
             enginemegalobiz = new EngineMegalobiz ();
             engineviewlrc = new EngineViewlyrics ();
             enginenetease = new EngineNetease ();
-            title_entry = new Gtk.Entry ();
-            artist_entry = new Gtk.Entry ();
-            album_entry = new Gtk.Entry ();
-            var path = File.new_for_uri (playfile);
-            title_entry.text = get_song_info (path);
-            artist_entry.text = get_artist_music (path);
-            album_entry.text = get_album_music (path);
+            title_entry = new Gtk.Entry () {
+                text = NikiApp.settings.get_string ("title-playing")
+            };
+            artist_entry = new Gtk.Entry () {
+                text = NikiApp.settings.get_string ("artist-music")
+            };
+            album_entry = new Gtk.Entry () {
+                text = NikiApp.settings.get_string ("album-music")
+            };
 
-            tree_view = new Gtk.TreeView ();
             listmodel = new Gtk.ListStore (SearchLyric.N_COLUMNS, typeof (string), typeof (string), typeof (string), typeof (string), typeof (string));
-            tree_view.model = listmodel;
-            tree_view.headers_visible = true;
-            tree_view.expand = true;
+
+            tree_view = new Gtk.TreeView () {
+                model = listmodel,
+                headers_visible = true,
+                expand = true
+            };
             tree_view.append_column (tree_view_column (_("Title"), SearchLyric.TITLE));
             tree_view.append_column (tree_view_column (_("Artist"), SearchLyric.ARTIST));
             tree_view.append_column (tree_view_column (_("Type File"), SearchLyric.TYPEFILE));
@@ -86,27 +100,33 @@ namespace Niki {
                 listmodel.get_iter (out iter, path);
                 get_iter_select (NikiApp.window.player_page.playback.uri, iter);
             });
-            var scr_lyric = new Gtk.ScrolledWindow (null, null);
-            scr_lyric.expand = true;
-            scr_lyric.width_request = 350;
-            scr_lyric.height_request = 250;
+            var scr_lyric = new Gtk.ScrolledWindow (null, null) {
+                expand = true,
+                width_request = 350,
+                height_request = 250
+            };
             scr_lyric.add (tree_view);
             var frame = new Gtk.Frame (null);
             frame.add (scr_lyric);
 
-            var title_label = new Gtk.Label (_("Title:"));
-            title_label.halign = Gtk.Align.START;
-            var artist_label = new Gtk.Label (_("Artist:"));
-            artist_label.halign = Gtk.Align.START;
-            var album_label = new Gtk.Label (_("Album:"));
+            var title_label = new Gtk.Label (_("Title:")) {
+                halign = Gtk.Align.START
+            };
+            var artist_label = new Gtk.Label (_("Artist:")) {
+                halign = Gtk.Align.START
+            };
+            var album_label = new Gtk.Label (_("Album:")) {
+                halign = Gtk.Align.START
+            };
             album_label.halign = Gtk.Align.START;
 
-            var grid_combine = new Gtk.Grid ();
-            grid_combine.expand = true;
-            grid_combine.margin_start = 10;
-            grid_combine.margin_end = 10;
-            grid_combine.column_spacing = 5;
-            grid_combine.row_spacing = 5;
+            var grid_combine = new Gtk.Grid () {
+                expand = true,
+                margin_start = 10,
+                margin_end = 10,
+                column_spacing = 5,
+                row_spacing = 5
+            };
             grid_combine.attach (title_label, 0, 0);
             grid_combine.attach (title_entry, 1, 0);
             grid_combine.attach (artist_label, 0, 1);
@@ -135,37 +155,45 @@ namespace Niki {
 
             move_widget (this);
 
-            label = new Gtk.Label (null);
-            label.valign = Gtk.Align.CENTER;
-            label.ellipsize = Pango.EllipsizeMode.END;
+            label = new Gtk.Label (null) {
+                valign = Gtk.Align.CENTER,
+                ellipsize = Pango.EllipsizeMode.END
+            };
             spinner = new Gtk.Spinner ();
             spinner.margin_end = 5;
             spinner.valign = Gtk.Align.CENTER;
 
-            var prog_grid = new Gtk.Grid ();
-            prog_grid.orientation = Gtk.Orientation.HORIZONTAL;
-            prog_grid.valign = Gtk.Align.CENTER;
+            var prog_grid = new Gtk.Grid () {
+                orientation = Gtk.Orientation.HORIZONTAL,
+                valign = Gtk.Align.CENTER
+            };
             prog_grid.add (spinner);
             prog_grid.add (label);
 
-            prog_revealer = new Gtk.Revealer ();
-            prog_revealer.transition_type = Gtk.RevealerTransitionType.SLIDE_UP;
-            prog_revealer.margin_top = 5;
-            prog_revealer.margin_start = 10;
+            prog_revealer = new Gtk.Revealer () {
+                transition_type = Gtk.RevealerTransitionType.SLIDE_UP,
+                margin_top = 5,
+                margin_start = 10
+            };
             prog_revealer.add (prog_grid);
 
-            var box_action = new Gtk.Grid ();
+            var box_action = new Gtk.Grid () {
+                column_spacing = 5,
+                margin_top = 5,
+                margin_start = 10,
+                margin_bottom = 10,
+                margin_end = 10,
+                column_homogeneous = true
+            };
             box_action.orientation = Gtk.Orientation.HORIZONTAL;
             box_action.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            box_action.column_spacing = box_action.margin_top = 5;
-            box_action.margin_start = box_action.margin_bottom = box_action.margin_end = 10;
-            box_action.column_homogeneous = true;
             box_action.add (download_button);
             box_action.add (search_button);
             box_action.add (close_button);
 
-            var grid_ver = new Gtk.Grid ();
-            grid_ver.orientation = Gtk.Orientation.VERTICAL;
+            var grid_ver = new Gtk.Grid () {
+                orientation = Gtk.Orientation.VERTICAL
+            };
             grid_ver.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             grid_ver.add (grid_combine);
             grid_ver.add (prog_revealer);

@@ -467,11 +467,6 @@ namespace Niki {
             grid_ver.add (box_proaction);
 
             get_content_area ().add (grid_ver);
-
-            show.connect (()=> {
-                NikiApp.window.player_page.right_bar.set_reveal_child (false);
-            });
-
             destroy.connect (()=> {
                 permanent_delete (File.new_for_path (cache_image ("setcover")));
             });

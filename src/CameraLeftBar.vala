@@ -70,12 +70,13 @@ namespace Niki {
                 }
                 return false;
             });
-            scale = new Gtk.Scale.with_range (Gtk.Orientation.VERTICAL, 1, 10, 0.1);
+            scale = new Gtk.Scale.with_range (Gtk.Orientation.VERTICAL, 1, 10, 0.1) {
+                draw_value = false,
+                hexpand = true,
+                inverted = true
+            };
             scale.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             scale.get_style_context ().add_class ("volume");
-            scale.draw_value = false;
-            scale.hexpand = true;
-            scale.inverted = true;
             scale.enter_notify_event.connect (() => {
                 cursor_hand_mode (0);
                 return false;
@@ -104,9 +105,10 @@ namespace Niki {
                 camerapage.zoom_in_out (scale.get_value ());
                 sensitive_button ();
             });
-            zoom_in_button = new Gtk.Button.from_icon_name ("zoom-in-symbolic", Gtk.IconSize.BUTTON);
-            zoom_in_button.focus_on_click = false;
-            zoom_in_button.tooltip_text = _("Zoom In");
+            zoom_in_button = new Gtk.Button.from_icon_name ("zoom-in-symbolic", Gtk.IconSize.BUTTON) {
+                focus_on_click = false,
+                tooltip_text = _("Zoom In")
+            };
             zoom_in_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             zoom_in_button.get_style_context ().add_class ("button_action");
             zoom_in_button.clicked.connect (() => {
@@ -114,9 +116,10 @@ namespace Niki {
                     scale.set_value (scale.get_value () + 0.1);
                 }
             });
-            zoom_out_button = new Gtk.Button.from_icon_name ("zoom-out-symbolic", Gtk.IconSize.BUTTON);
-            zoom_out_button.focus_on_click = false;
-            zoom_out_button.tooltip_text = _("Zoom Out");
+            zoom_out_button = new Gtk.Button.from_icon_name ("zoom-out-symbolic", Gtk.IconSize.BUTTON) {
+                focus_on_click = false,
+                tooltip_text = _("Zoom Out")
+            };
             zoom_out_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             zoom_out_button.get_style_context ().add_class ("button_action");
             zoom_out_button.clicked.connect (() => {
@@ -124,10 +127,11 @@ namespace Niki {
                     scale.set_value (scale.get_value () - 0.1);
                 }
             });
-            var content_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0);
+            var content_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 0) {
+                margin = 5
+            };
             content_box.get_style_context ().add_class ("playlist");
             content_box.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
-            content_box.margin = 5;
             content_box.pack_start (zoom_in_button, false, false, 0);
             content_box.pack_start (scale, true, true, 0);
             content_box.pack_start (zoom_out_button, false, false, 0);

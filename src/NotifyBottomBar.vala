@@ -44,9 +44,10 @@ namespace Niki {
             this.playerpage = playerpage;
             transition_type = Gtk.RevealerTransitionType.SLIDE_UP;
             transition_duration = 500;
-            progress_bar = new Gtk.ProgressBar ();
+            progress_bar = new Gtk.ProgressBar () {
+                hexpand = true
+            };
             progress_bar.get_style_context ().add_class ("progress_bar");
-            progress_bar.hexpand = true;
             playerpage.playback.notify["progress"].connect (() => {
                 playback_progress = playerpage.playback.progress;
             });

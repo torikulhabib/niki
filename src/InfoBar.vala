@@ -40,11 +40,12 @@ namespace Niki {
             margin = 4;
             halign = Gtk.Align.CENTER;
             valign = Gtk.Align.START;
-            notification_label = new Gtk.Label (null);
-            notification_label.ellipsize = Pango.EllipsizeMode.END;
-            notification_label.hexpand = true;
-            notification_label.vexpand = false;
-            notification_label.margin = 5;
+            notification_label = new Gtk.Label (null) {
+                ellipsize = Pango.EllipsizeMode.END,
+                hexpand = true,
+                vexpand = false,
+                margin = 5
+            };
 
             var notification_frame = new Gtk.EventBox ();
             notification_frame.get_style_context ().add_class ("app-notification");

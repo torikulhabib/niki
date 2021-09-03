@@ -38,6 +38,7 @@ namespace Niki {
         public int index_but;
 
         construct {
+            set_size_request (570, 430);
             dlnamain = new DLNAMain (this);
             treview = new DLNATreeView (this);
             treview.reload_device.connect (() => {
@@ -54,88 +55,98 @@ namespace Niki {
                 }
             });
             liststore = new Gtk.ListStore (ColumnScanF.N_COLUMNS, typeof (string));
-            set_size_request (570, 430);
             scanfolder = new ScanFolder ();
             getlink = new GetLink ();
             infobar = new InfoBar ();
-            title_label = new Gtk.Label (_("Select Menu"));
-            title_label.justify = Gtk.Justification.CENTER;
-            title_label.hexpand = true;
+            title_label = new Gtk.Label (_("Select Menu")) {
+                justify = Gtk.Justification.CENTER,
+                hexpand = true
+            };
             title_label.get_style_context ().add_class ("h2");
 
-            subtitle_label = new Gtk.Label (_("Drag Url, files or Select a source to playing."));
+            subtitle_label = new Gtk.Label (_("Drag Url, files or Select a source to playing.")) {
+                justify = Gtk.Justification.CENTER,
+                hexpand = true,
+                can_focus = true,
+                wrap = true,
+                margin_bottom = 10,
+                wrap_mode = Pango.WrapMode.WORD
+            };
             subtitle_label.get_style_context ().add_class (Gtk.STYLE_CLASS_DIM_LABEL);
             subtitle_label.get_style_context ().add_class ("h3");
-            subtitle_label.justify = Gtk.Justification.CENTER;
-            subtitle_label.hexpand = true;
-            subtitle_label.can_focus = true;
-            subtitle_label.wrap = true;
-            subtitle_label.margin_bottom = 10;
-            subtitle_label.wrap_mode = Pango.WrapMode.WORD;
 
-            welcome_rigth = new Welcome ();
-            welcome_rigth.focus_on_click = false;
+            welcome_rigth = new Welcome () {
+                focus_on_click = false
+            };
+            welcome_rigth.get_style_context ().add_class ("card");
             welcome_rigth.append ("applications-multimedia", _("Open File"), _("Open File"));
             welcome_rigth.append ("edit-paste", _("Paste URL"), _("Play Stream"));
             welcome_rigth.append ("document-open", _("Open Folder"), _("Open Folder"));
             welcome_rigth.append ("camera-photo", _("Open Camera"), _("Camera Device"));
-            welcome_rigth.get_style_context ().add_class ("card");
 
-            welcome_left = new Welcome ();
-            welcome_left.focus_on_click = false;
+            welcome_left = new Welcome () {
+                focus_on_click = false
+            };
+            welcome_left.get_style_context ().add_class ("card");
             welcome_left.append ("folder-videos", _("Browse Library"), _("Movie Library"));
             welcome_left.append ("folder-music", _("Browse Library"), _("Music Library"));
             welcome_left.append ("folder-remote", _("Browse Library"), _("DLNA Library"));
             welcome_left.append ("media-optical", _("Browse Library"), _("Optical Library"));
-            welcome_left.get_style_context ().add_class ("card");
 
-            var grid_home = new Gtk.Grid ();
+            var grid_home = new Gtk.Grid () {
+                orientation = Gtk.Orientation.HORIZONTAL,
+                margin_bottom = 30
+            };
             grid_home.get_style_context ().add_class ("widget_background");
-            grid_home.orientation = Gtk.Orientation.HORIZONTAL;
-            grid_home.margin_bottom = 30;
             grid_home.add (welcome_rigth);
             grid_home.add (welcome_left);
 
-            var vertical_grid = new Gtk.Grid ();
+            var vertical_grid = new Gtk.Grid () {
+                orientation = Gtk.Orientation.VERTICAL,
+                valign = Gtk.Align.CENTER,
+                margin = 15
+            };
             vertical_grid.get_style_context ().add_class ("widget_background");
-            vertical_grid.orientation = Gtk.Orientation.VERTICAL;
-            vertical_grid.valign = Gtk.Align.CENTER;
-            vertical_grid.margin = 15;
             vertical_grid.add (title_label);
             vertical_grid.add (subtitle_label);
             vertical_grid.add (grid_home);
 
-            var dlna_scrolled = new Gtk.ScrolledWindow (null, null);
+            var dlna_scrolled = new Gtk.ScrolledWindow (null, null) {
+                margin_bottom = 5
+            };
             dlna_scrolled.get_style_context ().add_class ("dlna_scrollbar");
             dlna_scrolled.get_style_context ().add_class ("frame");
-            dlna_scrolled.margin_bottom = 5;
             dlna_scrolled.add (treview);
 
-            var welcome_drive = new Welcome ();
-            welcome_drive.append ("media-optical", _("Browse"), _("DVD"));
-            welcome_drive.append ("media-optical", _("Browse"), _("ACD"));
-            welcome_drive.valign = Gtk.Align.CENTER;
+            var welcome_drive = new Welcome () {
+                valign = Gtk.Align.CENTER,
+                margin_bottom = 30
+            };
             welcome_drive.get_style_context ().add_class ("widget_background");
             welcome_drive.get_style_context ().add_class ("card");
-            welcome_drive.margin_bottom = 30;
+            welcome_drive.append ("media-optical", _("Browse"), _("DVD"));
+            welcome_drive.append ("media-optical", _("Browse"), _("ACD"));
 
-            var dlna_grid = new Gtk.Grid ();
-            dlna_grid.orientation = Gtk.Orientation.VERTICAL;
-            dlna_grid.margin = 10;
+            var dlna_grid = new Gtk.Grid () {
+                orientation = Gtk.Orientation.VERTICAL,
+                margin = 10
+            };
             dlna_grid.add (dlna_scrolled);
             dlna_grid.add (dlnaaction);
             dlna_grid.add (dlnarendercontrol);
 
             circulargrid = new CircularGrid ();
 
-            var devicegrid = new DeviceMonitor ();
-            devicegrid.valign = Gtk.Align.CENTER;
-            devicegrid.margin_bottom = 30;
+            var devicegrid = new DeviceMonitor () {
+                valign = Gtk.Align.CENTER,
+                margin_bottom = 30
+            };
 
-            stack = new Gtk.Stack ();
-            stack.transition_type = Gtk.StackTransitionType.SLIDE_LEFT_RIGHT;
-            stack.homogeneous = false;
-            stack.transition_duration = 500;
+            stack = new Gtk.Stack () {
+                transition_type = Gtk.StackTransitionType.SLIDE_LEFT_RIGHT,
+                transition_duration = 500,
+                homogeneous = false
+            };
             stack.add_named (vertical_grid, "home");
             stack.add_named (dlna_grid, "dlna");
             stack.add_named (circulargrid, "circular");

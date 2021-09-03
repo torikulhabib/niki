@@ -33,6 +33,7 @@ namespace Niki {
             liststore = new Gtk.ListStore (PlaylistColumns.N_COLUMNS, typeof (Icon), typeof (Gdk.Pixbuf), typeof (string), typeof (string), typeof (string), typeof (string), typeof (string), typeof (string), typeof (bool), typeof (int), typeof (int));
             model = liststore;
             headers_visible = activate_on_single_click = false;
+            set_mapped (false);
 
             var text_render = new Gtk.CellRendererText () {
                 ellipsize = Pango.EllipsizeMode.END
@@ -199,6 +200,31 @@ namespace Niki {
             NikiApp.settings.changed["edit-playlist"].connect (remove_playlist);
             get_random ();
         }
+
+        public void clear_all () {
+            int n_iter = liststore.iter_n_children (null);
+            Timeout.add (1,()=> {
+                if (n_iter == 1) {
+                    return false;
+                }
+                Gtk.TreeIter iter;
+                if (liststore.get_iter_from_string (out iter, (n_iter - 1).to_string ())) {
+                    string filename;
+                    model.get (iter, PlaylistColumns.FILENAME, out filename);
+                    if (filename != NikiApp.window.player_page.playback.uri) {
+                        liststore.remove (ref iter);
+                    } else {
+                        if (liststore.get_iter_first (out iter)) {
+                            liststore.remove (ref iter);
+                        }
+                    }
+                }
+                n_iter = liststore.iter_n_children (null);
+                return true;
+            });
+            item_added ();
+        }
+
         private bool remove_iter () {
             Gtk.TreeIter iter = selected_iter ();
             if (!liststore.iter_is_valid (iter)) {
@@ -213,11 +239,13 @@ namespace Niki {
             update_playlist (50);
             return Gdk.EVENT_PROPAGATE;
         }
+
         public Gtk.TreeIter selected_iter () {
             Gtk.TreeIter iter;
             get_selection ().get_selected (null, out iter);
             return iter;
         }
+
         private void remove_playlist () {
             item_added ();
             liststore.foreach ((model, path, iter) => {
@@ -426,7 +454,7 @@ namespace Niki {
                     var dbus_thum = new DbusThumbnailer ().instance;
                     dbus_thum.instand_thumbler (path, "normal");
                 }
-                preview = pix_scale (normal_thumb (path), 48);
+                preview = circle_pix (circle_vid (pix_file (normal_thumb (path))));
                 if (preview == null) {
                     preview = icon_from_mediatype (0);
                 }

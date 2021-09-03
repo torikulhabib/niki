@@ -61,22 +61,24 @@ namespace Niki {
 
         private void build_ui () {
             height_request = 200;
-            scale_container = new Gtk.Grid ();
-            scale_container.orientation = Gtk.Orientation.VERTICAL;
-            scale_container.vexpand = true;
+            scale_container = new Gtk.Grid () {
+                orientation = Gtk.Orientation.VERTICAL,
+                vexpand = true
+            };
             margin_bottom = 2;
 
             foreach (string croma in CHROMA) {
-                var scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, -100, 100, 0.1);
-                scale.get_style_context ().add_class ("volume");
-                scale.set_margin_start (2);
-                scale.set_margin_end (2);
-                scale.add_mark (0, Gtk.PositionType.LEFT, null);
-                scale.draw_value = false;
-                scale.hexpand = true;
                 var label_name = new Gtk.Label (croma);
+                var scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, -100, 100, 0.1) {
+                    margin_start = 2,
+                    margin_end = 2,
+                    draw_value = false,
+                    hexpand = true,
+                    tooltip_text = croma
+                };
+                scale.add_mark (0, Gtk.PositionType.LEFT, null);
+                scale.get_style_context ().add_class ("volume");
                 bool in_scale = false;
-                scale.tooltip_text = croma;
                 scale.enter_notify_event.connect (() => {
                     in_scale = true;
                     cursor_hand_mode (0);
@@ -120,24 +122,27 @@ namespace Niki {
                 });
             }
 
-            camera_preset_list = new CameraPresetList ();
-            camera_preset_list.hexpand = true;
+            camera_preset_list = new CameraPresetList () {
+                hexpand = true
+            };
 
             side_list = new Gtk.Grid ();
             side_list.add (camera_preset_list);
 
-            new_preset_entry = new Gtk.Entry ();
-            new_preset_entry.hexpand = true;
-            new_preset_entry.secondary_icon_name = "document-save-symbolic";
-            new_preset_entry.secondary_icon_tooltip_text = _("Save Preset");
+            new_preset_entry = new Gtk.Entry () {
+                secondary_icon_name = "document-save-symbolic",
+                secondary_icon_tooltip_text = _("Save Preset"),
+                hexpand = true
+            };
 
             var size_group = new Gtk.SizeGroup (Gtk.SizeGroupMode.BOTH);
             size_group.add_widget (camera_preset_list);
             size_group.add_widget (new_preset_entry);
 
-            var layout = new Gtk.Grid ();
-            layout.orientation = Gtk.Orientation.VERTICAL;
-            layout.row_spacing = 0;
+            var layout = new Gtk.Grid () {
+                orientation = Gtk.Orientation.VERTICAL,
+                row_spacing = 0
+            };
             layout.add (scale_container);
             layout.add (side_list);
             layout.show_all ();

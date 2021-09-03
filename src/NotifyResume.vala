@@ -27,9 +27,41 @@ namespace Niki {
         private Gtk.Label resume_label;
         private Gtk.Label attention_label;
         private double progress;
+        private bool _hovered = false;
+        public bool hovered {
+            get {
+                return _hovered;
+            }
+            set {
+                _hovered = value;
+            }
+        }
 
         public NotifyResume (PlayerPage playerpage) {
             get_style_context ().add_class ("playlist");
+            events |= Gdk.EventMask.POINTER_MOTION_MASK;
+            events |= Gdk.EventMask.LEAVE_NOTIFY_MASK;
+            events |= Gdk.EventMask.ENTER_NOTIFY_MASK;
+
+            enter_notify_event.connect ((event) => {
+                if (event.window == get_window ()) {
+                    hovered = true;
+                }
+                return false;
+            });
+            motion_notify_event.connect (() => {
+                if (((Gtk.Window) get_toplevel ()).is_active) {
+                    hovered = true;
+                }
+                return false;
+            });
+
+            leave_notify_event.connect ((event) => {
+                if (event.window == get_window ()) {
+                    hovered = false;
+                }
+                return false;
+            });
             this.playerpage = playerpage;
             var icon_image = new Gtk.Image.from_icon_name ("media-playback-start", Gtk.IconSize.DIALOG) {
                 valign = Gtk.Align.END,
@@ -71,7 +103,9 @@ namespace Niki {
             });
 
             notify["child-revealed"].connect (()=> {
-                resume_now.grab_focus ();
+                if (child_revealed) {
+                    resume_now.grab_focus ();
+                }
             });
 
             var box_action = new Gtk.Grid () {

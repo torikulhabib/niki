@@ -210,15 +210,15 @@ namespace Niki {
             stage.add_child (resume_actor);
 
             stage.motion_event.connect ((event) => {
-                if (!bottom_bar.child_revealed) {
+                if (!bottom_bar.child_revealed && !right_bar.child_revealed) {
                     if (event.y > (stage.height - 30)) {
                         bottom_bar.reveal_control ();
                     }
                 }
                 if (event.y < (stage.height - 30) && event.y > 20) {
-                    right_bar.hovered = top_bar.hovered = bottom_bar.hovered = false;
+                    top_bar.hovered = bottom_bar.hovered = false;
                 }
-                if (!top_bar.child_revealed) {
+                if (!top_bar.child_revealed && !right_bar.child_revealed) {
                     if (event.y < 20) {
                         top_bar.reveal_control ();
                     }
@@ -231,11 +231,11 @@ namespace Niki {
             });
             button_press_event.connect ((event) => {
                 mouse_hovered = false;
-                if (event.button == Gdk.BUTTON_PRIMARY && event.type == Gdk.EventType.2BUTTON_PRESS && !right_bar.hovered && !top_bar.hovered && !bottom_bar.hovered) {
+                if (event.button == Gdk.BUTTON_PRIMARY && event.type == Gdk.EventType.2BUTTON_PRESS && !right_bar.child_revealed && !top_bar.hovered && !bottom_bar.hovered && !notify_resume.hovered) {
                     NikiApp.settings.set_boolean ("fullscreen", !NikiApp.settings.get_boolean ("fullscreen"));
                 }
 
-                if (event.button == Gdk.BUTTON_SECONDARY && !right_bar.hovered && !top_bar.hovered && !bottom_bar.hovered) {
+                if (event.button == Gdk.BUTTON_SECONDARY && !right_bar.child_revealed && !top_bar.hovered && !bottom_bar.hovered && !notify_resume.hovered) {
                     playback.playing = !playback.playing;
                     string_notify (playback.playing? _("Play") : _("Pause"));
                 }
@@ -530,7 +530,7 @@ namespace Niki {
             double width = n_width / 2;
             double height = n_height / 2;
             double aspect_max = width / height;
-            if (!NikiApp.settings.get_boolean ("audio-video")) {
+            if (!NikiApp.settings.get_boolean ("audio-video") && !NikiApp.settings.get_boolean ("home-signal")) {
                 double limit = aspect_max > 1.5? (aspect_max < 1.9? 0.1977777777777777 : 0.3277777777777777) : 0.1033333333333337;
                 geometry.min_aspect = aspect_max > 1? aspect_max - limit : aspect_max + limit;
                 geometry.max_aspect = aspect_max > 1? aspect_max - limit : aspect_max + limit;

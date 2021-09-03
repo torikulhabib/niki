@@ -26,9 +26,10 @@ namespace Niki {
         construct {
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             focus_on_click = false;
-            volume_image = new Gtk.Image.from_icon_name ("audio-volume-high-symbolic", Gtk.IconSize.BUTTON);
-            volume_image.valign = Gtk.Align.CENTER;
-            volume_image.halign = Gtk.Align.CENTER;
+            volume_image = new Gtk.Image.from_icon_name ("audio-volume-high-symbolic", Gtk.IconSize.BUTTON) {
+                valign = Gtk.Align.CENTER,
+                halign = Gtk.Align.CENTER
+            };
             margin_top = 2;
             add (volume_image);
             NikiApp.settings.changed["volume-adjust"].connect (() => {

@@ -6,16 +6,18 @@ namespace Niki {
 
         construct {
             get_style_context ().add_class ("widget_background");
-            options = new Gtk.Grid ();
-            options.orientation = Gtk.Orientation.VERTICAL;
-            options.row_spacing = 10;
-            options.halign = Gtk.Align.CENTER;
+            options = new Gtk.Grid () {
+                orientation = Gtk.Orientation.VERTICAL,
+                row_spacing = 10,
+                halign = Gtk.Align.CENTER
+            };
 
-            var content = new Gtk.Grid ();
-            content.expand = true;
-            content.margin = 10;
-            content.orientation = Gtk.Orientation.VERTICAL;
-            content.valign = Gtk.Align.CENTER;
+            var content = new Gtk.Grid () {
+                expand = true,
+                margin = 10,
+                orientation = Gtk.Orientation.VERTICAL,
+                valign = Gtk.Align.CENTER
+            };
             content.add (options);
             halign = Gtk.Align.CENTER;
             vexpand = false;

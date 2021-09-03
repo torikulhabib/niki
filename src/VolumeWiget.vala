@@ -28,11 +28,13 @@ namespace Niki {
         construct {
             transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
             transition_duration = 500;
-            scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, 0.0, 1.0, 0.01);
-            scale.draw_value = scale.can_focus = false;
-            scale.set_show_fill_level (true);
-            scale.set_margin_start (2);
-            scale.set_margin_end (2);
+            scale = new Gtk.Scale.with_range (Gtk.Orientation.HORIZONTAL, 0.0, 1.0, 0.01) {
+                draw_value = false,
+                can_focus = false,
+                show_fill_level = true,
+                margin_start = 2,
+                margin_end = 2
+            };
             scale.set_value (NikiApp.settings.get_double ("volume-adjust"));
             scale.events |= Gdk.EventMask.POINTER_MOTION_MASK;
             scale.events |= Gdk.EventMask.LEAVE_NOTIFY_MASK;
