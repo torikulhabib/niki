@@ -33,13 +33,6 @@
 		<value nick="5sec" value="5" />
 		<value nick="10sec" value="10" />
 	</enum>
-	<enum id="com.github.torikulhabib.niki.dlna-state">
-		<value nick="unknown" value="0" />
-		<value nick="transitioning" value="1" />
-		<value nick="stopped" value="2" />
-		<value nick="paused" value="3" />
-		<value nick="playing" value="4" />
-	</enum>
 	<schema id="com.github.torikulhabib.niki" path="/com/github/torikulhabib/niki/">
 		<key name="repeat-mode" enum="com.github.torikulhabib.niki.repeat-mode">
 			<default>"off"</default>
@@ -70,11 +63,6 @@
 			<default>"disabled"</default>
 			<summary>Camera delay.</summary>
 			<description>Camera delay.</description>
-		</key>
-		<key name="dlna-state" enum="com.github.torikulhabib.niki.dlna-state">
-			<default>"unknown"</default>
-			<summary>DLNA State.</summary>
-			<description>DLNA State.</description>
 		</key>
 	  <key name="dark-style" type="b">
 	  	<default>false</default>

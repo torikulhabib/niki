@@ -22,7 +22,7 @@
 namespace Niki {
     public class VideoMix : Gst.Bin {
         private dynamic Gst.Element videoqueue;
-        private dynamic Gst.Element videosink;
+        public ClutterGst.VideoSink videosink;
         private dynamic Gst.Element videotee;
         private dynamic Gst.Element gamma;
         private dynamic Gst.Element color_balance;
@@ -31,13 +31,11 @@ namespace Niki {
         private dynamic Gst.Element capsfilter;
         public dynamic Gst.Element videocrop;
         private dynamic Gst.Element videoscale;
-        private const string [] VIDEORENDER = {"autovideosink", "vaapisink", "ximagesink", "xvimagesink"};
 
-        public VideoMix (ClutterGst.Playback playback) {
+        construct {
             videotee = Gst.ElementFactory.make ("tee", "tee");
             videocrop = Gst.ElementFactory.make ("videocrop", "videocrop");
             videoqueue = Gst.ElementFactory.make ("queue", "queue");
-            videoqueue["flush-on-eos"] = true;
             flip_filter = Gst.ElementFactory.make ("videoflip", "videoflip");
             gamma = Gst.ElementFactory.make ("gamma", "gamma");
             color_balance = Gst.ElementFactory.make ("videobalance", "videobalance");
@@ -47,27 +45,41 @@ namespace Niki {
             videoscale["sharpen"] = 1.0;
             videoscale["sharpness"] = 1.5;
             capsfilter = Gst.ElementFactory.make ("capsfilter", "capsfilter");
-            Gst.Util.set_object_arg ((GLib.Object) capsfilter, "caps", "video/x-raw, format={ RGBA, RGB, I420, YV12, YUY2, UYVY, AYUV, Y41B, Y42B, YVYU, Y444, v210, v216, NV12, NV21, UYVP, A420, YUV9, YVU9, IYU1, VUYA, BGR, Y210, Y410, GRAY8, GRAY16_BE, GRAY16_LE, v308, RGB16, BGR16, RGB15, BGR15, UYVP, RGB8P, ARGB64, AYUV64, r210, I420_10BE, I420_10LE, I422_10BE, I422_10LE, Y444_10BE, Y444_10LE, GBR, GBR_10BE, GBR_10LE, NV16, NV24, NV12_64Z32, A420_10BE, A420_10LE, A422_10BE, A422_10LE, A444_10BE, A444_10LE, NV61, P010_10BE, P010_10LE, IYU2, VYUY, GBRA, GBRA_10BE, GBRA_10LE, BGR10A2_LE, RGB10A2_LE, GBR_12BE, GBR_12LE, GBRA_12BE, GBRA_12LE, I420_12BE, I420_12LE, I422_12BE, I422_12LE, Y444_12BE, Y444_12LE, GRAY10_LE32, NV12_10LE32, NV16_10LE32, NV12_10LE40 }");
-            videosink = Gst.ElementFactory.make (VIDEORENDER [NikiApp.settings.get_int ("videorender-options")], VIDEORENDER [NikiApp.settings.get_int ("videorender-options")]);
-            videosink = playback.get_video_sink ();
+            videosink = new ClutterGst.VideoSink ();
             add_many (videoqueue, videotee, capsfilter, videoscale, videocrop, coloreffects, flip_filter, color_balance, gamma, videosink);
             add_pad (new Gst.GhostPad ("sink", videotee.get_static_pad ("sink")));
             videoqueue.link_many (capsfilter, videoscale, videocrop, coloreffects, flip_filter, color_balance, gamma, videosink);
             Gst.Pad sinkpad = videoqueue.get_static_pad ("sink");
             Gst.Pad pad = videotee.get_request_pad ("src_%u");
             pad.link (sinkpad);
-            videotee["alloc-pad"] = pad;
-            coloreffect ();
             NikiApp.settings.changed["coloreffects-options"].connect (coloreffect);
+            NikiApp.settings.changed["videorender-options"].connect (filetr_caps);
+            filetr_caps ();
+            coloreffect ();
+        }
+
+        private void filetr_caps () {
+            switch (NikiApp.settings.get_int ("videorender-options")) {
+                case 0:
+                    Gst.Util.set_object_arg ((GLib.Object) capsfilter, "caps", "video/x-raw, format={ AYUV, YV12, I420, RGBA, BGRA, RGBX, BGRX, RGB, BGR, NV12 }");
+                    break;
+                case 1:
+                    Gst.Util.set_object_arg ((GLib.Object) capsfilter, "caps", "video/x-raw, format={ AYUV64, ARGB64, GBRA_12LE, GBRA_12BE, Y412_LE, Y412_BE, A444_10LE, GBRA_10LE, A444_10BE, GBRA_10BE, A422_10LE, A422_10BE, A420_10LE, A420_10BE, RGB10A2_LE, BGR10A2_LE, Y410, GBRA, ABGR, VUYA, BGRA, AYUV, ARGB, RGBA, A420, Y444_16LE, Y444_16BE, v216, P016_LE, P016_BE, Y444_12LE, GBR_12LE, Y444_12BE, GBR_12BE, I422_12LE, I422_12BE, Y212_LE, Y212_BE, I420_12LE, I420_12BE, P012_LE, P012_BE, Y444_10LE, GBR_10LE, Y444_10BE, GBR_10BE, r210, I422_10LE, I422_10BE, NV16_10LE32, Y210, v210, UYVP, I420_10LE, I420_10BE, P010_10LE, NV12_10LE32, NV12_10LE40, P010_10BE, Y444, GBR, NV24, xBGR, BGRx, xRGB, RGBx, BGR, IYU2, v308, RGB, Y42B, NV61, NV16, VYUY, UYVY, YVYU, YUY2, I420, YV12, NV21, NV12, NV12_64Z32, Y41B, IYU1, YVU9, YUV9, RGB16, BGR16, RGB15, BGR15, RGB8P, GRAY16_LE, GRAY16_BE, GRAY10_LE32, GRAY81 }");
+                    break;
+                case 2:
+                    Gst.Util.set_object_arg ((GLib.Object) capsfilter, "caps", "video/x-raw, format={ BGRx, BGRA, RGBx, xBGR, xRGB, RGBA, ABGR, ARGB, RGB, BGR, RGB16, BGR16, YUY2, YVYU, UYVY, AYUV, NV12, NV21, NV16, NV61, YUV9, YVU9, Y41B, I420, YV12, Y42B, v308 }");
+                    break;
+                case 3:
+                    Gst.Util.set_object_arg ((GLib.Object) capsfilter, "caps", "video/x-raw, format={ AYUV, ARGB, BGRA, ABGR, RGBA, Y444, xRGB, RGBx, xBGR, BGRx, RGB, BGR, Y42B, YUY2, UYVY, YVYU, I420, YV12, IYUV, Y41B, NV12, NV21 }");
+                    break;
+            }
         }
 
         public void set_videocrp (int top, int bottom, int left, int right) {
-            videocrop.set_state (Gst.State.PAUSED);
             videocrop["top"] = top;
             videocrop["bottom"] = bottom;
             videocrop["left"] = left;
             videocrop["right"] = right;
-            videocrop.set_state (Gst.State.PLAYING);
         }
 
         private void coloreffect () {

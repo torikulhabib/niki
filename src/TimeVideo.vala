@@ -56,7 +56,7 @@ namespace Niki {
             }
         }
 
-        public TimeVideo (ClutterGst.Playback playback) {
+        public TimeVideo (Player playback) {
             transition_type = Gtk.RevealerTransitionType.SLIDE_LEFT;
             transition_duration = 500;
             playback.notify["progress"].connect (() => {

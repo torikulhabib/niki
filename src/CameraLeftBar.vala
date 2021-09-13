@@ -82,7 +82,7 @@ namespace Niki {
                 return false;
             });
             scale.leave_notify_event.connect (() => {
-                cursor_hand_mode (2);
+                cursor_hand_mode (3);
                 return false;
             });
             scale.motion_notify_event.connect (() => {

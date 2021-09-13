@@ -24,18 +24,18 @@ namespace Niki {
     public class MprisPlayer : GLib.Object {
         [DBus (visible = false)]
         public unowned DBusConnection connection { get; construct set; }
-        private ClutterGst.Playback playback;
+        private Player playback;
         private uint send_property_source = 0;
         private HashTable<string,Variant> changed_properties = null;
         private HashTable<string,Variant> metadata;
 
-        public MprisPlayer (DBusConnection connection, ClutterGst.Playback playback) {
+        public MprisPlayer (DBusConnection connection, Player playback) {
             this.connection = connection;
             this.playback = playback;
             metadata = new HashTable<string, Variant> (str_hash, str_equal);
             playback.notify["playing"].connect (playing_changed);
             playback.eos.connect (update_metadata);
-            playback.notify["idle"].connect (update_metadata);
+            playback.idle.connect (update_metadata);
             NikiApp.settings.changed["next-status"].connect (update_metadata);
             NikiApp.settings.changed["previous-status"].connect (update_metadata);
         }
@@ -161,7 +161,7 @@ namespace Niki {
 
         public int64 position {
             get {
-                return ((int64)(playback.get_position () * 1000000));
+                return ((int64)(playback.position * 1000000));
             }
         }
         public bool can_go_next {
@@ -211,8 +211,7 @@ namespace Niki {
         }
 
         public void stop () throws GLib.Error {
-            playback.playing = false;
-            playback.progress = 0.0;
+            playback.stop ();
             NikiApp.window.player_page.string_notify (_("Stop"));
         }
 
@@ -225,11 +224,11 @@ namespace Niki {
             var duration = playback.duration;
             var progress = playback.progress;
             var new_progress = ((duration * progress) + ((double)(offset / 1000000)) / duration);
-            playback.progress = new_progress.clamp (0.0, 1.0);
+            playback.seeked = new_progress.clamp (0.0, 1.0);
         }
 
         public void set_position (string dobj, int64 position) throws GLib.Error {
-            playback.progress = ((double)(position / 1000000)).clamp (0.0, 1.0);
+            playback.seeked = ((double)(position / 1000000)).clamp (0.0, 1.0);
         }
     }
 }

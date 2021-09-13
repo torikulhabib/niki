@@ -30,6 +30,7 @@ namespace Niki {
         private TimeVideo? time_video;
         public TimeMusic? time_music;
         private VolumeWiget? volume_widget;
+        public Gtk.Box main_actionbar;
         public Gtk.Button play_button;
         private Gtk.Button menu_settings;
         private Gtk.Button play_but_cen;
@@ -172,9 +173,8 @@ namespace Niki {
             });
 
             stop_revealer.clicked.connect (() => {
-                playerpage.playback.pipeline.set_state (Gst.State.NULL);
+                playerpage.playback.stop ();
                 playing = false;
-                playerpage.playback.progress = 0.0;
                 insert_last_video (playerpage.playback.uri, seconds_to_time ((int) (playerpage.playback.progress * playerpage.playback.duration)), 0.0);
                 stop_revealer.set_reveal_child (false);
             });
@@ -430,7 +430,7 @@ namespace Niki {
                 playerpage.right_bar.reveal_control (false);
             });
 
-            makelyric = new MakeLyric (this, playerpage);
+            makelyric = new MakeLyric (playerpage);
             time_music.position_sec.connect (makelyric.set_time_sec);
             var make_lrc_rev = new Gtk.Revealer () {
                 transition_type = Gtk.RevealerTransitionType.SLIDE_UP,
@@ -483,7 +483,7 @@ namespace Niki {
             };
             box_set_list_rev.add (box_set_list);
 
-            var main_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
+            main_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
                 hexpand = true,
                 margin_end = 4,
                 margin_start = 4,

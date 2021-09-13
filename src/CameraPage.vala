@@ -42,7 +42,7 @@ namespace Niki {
             stage = get_stage () as Clutter.Stage;
             stage.background_color = Clutter.Color.from_string ("black");
             aspect_ratio = new ClutterGst.Aspectratio () {
-                sink = cameraplayer.videosink as ClutterGst.VideoSink
+                sink = cameraplayer.sink
             };
             stage.content = aspect_ratio;
             set_size_request (570, 450);

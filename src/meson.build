@@ -1,9 +1,28 @@
+headers = files(
+  'inytag.h'
+ )
+
+sources = files(
+  'inytag.cc'
+)
+
+inytag_files = [
+    sources,
+    headers,
+]
+
+install_headers(headers)
+
+add_languages('cpp')
+meson.get_compiler('cpp')
+
+inytag_dep = meson.get_compiler('vala').find_library('inytag', dirs: vaapi)
+
 executable(
     meson.project_name(),
     asresources,
     'Application.vala',
     'Window.vala',
-    'ClutterGstreamer.vala',
     'PlayerPage.vala',
     'BottomBar.vala',
     'TopBar.vala',
@@ -11,8 +30,6 @@ executable(
     'TimeMusic.vala',
     'SeekBar.vala',
     'PreviewPopover.vala',
-    'PreviewClutterGst.vala',
-    'PreviewVideo.vala',
     'Playlist.vala',
     'EngineMegalobiz.vala',
     'DLNAMain.vala',
@@ -105,6 +122,10 @@ executable(
     'NotifyResume.vala',
     'EngineSubtittle4Songs.vala',
     'LyricEngine.vala',
+    'Player.vala',
+    'TextMix.vala',
+    inytag_files,
+    'StaticObject.vala',
 
     c_args: c_args,
     dependencies: [
@@ -132,11 +153,13 @@ executable(
         dependency('gssdp-1.2'),
         dependency('libxml-2.0'),
         dependency('libcanberra'),
-        dependency('inytag'),
+        dependency('taglib_c'),
         dependency('sqlite3'),
+        inytag_dep,
 
         meson.get_compiler('vala').find_library('posix'),
-        meson.get_compiler('c').find_library('m', required : false)
+        meson.get_compiler('c').find_library('m', required : false),
+        meson.get_compiler('cpp').find_library('inytag', required : false),
     ],
     link_args: ['-lm'],
     install : true

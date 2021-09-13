@@ -13,13 +13,36 @@ finish-args:
   - '--filesystem=home'
 
 modules:
-  - name: InyTag
+  - name: libgssdp-1.2-0
     buildsystem: meson
     sources:
       - type: git
-      url: https://github.com/torikulhabib/InyTag.git
-      tag: 'v1.0'
-  
+        url: https://github.com/GNOME/gssdp.git
+        tag: gssdp-1.2.3
+  - name: libgupnp-1.2-0
+    buildsystem: meson
+    sources:
+      - type: git
+        url: https://github.com/GNOME/gupnp.git
+        tag: gupnp-1.2.4
+  - name: libgupnp-av-1.0-2
+    buildsystem: meson
+    sources:
+      - type: git
+        url: https://github.com/GNOME/gupnp-av.git
+        tag: gupnp-av-0.12.11
+  - name: libcanberra
+    buildsystem: autotools
+    sources:
+      - type: git
+        url: git://git.0pointer.net/libcanberra.git
+        tag: master
+  - name: taglib
+    buildsystem: cmake
+    sources:
+      - type: git
+        url: https://github.com/taglib/taglib.git
+        tag: v1.11.1
   - name: niki
     buildsystem: meson
     sources:

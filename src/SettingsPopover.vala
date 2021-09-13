@@ -21,11 +21,14 @@
 
 namespace Niki {
     public class SettingsPopover : Gtk.Popover {
+        private ComboxImage? videostream;
         private ComboxImage? languages;
         private ComboxImage? subtitles;
         private ComboxImage? combox_font;
         private PlayerPage? playerpage;
+        private Gtk.Revealer label_video_revealer;
         private Gtk.Revealer label_audio_revealer;
+        private Gtk.Revealer video_track_revealer;
         private Gtk.Revealer audio_track_revealer;
         private Gtk.Revealer sub_label_revealer;
         private Gtk.Revealer subtitles_revealer;
@@ -39,6 +42,22 @@ namespace Niki {
 
         public SettingsPopover (PlayerPage playerpage) {
             this.playerpage = playerpage;
+            var video_label = new Gtk.Label (_("Video")) {
+                halign = Gtk.Align.END
+            };
+            label_video_revealer = new Gtk.Revealer () {
+                transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN,
+                transition_duration = 500
+            };
+            label_video_revealer.add (video_label);
+
+            videostream = new ComboxImage ();
+            video_track_revealer = new Gtk.Revealer () {
+                transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN,
+                transition_duration = 500
+            };
+            video_track_revealer.add (videostream);
+
             var languange_label = new Gtk.Label (_("Audio")) {
                 halign = Gtk.Align.END
             };
@@ -55,7 +74,7 @@ namespace Niki {
             };
             audio_track_revealer.add (languages);
 
-            var sub_label = new Gtk.Label (_("Internal Subtitle")) {
+            var sub_label = new Gtk.Label (_("Subtitle")) {
                 halign = Gtk.Align.END
             };
             sub_label_revealer = new Gtk.Revealer () {
@@ -148,26 +167,28 @@ namespace Niki {
                     if (!NikiApp.settings.get_boolean ("subtitle-available")) {
                         NikiApp.settings.set_boolean ("subtitle-available", true);
                     }
+                    playerpage.playback.set_subtittle (file_chooser_subtitle.get_uri ());
                 }
-                playerpage.playback.subtitle_choose (file_chooser_subtitle.get_uri ());
             });
 
             grid = new Gtk.Grid () {
                 margin = 2,
                 column_spacing = 10
             };
-            grid.attach (label_audio_revealer, 0, 0);
-            grid.attach (audio_track_revealer, 1, 0);
-            grid.attach (sub_label_revealer, 0, 1);
-            grid.attach (subtitles_revealer, 1, 1);
-            grid.attach (combox_font_label_revealer, 0, 2);
-            grid.attach (combox_font_revealer, 1, 2);
-            grid.attach (font_selection_label_revealer , 0, 3);
-            grid.attach (font_selection_btn_revealer, 1, 3);
-            grid.attach (speed_label, 0, 4);
-            grid.attach (speed_combox, 1, 4);
-            grid.attach (ex_subtitle_label, 0, 5);
-            grid.attach (file_chooser_subtitle, 1, 5);
+            grid.attach (label_video_revealer, 0, 0);
+            grid.attach (video_track_revealer, 1, 0);
+            grid.attach (label_audio_revealer, 0, 1);
+            grid.attach (audio_track_revealer, 1, 1);
+            grid.attach (sub_label_revealer, 0, 2);
+            grid.attach (subtitles_revealer, 1, 2);
+            grid.attach (combox_font_label_revealer, 0, 3);
+            grid.attach (combox_font_revealer, 1, 3);
+            grid.attach (font_selection_label_revealer , 0, 4);
+            grid.attach (font_selection_btn_revealer, 1, 4);
+            grid.attach (speed_label, 0, 5);
+            grid.attach (speed_combox, 1, 5);
+            grid.attach (ex_subtitle_label, 0, 6);
+            grid.attach (file_chooser_subtitle, 1, 6);
             grid.show_all ();
             add (grid);
             NikiApp.settings.bind ("speed-playing", speed_combox, "active", GLib.SettingsBindFlags.DEFAULT);
@@ -201,11 +222,13 @@ namespace Niki {
                     revealer_view ();
                     subtitles_track ();
                     audio_track ();
+                    video_track ();
                 }
                 remove_timer = 0;
                 return Source.REMOVE;
             });
         }
+
         private void on_subtitles_changed () {
             if (subtitles.active < 0) {
                 return;
@@ -218,18 +241,8 @@ namespace Niki {
             if (subtitles.model.iter_n_children (null) >= 0) {
                 subtitles.remove_all ();
             }
-            GLib.List<string> subtitles_names = get_subtitle_track_names ();
-            uint track = 1;
-            foreach (string? subtitle in playerpage.playback.subtitle_tracks) {
-                if (subtitle == null) {
-                    continue;
-                }
-                if (subtitles_names.nth_data (track - 1) == null) {
-                    subtitles.appending ("com.github.torikulhabib.niki.subtitle-on-symbolic", _("%s %u").printf (_("Track"), track));
-                } else {
-                    subtitles.appending ("com.github.torikulhabib.niki.subtitle-on-symbolic", _("%s %u").printf (subtitles_names.nth_data (track - 1), track));
-                }
-                track ++;
+            foreach (string? subtitle in playerpage.playback.get_subtitle_tracks ()) {
+                subtitles.appending ("com.github.torikulhabib.niki.subtitle-on-symbolic", subtitle);
                 if (!NikiApp.settings.get_boolean ("subtitle-available")) {
                     NikiApp.settings.set_boolean ("subtitle-available", true);
                 }
@@ -246,18 +259,6 @@ namespace Niki {
             subtitles.changed.connect (on_subtitles_changed);
         }
 
-        private GLib.List<string> get_subtitle_track_names () {
-            GLib.List<string> subtitle_languages = new GLib.List<string> ();
-            foreach (var subtitle_stream in get_discoverer_info (playerpage.playback.uri).get_subtitle_streams ()) {
-                var track_name = ((Gst.PbUtils.DiscovererSubtitleInfo) subtitle_stream).get_language ();
-                if (track_name != null) {
-                    var language_name = Gst.Tag.get_language_name (track_name);
-                    subtitle_languages.append (language_name);
-                }
-            }
-            return subtitle_languages;
-        }
-
         private void on_languages_changed () {
             if (languages.active < 0 || languages.get_active_name () == _("Default")) {
                 return;
@@ -270,18 +271,8 @@ namespace Niki {
             if (languages.model.iter_n_children (null) >= 0) {
                 languages.remove_all ();
             }
-            GLib.List<string> languages_names = get_audio_track_names ();
-            uint track = 1;
-            foreach (var stream in playerpage.playback.audio_streams) {
-                if (stream == null) {
-                    continue;
-                }
-                if (languages_names.nth_data (track - 1) == null) {
-                    languages.appending ("audio-input-microphone-symbolic", _("%s %u").printf (_("Track"), track));
-                } else {
-                    languages.appending ("audio-input-microphone-symbolic", _("%s %u").printf (languages_names.nth_data (track - 1), track));
-                }
-                track ++;
+            foreach (var stream in playerpage.playback.get_audio_streams ()) {
+                languages.appending ("audio-input-microphone-symbolic", stream);
             }
 
             int count = languages.model.iter_n_children (null);
@@ -297,16 +288,35 @@ namespace Niki {
             }
             languages.changed.connect (on_languages_changed);
         }
-        private GLib.List<string> get_audio_track_names () {
-            GLib.List<string> audio_languages = new GLib.List<string> ();
-            foreach (var audio_stream in get_discoverer_info (playerpage.playback.uri).get_audio_streams ()) {
-                var language_code = ((Gst.PbUtils.DiscovererAudioInfo) audio_stream).get_language ();
-                if (language_code != null) {
-                    var language_name = Gst.Tag.get_language_name (language_code);
-                    audio_languages.append (language_name);
-                }
+
+        private void on_video_changed () {
+            if (videostream.active < 0 || videostream.get_active_name () == _("Default")) {
+                return;
             }
-            return audio_languages;
+            playerpage.playback.video_stream = videostream.active;
+        }
+
+        private void video_track () {
+            videostream.changed.disconnect (on_video_changed);
+            if (videostream.model.iter_n_children (null) >= 0) {
+                videostream.remove_all ();
+            }
+            foreach (var stream in playerpage.playback.get_video_streams ()) {
+                videostream.appending ("video-display-tv-symbolic", stream);
+            }
+
+            int count = videostream.model.iter_n_children (null);
+            label_video_revealer.reveal_child = video_track_revealer.reveal_child = count > 1;
+            if (video_track_revealer.reveal_child) {
+                videostream.active = playerpage.playback.video_stream;
+            } else {
+                if (count != 0) {
+                    videostream.remove_all ();
+                }
+                videostream.appending ("video-display-tv-symbolic", _("Default"));
+                videostream.active = 0;
+            }
+            videostream.changed.connect (on_video_changed);
         }
     }
 }

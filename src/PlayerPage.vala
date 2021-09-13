@@ -21,7 +21,7 @@
 
 namespace Niki {
     public class PlayerPage : GtkClutter.Embed {
-        public PlaybackPlayer? playback;
+        public Player? playback;
         public Clutter.Stage stage;
         private ClutterGst.Content clutter_content;
         public Clutter.Actor cover_center;
@@ -76,16 +76,16 @@ namespace Niki {
 
         public PlayerPage (Window window) {
             events |= Gdk.EventMask.POINTER_MOTION_MASK;
-            playback = new PlaybackPlayer ();
-            playback.set_seek_flags (ClutterGst.SeekFlags.ACCURATE);
+            playback = new Player ();
             initbitor = new Inhibitor ();
             stage = get_stage () as Clutter.Stage;
             stage.background_color = Clutter.Color.from_string ("black") { alpha = 0 };
             stage.set_content_scaling_filters (Clutter.ScalingFilter.TRILINEAR, Clutter.ScalingFilter.LINEAR);
             stage.set_content_gravity (Clutter.ContentGravity.RESIZE_ASPECT);
             clutter_content = new ClutterGst.Content () {
-                player = playback
+                sink = playback.sink
             };
+
             stage.content = clutter_content;
             playback.size_change.connect ((width, height) => {
                 video_width = width * get_scale_factor ();
@@ -253,7 +253,6 @@ namespace Niki {
             right_bar.playlist.item_added.connect (load_current_list);
 
             playback.eos.connect (() => {
-                playback.progress = 0;
                 switch (NikiApp.settings.get_enum ("repeat-mode")) {
                     case RepeatMode.ALL :
                         if (!right_bar.playlist.next ()) {
@@ -319,13 +318,12 @@ namespace Niki {
                     resize_player_page (video_width, video_height);
                 }
             });
-            NikiApp.settings.changed["activate-subtitle"].connect (() => {
-                playback.subtitle_track = NikiApp.settings.get_boolean ("activate-subtitle")? playback.get_subtitle_track () : -1;
-            });
+            NikiApp.settings.changed["activate-subtitle"].connect (subtittle_mode);
+            subtittle_mode ();
             size_allocate.connect (stage_position);
             notify_resume.notify["child-revealed"].connect (stage_position);
             notify_resume.resume_play.connect ((progress)=> {
-                playback.progress = progress;
+                playback.seeked = progress;
                 stage_position ();
             });
             Idle.add (starting);
@@ -345,10 +343,14 @@ namespace Niki {
             }
         }
 
+        private void subtittle_mode () {
+            playback.subtitle_active = NikiApp.settings.get_boolean ("activate-subtitle");
+        }
+
         public void home_open () {
             save_lasplay ();
-            playback.playing = false;
-            playback.uri = null;
+            playback.stop ();
+            playback.uri = "";
             initbitor.uninhibit ();
             if (NikiApp.window.main_stack.visible_child_name == "player") {
                 if (!NikiApp.settings.get_boolean ("home-signal")) {
@@ -371,7 +373,7 @@ namespace Niki {
         }
 
         private void buffer_fill () {
-            string_notify (_("Buffering: %s %").printf (((int) (playback.get_buffer_fill () * 100)).to_string ()));
+            string_notify (@"Buffering: $(playback.buffer_fill)% Speed: $(format_size ((uint64)playback.conn_speed))");
         }
 
         public bool starting () {
@@ -410,6 +412,7 @@ namespace Niki {
                 right_bar.playlist.play_starup (NikiApp.settings.get_string ("last-played"), this);
             }
         }
+
         private void gohome () {
             if (!NikiApp.settings.get_boolean ("home-signal")) {
                 NikiApp.settings.set_boolean ("home-signal", true);
@@ -417,6 +420,7 @@ namespace Niki {
             right_bar.playlist.clear_items ();
             NikiApp.window.main_stack.visible_child_name = "welcome";
         }
+
         public string scroll_actor (int index_in) {
             Clutter.Actor menu = scroll.get_first_child ();
             if (index_in > 0) {
@@ -440,6 +444,7 @@ namespace Niki {
                 ((Clutter.Text)item).font_name = NikiApp.settings.get_string ("font");
             }
         }
+
         public void seek_music () {
             if (NikiApp.settings.get_boolean ("audio-video") && !NikiApp.settings.get_boolean ("information-button") && NikiApp.settings.get_boolean ("lyric-button") && NikiApp.settings.get_boolean ("lyric-available")) {
                 for (int i = 0; i < menu_actor.get_n_children (); i++) {
@@ -449,6 +454,7 @@ namespace Niki {
                 }
             }
         }
+
         public Clutter.Actor text_clutter (string name) {
             var lyric_sc = new Clutter.Text () {
                 text = name,
@@ -545,7 +551,7 @@ namespace Niki {
         }
 
         private void font_option () {
-            playback.set_subtitle_font_name (NikiApp.settings.get_int ("font-options") == 0? "" : NikiApp.settings.get_string ("font"));
+            playback.subtitle_font_name = NikiApp.settings.get_int ("font-options") == 0? "" : NikiApp.settings.get_string ("font");
             first_lyric.font_name = seconds_lyric.font_name = NikiApp.settings.get_string ("font");
             font_change ();
         }
@@ -682,7 +688,10 @@ namespace Niki {
             string? sub_uri = get_subtitle_for_uri (check);
             if (sub_uri != null && sub_uri != check) {
                 bottom_bar.menu_popover.file_chooser_subtitle.select_uri (sub_uri);
+                playback.subtitle_uri = sub_uri;
                 NikiApp.settings.set_boolean ("subtitle-available", true);
+            } else {
+                playback.subtitle_uri = null;
             }
             var file = File.new_for_uri (check);
             string? lyric_uri = null;
@@ -754,18 +763,10 @@ namespace Niki {
             if (NikiApp.settings.get_boolean ("home-signal")) {
                 return;
             }
-            if (NikiApp.settings.get_int ("speed-playing") != 4) {
-                playback.pipeline.set_state (Gst.State.PAUSED);
-            }
             var duration = playback.duration;
             var progress = playback.progress;
             var new_progress = ((duration * progress) + (double)seconds) / duration;
-            playback.progress = new_progress.clamp (0.0, 1.0);
-            if (NikiApp.settings.get_int ("speed-playing") != 4) {
-                if (playback.playing) {
-                    playback.pipeline.set_state (Gst.State.PLAYING);
-                }
-            }
+            playback.seeked = new_progress.clamp (0.0, 1.0);
             string_notify (bottom_bar.seekbar_widget.duration_n_progress);
             if (!bottom_bar.child_revealed) {
                 notifybottombar.reveal_control ();

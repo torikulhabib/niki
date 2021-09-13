@@ -212,14 +212,6 @@ namespace Niki {
             show_all ();
 
             playerpage.size_allocate.connect (size_flexible);
-            playlist.item_added.connect (playlist_edit);
-            NikiApp.settings.changed["edit-playlist"].connect (playlist_edit);
-            NikiApp.settings.changed["title-playing"].connect (playlist_edit);
-            NikiApp.settings.changed["artist-music"].connect (playlist_edit);
-            NikiApp.settings.changed["album-music"].connect (playlist_edit);
-            playerpage.playback.notify["idle"].connect (playlist_edit);
-            playerpage.playback.notify["playing"].connect (playlist_edit);
-
             notify["child-revealed"].connect (() => {
                 if (!child_revealed) {
                     entry_rev.set_reveal_child (false);
@@ -241,6 +233,9 @@ namespace Niki {
             playlist.leave_notify_event.connect (() => {
                 return cursor_hand_mode (2);
             });
+            playlist.item_added.connect (playlist_edit);
+            NikiApp.settings.changed["edit-playlist"].connect (playlist_edit);
+            playerpage.playback.idle.connect (playlist_edit);
             playlist_edit ();
         }
 

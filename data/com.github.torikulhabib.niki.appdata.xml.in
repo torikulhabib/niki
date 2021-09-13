@@ -17,7 +17,7 @@
       <li>Lyric.</li>
       <li>Equalizer.</li>
       <li>Video Balance.</li>
-      <li>Album art as background.</li>
+      <li>Album background.</li>
       <li>Audio Tag.</li>
       <li>Blurred background.</li>
       <li>DLNA Explorer.</li>
@@ -32,11 +32,17 @@
   <provides>
     <binary>com.github.torikulhabib.niki</binary>
   </provides>
-    <release version="0.9.20" date="2021-08-10">
+    <release version="0.9.9" date="2021-08-10">
       <description>
         <p>Fix and add Features!</p>
         <p>Lyric Downloader!</p>
-        <p>Taglib!</p>
+        <p>Support NeteEase!</p>
+        <p>Support Viewlyric!</p>
+        <p>Support Megalobiz!</p>
+        <p>Support Subtitle4Song!</p>
+        <p>New Lyric Parsher!</p>
+        <p>Music Tag!</p>
+        <p>Tag Picture Frame Support MP4, Mp3 and FLAC!</p>
       </description>
     </release>
 ​  <releases>

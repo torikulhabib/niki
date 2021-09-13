@@ -228,7 +228,6 @@ namespace Niki {
             info_label_full.get_style_context ().add_class ("h2");
             info_label_full.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
 
-
             var info_actionbar = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 0) {
                 hexpand = true
             };
@@ -251,11 +250,9 @@ namespace Niki {
                 info_button ();
             });
             playerpage.right_bar.playlist.item_added.connect (label_my_app);
-            playerpage.playback.notify["idle"].connect (label_my_app);
-            NikiApp.settings.changed["title-playing"].connect (label_my_app);
-            NikiApp.settings.changed["artist-music"].connect (label_my_app);
-            NikiApp.settings.changed["album-music"].connect (label_my_app);
+            playerpage.playback.idle.connect (label_my_app);
             NikiApp.settings.changed["maximize"].connect (maximized_button);
+            NikiApp.settings.changed["make-lrc"].connect (reveal_control);
             NikiApp.settings.changed["audio-video"].connect (() => {
                 revealer_menu ();
                 label_my_app ();
@@ -273,6 +270,7 @@ namespace Niki {
                 }
             });
         }
+
         private void dialog_crop () {
             if (videocrop == null) {
                 videocrop = new VideoCrop (playerpage);
@@ -327,7 +325,7 @@ namespace Niki {
             }
 
             hiding_timer = GLib.Timeout.add_seconds (3, () => {
-                if (hovered) {
+                if (hovered || NikiApp.settings.get_boolean ("make-lrc")) {
                     hiding_timer = 0;
                     return false;
                 }

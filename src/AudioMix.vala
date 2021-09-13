@@ -1,5 +1,5 @@
 /*
-* Copyright (c) {2019} torikulhabib (https://github.com/torikulhabib)
+* Copyright (c) {2021} torikulhabib (https://github.com/torikulhabib)
 *
 * This program is free software; you can redistribute it and/or
 * modify it under the terms of the GNU General Public
@@ -28,12 +28,12 @@ namespace Niki {
         private dynamic Gst.Element equalizer;
         private dynamic Gst.Element audioamplify;
         private dynamic Gst.Element spectrum;
+        private dynamic Gst.Element scaletempo;
         private const string [] AUDIORENDER = {"autoaudiosink", "alsasink", "pulsesink"};
 
         construct {
             audiotee = Gst.ElementFactory.make ("tee", "tee");
             audioqueue = Gst.ElementFactory.make ("queue", "queue");
-            audioqueue["flush-on-eos"] = true;
             capsfilter = Gst.ElementFactory.make ("capsfilter", "capsfilter");
             Gst.Util.set_object_arg ((GLib.Object) capsfilter, "caps", "audio/x-raw, format={ S16LE, F24LE, F32LE, F64LE }");
             equalizer = Gst.ElementFactory.make ("equalizer-10bands", "equalizer-10bands");
@@ -48,18 +48,19 @@ namespace Niki {
                 band["bandwidth"] = bandwidth;
                 index++;
             }
+            scaletempo = Gst.ElementFactory.make ("scaletempo", "scaletempo");
             audioamplify = Gst.ElementFactory.make ("audioamplify", "audioamplify");
             audioamplify["amplification"] = 1.16;
-            spectrum = Gst.ElementFactory.make ("nikispectrum", "nikispectrum");
-            spectrum["interval"] = (uint64)(60 * 1000 * 1000);
+            spectrum = Gst.ElementFactory.make ("spectrum", "spectrum");
+            spectrum["interval"] = (uint64)120000000;
+            spectrum["bands"] = 10;
             audiosink = Gst.ElementFactory.make (AUDIORENDER [NikiApp.settings.get_int ("audiorender-options")], AUDIORENDER [NikiApp.settings.get_int ("audiorender-options")]);
-            add_many (audioqueue, audiotee, capsfilter, equalizer, spectrum, audioamplify, audiosink);
+            add_many (audioqueue, audiotee, capsfilter, equalizer, spectrum, audioamplify, scaletempo, audiosink);
             add_pad (new Gst.GhostPad ("sink", audiotee.get_static_pad ("sink")));
-            audioqueue.link_many (capsfilter, equalizer, spectrum, audioamplify, audiosink);
+            audioqueue.link_many (capsfilter, equalizer, spectrum, audioamplify, scaletempo,audiosink);
             Gst.Pad sinkpad = audioqueue.get_static_pad ("sink");
             Gst.Pad pad = audiotee.get_request_pad ("src_%u");
             pad.link (sinkpad);
-            audiotee["alloc-pad"] = pad;
         }
 
         public void setgain (int index, double gain) {
@@ -71,6 +72,7 @@ namespace Niki {
             }
             band["gain"] = gain;
         }
+
         public Gee.Collection<EqualizerPreset> get_presets () {
             var equalizer_preset = new Gee.TreeSet<EqualizerPreset> ();
             foreach (string preset in NikiApp.settings_eq.get_strv ("custom-presets")) {

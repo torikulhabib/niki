@@ -65,7 +65,7 @@ namespace Niki {
             }
         }
 
-        public TimeMusic (ClutterGst.Playback playback) {
+        public TimeMusic (Player playback) {
             transition_type = Gtk.RevealerTransitionType.SLIDE_DOWN;
             transition_duration = 500;
             playback.notify["progress"].connect (() => {
@@ -107,7 +107,7 @@ namespace Niki {
             search_time_lrc.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             search_time_lrc.clicked.connect (() => {
                 if (NikiApp.settings.get_boolean ("make-lrc")) {
-                    position_sec ((int64)(playback.get_position ()));
+                    position_sec ((int64)playback.position);
                 } else {
                     var search_lrc = new SearchDialog ();
                     search_lrc.show_all ();
@@ -178,6 +178,8 @@ namespace Niki {
             string text = layout.get_text ();
             if (NikiApp.settings.get_boolean ("audio-video")) {
                 anim_area.width_request = (actionbar.get_allocated_width () / 2);
+            } else {
+                anim_area.width_request = 10;
             }
             Pango.AttrList attrlist = new Pango.AttrList ();
 
@@ -257,7 +259,7 @@ namespace Niki {
                         if (NikiApp.settings.get_boolean ("make-lrc")) {
                             text = _("Lets Make Lyric");
                         } else {
-                            text = _("Need Help!");
+                            text = _("Happy listening!");
                         }
                         state = 0;
                         break;

@@ -23,40 +23,26 @@ namespace Niki {
     public class NotifyBottomBar : Gtk.Revealer {
         private Gtk.ProgressBar progress_bar;
         private PlayerPage? playerpage;
-        private double _playback_progress;
-        public double playback_progress {
-            get {
-                return _playback_progress;
-            }
-            set {
-                double progress = value;
-                if (progress < 0.0) {
-                    progress = 0.0;
-                } else if (progress > 1.0) {
-                    progress = 1.0;
-                }
-                _playback_progress = progress;
-                progress_bar.set_fraction (progress);
-            }
-        }
 
         public NotifyBottomBar (PlayerPage playerpage) {
             this.playerpage = playerpage;
             transition_type = Gtk.RevealerTransitionType.SLIDE_UP;
             transition_duration = 500;
+            hexpand = true;
             progress_bar = new Gtk.ProgressBar () {
-                hexpand = true
+                expand = true
             };
+            progress_bar.set_fraction (0);
             progress_bar.get_style_context ().add_class ("progress_bar");
             playerpage.playback.notify["progress"].connect (() => {
-                playback_progress = playerpage.playback.progress;
+                progress_bar.set_fraction (playerpage.playback.progress);
             });
             add (progress_bar);
-            show_all ();
         }
 
         private uint hiding_timer = 0;
         public void reveal_control () {
+            show_all ();
             if (!child_revealed) {
                 set_reveal_child (true);
             }
@@ -67,6 +53,7 @@ namespace Niki {
             hiding_timer = GLib.Timeout.add_seconds (1, () => {
                 set_reveal_child (false);
                 hiding_timer = 0;
+                hide ();
                 return Source.REMOVE;
             });
         }

@@ -319,6 +319,9 @@ namespace Niki {
     }
 
     private string get_mime_type (File fileinput) {
+        if (!fileinput.query_exists ()) {
+            return "";
+        }
         string mime_type = null;
         try {
             FileInfo infos = fileinput.query_info ("standard::*", 0);
@@ -442,7 +445,7 @@ namespace Niki {
         };
         var display = NikiApp.window.get_display ();
         var cursor = new Gdk.Cursor.for_display (display, cursors [cursor_mode]);
-        NikiApp.window.get_window ().set_cursor (cursor);
+        NikiApp.window.get_window ().set_cursor (cursor_mode == 2? null : cursor);
         return false;
     }
 
@@ -627,13 +630,16 @@ namespace Niki {
 
     private Gst.Sample? get_cover_sample (Gst.TagList tag_list) {
         Gst.Sample sample;
-        for (int i = 0; tag_list.get_sample_index (Gst.Tags.IMAGE, i, out sample); i++) {
+        for (uint i = 0; tag_list.get_sample_index (Gst.Tags.IMAGE, i, out sample); i++) {
             unowned Gst.Structure caps_struct = sample.get_info ();
             int image_type = Gst.Tag.ImageType.UNDEFINED;
             caps_struct.get_enum ("image-type", typeof (Gst.Tag.ImageType), out image_type);
             if (image_type == Gst.Tag.ImageType.FRONT_COVER) {
                 return sample;
+            } else if (image_type == Gst.Tag.ImageType.UNDEFINED) {
+                return sample;
             }
+            return sample;
         }
         return sample;
     }
@@ -773,6 +779,9 @@ namespace Niki {
     }
 
     private Gdk.Pixbuf circle_pix (Gdk.Pixbuf pixbuf) {
+        if (pixbuf == null) {
+            return (Gdk.Pixbuf) null;
+        }
         int min_size = int.min (pixbuf.width, pixbuf.height);
         int max_size = int.max (pixbuf.width, pixbuf.height);
         Gdk.Pixbuf new_pix = new Gdk.Pixbuf.subpixbuf (pixbuf, min_size == pixbuf.width? 0 : (int) (max_size / 2) - (min_size / 2), pixbuf.get_height () == min_size? 0 : (int) (max_size / 2) - (min_size / 2), min_size, min_size);
@@ -858,6 +867,21 @@ namespace Niki {
         } else {
             return "";
         }
+    }
+
+    private int get_date_tag (Gst.TagList tag_list) {
+        GLib.Date? d;
+        Gst.DateTime? dt;
+        if (tag_list.get_date_time (Gst.Tags.DATE_TIME, out dt)) {
+            if (dt != null) {
+                return dt.get_year ();
+            } else if (tag_list.get_date (Gst.Tags.DATE, out d)) {
+                if (d != null) {
+                    return dt.get_year ();
+                }
+            }
+        }
+        return 0;
     }
 
     private void permanent_delete (File file) {
@@ -1400,31 +1424,16 @@ namespace Niki {
     private void insert_music (File path) {
         Sqlite.Statement stmt;
         string sql = "INSERT OR IGNORE INTO musics (uri, title, artist, album, genre, year, duration, lastplay) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
-        if (path.get_uri ().down ().has_suffix ("aac") || path.get_uri ().down ().has_suffix ("ac3")) {
-            int res = NikiApp.db.prepare_v2 (sql, -1, out stmt);
-            res = stmt.bind_text (1, path.get_uri ());
-            res = stmt.bind_text (2, path.get_basename ());
-            res = stmt.bind_text (3, "Unknown");
-            res = stmt.bind_text (4, "Unknown");
-            res = stmt.bind_text (5, "Unknown");
-            res = stmt.bind_int (6, 0);
-            res = stmt.bind_text (7, "Unknown");
-            res = stmt.bind_double (8, 0.0);
-            if ((res = stmt.step ()) != Sqlite.DONE) {
-                warning ("Error: %d: %s", NikiApp.db.errcode (), NikiApp.db.errmsg ());
-            }
-            stmt.reset ();
-            return;
-        }
-        var tagfile = new InyTag.File (path.get_path ());
+        var info = get_discoverer_info (path.get_uri ());
+        var tags = info.get_tags ();
         int res = NikiApp.db.prepare_v2 (sql, -1, out stmt);
         res = stmt.bind_text (1, path.get_uri ());
         res = stmt.bind_text (2, get_song_info (path));
-        res = stmt.bind_text (3, get_artist_music (path));
-        res = stmt.bind_text (4, get_album_music (path));
-        res = stmt.bind_text (5, tagfile.tag.genre);
-        res = stmt.bind_int (6, (int)tagfile.tag.year);
-        res = stmt.bind_text (7, seconds_to_time (tagfile.audioproperties.length));
+        res = stmt.bind_text (3, get_string_tag (Gst.Tags.ARTIST, tags));
+        res = stmt.bind_text (4, get_string_tag (Gst.Tags.ALBUM, tags));
+        res = stmt.bind_text (5, get_string_tag (Gst.Tags.GENRE, tags));
+        res = stmt.bind_int (6, get_date_tag (tags));
+        res = stmt.bind_text (7, seconds_to_time ((int)(info.get_duration () / 1000000000)));
         res = stmt.bind_double (8, 0.0);
         if ((res = stmt.step ()) != Sqlite.DONE) {
             warning ("Error: %d: %s", NikiApp.db.errcode (), NikiApp.db.errmsg ());
@@ -1550,12 +1559,8 @@ namespace Niki {
         Sqlite.Statement stmt;
         var path = File.new_for_uri (uri);
         string sql = "";
-        if (path.get_uri ().down ().has_suffix ("aac") || path.get_uri ().down ().has_suffix ("ac3")) {
-            sql = @" UPDATE musics SET title = '$(get_song_info (path))', artist = 'Unknown', album = 'Unknown', genre = 'Unknown', year = 0 WHERE uri = ?";
-        } else {
-            var tagfile = new InyTag.File (path.get_path ());
-            sql = @" UPDATE musics SET title = '$(get_song_info (path))', artist = '$(get_artist_music (path))', album = '$(get_album_music (path))', genre = '$(tagfile.tag.genre)', year = $((int)tagfile.tag.year) WHERE uri = ?";
-        }
+        var tags = get_discoverer_info (path.get_uri ()).get_tags ();
+        sql = @" UPDATE musics SET title = '$(get_song_info (path))', artist = '$(get_string_tag (Gst.Tags.ARTIST, tags))', album = '$(get_string_tag (Gst.Tags.ALBUM, tags))', genre = '$(get_string_tag (Gst.Tags.GENRE, tags))', year = $(get_date_tag (tags)) WHERE uri = ?";
         int res = NikiApp.db.prepare_v2 (sql, -1, out stmt);
         res = stmt.bind_text (1, uri);
         if ((res = stmt.step ()) != Sqlite.DONE) {

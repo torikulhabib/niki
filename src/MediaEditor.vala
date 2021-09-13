@@ -533,8 +533,8 @@ namespace Niki {
                     file_mpg.mpeg_tag.album = album_entry.text;
                     file_mpg.mpeg_tag.genre = genre_entry.text;
                     file_mpg.mpeg_tag.comment = comment_textview.buffer.text;
-                    file_mpg.mpeg_tag.year = (uint) date_spinbutton.value;
-                    file_mpg.mpeg_tag.track = (uint) track_spinbutton.value;
+                    file_mpg.mpeg_tag.year = (int) date_spinbutton.value;
+                    file_mpg.mpeg_tag.track = (int) track_spinbutton.value;
                     var frampic = new InyTag.ID3v2_Attached_Picture_Frame ();
                     if (FileUtils.test (nameimage, FileTest.EXISTS)) {
                         if (!file_mpg.id3v2_tag.is_frame_empty (InyTag.Frame_ID.PICTURE)) {
@@ -553,8 +553,8 @@ namespace Niki {
                     file_mp4.mp4_tag.album = album_entry.text;
                     file_mp4.mp4_tag.genre = genre_entry.text;
                     file_mp4.mp4_tag.comment = comment_textview.buffer.text;
-                    file_mp4.mp4_tag.year = (uint) date_spinbutton.value;
-                    file_mp4.mp4_tag.track = (uint) track_spinbutton.value;
+                    file_mp4.mp4_tag.year = (int) date_spinbutton.value;
+                    file_mp4.mp4_tag.track = (int) track_spinbutton.value;
                     if (FileUtils.test (nameimage, FileTest.EXISTS)) {
                         file_mp4.set_picture (InyTag.Format_Type.JPEG, nameimage);
                     }
@@ -566,8 +566,8 @@ namespace Niki {
                     file_flac.flac_tag.album = album_entry.text;
                     file_flac.flac_tag.genre = genre_entry.text;
                     file_flac.flac_tag.comment = comment_textview.buffer.text;
-                    file_flac.flac_tag.year = (uint) date_spinbutton.value;
-                    file_flac.flac_tag.track = (uint) track_spinbutton.value;
+                    file_flac.flac_tag.year = (int) date_spinbutton.value;
+                    file_flac.flac_tag.track = (int) track_spinbutton.value;
                     if (FileUtils.test (nameimage, FileTest.EXISTS)) {
                         InyTag.Flac_Picture picture_flac = new InyTag.Flac_Picture ();
                         picture_flac.set_mime_type (get_mime_type (File.new_for_path (nameimage)));
@@ -584,8 +584,8 @@ namespace Niki {
                     tagfile.tag.album = album_entry.text;
                     tagfile.tag.genre = genre_entry.text;
                     tagfile.tag.comment = comment_textview.buffer.text;
-                    tagfile.tag.year = (uint) date_spinbutton.value;
-                    tagfile.tag.track = (uint) track_spinbutton.value;
+                    tagfile.tag.year = (int) date_spinbutton.value;
+                    tagfile.tag.track = (int) track_spinbutton.value;
                     tagfile.save ();
                 }
                 info_send (@"$(_("Taged")) $(file.get_basename ())");

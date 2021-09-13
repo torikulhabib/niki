@@ -23,12 +23,25 @@ namespace Niki {
     public class CoverImage : Clutter.Canvas {
         private PlayerPage playerpage;
         private Gdk.Pixbuf background;
+        private Gst.TagList taglist;
+        private string urivideo;
 
         public CoverImage (PlayerPage playerpage) {
             this.playerpage = playerpage;
             playerpage.cover_center.set_pivot_point (0.5f, 0.5f);
-            playerpage.playback.ready.connect (audio_banner);
-            playerpage.playback.notify["idle"].connect (audio_banner);
+            playerpage.playback.idle.connect (audio_banner);
+            playerpage.playback.albumart_changed.connect ((new_taglist)=> {
+                if (urivideo != (NikiApp.settings.get_string ("title-playing") + NikiApp.settings.get_string ("artist-music"))) {
+                    Gst.Sample sample;
+                    new_taglist.get_sample (Gst.Tags.IMAGE, out sample);
+                    if (sample != null) {
+                        this.taglist = new_taglist;
+                    } else {
+                        this.taglist = new_taglist;
+                    }
+                    urivideo = (NikiApp.settings.get_string ("title-playing") + NikiApp.settings.get_string ("artist-music"));
+                }
+            });
             playerpage.size_allocate.connect (size_alocate);
             audio_banner ();
         }
@@ -37,8 +50,8 @@ namespace Niki {
             if (NikiApp.settings.get_boolean ("audio-video")) {
                 int height;
                 ((Gtk.Window) playerpage.get_toplevel ()).get_size (null, out height);
-                var n_width = playerpage.cover_center.width = 150 + ((height / 10));
-                var n_height = playerpage.cover_center.height = 150 + ((height / 10));
+                var n_width = playerpage.cover_center.width = 100 + ((height / 8));
+                var n_height = playerpage.cover_center.height = 100 + ((height / 8));
                 set_size ((int)n_width, (int)n_height);
                 invalidate ();
             }
@@ -49,7 +62,9 @@ namespace Niki {
                 Idle.add (()=> {
                     if (NikiApp.settings.get_enum ("player-mode") == PlayerMode.AUDIO) {
                         if (file_exists (NikiApp.settings.get_string ("uri-video"))) {
-                            background = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (NikiApp.settings.get_string ("uri-video")).get_tags ()), 300);
+                            if (taglist != null) {
+                                background = align_and_scale_pixbuf (pix_from_tag (taglist), 300);
+                            }
                             size_alocate ();
                             playerpage.cover_center.content = this;
                         }

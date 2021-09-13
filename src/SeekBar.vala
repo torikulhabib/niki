@@ -69,6 +69,9 @@ namespace Niki {
                 hexpand = true,
                 draw_value = false
             };
+            scale.events |= Gdk.EventMask.POINTER_MOTION_MASK;
+            scale.events |= Gdk.EventMask.LEAVE_NOTIFY_MASK;
+            scale.events |= Gdk.EventMask.ENTER_NOTIFY_MASK;
             scale.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             scale.get_style_context ().add_class ("seek_bar");
             scale.get_style_context ().add_class ("label");
@@ -104,21 +107,12 @@ namespace Niki {
                 cursor_hand_mode (0);
                 preview_popover.update_pointing ((int) event.x);
                 preview_popover.set_preview_progress (event.x / ((double) event.window.get_width ()), !playerpage.playback.playing);
-                preview_popover.label_progress.label = @" $(seconds_to_time ((int) (event.x / ((double) event.window.get_width ()) * playerpage.playback.duration))) ";
                 return false;
             });
 
             scale.change_value.connect ((scroll, new_value) => {
                 if (scroll == Gtk.ScrollType.JUMP) {
-                    if (NikiApp.settings.get_int ("speed-playing") != 4) {
-                        playerpage.playback.pipeline.set_state (Gst.State.PAUSED);
-                        playerpage.playback.progress = new_value;
-                        if (playerpage.playback.playing) {
-                            playerpage.playback.pipeline.set_state (Gst.State.PLAYING);
-                        }
-                    } else {
-                        playerpage.playback.progress = new_value;
-                    }
+                    playerpage.playback.seeked = new_value;
                     playerpage.seek_music ();
                 }
                 return false;
@@ -149,7 +143,7 @@ namespace Niki {
         public void start (PlayerPage playerpage) {
             if (NikiApp.settings.get_boolean ("lyric-available") && NikiApp.settings.get_boolean ("audio-video")) {
                 if (playerpage.playback.playing && lyric.is_map_valid ()) {
-                    var seconds_time = ((int64)(playerpage.playback.get_position () * 1000000));
+                    var seconds_time = ((int64)(playerpage.playback.position * 1000000));
                     int currentline = sc_lyric[lyric.get_lyric_timestamp (seconds_time, true).to_string ()];
                     int nextline = sc_lyric[lyric.get_lyric_timestamp (seconds_time, false).to_string ()];
                     if (NikiApp.settings.get_boolean ("information-button")) {

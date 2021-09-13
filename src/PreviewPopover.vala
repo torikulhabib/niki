@@ -21,7 +21,7 @@
 
 namespace Niki {
     public class PreviewPopover : Gtk.Popover {
-        public PreviewClutterGst? playback;
+        public Player? playback;
         public Gtk.Label label_progress;
         public GtkClutter.Embed clutter;
         private double clutter_height;
@@ -30,12 +30,11 @@ namespace Niki {
         private uint show_timer_id = 0;
         private uint hide_timer_id = 0;
         private uint idle_id = 0;
-        private double req_progress = 0;
+        private double req_progress = 0.0;
         public bool req_loop = false;
 
         construct {
-            playback = new PreviewClutterGst ();
-            playback.set_seek_flags (ClutterGst.SeekFlags.ACCURATE);
+            playback = new Player ();
             playback.size_change.connect ((width, height) => {
                 clutter_height = height;
                 clutter_width = width;
@@ -48,7 +47,7 @@ namespace Niki {
             stage.set_content_gravity (Clutter.ContentGravity.RESIZE_ASPECT);
             stage.background_color = Clutter.Color.from_string ("black") { alpha = 0 };
             var aspectratio = new ClutterGst.Content () {
-                player = playback
+                sink = playback.sink
             };
             stage.content = aspectratio;
 
@@ -65,8 +64,24 @@ namespace Niki {
             can_focus = false;
             add (clutter);
             hide ();
-            NikiApp.settings.changed["uri-video"].connect (load_playback);
-            load_playback ();
+            int flags;
+            playback.pipeline.get ("flags", out flags);
+            flags &= ~(1 << 1);
+            flags &= ~(1 << 2);
+            playback.pipeline["flags"] = flags;
+            playback.ready.connect (load_label);
+            playback.notify["seeked"].connect (load_label);
+            show.connect (load_playback);
+            hide.connect (()=> {
+                playback.stop ();
+                playback.uri = "";
+                playback.playing = false;
+            });
+        }
+
+        private void load_label () {
+            label_progress.label = @" $(seconds_to_time ((int) (req_progress * playback.duration))) ";
+            clutter_resize ();
         }
 
         private void clutter_resize () {
@@ -79,22 +94,24 @@ namespace Niki {
                 clutter.set_size_request ((int)(clutter_width * k), (int)(clutter_height * k));
             }
         }
+
         public void load_playback () {
-            Idle.add (() => {
-                if (NikiApp.settings.get_boolean ("home-signal") || NikiApp.settings.get_boolean ("audio-video")) {
-                    playback.uri = null;
-                } else {
-                    playback.uri = NikiApp.settings.get_string ("uri-video");
-                    playback.playing = false;
-                }
-                return Source.REMOVE;
-            });
-        }
-        public void set_preview_progress (double progress, bool loop = false) {
             if (NikiApp.settings.get_boolean ("audio-video")) {
                 return;
             }
-            req_progress = progress;
+            playback.uri = NikiApp.settings.get_string ("uri-video");
+            playback.playing = false;
+            Idle.add (()=> {
+                playback.seeked = req_progress;
+                return false;
+            });
+        }
+
+        public void set_preview_progress (double p_progress, bool loop = false) {
+            if (NikiApp.settings.get_boolean ("audio-video")) {
+                return;
+            }
+            this.req_progress = p_progress;
             req_loop = loop;
             if (!visible || idle_id > 0) {
                 return;
@@ -106,11 +123,11 @@ namespace Niki {
 
             idle_id = Idle.add_full (GLib.Priority.LOW, () => {
                 playback.playing = false;
-                playback.progress = progress;
+                playback.seeked = req_progress;
                 playback.playing = loop;
                 if (loop) {
                     loop_timer_id = Timeout.add_seconds (5, () => {
-                        set_preview_progress (progress, true);
+                        set_preview_progress (req_progress, true);
                         loop_timer_id = 0;
                         return false;
                     });

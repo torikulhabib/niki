@@ -26,9 +26,11 @@ namespace Niki {
         private static GUPnP.ServiceProxy connection_manager;
         private string separator_name = "<separator_item_unique_name>";
         private static string niki_mode = _("Niki Player");
+        private static StateObject state_obj;
 
         public DLNARenderControl (WelcomePage welcompage) {
             this.welcompage = welcompage;
+            state_obj = new StateObject ();
             liststore = new Gtk.ListStore (DlnaComboColumns.N_COLUMNS, typeof (Gdk.Pixbuf), typeof (string), typeof (GUPnP.DeviceProxy), typeof (GUPnP.ServiceProxy), typeof (GUPnP.ServiceProxy));
             model = liststore;
             var cell = new Gtk.CellRendererText () {
@@ -54,16 +56,21 @@ namespace Niki {
                 set_active_iter (iter);
                 return false;
             });
+
             NikiApp.settings.changed["dlna-muted"].connect (() => {
                 muted_control ();
                 volume_changed ();
             });
             NikiApp.settings.changed["dlna-volume"].connect (volume_changed);
-            NikiApp.settings.changed["dlna-state"].connect (() => {
-                set_state_playback (NikiApp.settings.get_enum ("dlna-state"));
+            state_obj.update_state.connect (()=> {
+                set_state_playback (state_obj.state);
             });
+            state_obj.notify["state"].connect (()=> {
+                set_state_playback (state_obj.state);
+            });
+
             changed.connect (()=> {
-                set_state_playback (NikiApp.settings.get_enum ("dlna-state"));
+                set_state_playback (state_obj.state);
             });
         }
 
@@ -79,10 +86,12 @@ namespace Niki {
             }
             return false;
         }
+
         private static GUPnP.ServiceProxy get_connection_manager (GUPnP.DeviceInfo proxy) {
             GUPnP.ServiceInfo cm = proxy.get_service ("urn:schemas-upnp-org:service:ConnectionManager");
             return ((GUPnP.ServiceProxy)cm);
         }
+
         private static GUPnP.ServiceProxy get_av_transport (GUPnP.DeviceInfo proxy) {
             GUPnP.ServiceInfo info = proxy.get_service ("urn:schemas-upnp-org:service:AVTransport");
             return ((GUPnP.ServiceProxy)info);
@@ -97,31 +106,28 @@ namespace Niki {
             if (get_selected_device ()) {
                 return;
             }
-            if (state == PlaybackState.PLAYING || state == PlaybackState.PAUSED || state == PlaybackState.TRANSITIONING) {
-                sensitive = false;
-            } else {
-                sensitive = true;
-            }
             controls_state (state);
         }
+
         private static void set_state_by_name (string state_name) {
             switch (state_name) {
                 case "STOPPED" :
-                    NikiApp.settings.set_enum ("dlna-state", PlaybackState.STOPPED);
+                    state_obj.state = PlaybackState.STOPPED;
                     break;
                 case "PLAYING" :
-                    NikiApp.settings.set_enum ("dlna-state", PlaybackState.PLAYING);
+                    state_obj.state = PlaybackState.PLAYING;
                     break;
                 case "PAUSED_PLAYBACK" :
-                    NikiApp.settings.set_enum ("dlna-state", PlaybackState.PAUSED);
+                    state_obj.state = PlaybackState.PAUSED;
                     break;
                 case "TRANSITIONING" :
-                    NikiApp.settings.set_enum ("dlna-state", PlaybackState.TRANSITIONING);
+                    state_obj.state = PlaybackState.TRANSITIONING;
                     break;
                 case "NO_MEDIA_PRESENT" :
-                    NikiApp.settings.set_enum ("dlna-state", PlaybackState.UNKNOWN);
+                    state_obj.state = PlaybackState.UNKNOWN;
                     break;
             }
+            state_obj.update_state ();
         }
 
         public void clear_selected_renderer_state () {
@@ -143,6 +149,7 @@ namespace Niki {
                 critical ("%s", err.message);
             }
         }
+
         private static void on_rendering_control_last_change (GUPnP.ServiceProxy rendering_control, string variable_name, Value value) {
             uint volume = 0;
             bool mute = false;
@@ -177,8 +184,8 @@ namespace Niki {
             liststore.append (out iter);
             liststore.set (iter, DlnaComboColumns.PIXBUF, icon, DlnaComboColumns.DEVICENAME, name, DlnaComboColumns.DEVICEPROXY, proxy, DlnaComboColumns.SERVICEAVTRANS, av_transport, DlnaComboColumns.SERVICERENDER, rendering_control);
             av_transport.add_notify ("LastChange", Type.STRING, on_last_change);
-            rendering_control.add_notify ("LastChange", Type.STRING, on_rendering_control_last_change);
             av_transport.set_subscribed (true);
+            rendering_control.add_notify ("LastChange", Type.STRING, on_rendering_control_last_change);
             rendering_control.set_subscribed (true);
         }
 
@@ -275,6 +282,7 @@ namespace Niki {
         }
 
         public void play (bool pause = true) {
+            state_obj.update_state ();
             GUPnP.ServiceProxy av_transport;
             Gtk.TreeIter iter;
             if (!get_active_iter (out iter)) {
@@ -285,7 +293,7 @@ namespace Niki {
             if (av_transport == null) {
                 return;
             }
-            if (NikiApp.settings.get_enum ("dlna-state") == PlaybackState.PLAYING && pause) {
+            if (state_obj.state == PlaybackState.PLAYING && pause) {
                 playback_control ("Pause");
             } else {
                 var in_names = new GLib.List <string> ();
@@ -303,6 +311,12 @@ namespace Niki {
         }
 
         public void playback_control (string playback) {
+            if (playback == "Pause") {
+                state_obj.state = PlaybackState.PAUSED;
+            } else if (playback == "Stop") {
+                state_obj.state = PlaybackState.STOPPED;
+            }
+            state_obj.update_state ();
             GUPnP.ServiceProxy av_transport;
             Gtk.TreeIter iter;
             if (!get_active_iter (out iter)) {
@@ -468,10 +482,11 @@ namespace Niki {
                     welcompage.dlnaaction.scale_range.set_value ((double) seconds_from_time (position) / 100);
                 }
             } catch (Error err) {
-                NikiApp.settings.set_enum ("dlna-state", PlaybackState.UNKNOWN);
+                state_obj.state = PlaybackState.UNKNOWN;
                 critical ("%s", err.message);
             }
         }
+
         private bool update_position () {
             GUPnP.ServiceProxy av_transport;
             Gtk.TreeIter iter;
@@ -506,6 +521,7 @@ namespace Niki {
                 critical ("%s", err.message);
             }
         }
+
         public void next_media () {
             GUPnP.ServiceProxy av_transport;
             Gtk.TreeIter iter;
@@ -524,6 +540,7 @@ namespace Niki {
             in_values.append (valueinst);
             av_transport.begin_action_list ("GetMediaInfo", in_names, in_values, get_next_info_cb);
         }
+
         private uint timeout_id = 0;
         private void add_timeout () {
             if (timeout_id == 0) {
@@ -537,6 +554,7 @@ namespace Niki {
                 timeout_id = 0;
             }
         }
+
         private void controls_state (int state) {
             switch (state) {
                 case PlaybackState.STOPPED:
@@ -563,6 +581,7 @@ namespace Niki {
                     break;
             }
         }
+
         private void rendering_cb (GUPnP.ServiceProxy rendering_control, GUPnP.ServiceProxyAction action) {
             try {
                 if (rendering_control.end_action (action)) {}
@@ -570,6 +589,7 @@ namespace Niki {
                 critical ("%s", err.message);
             }
         }
+
         private void muted_control () {
             if (get_selected_device ()) {
                 return;
@@ -596,6 +616,7 @@ namespace Niki {
             in_values.append (valuedesired);
             rendering_control.begin_action_list ("SetMute", in_names, in_values, rendering_cb);
         }
+
         private void volume_changed () {
             if (get_selected_device ()) {
                 return;

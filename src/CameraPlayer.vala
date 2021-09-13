@@ -21,7 +21,7 @@
 
 namespace Niki {
     public class CameraPlayer : GLib.Object {
-        public dynamic Gst.Element videosink;
+        public ClutterGst.VideoSink videosink;
         private dynamic Gst.Element camera_source;
         private dynamic Gst.Element queue;
         private dynamic Gst.Element gamma;
@@ -36,6 +36,12 @@ namespace Niki {
         private Gst.Element videosrc;
         private CameraPage? camerapage;
         public signal bool was_capture ();
+
+        public ClutterGst.VideoSink sink {
+            get {
+                return videosink;
+            }
+        }
 
         private Gst.PbUtils.EncodingProfile create_ogg_profile () {
             Gst.Caps caps = new Gst.Caps.empty_simple ("application/ogg");
@@ -87,7 +93,7 @@ namespace Niki {
             this.camerapage = camerapage;
             camerabin = Gst.ElementFactory.make ("camerabin", "camerabin");
             camerabin.set_state (Gst.State.NULL);
-            videosink = ClutterGst.create_video_sink ();
+            videosink = new ClutterGst.VideoSink ();
             camerabin["viewfinder-sink"] = videosink;
             camera_source = Gst.ElementFactory.make ("wrappercamerabinsrc", "wrappercamerabinsrc");
             camerabin["camera-source"] = camera_source;
@@ -97,6 +103,7 @@ namespace Niki {
             bus.add_signal_watch ();
             bus.message.connect (bus_message_cb);
         }
+
         public void video_source (string device_name) {
             if (videosrc != null && device_name != null && ((ObjectClass)videosrc).find_property ("device") != null) {
                 videosrc["device"] = device_name;

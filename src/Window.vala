@@ -241,7 +241,7 @@ namespace Niki {
                                 NikiApp.settings.set_boolean ("subtitle-available", true);
                             }
                             player_page.bottom_bar.menu_popover.file_chooser_subtitle.select_uri (uri);
-                            player_page.playback.subtitle_choose (uri);
+                            player_page.playback.set_subtittle (uri);
                         }
                     };
                     if (files != null) {

@@ -21,6 +21,7 @@
 
 namespace Niki {
     public class MakeLyric : Gtk.Grid {
+        private PlayerPage playerpage;
         private Gtk.TreeView tree_view;
         private Gtk.ScrolledWindow lrc_text;
         private Gtk.ScrolledWindow lrc_scr;
@@ -32,7 +33,8 @@ namespace Niki {
         private ButtonRevealer? get_fol_rev;
         private string uri_this;
 
-        public MakeLyric (BottomBar bottombar, PlayerPage playerpage) {
+        public MakeLyric (PlayerPage playerpage) {
+            this.playerpage = playerpage;
             listmodel = new Gtk.ListStore (LyricColumns.N_COLUMNS, typeof (string), typeof (string));
             tree_view = new Gtk.TreeView () {
                 model = listmodel,
@@ -138,7 +140,7 @@ namespace Niki {
                 }
 
                 clear_listmodel ();
-                bottombar.seekbar_widget.lyric.foreach ((item) => {
+                playerpage.bottom_bar.seekbar_widget.lyric.foreach ((item) => {
                     Gtk.TreeIter iter;
                     listmodel.append (out iter);
                     listmodel.set (iter, LyricColumns.TIMEVIEW, seconds_to_time ((int)item.key / 1000000), LyricColumns.LYRIC, (item.value));
@@ -211,7 +213,8 @@ namespace Niki {
             lrc_scr = new Gtk.ScrolledWindow (null, null) {
                 propagate_natural_width = true,
                 margin_start = 10,
-                margin_end = 10
+                margin_end = 10,
+                expand = true
             };
             lrc_scr.set_policy (Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC);
             lrc_scr.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
@@ -225,7 +228,8 @@ namespace Niki {
             lrc_text = new Gtk.ScrolledWindow (null, null) {
                 propagate_natural_width = true,
                 margin_start = 10,
-                margin_end = 10
+                margin_end = 10,
+                expand = true
             };
             lrc_text.set_policy (Gtk.PolicyType.EXTERNAL, Gtk.PolicyType.AUTOMATIC);
             lrc_text.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
@@ -234,7 +238,8 @@ namespace Niki {
             stack = new Gtk.Stack () {
                 transition_type = Gtk.StackTransitionType.SLIDE_LEFT_RIGHT,
                 transition_duration = 500,
-                vhomogeneous = false
+                vhomogeneous = false,
+                expand = true
             };
             stack.add_named (lrc_scr, "lyric");
             stack.add_named (lrc_text, "lrctext");
@@ -270,6 +275,7 @@ namespace Niki {
             layout.show_all ();
             add (layout);
             show_all ();
+            playerpage.top_bar.notify["child-revealed"].connect (resize_scr);
             playerpage.size_allocate.connect (resize_scr);
             new_img_but ();
             NikiApp.settings.changed["make-lrc"].connect (() => {
@@ -294,8 +300,8 @@ namespace Niki {
             if (NikiApp.settings.get_boolean ("audio-video")) {
                 int height;
                 NikiApp.window.get_size (null, out height);
-                lrc_scr.height_request = height - 160;
-                lrc_text.height_request = height - 160;
+                lrc_scr.set_min_content_height (((((height - playerpage.bottom_bar.main_actionbar.get_allocated_height ()) - playerpage.bottom_bar.time_music.get_allocated_height ()) - (int) (playerpage.top_actor.height + 2)) - playerpage.bottom_bar.seekbar_widget.get_allocated_height ()) - 28);
+                lrc_text.set_min_content_height (((((height - playerpage.bottom_bar.main_actionbar.get_allocated_height ()) - playerpage.bottom_bar.time_music.get_allocated_height ()) - (int) (playerpage.top_actor.height + 2)) - playerpage.bottom_bar.seekbar_widget.get_allocated_height ()) - 28);
             }
         }
 

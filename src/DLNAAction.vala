@@ -216,6 +216,7 @@ namespace Niki {
                 timer_id = 0;
             }
         }
+
         public void reveal_volume () {
             if (!dlnavolume.child_revealed) {
                 dlnavolume.set_reveal_child (true);

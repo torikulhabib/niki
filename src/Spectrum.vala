@@ -74,8 +74,8 @@ namespace Niki {
             if (NikiApp.settings.get_boolean ("audio-video")) {
                 int height;
                 ((Gtk.Window) playerpage.get_toplevel ()).get_size (null, out height);
-                var n_width = playerpage.cover_center.width = 150 + ((height / 10));
-                var n_height = playerpage.cover_center.height = 150 + ((height / 10));
+                var n_width = playerpage.cover_center.width = 100 + ((height / 8));
+                var n_height = playerpage.cover_center.height = 100 + ((height / 8));
                 set_size_request ((int)n_width, (int)n_height);
                 allocation.height = (int) n_height;
                 allocation.width = (int) n_width;

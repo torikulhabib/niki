@@ -23,13 +23,27 @@ namespace Niki {
     public class SmallImage : Clutter.Canvas {
         private PlayerPage playerpage;
         private Gdk.Pixbuf background;
+        private Gst.TagList taglist;
+        private string urivideo;
 
         public SmallImage (PlayerPage playerpage) {
             this.playerpage = playerpage;
             playerpage.small_cover.set_pivot_point (0.5f, 0.5f);
             playerpage.playback.ready.connect (audio_banner);
-            playerpage.playback.notify["idle"].connect (audio_banner);
+            playerpage.playback.idle.connect (audio_banner);
             playerpage.size_allocate.connect (size_alocate);
+            playerpage.playback.albumart_changed.connect ((new_taglist)=> {
+                if (urivideo != (NikiApp.settings.get_string ("title-playing") + NikiApp.settings.get_string ("artist-music"))) {
+                    Gst.Sample sample;
+                    new_taglist.get_sample (Gst.Tags.IMAGE, out sample);
+                    if (sample != null) {
+                        this.taglist = new_taglist;
+                    } else {
+                        this.taglist = new_taglist;
+                    }
+                    urivideo = (NikiApp.settings.get_string ("title-playing") + NikiApp.settings.get_string ("artist-music"));
+                }
+            });
             audio_banner ();
         }
 
@@ -49,7 +63,9 @@ namespace Niki {
                 Idle.add (()=> {
                     if (NikiApp.settings.get_enum ("player-mode") == PlayerMode.AUDIO) {
                         if (file_exists (NikiApp.settings.get_string ("uri-video"))) {
-                            background = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (NikiApp.settings.get_string ("uri-video")).get_tags ()), 200);
+                            if (taglist != null) {
+                                background = align_and_scale_pixbuf (pix_from_tag (taglist), 200);
+                            }
                             size_alocate ();
                             playerpage.small_cover.content = this;
                         }

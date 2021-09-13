@@ -21,13 +21,13 @@
 
 namespace Niki {
     public class MPRIS : GLib.Object {
-        private ClutterGst.Playback playback;
+        private Player playback;
         private unowned DBusConnection connecting;
         private uint owner_id;
         private uint root_id;
         private uint player_id;
 
-        public void bus_acive (ClutterGst.Playback playback) {
+        public void bus_acive (Player playback) {
             this.playback = playback;
             initialize ();
             NikiApp.settings.changed["next-status"].connect (initialize);

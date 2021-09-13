@@ -25,12 +25,25 @@ namespace Niki {
         private Gdk.Pixbuf background;
         private uint last_size_hash = 0;
         private BufferSurface surface;
+        private Gst.TagList taglist;
+        private string urivideo;
 
         public ImageCanvas (PlayerPage playerpage) {
             this.playerpage = playerpage;
             playerpage.size_allocate.connect (size_alocate);
-            playerpage.playback.ready.connect (audio_banner);
-            playerpage.playback.notify["idle"].connect (audio_banner);
+            playerpage.playback.idle.connect (audio_banner);
+            playerpage.playback.albumart_changed.connect ((new_taglist)=> {
+                if (urivideo != (NikiApp.settings.get_string ("title-playing") + NikiApp.settings.get_string ("artist-music"))) {
+                    Gst.Sample sample;
+                    new_taglist.get_sample (Gst.Tags.IMAGE, out sample);
+                    if (sample != null) {
+                        this.taglist = new_taglist;
+                    } else {
+                        this.taglist = new_taglist;
+                    }
+                    urivideo = (NikiApp.settings.get_string ("title-playing") + NikiApp.settings.get_string ("artist-music"));
+                }
+            });
             NikiApp.settings.changed["blur-mode"].connect (audio_banner);
             audio_banner ();
         }
@@ -50,27 +63,31 @@ namespace Niki {
 
         private void audio_banner () {
             if (NikiApp.settings.get_boolean ("audio-video")) {
-                playerpage.set_size_request (400, 400);
                 Idle.add (()=> {
                     if (NikiApp.settings.get_enum ("player-mode") == PlayerMode.AUDIO) {
-                        if (file_exists (NikiApp.settings.get_string ("uri-video"))) {
-                            Gdk.Pixbuf pix_art = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (NikiApp.settings.get_string ("uri-video")).get_tags ()), 1024);
-                            if (NikiApp.settings.get_boolean ("blur-mode")) {
-                                surface = new BufferSurface (pix_art.width, pix_art.height);
-                                Gdk.cairo_set_source_pixbuf (surface.context, pix_art, 0, 0);
-                                surface.context.paint ();
-                                surface.exponential_blur (10);
-                                surface.context.paint ();
-                                background = Gdk.pixbuf_get_from_surface (surface.surface, 0, 0, pix_art.width, pix_art.height);
-                            } else {
-                                background = pix_art;
-                            }
-                            int width, height;
-                            ((Gtk.Window) playerpage.get_toplevel ()).get_size (out width, out height);
-                            set_size (width, height);
-                            invalidate ();
-                            playerpage.stage.content = this;
+                        playerpage.set_size_request (400, 400);
+                        if (taglist == null) {
+                            return false;
                         }
+                        Gdk.Pixbuf pix_art = align_and_scale_pixbuf (pix_from_tag (taglist), 1124);
+                        if (pix_art == null) {
+                            return false;    
+                        }
+                        if (NikiApp.settings.get_boolean ("blur-mode")) {
+                            surface = new BufferSurface (pix_art.width, pix_art.height);
+                            Gdk.cairo_set_source_pixbuf (surface.context, pix_art, 0, 0);
+                            surface.context.paint ();
+                            surface.exponential_blur (10);
+                            surface.context.paint ();
+                            background = Gdk.pixbuf_get_from_surface (surface.surface, 0, 0, pix_art.width, pix_art.height);
+                        } else {
+                            background = pix_art;
+                        }
+                        int width, height;
+                        ((Gtk.Window) playerpage.get_toplevel ()).get_size (out width, out height);
+                        set_size (width, height);
+                        invalidate ();
+                        playerpage.stage.content = this;
                     }
                     return false;
                 });
