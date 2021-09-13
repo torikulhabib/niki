@@ -35,7 +35,7 @@ namespace Niki {
                 show_fill_level = true,
                 margin_start = 2,
                 margin_end = 2,
-                width_request = 81,
+                width_request = 81
             };
             scale.set_value (NikiApp.settings.get_int ("dlna-volume"));
             scale.get_style_context ().add_class ("dlna_volume");
