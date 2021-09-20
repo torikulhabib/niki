@@ -23,6 +23,8 @@
 # include <config.h>
 #endif
 
+#include <textidentificationframe.h>
+#include <commentsframe.h>
 #include <id3v2tag.h>
 #include <fileref.h>
 #include <mpegfile.h>
@@ -34,7 +36,9 @@
 #include <mp4tag.h>
 #include <mp4coverart.h>
 #include <glib.h>
-
+#include <tpropertymap.h>
+#include <tfilestream.h>
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include "inytag.h"
 
 using namespace TagLib;
@@ -54,22 +58,223 @@ String charArrayToString(const char *s) {
     return String(s, unicodeStrings ? String::UTF8 : String::Latin1);
 }
 
-class Image : public File {
-    public:
-        Image(const char *filename): File(filename) {}
-        ByteVector data() {
-            return readBlock(length());
-        }
-        virtual Tag* tag() const {
-            return 0;
-        }
-        virtual AudioProperties* audioProperties() const {
-            return 0;
-        }
-        virtual bool save() {
-            return 0;
-        }
-};
+String::Type GetStrType (InyTag_String_Type type) {
+    switch (type) {
+    case InyTag_String_UTF16:
+        return String::UTF16;
+    case InyTag_String_UTF16BE:
+        return String::UTF16BE;
+    case InyTag_String_UTF8:
+        return String::UTF8;
+    case InyTag_String_UTF16LE:
+        return String::UTF16LE;
+    default:
+        return String::Latin1;
+    }
+}
+
+MP4::CoverArt::Format GetMP4Format (InyTag_Format_Type format) {
+    switch (format) {
+        case InyTag_Format_PNG:
+            return MP4::CoverArt::Format::PNG;
+        case InyTag_Format_BMP:
+            return MP4::CoverArt::Format::BMP;
+        case InyTag_Format_GIF:
+            return MP4::CoverArt::Format::GIF;
+        case InyTag_Format_UNKNOWN:
+            return MP4::CoverArt::Format::Unknown;
+        default:
+            return MP4::CoverArt::Format::JPEG;
+    }
+}
+
+InyTag_Img_Type GetFlacTypePic (FLAC::Picture::Type type) {
+    switch (type) {
+        case FLAC::Picture::FileIcon:
+            return InyTag_Img_FileIcon;
+        case FLAC::Picture::OtherFileIcon:
+            return InyTag_Img_OtherFileIcon;
+        case FLAC::Picture::FrontCover:
+            return InyTag_Img_FrontCover;
+        case FLAC::Picture::BackCover:
+            return InyTag_Img_BackCover;
+        case FLAC::Picture::LeafletPage:
+            return InyTag_Img_LeafletPage;
+        case FLAC::Picture::Media:
+            return InyTag_Img_Media;
+        case FLAC::Picture::LeadArtist:
+            return InyTag_Img_LeadArtist;
+        case FLAC::Picture::Artist:
+            return InyTag_Img_Artist;
+        case FLAC::Picture::Conductor:
+            return InyTag_Img_Conductor;
+        case FLAC::Picture::Band:
+            return InyTag_Img_Band;
+        case FLAC::Picture::Composer:
+            return InyTag_Img_Composer;
+        case FLAC::Picture::Lyricist:
+            return InyTag_Img_Lyricist;
+        case FLAC::Picture::RecordingLocation:
+            return InyTag_Img_RecordingLocation;
+        case FLAC::Picture::DuringRecording:
+            return InyTag_Img_DuringRecording;
+        case FLAC::Picture::DuringPerformance:
+            return InyTag_Img_DuringPerformance;
+        case FLAC::Picture::MovieScreenCapture:
+            return InyTag_Img_MovieScreenCapture;
+        case FLAC::Picture::ColouredFish:
+            return InyTag_Img_ColouredFish;
+        case FLAC::Picture::Illustration:
+            return InyTag_Img_Illustration;
+        case FLAC::Picture::BandLogo:
+            return InyTag_Img_BandLogo;
+        case FLAC::Picture::PublisherLogo:
+            return InyTag_Img_PublisherLogo;
+        default:
+            return InyTag_Img_Other;
+    }
+}
+
+FLAC::Picture::Type GetFlacPicType (InyTag_Img_Type type) {
+    switch (type) {
+        case InyTag_Img_FileIcon:
+            return(FLAC::Picture::FileIcon);
+        case InyTag_Img_OtherFileIcon:
+            return(FLAC::Picture::OtherFileIcon);
+        case InyTag_Img_FrontCover:
+            return(FLAC::Picture::FrontCover);
+        case InyTag_Img_BackCover:
+            return(FLAC::Picture::BackCover);
+        case InyTag_Img_LeafletPage:
+            return(FLAC::Picture::LeafletPage);
+        case InyTag_Img_Media:
+            return(FLAC::Picture::Media);
+        case InyTag_Img_LeadArtist:
+            return(FLAC::Picture::LeadArtist);
+        case InyTag_Img_Artist:
+            return(FLAC::Picture::Artist);
+        case InyTag_Img_Conductor:
+            return(FLAC::Picture::Conductor);
+        case InyTag_Img_Band:
+            return(FLAC::Picture::Band);
+        case InyTag_Img_Composer:
+            return(FLAC::Picture::Composer);
+        case InyTag_Img_Lyricist:
+            return(FLAC::Picture::Lyricist);
+        case InyTag_Img_RecordingLocation:
+            return(FLAC::Picture::RecordingLocation);
+        case InyTag_Img_DuringRecording:
+            return(FLAC::Picture::DuringRecording);
+        case InyTag_Img_DuringPerformance:
+            return(FLAC::Picture::DuringPerformance);
+        case InyTag_Img_MovieScreenCapture:
+            return(FLAC::Picture::MovieScreenCapture);
+        case InyTag_Img_ColouredFish:
+            return(FLAC::Picture::ColouredFish);
+        case InyTag_Img_Illustration:
+            return(FLAC::Picture::Illustration);
+        case InyTag_Img_BandLogo:
+            return(FLAC::Picture::BandLogo);
+        case InyTag_Img_PublisherLogo:
+            return(FLAC::Picture::PublisherLogo);
+        default:
+            return(FLAC::Picture::Other);
+    }
+}
+
+ID3v2::AttachedPictureFrame::Type GetID3v2PicType (InyTag_Img_Type type) {
+    switch (type) {
+        case InyTag_Img_FileIcon:
+            return(ID3v2::AttachedPictureFrame::FileIcon);
+        case InyTag_Img_OtherFileIcon:
+            return(ID3v2::AttachedPictureFrame::OtherFileIcon);
+        case InyTag_Img_FrontCover:
+            return(ID3v2::AttachedPictureFrame::FrontCover);
+        case InyTag_Img_BackCover:
+            return(ID3v2::AttachedPictureFrame::BackCover);
+        case InyTag_Img_LeafletPage:
+            return(ID3v2::AttachedPictureFrame::LeafletPage);
+        case InyTag_Img_Media:
+            return(ID3v2::AttachedPictureFrame::Media);
+        case InyTag_Img_LeadArtist:
+            return(ID3v2::AttachedPictureFrame::LeadArtist);
+        case InyTag_Img_Artist:
+            return(ID3v2::AttachedPictureFrame::Artist);
+        case InyTag_Img_Conductor:
+            return(ID3v2::AttachedPictureFrame::Conductor);
+        case InyTag_Img_Band:
+            return(ID3v2::AttachedPictureFrame::Band);
+        case InyTag_Img_Composer:
+            return(ID3v2::AttachedPictureFrame::Composer);
+        case InyTag_Img_Lyricist:
+            return(ID3v2::AttachedPictureFrame::Lyricist);
+        case InyTag_Img_RecordingLocation:
+            return(ID3v2::AttachedPictureFrame::RecordingLocation);
+        case InyTag_Img_DuringRecording:
+            return(ID3v2::AttachedPictureFrame::DuringRecording);
+        case InyTag_Img_DuringPerformance:
+            return(ID3v2::AttachedPictureFrame::DuringPerformance);
+        case InyTag_Img_MovieScreenCapture:
+            return(ID3v2::AttachedPictureFrame::MovieScreenCapture);
+        case InyTag_Img_ColouredFish:
+            return(ID3v2::AttachedPictureFrame::ColouredFish);
+        case InyTag_Img_Illustration:
+            return(ID3v2::AttachedPictureFrame::Illustration);
+        case InyTag_Img_BandLogo:
+            return(ID3v2::AttachedPictureFrame::BandLogo);
+        case InyTag_Img_PublisherLogo:
+            return(ID3v2::AttachedPictureFrame::PublisherLogo);
+        default:
+            return(ID3v2::AttachedPictureFrame::Other);
+    }
+}
+
+InyTag_Img_Type GetID3v2TypePic (ID3v2::AttachedPictureFrame::Type type) {
+    switch (type) {
+        case ID3v2::AttachedPictureFrame::FileIcon:
+            return InyTag_Img_FileIcon;
+        case ID3v2::AttachedPictureFrame::OtherFileIcon:
+            return InyTag_Img_OtherFileIcon;
+        case ID3v2::AttachedPictureFrame::FrontCover:
+            return InyTag_Img_FrontCover;
+        case ID3v2::AttachedPictureFrame::BackCover:
+            return InyTag_Img_BackCover;
+        case ID3v2::AttachedPictureFrame::LeafletPage:
+            return InyTag_Img_LeafletPage;
+        case ID3v2::AttachedPictureFrame::Media:
+            return InyTag_Img_Media;
+        case ID3v2::AttachedPictureFrame::LeadArtist:
+            return InyTag_Img_LeadArtist;
+        case ID3v2::AttachedPictureFrame::Artist:
+            return InyTag_Img_Artist;
+        case ID3v2::AttachedPictureFrame::Conductor:
+            return InyTag_Img_Conductor;
+        case ID3v2::AttachedPictureFrame::Band:
+            return InyTag_Img_Band;
+        case ID3v2::AttachedPictureFrame::Composer:
+            return InyTag_Img_Composer;
+        case ID3v2::AttachedPictureFrame::Lyricist:
+            return InyTag_Img_Lyricist;
+        case ID3v2::AttachedPictureFrame::RecordingLocation:
+            return InyTag_Img_RecordingLocation;
+        case ID3v2::AttachedPictureFrame::DuringRecording:
+            return InyTag_Img_DuringRecording;
+        case ID3v2::AttachedPictureFrame::DuringPerformance:
+            return InyTag_Img_DuringPerformance;
+        case ID3v2::AttachedPictureFrame::MovieScreenCapture:
+            return InyTag_Img_MovieScreenCapture;
+        case ID3v2::AttachedPictureFrame::ColouredFish:
+            return InyTag_Img_ColouredFish;
+        case ID3v2::AttachedPictureFrame::Illustration:
+            return InyTag_Img_Illustration;
+        case ID3v2::AttachedPictureFrame::BandLogo:
+            return InyTag_Img_BandLogo;
+        case ID3v2::AttachedPictureFrame::PublisherLogo:
+            return InyTag_Img_PublisherLogo;
+        default:
+            return InyTag_Img_Other;
+    }
+}
 
 const char *GetFrameID (InyTag_Frame_ID frameid) {
 	switch(frameid) {
@@ -195,6 +400,8 @@ const char *GetFrameID (InyTag_Frame_ID frameid) {
 	  		return "TXXX";
 	  	case InyTag_Frame_YEAR:
 	  		return "TYER";
+	  	case InyTag_Frame_YEARV2:
+	  		return "TDRC";
 	  	case InyTag_Frame_UNIQUEFILEID:
 	  		return "UFID";
 	  	case InyTag_Frame_TERMSOFUSE:
@@ -228,19 +435,6 @@ const char *GetFrameID (InyTag_Frame_ID frameid) {
 	  	}
 }
 
-class FrameId3 : public ID3v2::Frame {
-    public:
-        virtual String toString() const {
-            return "";
-        }
-        virtual void parseFields(const ByteVector &data) {
-            return;
-        }
-        virtual ByteVector renderFields() const {
-            return frameID();
-        }
-};
-
 void inytag_set_strings_unicode(BOOL unicode) {
     unicodeStrings = (unicode != 0);
 }
@@ -253,6 +447,11 @@ void inytag_mpeg_file_free(InyTag_Mpeg_File *file) {
     MPEG::File *f = reinterpret_cast<MPEG::File *>(file);
     free(f);
     file = NULL;
+}
+
+const InyTag_AudioProperties *inytag_mpeg_file_audioproperties(const InyTag_Mpeg_File *file) {
+    const File *f = reinterpret_cast<const File *>(file);
+    return reinterpret_cast<const InyTag_AudioProperties *>(f->audioProperties());
 }
 
 InyTag_Tag *inytag_file_mpeg_tag(const InyTag_Mpeg_File *file) {
@@ -275,9 +474,19 @@ void inytag_mp4_file_free(InyTag_Mp4_File *file) {
     file = NULL;
 }
 
+const InyTag_AudioProperties *inytag_mp4_file_audioproperties(const InyTag_Mp4_File *file) {
+    const MP4::File *f = reinterpret_cast<const MP4::File *>(file);
+    return reinterpret_cast<const InyTag_AudioProperties *>(f->audioProperties());
+}
+
 InyTag_Tag *inytag_file_mp4_tag(const InyTag_Mp4_File *file) {
   const File *f = reinterpret_cast<const File *>(file);
   return reinterpret_cast<InyTag_Tag *>(f->tag());
+}
+
+InyTag_Tag_MP4 *inytag_tag_mp4(InyTag_Mp4_File *file) {
+    MP4::File *f = reinterpret_cast<MP4::File *>(file);
+    return reinterpret_cast<InyTag_Tag_MP4 *>(f->tag());
 }
 
 void inytag_mp4_file_remove_picture(InyTag_Mp4_File *file) {
@@ -289,45 +498,102 @@ void inytag_mp4_file_remove_picture(InyTag_Mp4_File *file) {
     file = reinterpret_cast<InyTag_Mp4_File *>(f);
 }
 
-void inytag_mp4_file_set_picture(InyTag_Mp4_File *file, InyTag_Format_Type type, const char *imgpath) {
-    if (imgpath == NULL) {
-        return;
+BOOL inytag_mp4_file_save(InyTag_Mp4_File *file) {
+    MP4::File *song_file = reinterpret_cast<MP4::File *>(file);
+    return song_file->save();
+}
+
+void inytag_tag_mp4_remove_item(InyTag_Tag_MP4 *tags, const char *contains) {
+    MP4::Tag *tag = reinterpret_cast<MP4::Tag *>(tags);
+    if (tag->contains (contains)) {
+        tag->removeItem (contains);
     }
-    MP4::File *f = reinterpret_cast<MP4::File *>(file);
-    MP4::Tag *tag = f->tag();
-    if (!tag->contains ("covr")) {
-        tag->item ("covr");
+    tags = reinterpret_cast<InyTag_Tag_MP4 *>(tag);
+}
+
+void inytag_tag_mp4_add_item(InyTag_Tag_MP4 *tags, const char *contains) {
+    MP4::Tag *tag = reinterpret_cast<MP4::Tag *>(tags);
+    if (tag->contains (contains)) {
+        tag->removeItem (contains);
     }
-    Image *image = reinterpret_cast<Image *>(new Image(imgpath));
-    MP4::CoverArt::Format type_f;
-    switch (type) {
-        case InyTag_Format_PNG:
-            type_f = MP4::CoverArt::Format::PNG;
-            break;
-        case InyTag_Format_BMP:
-            type_f = MP4::CoverArt::Format::BMP;
-            break;
-        case InyTag_Format_GIF:
-            type_f = MP4::CoverArt::Format::GIF;
-            break;
-        case InyTag_Format_UNKNOWN:
-            type_f = MP4::CoverArt::Format::Unknown;
-            break;
-        default:
-            type_f = MP4::CoverArt::Format::JPEG;
-            break;
+    tag->item (contains);
+    tags = reinterpret_cast<InyTag_Tag_MP4 *>(tag);
+}
+
+void inytag_tag_mp4_set_item_string(InyTag_Tag_MP4 *tags, const char *contains, const char *item) {
+    MP4::Tag *tag = reinterpret_cast<MP4::Tag *>(tags);
+    if (tag->contains (contains)) {
+        tag->removeItem (contains);
     }
-    MP4::CoverArt coverArt(type_f, image->data());
+    tag->setItem(contains, StringList(item));
+    tags = reinterpret_cast<InyTag_Tag_MP4 *>(tag);
+}
+
+char *inytag_tag_mp4_get_item_string(InyTag_Tag_MP4 *tags, const char *contains) {
+    MP4::Tag *tag = reinterpret_cast<MP4::Tag *>(tags);
+    if (!tag->contains (contains)) {
+        return NULL;
+    }
+    return stringToCharArray (tag->properties().toString ());
+}
+
+void inytag_tag_mp4_set_item_picture(InyTag_Tag_MP4 *tags, InyTag_Mp4_Picture *picture) {
+    MP4::Tag *tag = reinterpret_cast<MP4::Tag *>(tags);
+    if (tag->contains ("covr")) {
+        tag->removeItem ("covr");
+    }
+    MP4::CoverArtList *pic = reinterpret_cast<MP4::CoverArtList *>(picture);
+    MP4::CoverArt coverArt (pic->back ().format (), pic->back ().data ());
     MP4::CoverArtList coverArtList;
     coverArtList.append(coverArt);
     MP4::Item coverItem(coverArtList);
     tag->setItem("covr", coverItem);
-    file = reinterpret_cast<InyTag_Mp4_File *>(f);
+    tags = reinterpret_cast<InyTag_Tag_MP4 *>(tag);
 }
 
-BOOL inytag_mp4_file_save(InyTag_Mp4_File *file) {
-    MP4::File *song_file = reinterpret_cast<MP4::File *>(file);
-    return song_file->save();
+InyTag_Mp4_Picture *inytag_tag_mp4_get_item_picture(InyTag_Tag_MP4 *tags) {
+    MP4::Tag *tag = reinterpret_cast<MP4::Tag *>(tags);
+    if (tag->contains("covr")) {
+        MP4::CoverArtList list = tag->item("covr").toCoverArtList ();
+        MP4::CoverArt cover(list.back ().format (), list.back ().data ());
+        MP4::CoverArtList *coverArtList = new MP4::CoverArtList ();
+        coverArtList->append(cover);
+        return reinterpret_cast<InyTag_Mp4_Picture *>(coverArtList);
+    } else {
+        return NULL;
+    }
+}
+
+InyTag_Mp4_Picture *inytag_mp4_picture_new() {
+    return reinterpret_cast<InyTag_Mp4_Picture *>(new MP4::CoverArtList);
+}
+
+void inytag_mp4_picture_free(InyTag_Mp4_Picture *pict) {
+    MP4::CoverArtList *f = reinterpret_cast<MP4::CoverArtList *>(pict);
+    delete f;
+    pict = NULL;
+}
+
+void inytag_mp4_picture_set_file(InyTag_Mp4_Picture *pict, InyTag_Format_Type type, const char *filename) {
+    if (filename == NULL) {
+        return;
+    }
+    MP4::CoverArtList *picture = reinterpret_cast<MP4::CoverArtList *>(pict);
+    FileStream myfile(filename);
+    long lengh = myfile.length ();
+    MP4::CoverArt coverArt(GetMP4Format (type), myfile.readBlock(lengh));
+    picture->append(coverArt);
+    pict = reinterpret_cast<InyTag_Mp4_Picture *>(picture);
+}
+
+InyTag_ByteVector *inytag_mp4_picture_get_picture(InyTag_Mp4_Picture *pict, InyTag_Format_Type type) {
+    if (pict == NULL) {
+        return NULL;
+    }
+    MP4::CoverArtList *pic = reinterpret_cast<MP4::CoverArtList *>(pict);
+    ByteVector *bvector = new ByteVector ();
+    bvector->append (pic->back ().data ());
+    return reinterpret_cast<InyTag_ByteVector *>(bvector);
 }
 
 InyTag_Flac_File *inytag_flac_file_new(const char *filename) {
@@ -336,8 +602,13 @@ InyTag_Flac_File *inytag_flac_file_new(const char *filename) {
 
 void inytag_flac_file_free(InyTag_Flac_File *file) {
     FLAC::File *f = reinterpret_cast<FLAC::File *>(file);
-    free(f);
+    free (f);
     file = NULL;
+}
+
+const InyTag_AudioProperties *inytag_flac_file_audioproperties(const InyTag_Flac_File *file) {
+    const File *f = reinterpret_cast<const File *>(file);
+    return reinterpret_cast<const InyTag_AudioProperties *>(f->audioProperties());
 }
 
 InyTag_Tag *inytag_file_flac_tag(const InyTag_Flac_File *file) {
@@ -345,17 +616,47 @@ InyTag_Tag *inytag_file_flac_tag(const InyTag_Flac_File *file) {
   return reinterpret_cast<InyTag_Tag *>(f->tag());
 }
 
-void inytag_flac_file_remove_picture(InyTag_Flac_File *file) {
+InyTag_ID3v2_Tag *inytag_id3v2_flac_tag(InyTag_Flac_File *file) {
+    MPEG::File *song_file = reinterpret_cast<MPEG::File *>(file);
+    return reinterpret_cast<InyTag_ID3v2_Tag *>(song_file->ID3v2Tag());
+}
+
+void inytag_flac_file_remove_all_picture(InyTag_Flac_File *file) {
     FLAC::File *song_file = reinterpret_cast<FLAC::File *>(file);
     song_file->removePictures();
     file = reinterpret_cast<InyTag_Flac_File *>(song_file);
+}
+
+void inytag_flac_file_remove_picture(InyTag_Flac_File *file, InyTag_Img_Type type) {
+    FLAC::File *song_file = reinterpret_cast<FLAC::File *>(file);
+    TagLib::List<TagLib::FLAC::Picture*> list_pic = song_file->pictureList ();
+    for (TagLib::List<TagLib::FLAC::Picture*>::Iterator it = list_pic.begin(); it != list_pic.end(); ++it) {
+        if (GetFlacTypePic ((*it)->type ()) == type) {
+            song_file->removePicture((*it));
+            it = list_pic.begin(); 
+        }
+    }
+    file = reinterpret_cast<InyTag_Flac_File *>(song_file);
+}
+
+InyTag_Flac_Picture *inytag_flac_file_get_picture(InyTag_Flac_File *file, InyTag_Img_Type type) {
+    FLAC::File *song_file = reinterpret_cast<FLAC::File *>(file);
+    FLAC::Picture *cover = NULL;
+    TagLib::List<TagLib::FLAC::Picture*> list_pic = song_file->pictureList ();
+    for (TagLib::List<TagLib::FLAC::Picture*>::Iterator it = list_pic.begin(); it != list_pic.end(); ++it) {
+        if (GetFlacTypePic ((*it)->type ()) == type) {
+            cover = (*it);
+        }
+    }
+    return reinterpret_cast<InyTag_Flac_Picture *>(cover);
 }
 
 void inytag_flac_file_add_picture(InyTag_Flac_File *file, InyTag_Flac_Picture *picture) {
     FLAC::File *song_file = reinterpret_cast<FLAC::File *>(file);
     FLAC::Picture *cover = new FLAC::Picture ();
     FLAC::Picture *pf = reinterpret_cast<FLAC::Picture *>(picture);
-    cover->setData (pf->data());
+    cover->parse (pf->render());
+    inytag_flac_file_remove_picture (file, GetFlacTypePic (pf->type ()));
     song_file->addPicture(cover);
     file = reinterpret_cast<InyTag_Flac_File *>(song_file);
 }
@@ -368,6 +669,7 @@ BOOL inytag_flac_file_save(InyTag_Flac_File *file) {
 InyTag_Flac_Picture *inytag_flac_picture_new() {
     return reinterpret_cast<InyTag_Flac_Picture *>(new FLAC::Picture);
 }
+
 void inytag_flac_picture_free(InyTag_Flac_Picture *picture) {
     FLAC::Picture *pf = reinterpret_cast<FLAC::Picture *>(picture);
     delete pf;
@@ -375,14 +677,33 @@ void inytag_flac_picture_free(InyTag_Flac_Picture *picture) {
     picture = NULL;
 }
 
+InyTag_ByteVector *inytag_flac_picture_get_picture(InyTag_Flac_Picture *picture) {
+    if (picture == NULL) {
+        return NULL;
+    }
+    FLAC::Picture *pf = reinterpret_cast<FLAC::Picture *>(picture);
+    ByteVector *bvector = new ByteVector ();
+    bvector->append (pf->data ());
+    return reinterpret_cast<InyTag_ByteVector *>(bvector);
+}
+
 void inytag_flac_picture_set_picture(InyTag_Flac_Picture *picture, const char *imgpath) {
     if (imgpath == NULL) {
         return;
     }
     FLAC::Picture *fp = reinterpret_cast<FLAC::Picture *>(picture);
-    Image *image = reinterpret_cast<Image *>(new Image(imgpath));
-    fp->setData(image->data ());
+    FileStream myfile(imgpath);
+    long lengh = myfile.length ();
+    fp->setData(myfile.readBlock(lengh));
     picture = reinterpret_cast<InyTag_Flac_Picture *>(fp);
+}
+
+char *inytag_flac_picture_get_mime_type(InyTag_Flac_Picture *picture) {
+    if (picture == NULL) {
+        return NULL;
+    }
+    FLAC::Picture *fp = reinterpret_cast<FLAC::Picture *>(picture);
+    return reinterpret_cast<char *> (stringToCharArray (fp->mimeType()));
 }
 
 void inytag_flac_picture_set_mime_type(InyTag_Flac_Picture *picture, const char *mimetype) {
@@ -394,89 +715,57 @@ void inytag_flac_picture_set_mime_type(InyTag_Flac_Picture *picture, const char 
     picture = reinterpret_cast<InyTag_Flac_Picture *>(fp);
 }
 
+char *inytag_flac_picture_get_description(InyTag_Flac_Picture *picture) {
+    if (picture == NULL) {
+        return NULL;
+    }
+    FLAC::Picture *fp = reinterpret_cast<FLAC::Picture *>(picture);
+    return reinterpret_cast<char *> (stringToCharArray (fp->description()));
+}
+
 void inytag_flac_picture_set_description(InyTag_Flac_Picture *picture, const char *description) {
     if (description == NULL) {
         return;
     }
     FLAC::Picture *fp = reinterpret_cast<FLAC::Picture *>(picture);
-    fp->setDescription(description);
+    fp->setDescription(charArrayToString (description));
     picture = reinterpret_cast<InyTag_Flac_Picture *>(fp);
+}
+
+InyTag_Img_Type *inytag_flac_picture_get_type(InyTag_Flac_Picture *picture) {
+    if (picture == NULL) {
+        return 0;
+    }
+    FLAC::Picture *fp = reinterpret_cast<FLAC::Picture *>(picture);
+    return reinterpret_cast<InyTag_Img_Type *> (GetFlacTypePic (fp->type()));
 }
 
 void inytag_flac_picture_set_type(InyTag_Flac_Picture *picture, InyTag_Img_Type type) {
     FLAC::Picture *fp = reinterpret_cast<FLAC::Picture *>(picture);
-    switch (type) {
-        case InyTag_Img_FileIcon:
-            fp->setType(FLAC::Picture::FileIcon);
-            break;
-        case InyTag_Img_OtherFileIcon:
-            fp->setType(FLAC::Picture::OtherFileIcon);
-            break;
-        case InyTag_Img_FrontCover:
-            fp->setType(FLAC::Picture::FrontCover);
-            break;
-        case InyTag_Img_BackCover:
-            fp->setType(FLAC::Picture::BackCover);
-            break;
-        case InyTag_Img_LeafletPage:
-            fp->setType(FLAC::Picture::LeafletPage);
-            break;
-        case InyTag_Img_Media:
-            fp->setType(FLAC::Picture::Media);
-            break;
-        case InyTag_Img_LeadArtist:
-            fp->setType(FLAC::Picture::LeadArtist);
-            break;
-        case InyTag_Img_Artist:
-            fp->setType(FLAC::Picture::Artist);
-            break;
-        case InyTag_Img_Conductor:
-            fp->setType(FLAC::Picture::Conductor);
-            break;
-        case InyTag_Img_Band:
-            fp->setType(FLAC::Picture::Band);
-            break;
-        case InyTag_Img_Composer:
-            fp->setType(FLAC::Picture::Composer);
-            break;
-        case InyTag_Img_Lyricist:
-            fp->setType(FLAC::Picture::Lyricist);
-            break;
-        case InyTag_Img_RecordingLocation:
-            fp->setType(FLAC::Picture::RecordingLocation);
-            break;
-        case InyTag_Img_DuringRecording:
-            fp->setType(FLAC::Picture::DuringRecording);
-            break;
-        case InyTag_Img_DuringPerformance:
-            fp->setType(FLAC::Picture::DuringPerformance);
-            break;
-        case InyTag_Img_MovieScreenCapture:
-            fp->setType(FLAC::Picture::MovieScreenCapture);
-            break;
-        case InyTag_Img_ColouredFish:
-            fp->setType(FLAC::Picture::ColouredFish);
-            break;
-        case InyTag_Img_Illustration:
-            fp->setType(FLAC::Picture::Illustration);
-            break;
-        case InyTag_Img_BandLogo:
-            fp->setType(FLAC::Picture::BandLogo);
-            break;
-        case InyTag_Img_PublisherLogo:
-            fp->setType(FLAC::Picture::PublisherLogo);
-            break;
-        default:
-            fp->setType(FLAC::Picture::Other);
-            break;
-    }
+    fp->setType(GetFlacPicType (type));
     picture = reinterpret_cast<InyTag_Flac_Picture *>(fp);
+}
+
+int *inytag_flac_picture_get_width(InyTag_Flac_Picture *picture) {
+    if (picture == NULL) {
+        return 0;
+    }
+    FLAC::Picture *fp = reinterpret_cast<FLAC::Picture *>(picture);
+    return reinterpret_cast<int *> (fp->width());
 }
 
 void inytag_flac_picture_set_width(InyTag_Flac_Picture *picture, int width) {
     FLAC::Picture *fp = reinterpret_cast<FLAC::Picture *>(picture);
     fp->setWidth(width);
     picture = reinterpret_cast<InyTag_Flac_Picture *>(fp);
+}
+
+int *inytag_flac_picture_get_height(InyTag_Flac_Picture *picture) {
+    if (picture == NULL) {
+        return 0;
+    }
+    FLAC::Picture *fp = reinterpret_cast<FLAC::Picture *>(picture);
+    return reinterpret_cast<int *> (fp->height());
 }
 
 void inytag_flac_picture_set_height(InyTag_Flac_Picture *picture, int height) {
@@ -491,14 +780,75 @@ void inytag_flac_picture_set_num_colors(InyTag_Flac_Picture *picture, int numcol
     picture = reinterpret_cast<InyTag_Flac_Picture *>(fp);
 }
 
+int *inytag_flac_picture_get_num_colors(InyTag_Flac_Picture *picture) {
+    if (picture == NULL) {
+        return 0;
+    }
+    FLAC::Picture *fp = reinterpret_cast<FLAC::Picture *>(picture);
+    return reinterpret_cast<int *> (fp->numColors());
+}
+
 InyTag_ID3v2_Tag *inytag_id3v2_tag(InyTag_Mpeg_File *file) {
     MPEG::File *song_file = reinterpret_cast<MPEG::File *>(file);
     return reinterpret_cast<InyTag_ID3v2_Tag *>(song_file->ID3v2Tag());
 }
 
+void inytag_id3v2_tag_add_text_frame(InyTag_ID3v2_Tag *tag, InyTag_Frame_ID frameid, const char *text) {
+    if (!inytag_id3v2_tag_is_frame_empty (tag, frameid)) {
+        inytag_id3v2_tag_remove_frame (tag, frameid);
+    }
+    ID3v2::Tag *t = reinterpret_cast<ID3v2::Tag *>(tag);
+    ID3v2::TextIdentificationFrame *f = new ID3v2::TextIdentificationFrame(ByteVector(GetFrameID (frameid)), String::UTF8);
+    f->setText(charArrayToString (text));
+    t->addFrame (f);
+    tag = reinterpret_cast<InyTag_ID3v2_Tag *>(t);
+}
+
+char *inytag_id3v2_tag_get_text_frame(InyTag_ID3v2_Tag *tag, InyTag_Frame_ID frameid) {
+    ID3v2::Tag *t = reinterpret_cast<ID3v2::Tag *>(tag);
+    String result;
+    for (ID3v2::FrameList::ConstIterator it = t->frameList().begin(); it != t->frameList().end(); ++it) {
+        ByteVector frame_id = (*it)->frameID();
+        string frame_name(frame_id.data(), frame_id.size());
+        if (frame_name.compare(GetFrameID (frameid)) == 0) {
+            result = (*it)->toString ();
+        }
+    }
+    char *s = stringToCharArray (result);
+    return s;  
+}
+
+InyTag_ID3v2_Attached_Picture_Frame *inytag_id3v2_tag_get_picture_frame(InyTag_ID3v2_Tag *tag, InyTag_Img_Type imgtype) {
+    ID3v2::Tag *t = reinterpret_cast<ID3v2::Tag *>(tag);
+    ID3v2::AttachedPictureFrame *picture = NULL;
+    for (ID3v2::FrameList::ConstIterator it = t->frameList().begin(); it != t->frameList().end(); ++it) {
+        ByteVector frame_id = (*it)->frameID();
+        string frame_name(frame_id.data(), frame_id.size());
+        if (frame_name.compare(GetFrameID (InyTag_Frame_PICTURE)) == 0) {
+            ID3v2::AttachedPictureFrame *in_picture = new ID3v2::AttachedPictureFrame ((*it)->render ());
+            if (GetID3v2PicType (imgtype) == in_picture->type ()) {
+                picture = in_picture;
+            }
+        }
+    }
+    return reinterpret_cast<InyTag_ID3v2_Attached_Picture_Frame *>(picture);
+}
+
+void inytag_id3v2_tag_add_comment_frame(InyTag_ID3v2_Tag *tag, InyTag_ID3v2_Attached_Comment_Frame *frame) {
+    ID3v2::Tag *t = reinterpret_cast<ID3v2::Tag *>(tag);
+    ID3v2::CommentsFrame *cf = reinterpret_cast<ID3v2::CommentsFrame *>(frame);
+    if (!inytag_id3v2_tag_is_frame_empty (tag, InyTag_Frame_COMMENT)) {
+        inytag_id3v2_tag_remove_frame (tag, InyTag_Frame_COMMENT);
+    } else if (cf->text () != stringToCharArray ("")) {
+        t->addFrame(cf);
+    }
+    tag = reinterpret_cast<InyTag_ID3v2_Tag *>(t);
+}
+
 void inytag_id3v2_tag_add_picture_frame(InyTag_ID3v2_Tag *tag, InyTag_ID3v2_Attached_Picture_Frame *frame) {
     ID3v2::Tag *t = reinterpret_cast<ID3v2::Tag *>(tag);
     ID3v2::AttachedPictureFrame *f = reinterpret_cast<ID3v2::AttachedPictureFrame *>(frame);
+    inytag_id3v2_tag_picture_frame_type_is_emty (tag, GetID3v2TypePic (f->type ()));
     t->addFrame(f);
     tag = reinterpret_cast<InyTag_ID3v2_Tag *>(t);
 }
@@ -507,6 +857,21 @@ BOOL inytag_id3v2_tag_is_frame_empty(InyTag_ID3v2_Tag *tag, InyTag_Frame_ID fram
     ID3v2::Tag *t = reinterpret_cast<ID3v2::Tag *>(tag);
     ID3v2::FrameList f = t->frameListMap()[GetFrameID (frameid)];
     return f.isEmpty();
+}
+
+void inytag_id3v2_tag_picture_frame_type_is_emty(InyTag_ID3v2_Tag *tag, InyTag_Img_Type imgtype) {
+    ID3v2::Tag *t = reinterpret_cast<ID3v2::Tag *>(tag);
+    for (ID3v2::FrameList::ConstIterator it = t->frameList().begin(); it != t->frameList().end(); ++it) {
+        ByteVector frame_id = (*it)->frameID();
+        string frame_name(frame_id.data(), frame_id.size());
+        if (frame_name.compare(GetFrameID (InyTag_Frame_PICTURE)) == 0) {
+            ID3v2::AttachedPictureFrame *in_picture = new ID3v2::AttachedPictureFrame ((*it)->render ());
+            if (GetID3v2PicType (imgtype) == in_picture->type ()) {
+                t->removeFrame((*it));
+                it = t->frameList().begin();
+            }
+        }
+    }
 }
 
 void inytag_id3v2_tag_remove_frame(InyTag_ID3v2_Tag *tag, InyTag_Frame_ID frameid) {
@@ -522,6 +887,61 @@ void inytag_id3v2_tag_remove_frame(InyTag_ID3v2_Tag *tag, InyTag_Frame_ID framei
     tag = reinterpret_cast<InyTag_ID3v2_Tag *>(t);
 }
 
+void inytag_id3v2_tag_remove_all(InyTag_ID3v2_Tag *tag) {
+    ID3v2::Tag *t = reinterpret_cast<ID3v2::Tag *>(tag);
+    for (ID3v2::FrameList::ConstIterator it = t->frameList().begin(); it != t->frameList().end(); ++it) {
+        ID3v2::FrameList f = t->frameListMap()[(*it)->frameID()];
+        if (!f.isEmpty()) {
+            t->removeFrame((*it));
+            it = t->frameList().begin();
+        }
+    }
+}
+
+InyTag_ID3v2_Attached_Comment_Frame *inytag_id3v2_attached_comment_frame_new() {
+    return reinterpret_cast<InyTag_ID3v2_Attached_Comment_Frame *>(new ID3v2::CommentsFrame (ByteVector(GetFrameID (InyTag_Frame_COMMENT))));
+}
+
+void inytag_id3v2_attached_comment_frame_free(InyTag_ID3v2_Attached_Comment_Frame *picture_frame) {
+    ID3v2::CommentsFrame *cf = reinterpret_cast<ID3v2::CommentsFrame *>(picture_frame);
+    delete cf;
+    cf = NULL;
+    picture_frame = NULL;
+}
+
+void inytag_id3v2_attached_comment_frame_set_encording(InyTag_ID3v2_Attached_Comment_Frame *frame, InyTag_String_Type type) {
+    ID3v2::CommentsFrame *cf = reinterpret_cast<ID3v2::CommentsFrame *>(frame);
+    cf->setTextEncoding (GetStrType (type));
+    frame = reinterpret_cast<InyTag_ID3v2_Attached_Comment_Frame *>(cf);
+}
+
+void inytag_id3v2_attached_comment_frame_set_text(InyTag_ID3v2_Attached_Comment_Frame *frame, const char *text) {
+    if (text == NULL) {
+        return;
+    }
+    ID3v2::CommentsFrame *cf = reinterpret_cast<ID3v2::CommentsFrame *>(frame);
+    cf->setText(charArrayToString (text));
+    frame = reinterpret_cast<InyTag_ID3v2_Attached_Comment_Frame *>(cf);
+}
+
+void inytag_id3v2_attached_comment_frame_set_language(InyTag_ID3v2_Attached_Comment_Frame *frame, const char *lang) {
+    if (lang == NULL) {
+        return;
+    }
+    ID3v2::CommentsFrame *cf = reinterpret_cast<ID3v2::CommentsFrame *>(frame);
+    cf->setLanguage(ByteVector (lang));
+    frame = reinterpret_cast<InyTag_ID3v2_Attached_Comment_Frame *>(cf);
+}
+
+void inytag_id3v2_attached_comment_frame_set_description(InyTag_ID3v2_Attached_Comment_Frame *frame, const char *desc) {
+    if (desc == NULL) {
+        return;
+    }
+    ID3v2::CommentsFrame *cf = reinterpret_cast<ID3v2::CommentsFrame *>(frame);
+    cf->setDescription(charArrayToString (desc));
+    frame = reinterpret_cast<InyTag_ID3v2_Attached_Comment_Frame *>(cf);
+}
+
 InyTag_ID3v2_Attached_Picture_Frame *inytag_id3v2_attached_picture_frame_new() {
     return reinterpret_cast<InyTag_ID3v2_Attached_Picture_Frame *>(new ID3v2::AttachedPictureFrame);
 }
@@ -533,93 +953,68 @@ void inytag_id3v2_attached_picture_frame_free(InyTag_ID3v2_Attached_Picture_Fram
     picture_frame = NULL;
 }
 
-void inytag_id3v2_attached_picture_frame_set_mime_type(InyTag_ID3v2_Attached_Picture_Frame *picture_frame, const char *type) {
-    if (type == NULL) {
+void inytag_id3v2_attached_picture_frame_set_mime_type(InyTag_ID3v2_Attached_Picture_Frame *picture_frame, const char *mimee) {
+    if (mimee == NULL) {
         return;
     }
     ID3v2::AttachedPictureFrame *pf = reinterpret_cast<ID3v2::AttachedPictureFrame *>(picture_frame);
-    pf->setMimeType(type);
+    pf->setMimeType(mimee);
     picture_frame = reinterpret_cast<InyTag_ID3v2_Attached_Picture_Frame *>(pf);
+}
+
+char *inytag_id3v2_attached_picture_frame_get_mime_type(InyTag_ID3v2_Attached_Picture_Frame *picture_frame) {
+    if (picture_frame == NULL) {
+        return stringToCharArray ("");
+    }
+    ID3v2::AttachedPictureFrame *pf = reinterpret_cast<ID3v2::AttachedPictureFrame *>(picture_frame);
+    char *mime = stringToCharArray(pf->mimeType ());
+    return mime;
 }
 
 void inytag_id3v2_attached_picture_frame_set_type(InyTag_ID3v2_Attached_Picture_Frame *picture_frame, InyTag_Img_Type type) {
     ID3v2::AttachedPictureFrame *pf = reinterpret_cast<ID3v2::AttachedPictureFrame *>(picture_frame);
-    switch (type) {
-        case InyTag_Img_FileIcon:
-            pf->setType(ID3v2::AttachedPictureFrame::FileIcon);
-            break;
-        case InyTag_Img_OtherFileIcon:
-            pf->setType(ID3v2::AttachedPictureFrame::OtherFileIcon);
-            break;
-        case InyTag_Img_FrontCover:
-            pf->setType(ID3v2::AttachedPictureFrame::FrontCover);
-            break;
-        case InyTag_Img_BackCover:
-            pf->setType(ID3v2::AttachedPictureFrame::BackCover);
-            break;
-        case InyTag_Img_LeafletPage:
-            pf->setType(ID3v2::AttachedPictureFrame::LeafletPage);
-            break;
-        case InyTag_Img_Media:
-            pf->setType(ID3v2::AttachedPictureFrame::Media);
-            break;
-        case InyTag_Img_LeadArtist:
-            pf->setType(ID3v2::AttachedPictureFrame::LeadArtist);
-            break;
-        case InyTag_Img_Artist:
-            pf->setType(ID3v2::AttachedPictureFrame::Artist);
-            break;
-        case InyTag_Img_Conductor:
-            pf->setType(ID3v2::AttachedPictureFrame::Conductor);
-            break;
-        case InyTag_Img_Band:
-            pf->setType(ID3v2::AttachedPictureFrame::Band);
-            break;
-        case InyTag_Img_Composer:
-            pf->setType(ID3v2::AttachedPictureFrame::Composer);
-            break;
-        case InyTag_Img_Lyricist:
-            pf->setType(ID3v2::AttachedPictureFrame::Lyricist);
-            break;
-        case InyTag_Img_RecordingLocation:
-            pf->setType(ID3v2::AttachedPictureFrame::RecordingLocation);
-            break;
-        case InyTag_Img_DuringRecording:
-            pf->setType(ID3v2::AttachedPictureFrame::DuringRecording);
-            break;
-        case InyTag_Img_DuringPerformance:
-            pf->setType(ID3v2::AttachedPictureFrame::DuringPerformance);
-            break;
-        case InyTag_Img_MovieScreenCapture:
-            pf->setType(ID3v2::AttachedPictureFrame::MovieScreenCapture);
-            break;
-        case InyTag_Img_ColouredFish:
-            pf->setType(ID3v2::AttachedPictureFrame::ColouredFish);
-            break;
-        case InyTag_Img_Illustration:
-            pf->setType(ID3v2::AttachedPictureFrame::Illustration);
-            break;
-        case InyTag_Img_BandLogo:
-            pf->setType(ID3v2::AttachedPictureFrame::BandLogo);
-            break;
-        case InyTag_Img_PublisherLogo:
-            pf->setType(ID3v2::AttachedPictureFrame::PublisherLogo);
-            break;
-        default:
-            pf->setType(ID3v2::AttachedPictureFrame::Other);
-            break;
-    }
+    pf->setType(GetID3v2PicType (type));
     picture_frame = reinterpret_cast<InyTag_ID3v2_Attached_Picture_Frame *>(pf);
+}
+
+InyTag_Img_Type inytag_id3v2_attached_picture_frame_get_type(InyTag_ID3v2_Attached_Picture_Frame *picture_frame) {
+    if (picture_frame == NULL) {
+        return InyTag_Img_Other;
+    }
+    ID3v2::AttachedPictureFrame *pf = reinterpret_cast<ID3v2::AttachedPictureFrame *>(picture_frame);
+    return GetID3v2TypePic (pf->type());
 }
 
 void inytag_id3v2_attached_picture_frame_set_picture(InyTag_ID3v2_Attached_Picture_Frame *picture_frame, const char *path) {
     if (path == NULL) {
         return;
     }
+    FileStream myfile(path);
+    long lengh = myfile.length ();
     ID3v2::AttachedPictureFrame *pf = reinterpret_cast<ID3v2::AttachedPictureFrame *>(picture_frame);
-    Image *image = reinterpret_cast<Image *>(new Image(path));
-    pf->setPicture(image->data());
+    pf->setPicture(myfile.readBlock(lengh));
     picture_frame = reinterpret_cast<InyTag_ID3v2_Attached_Picture_Frame *>(pf);
+}
+
+void inytag_id3v2_attached_picture_frame_set_picture_form_bytevector(InyTag_ID3v2_Attached_Picture_Frame *picture_frame, InyTag_ByteVector *bytevector) {
+    if (bytevector == NULL) {
+        return;
+    }
+    ByteVector *vector = reinterpret_cast<ByteVector *> (bytevector);
+    ID3v2::AttachedPictureFrame *pf = reinterpret_cast<ID3v2::AttachedPictureFrame *>(picture_frame);
+    pf->setPicture(reinterpret_cast<char *> (vector->data ()));
+    picture_frame = reinterpret_cast<InyTag_ID3v2_Attached_Picture_Frame *>(pf);
+}
+
+InyTag_ByteVector *inytag_id3v2_attached_picture_frame_get_picture(InyTag_ID3v2_Attached_Picture_Frame *picture_frame) {
+    if (picture_frame == NULL) {
+        return NULL;
+    }
+    ID3v2::AttachedPictureFrame *pf = reinterpret_cast<ID3v2::AttachedPictureFrame *>(picture_frame);
+    InyTag_ByteVector *bytevector = inytag_bytevector_new ();
+    ByteVector *vector = reinterpret_cast<ByteVector *> (bytevector);
+    vector->setData (pf->picture().data (), pf->picture().size ());
+    return reinterpret_cast<InyTag_ByteVector *>(vector);
 }
 
 void inytag_id3v2_attached_picture_frame_set_description(InyTag_ID3v2_Attached_Picture_Frame *picture_frame, const char *desc) {
@@ -627,8 +1022,17 @@ void inytag_id3v2_attached_picture_frame_set_description(InyTag_ID3v2_Attached_P
         return;
     }
     ID3v2::AttachedPictureFrame *pf = reinterpret_cast<ID3v2::AttachedPictureFrame *>(picture_frame);
-    pf->setDescription(desc);
+    pf->setDescription(charArrayToString (desc));
     picture_frame = reinterpret_cast<InyTag_ID3v2_Attached_Picture_Frame *>(pf);
+}
+
+char *inytag_id3v2_attached_picture_frame_get_description(InyTag_ID3v2_Attached_Picture_Frame *picture_frame) {
+    if (picture_frame == NULL) {
+        return stringToCharArray ("");
+    }
+    ID3v2::AttachedPictureFrame *pf = reinterpret_cast<ID3v2::AttachedPictureFrame *>(picture_frame);
+    char *desc = stringToCharArray(pf->description ());
+    return desc;
 }
 
 InyTag_File *inytag_file_new(const char *filename) {
@@ -745,4 +1149,71 @@ int inytag_audioproperties_samplerate(const InyTag_AudioProperties *audioPropert
 int inytag_audioproperties_channels(const InyTag_AudioProperties *audioProperties) {
     const AudioProperties *p = reinterpret_cast<const AudioProperties *>(audioProperties);
     return p->channels();
+}
+
+int inytag_audioproperties_length_seconds(const InyTag_AudioProperties *audioProperties) {
+    const AudioProperties *p = reinterpret_cast<const AudioProperties *>(audioProperties);
+    return p->lengthInSeconds();
+}
+
+int inytag_audioproperties_length_miliseconds(const InyTag_AudioProperties *audioProperties) {
+    const AudioProperties *p = reinterpret_cast<const AudioProperties *>(audioProperties);
+    return p->lengthInMilliseconds();
+}
+
+InyTag_ByteVector *inytag_bytevector_new() {
+    return reinterpret_cast<InyTag_ByteVector *>(new ByteVector);
+}
+
+void inytag_bytevector_free(InyTag_ByteVector *bytevector) {
+    ByteVector *byt = reinterpret_cast<ByteVector *>(bytevector);
+    delete byt;
+    byt = NULL;
+    bytevector = NULL;
+}
+
+const char *inytag_bytevector_get_data(InyTag_ByteVector *bytevector) {
+    if (bytevector == NULL) {
+        return 0;
+    }
+    ByteVector *byt = reinterpret_cast<ByteVector *>(bytevector);
+    return byt->data ();
+}
+
+unsigned int *inytag_bytevector_get_size(InyTag_ByteVector *bytevector) {
+    if (bytevector == NULL) {
+        return 0;
+    }
+    ByteVector *byt = reinterpret_cast<ByteVector *>(bytevector);
+    return reinterpret_cast<unsigned int *>(byt->size ());
+}
+
+GdkPixbuf *inytag_bytevector_get_pixbuf(InyTag_ByteVector *bytevector) {
+    if (bytevector == NULL) {
+        return NULL;
+    }
+    ByteVector *byt = reinterpret_cast<ByteVector *>(bytevector);
+    GdkPixbufLoader *loader;
+    GdkPixbuf *pixbuf = NULL;
+    loader = gdk_pixbuf_loader_new ();
+	GError* error = NULL;
+	bool loading = gdk_pixbuf_loader_write (loader, reinterpret_cast<const guchar *>(byt->data ()), (gsize) byt->size (), &error);
+    if (loading == TRUE) {
+        pixbuf = gdk_pixbuf_loader_get_pixbuf (loader);
+    }
+    return pixbuf;
+}
+
+void inytag_bytevector_set_pixbuf(InyTag_ByteVector *bytevector, GdkPixbuf *pixbuf) {
+    if (pixbuf == NULL) {
+        return;
+    }
+    char *buffer;
+    gsize size;
+	GError* error = NULL;
+    ByteVector *ivector = reinterpret_cast<ByteVector *> (bytevector);
+    if (gdk_pixbuf_save_to_buffer (pixbuf, &buffer, &size, "jpeg", &error, NULL)) {
+        ivector->setData (buffer, size);
+    }
+    bytevector = reinterpret_cast<InyTag_ByteVector *>(ivector);
 }

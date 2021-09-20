@@ -528,22 +528,22 @@ namespace Niki {
                 }
                 if (file.get_uri ().down ().has_suffix ("mp3")) {
                     var file_mpg = new InyTag.Mpeg_File (file.get_path ());
-                    file_mpg.mpeg_tag.title = title_entry.text;
-                    file_mpg.mpeg_tag.artist = artist_entry.text;
-                    file_mpg.mpeg_tag.album = album_entry.text;
-                    file_mpg.mpeg_tag.genre = genre_entry.text;
-                    file_mpg.mpeg_tag.comment = comment_textview.buffer.text;
-                    file_mpg.mpeg_tag.year = (int) date_spinbutton.value;
-                    file_mpg.mpeg_tag.track = (int) track_spinbutton.value;
                     var frampic = new InyTag.ID3v2_Attached_Picture_Frame ();
+                    var framcomm = new InyTag.Attached_Comment_Frame ();
+                    file_mpg.id3v2_tag.add_text_frame (InyTag.Frame_ID.TITLE, title_entry.text);
+                    file_mpg.id3v2_tag.add_text_frame (InyTag.Frame_ID.LEADARTIST, artist_entry.text);
+                    file_mpg.id3v2_tag.add_text_frame (InyTag.Frame_ID.ALBUM, album_entry.text);
+                    file_mpg.id3v2_tag.add_text_frame (InyTag.Frame_ID.CONTENTTYPE, genre_entry.text);
+                    framcomm.set_encording (InyTag.String_Type.UTF16);
+                    framcomm.set_text (comment_textview.buffer.text);
+                    file_mpg.id3v2_tag.add_comment_frame (framcomm);
+                    file_mpg.id3v2_tag.add_text_frame (InyTag.Frame_ID.TRACKNUM, track_spinbutton.value.to_string ());
+                    file_mpg.id3v2_tag.add_text_frame (InyTag.Frame_ID.YEARV2, date_spinbutton.value.to_string ());
                     if (FileUtils.test (nameimage, FileTest.EXISTS)) {
-                        if (!file_mpg.id3v2_tag.is_frame_empty (InyTag.Frame_ID.PICTURE)) {
-                            file_mpg.id3v2_tag.remove_frame (InyTag.Frame_ID.PICTURE);
-                        }
-                        file_mpg.id3v2_tag.add_picture_frame (frampic);
-                        frampic.set_mime_type (get_mime_type (File.new_for_path (nameimage)));
-                        frampic.set_type (InyTag.Img_Type.FrontCover);
+                        frampic.mime_type = get_mime_type (File.new_for_path (nameimage));
+                        frampic.type = InyTag.Img_Type.Artist;
                         frampic.set_picture (nameimage);
+                        file_mpg.id3v2_tag.add_picture_frame (frampic);
                     }
                     file_mpg.save ();
                 } else if (file.get_uri ().down ().has_suffix ("m4a")) {
@@ -556,7 +556,9 @@ namespace Niki {
                     file_mp4.mp4_tag.year = (int) date_spinbutton.value;
                     file_mp4.mp4_tag.track = (int) track_spinbutton.value;
                     if (FileUtils.test (nameimage, FileTest.EXISTS)) {
-                        file_mp4.set_picture (InyTag.Format_Type.JPEG, nameimage);
+                        InyTag.Mp4_Picture picture = new InyTag.Mp4_Picture ();
+                        picture.set_file (InyTag.Format_Type.JPEG, nameimage);
+                        file_mp4.tag_mp4.set_item_picture (picture);
                     }
                     file_mp4.save ();
                 } else if (file.get_uri ().down ().has_suffix ("flac")) {
@@ -570,10 +572,10 @@ namespace Niki {
                     file_flac.flac_tag.track = (int) track_spinbutton.value;
                     if (FileUtils.test (nameimage, FileTest.EXISTS)) {
                         InyTag.Flac_Picture picture_flac = new InyTag.Flac_Picture ();
-                        picture_flac.set_mime_type (get_mime_type (File.new_for_path (nameimage)));
-                        picture_flac.set_type (InyTag.Img_Type.FrontCover);
+                        picture_flac.mime_type = get_mime_type (File.new_for_path (nameimage));
+                        picture_flac.type = InyTag.Img_Type.FrontCover;
+                        picture_flac.description = "desck";
                         picture_flac.set_picture (nameimage);
-                        file_flac.remove_picture ();
                         file_flac.add_picture (picture_flac);
                     }
                     file_flac.save ();
@@ -597,36 +599,53 @@ namespace Niki {
             playlist.liststore.get (playlist.selected_iter (), PlaylistColumns.FILENAME, out file_name);
             var file = File.new_for_uri (file_name);
             if (get_mime_type (file).has_prefix ("audio/")) {
-                if (file.get_uri ().down ().has_suffix ("aac") || file.get_uri ().down ().has_suffix ("ac3")) {
-                    return;
-                }
-                var tagfile = new InyTag.File (file.get_path ());
-                tagfile.tag.title = "";
-                tagfile.tag.artist ="";
-                tagfile.tag.album = "";
-                tagfile.tag.genre = "";
-                tagfile.tag.comment = "";
-                tagfile.tag.year = 0;
-                tagfile.tag.track = 0;
-                tagfile.save ();
                 if (file.get_uri ().down ().has_suffix ("mp3")) {
                     var file_mpg = new InyTag.Mpeg_File (file.get_path ());
-                    if (!file_mpg.id3v2_tag.is_frame_empty (InyTag.Frame_ID.PICTURE)) {
-                        file_mpg.id3v2_tag.remove_frame (InyTag.Frame_ID.PICTURE);
-                    }
+                    file_mpg.id3v2_tag.remove_all ();
+                    file_mpg.mpeg_tag.title = "";
+                    file_mpg.mpeg_tag.artist ="";
+                    file_mpg.mpeg_tag.album = "";
+                    file_mpg.mpeg_tag.genre = "";
+                    file_mpg.mpeg_tag.comment = "";
+                    file_mpg.mpeg_tag.year = 0;
+                    file_mpg.mpeg_tag.track = 0;
                     file_mpg.save ();
                 } else if (file.get_uri ().down ().has_suffix ("m4a")) {
                     var file_mp4 = new InyTag.Mp4_File (file.get_path ());
+                    file_mp4.mp4_tag.title = "";
+                    file_mp4.mp4_tag.artist ="";
+                    file_mp4.mp4_tag.album = "";
+                    file_mp4.mp4_tag.genre = "";
+                    file_mp4.mp4_tag.comment = "";
+                    file_mp4.mp4_tag.year = 0;
+                    file_mp4.mp4_tag.track = 0;
                     file_mp4.remove_picture ();
                     file_mp4.save ();
                 } else if (file.get_uri ().down ().has_suffix ("flac")) {
                     var file_flac = new InyTag.Flac_File (file.get_path ());
-                    file_flac.remove_picture ();
+                    file_flac.flac_tag.title = "";
+                    file_flac.flac_tag.artist ="";
+                    file_flac.flac_tag.album = "";
+                    file_flac.flac_tag.genre = "";
+                    file_flac.flac_tag.comment = "";
+                    file_flac.flac_tag.year = 0;
+                    file_flac.flac_tag.track = 0;
+                    file_flac.remove_all_picture ();
                     file_flac.save ();
+                } else if (!file_name.down ().has_suffix ("aac") || !file_name.down ().has_suffix ("ac3")) {
+                    var tagfile = new InyTag.File (File.new_for_uri (file_name).get_path ());
+                    tagfile.tag.title = "";
+                    tagfile.tag.artist = "";
+                    tagfile.tag.album = "";
+                    tagfile.tag.genre = "";
+                    tagfile.tag.comment = "";
+                    tagfile.tag.track = 0;
+                    tagfile.tag.year = 0;
                 }
                 info_send (@"$(_("Clear")) $(file.get_basename ())");
                 audio_info (file_name);
                 update_file (file_name);
+                permanent_delete (File.new_for_path (cache_image ("setcover")));
             }
         }
         public void set_media (string file_name) {
@@ -647,6 +666,7 @@ namespace Niki {
                 clear_revealer.reveal_child = save_revealer.reveal_child = true;
             }
         }
+
         private void video_info (string file_name) {
             File path = File.new_for_uri (file_name);
             label_name.label = path.get_basename ();
@@ -744,19 +764,73 @@ namespace Niki {
                 date_spinbutton.value = 0;
                 return;
             }
-            var tagfile = new InyTag.File (File.new_for_uri (file_name).get_path ());
-            label_bitrate.label = tagfile.audioproperties.bitrate.to_string () + _(" kHz");
-            label_sample.label = tagfile.audioproperties.samplerate.to_string () + _(" bps");
-            label_chanel.label = tagfile.audioproperties.channels == 2? _("Stereo") : _("Mono");
-            label_duration.label = seconds_to_time (tagfile.audioproperties.length);
-            apply_cover_pixbuf (align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (file_name).get_tags ()), 256));
-            title_entry.text = tagfile.tag.title;
-            artist_entry.text = tagfile.tag.artist;
-            album_entry.text = tagfile.tag.album;
-            genre_entry.text = tagfile.tag.genre;
-            comment_textview.buffer.text = tagfile.tag.comment;
-            track_spinbutton.value = tagfile.tag.track;
-            date_spinbutton.value = tagfile.tag.year;
+            if (file_name.down ().has_suffix ("mp3")) {
+                var file_mpg = new InyTag.Mpeg_File (File.new_for_uri (file_name).get_path ());
+                title_entry.text = file_mpg.id3v2_tag.get_text_frame (InyTag.Frame_ID.TITLE);
+                artist_entry.text = file_mpg.id3v2_tag.get_text_frame (InyTag.Frame_ID.LEADARTIST);
+                album_entry.text = file_mpg.id3v2_tag.get_text_frame (InyTag.Frame_ID.ALBUM);
+                genre_entry.text = file_mpg.id3v2_tag.get_text_frame (InyTag.Frame_ID.CONTENTTYPE);
+                comment_textview.buffer.text = file_mpg.id3v2_tag.get_text_frame (InyTag.Frame_ID.COMMENT);;
+                track_spinbutton.value = int.parse (file_mpg.id3v2_tag.get_text_frame (InyTag.Frame_ID.TRACKNUM));
+                date_spinbutton.value = int.parse (file_mpg.id3v2_tag.get_text_frame (InyTag.Frame_ID.YEARV2));
+                label_bitrate.label = file_mpg.audioproperties.bitrate.to_string () + _(" kHz");
+                label_sample.label = file_mpg.audioproperties.samplerate.to_string () + _(" bps");
+                label_chanel.label = file_mpg.audioproperties.channels == 2? _("Stereo") : _("Mono");
+                label_duration.label = seconds_to_time (file_mpg.audioproperties.length);
+                InyTag.ID3v2_Attached_Picture_Frame picture = file_mpg.id3v2_tag.get_picture_frame (InyTag.Img_Type.Artist);
+                InyTag.ByteVector vector = picture.get_picture ();
+                var pixbuf = vector.get_pixbuf ();
+                apply_cover_pixbuf (align_and_scale_pixbuf (pixbuf != null? pixbuf : unknown_cover (), 256));
+            } else if (file_name.down ().has_suffix ("flac")) {
+                var file_flac = new InyTag.Flac_File (File.new_for_uri (file_name).get_path ());
+                title_entry.text = file_flac.flac_tag.title;
+                artist_entry.text = file_flac.flac_tag.artist;
+                album_entry.text = file_flac.flac_tag.album;
+                genre_entry.text = file_flac.flac_tag.genre;
+                comment_textview.buffer.text = file_flac.flac_tag.comment;
+                date_spinbutton.value = (int) file_flac.flac_tag.year;
+                track_spinbutton.value = (int) file_flac.flac_tag.track;
+                label_bitrate.label = file_flac.audioproperties.bitrate.to_string () + _(" kHz");
+                label_sample.label = file_flac.audioproperties.samplerate.to_string () + _(" bps");
+                label_chanel.label = file_flac.audioproperties.channels == 2? _("Stereo") : _("Mono");
+                label_duration.label = seconds_to_time (file_flac.audioproperties.length);
+                InyTag.Flac_Picture picflac = file_flac.get_picture (InyTag.Img_Type.FrontCover);
+                InyTag.ByteVector vector = picflac.get_picture () ;
+                var pixbuf = vector.get_pixbuf ();
+                apply_cover_pixbuf (align_and_scale_pixbuf (pixbuf != null? pixbuf : unknown_cover (), 256));
+            } else if (file_name.down ().has_suffix ("m4a")) {
+                var file_mp4 = new InyTag.Mp4_File (File.new_for_uri (file_name).get_path ());
+                title_entry.text = file_mp4.mp4_tag.title;
+                artist_entry.text = file_mp4.mp4_tag.artist;
+                album_entry.text = file_mp4.mp4_tag.album;
+                genre_entry.text = file_mp4.mp4_tag.genre;
+                comment_textview.buffer.text = file_mp4.mp4_tag.comment;
+                date_spinbutton.value = (int) file_mp4.mp4_tag.year;
+                track_spinbutton.value = (int) file_mp4.mp4_tag.track;
+                label_bitrate.label = file_mp4.audioproperties.bitrate.to_string () + _(" kHz");
+                label_sample.label = file_mp4.audioproperties.samplerate.to_string () + _(" bps");
+                label_chanel.label = file_mp4.audioproperties.channels == 2? _("Stereo") : _("Mono");
+                label_duration.label = seconds_to_time (file_mp4.audioproperties.length);
+                InyTag.Mp4_Picture picture = file_mp4.tag_mp4.get_item_picture ();
+                InyTag.ByteVector byte = picture.get_picture (InyTag.Format_Type.JPEG);
+                Gdk.Pixbuf pixbuf = byte.get_pixbuf ();
+                apply_cover_pixbuf (align_and_scale_pixbuf (pixbuf, 256));
+            } else {
+                var tagfile = new InyTag.File (File.new_for_uri (file_name).get_path ());
+                label_bitrate.label = tagfile.audioproperties.bitrate.to_string () + _(" kHz");
+                label_sample.label = tagfile.audioproperties.samplerate.to_string () + _(" bps");
+                label_chanel.label = tagfile.audioproperties.channels == 2? _("Stereo") : _("Mono");
+                label_duration.label = seconds_to_time (tagfile.audioproperties.length);
+                title_entry.text = tagfile.tag.title;
+                artist_entry.text = tagfile.tag.artist;
+                album_entry.text = tagfile.tag.album;
+                genre_entry.text = tagfile.tag.genre;
+                comment_textview.buffer.text = tagfile.tag.comment;
+                track_spinbutton.value = tagfile.tag.track;
+                date_spinbutton.value = tagfile.tag.year;
+                var tags = get_discoverer_info (file_name).get_tags ();
+                apply_cover_pixbuf (align_and_scale_pixbuf (pix_from_tag (tags, Gst.Tag.ImageType.ARTIST), 256));
+            }
         }
 
         private void apply_cover_pixbuf (Gdk.Pixbuf save_pixbuf) {

@@ -69,7 +69,7 @@ namespace Niki {
                         if (taglist == null) {
                             return false;
                         }
-                        Gdk.Pixbuf pix_art = align_and_scale_pixbuf (pix_from_tag (taglist), 1124);
+                        Gdk.Pixbuf pix_art = align_and_scale_pixbuf (pix_from_tag (taglist, Gst.Tag.ImageType.FRONT_COVER), 1124);
                         if (pix_art == null) {
                             return false;    
                         }

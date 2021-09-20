@@ -150,6 +150,8 @@ namespace Niki {
                 vexpand = true,
                 tooltip_text = _("Clear")
             };
+            clear_button.get_style_context ().add_class ("button_action");
+            clear_button.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             clear_button.clicked.connect (() => {
                 playlist.clear_all ();
             });

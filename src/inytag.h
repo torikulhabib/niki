@@ -37,19 +37,31 @@ extern "C" {
 #ifndef BOOL
 #define BOOL int
 #endif
+#include <gdk-pixbuf/gdk-pixbuf.h>
 
 typedef struct { int dummy; } InyTag_File;
 typedef struct { int dummy; } InyTag_Tag;
 typedef struct { int dummy; } InyTag_AudioProperties;
 typedef struct { int dummy; } InyTag_Mpeg_File;
 typedef struct { int dummy; } InyTag_Mp4_File;
+typedef struct { int dummy; } InyTag_Tag_MP4;
+typedef struct { int dummy; } InyTag_Mp4_Picture;
 typedef struct { int dummy; } InyTag_Flac_File;
 typedef struct { int dummy; } InyTag_Flac_Picture;
 typedef struct { int dummy; } InyTag_ID3v2_Tag;
 typedef struct { int dummy; } InyTag_ID3v2_Attached_Picture_Frame;
+typedef struct { int dummy; } InyTag_ID3v2_Attached_Comment_Frame;
+typedef struct { int dummy; } InyTag_ByteVector;
 
-INYTAG_C_EXPORT void inytag_set_strings_unicode(BOOL unicode);
 INYTAG_C_EXPORT void inytag_free(void* pointer);
+
+typedef enum {
+    InyTag_String_LATIN,
+    InyTag_String_UTF16,
+    InyTag_String_UTF16BE,
+    InyTag_String_UTF8,
+    InyTag_String_UTF16LE,
+} InyTag_String_Type;
 
 typedef enum {
     InyTag_Img_Other,
@@ -146,6 +158,7 @@ typedef enum {
     InyTag_Frame_ENCODERSETTINGS,  //Software/Hardware and settings used for encoding 
     InyTag_Frame_USERTEXT,         //User defined text information 
     InyTag_Frame_YEAR,             //Year 
+    InyTag_Frame_YEARV2,           //Year TDRC
     InyTag_Frame_UNIQUEFILEID,     //Unique file identifier 
     InyTag_Frame_TERMSOFUSE,       //Terms of use 
     InyTag_Frame_UNSYNCEDLYRICS,   //Unsynchronized lyric/text transcription 
@@ -164,39 +177,79 @@ typedef enum {
 
 INYTAG_C_EXPORT InyTag_Mpeg_File *inytag_mpeg_file_new(const char *filename);
 INYTAG_C_EXPORT void inytag_mpeg_file_free(InyTag_Mpeg_File *file);
+INYTAG_C_EXPORT const InyTag_AudioProperties *inytag_mpeg_file_audioproperties(const InyTag_Mpeg_File *file);
 INYTAG_C_EXPORT InyTag_Tag *inytag_file_mpeg_tag(const InyTag_Mpeg_File *file);
 INYTAG_C_EXPORT BOOL inytag_mpeg_file_save(InyTag_Mpeg_File *file);
 INYTAG_C_EXPORT InyTag_Mp4_File *inytag_mp4_file_new(const char *filename);
 INYTAG_C_EXPORT void inytag_mp4_file_free(InyTag_Mp4_File *file);
+INYTAG_C_EXPORT const InyTag_AudioProperties *inytag_mp4_file_audioproperties(const InyTag_Mp4_File *file);
 INYTAG_C_EXPORT InyTag_Tag *inytag_file_mp4_tag(const InyTag_Mp4_File *file);
+INYTAG_C_EXPORT InyTag_Tag_MP4 *inytag_tag_mp4(InyTag_Mp4_File *file);
 INYTAG_C_EXPORT void inytag_mp4_file_remove_picture(InyTag_Mp4_File *file);
-INYTAG_C_EXPORT void inytag_mp4_file_set_picture(InyTag_Mp4_File *file, InyTag_Format_Type type, const char *imgpath);
 INYTAG_C_EXPORT BOOL inytag_mp4_file_save(InyTag_Mp4_File *file);
+INYTAG_C_EXPORT void inytag_tag_mp4_remove_item(InyTag_Tag_MP4 *tags, const char *contains);
+INYTAG_C_EXPORT void inytag_tag_mp4_add_item(InyTag_Tag_MP4 *tags, const char *contains);
+INYTAG_C_EXPORT void inytag_tag_mp4_set_item_string(InyTag_Tag_MP4 *tags, const char *contains, const char *item);
+INYTAG_C_EXPORT char *inytag_tag_mp4_get_item_string(InyTag_Tag_MP4 *tags, const char *contains);
+INYTAG_C_EXPORT void inytag_tag_mp4_set_item_picture(InyTag_Tag_MP4 *tags, InyTag_Mp4_Picture *picture);
+INYTAG_C_EXPORT InyTag_Mp4_Picture *inytag_tag_mp4_get_item_picture(InyTag_Tag_MP4 *tags);
+INYTAG_C_EXPORT InyTag_Mp4_Picture *inytag_mp4_picture_new();
+INYTAG_C_EXPORT void inytag_mp4_picture_free(InyTag_Mp4_Picture *pict);
+INYTAG_C_EXPORT void inytag_mp4_picture_set_file(InyTag_Mp4_Picture *pict, InyTag_Format_Type type, const char *filename);
+INYTAG_C_EXPORT InyTag_ByteVector *inytag_mp4_picture_get_picture(InyTag_Mp4_Picture *pict, InyTag_Format_Type type);
 INYTAG_C_EXPORT InyTag_Flac_File *inytag_flac_file_new(const char *filename);
 INYTAG_C_EXPORT void inytag_flac_file_free(InyTag_Flac_File *file);
+INYTAG_C_EXPORT const InyTag_AudioProperties *inytag_flac_file_audioproperties(const InyTag_Flac_File *file);
 INYTAG_C_EXPORT InyTag_Tag *inytag_file_flac_tag(const InyTag_Flac_File *file);
-INYTAG_C_EXPORT void inytag_flac_file_remove_picture(InyTag_Flac_File *file);
+INYTAG_C_EXPORT InyTag_ID3v2_Tag *inytag_id3v2_flac_tag(const InyTag_Flac_File *file);
+INYTAG_C_EXPORT void inytag_flac_file_remove_all_picture(InyTag_Flac_File *file);
+INYTAG_C_EXPORT void inytag_flac_file_remove_picture(InyTag_Flac_File *file, InyTag_Img_Type type);
 INYTAG_C_EXPORT void inytag_flac_file_add_picture(InyTag_Flac_File *file, InyTag_Flac_Picture *picture);
+INYTAG_C_EXPORT InyTag_Flac_Picture *inytag_flac_file_get_picture(InyTag_Flac_File *file, InyTag_Img_Type type);
 INYTAG_C_EXPORT BOOL inytag_flac_file_save(InyTag_Flac_File *file);
 INYTAG_C_EXPORT InyTag_Flac_Picture *inytag_flac_picture_new();
 INYTAG_C_EXPORT void inytag_flac_picture_free(InyTag_Flac_Picture *picture);
 INYTAG_C_EXPORT void inytag_flac_picture_set_picture(InyTag_Flac_Picture *picture, const char *imgpath);
+INYTAG_C_EXPORT InyTag_ByteVector *inytag_flac_picture_get_picture(InyTag_Flac_Picture *picture);
 INYTAG_C_EXPORT void inytag_flac_picture_set_mime_type(InyTag_Flac_Picture *picture, const char *mimetype);
+INYTAG_C_EXPORT char *inytag_flac_picture_get_mime_type(InyTag_Flac_Picture *picture);
 INYTAG_C_EXPORT void inytag_flac_picture_set_description(InyTag_Flac_Picture *picture, const char *description);
+INYTAG_C_EXPORT char *inytag_flac_picture_get_description(InyTag_Flac_Picture *picture);
 INYTAG_C_EXPORT void inytag_flac_picture_set_type(InyTag_Flac_Picture *picture, InyTag_Img_Type type);
+INYTAG_C_EXPORT InyTag_Img_Type *inytag_flac_picture_get_type(InyTag_Flac_Picture *picture);
 INYTAG_C_EXPORT void inytag_flac_picture_set_width(InyTag_Flac_Picture *picture, int width);
+INYTAG_C_EXPORT int *inytag_flac_picture_get_width(InyTag_Flac_Picture *picture);
 INYTAG_C_EXPORT void inytag_flac_picture_set_height(InyTag_Flac_Picture *picture, int height);
+INYTAG_C_EXPORT int *inytag_flac_picture_get_height(InyTag_Flac_Picture *picture);
 INYTAG_C_EXPORT void inytag_flac_picture_set_num_colors(InyTag_Flac_Picture *picture, int numcolors);
+INYTAG_C_EXPORT int *inytag_flac_picture_get_num_colors(InyTag_Flac_Picture *picture);
 INYTAG_C_EXPORT InyTag_ID3v2_Tag *inytag_id3v2_tag(InyTag_Mpeg_File *file);
 INYTAG_C_EXPORT void inytag_id3v2_tag_add_picture_frame(InyTag_ID3v2_Tag *tag, InyTag_ID3v2_Attached_Picture_Frame *frame);
+INYTAG_C_EXPORT void inytag_id3v2_tag_add_text_frame(InyTag_ID3v2_Tag *tag, InyTag_Frame_ID frameid, const char *text);
+INYTAG_C_EXPORT void inytag_id3v2_tag_add_comment_frame(InyTag_ID3v2_Tag *tag, InyTag_ID3v2_Attached_Comment_Frame *frame);
+INYTAG_C_EXPORT char *inytag_id3v2_tag_get_text_frame(InyTag_ID3v2_Tag *tag, InyTag_Frame_ID frameid);
+INYTAG_C_EXPORT InyTag_ID3v2_Attached_Picture_Frame *inytag_id3v2_tag_get_picture_frame(InyTag_ID3v2_Tag *tag, InyTag_Img_Type imgtype);
 INYTAG_C_EXPORT BOOL inytag_id3v2_tag_is_frame_empty(InyTag_ID3v2_Tag *tag, InyTag_Frame_ID frameid);
 INYTAG_C_EXPORT void inytag_id3v2_tag_remove_frame(InyTag_ID3v2_Tag *tag, InyTag_Frame_ID frameid);
+INYTAG_C_EXPORT void inytag_id3v2_tag_picture_frame_type_is_emty(InyTag_ID3v2_Tag *tag, InyTag_Img_Type imgtype);
+INYTAG_C_EXPORT void inytag_id3v2_tag_remove_all(InyTag_ID3v2_Tag *tag);
+INYTAG_C_EXPORT InyTag_ID3v2_Attached_Comment_Frame *inytag_id3v2_attached_comment_frame_new();
+INYTAG_C_EXPORT void inytag_id3v2_attached_comment_frame_free(InyTag_ID3v2_Attached_Comment_Frame *picture_frame);
+INYTAG_C_EXPORT void inytag_id3v2_attached_comment_frame_set_encording(InyTag_ID3v2_Attached_Comment_Frame *frame, InyTag_String_Type type);
+INYTAG_C_EXPORT void inytag_id3v2_attached_comment_frame_set_text(InyTag_ID3v2_Attached_Comment_Frame *frame, const char *text);
+INYTAG_C_EXPORT void inytag_id3v2_attached_comment_frame_set_language(InyTag_ID3v2_Attached_Comment_Frame *frame, const char *lang);
+INYTAG_C_EXPORT void inytag_id3v2_attached_comment_frame_set_description(InyTag_ID3v2_Attached_Comment_Frame *frame, const char *desc);
 INYTAG_C_EXPORT InyTag_ID3v2_Attached_Picture_Frame *inytag_id3v2_attached_picture_frame_new();
 INYTAG_C_EXPORT void inytag_id3v2_attached_picture_frame_free(InyTag_ID3v2_Attached_Picture_Frame *picture_frame);
 INYTAG_C_EXPORT void inytag_id3v2_attached_picture_frame_set_mime_type(InyTag_ID3v2_Attached_Picture_Frame *picture_frame, const char *type);
+INYTAG_C_EXPORT char *inytag_id3v2_attached_picture_frame_get_mime_type(InyTag_ID3v2_Attached_Picture_Frame *picture_frame);
 INYTAG_C_EXPORT void inytag_id3v2_attached_picture_frame_set_picture(InyTag_ID3v2_Attached_Picture_Frame *picture_frame, const char *path);
+INYTAG_C_EXPORT void inytag_id3v2_attached_picture_frame_set_picture_form_bytevector(InyTag_ID3v2_Attached_Picture_Frame *picture_frame, InyTag_ByteVector *bytevector);
+INYTAG_C_EXPORT InyTag_ByteVector *inytag_id3v2_attached_picture_frame_get_picture(InyTag_ID3v2_Attached_Picture_Frame *picture_frame);
 INYTAG_C_EXPORT void inytag_id3v2_attached_picture_frame_set_type(InyTag_ID3v2_Attached_Picture_Frame *picture_frame, InyTag_Img_Type type);
-INYTAG_C_EXPORT void inytag_id3v2_attached_picture_frame_set_description(InyTag_ID3v2_Attached_Picture_Frame *picture_frame, InyTag_Img_Type desc);
+INYTAG_C_EXPORT InyTag_Img_Type inytag_id3v2_attached_picture_frame_get_type(InyTag_ID3v2_Attached_Picture_Frame *picture_frame);
+INYTAG_C_EXPORT void inytag_id3v2_attached_picture_frame_set_description(InyTag_ID3v2_Attached_Picture_Frame *picture_frame, const char *desc);
+INYTAG_C_EXPORT char *inytag_id3v2_attached_picture_frame_get_description(InyTag_ID3v2_Attached_Picture_Frame *picture_frame);
 INYTAG_C_EXPORT InyTag_File *inytag_file_new(const char *filename);
 INYTAG_C_EXPORT void inytag_file_free(InyTag_File *file);
 INYTAG_C_EXPORT InyTag_Tag *inytag_file_tag(const InyTag_File *file);
@@ -217,9 +270,17 @@ INYTAG_C_EXPORT void inytag_tag_set_genre(InyTag_Tag *tag, const char *genre);
 INYTAG_C_EXPORT void inytag_tag_set_year(InyTag_Tag *tag, unsigned int year);
 INYTAG_C_EXPORT void inytag_tag_set_track(InyTag_Tag *tag, unsigned int track);
 INYTAG_C_EXPORT int inytag_audioproperties_length(const InyTag_AudioProperties *audioProperties);
+INYTAG_C_EXPORT int inytag_audioproperties_length_seconds(const InyTag_AudioProperties *audioProperties);
+INYTAG_C_EXPORT int inytag_audioproperties_length_miliseconds(const InyTag_AudioProperties *audioProperties);
 INYTAG_C_EXPORT int inytag_audioproperties_bitrate(const InyTag_AudioProperties *audioProperties);
 INYTAG_C_EXPORT int inytag_audioproperties_samplerate(const InyTag_AudioProperties *audioProperties);
 INYTAG_C_EXPORT int inytag_audioproperties_channels(const InyTag_AudioProperties *audioProperties);
+INYTAG_C_EXPORT InyTag_ByteVector *inytag_bytevector_new();
+INYTAG_C_EXPORT void inytag_bytevector_free(InyTag_ByteVector *bytevector);
+INYTAG_C_EXPORT const char *inytag_bytevector_get_data(InyTag_ByteVector *bytevector);
+INYTAG_C_EXPORT unsigned int *inytag_bytevector_get_size(InyTag_ByteVector *bytevector);
+INYTAG_C_EXPORT GdkPixbuf *inytag_bytevector_get_pixbuf(InyTag_ByteVector *bytevector);
+INYTAG_C_EXPORT void inytag_bytevector_set_pixbuf(InyTag_ByteVector *bytevector, GdkPixbuf *pixbuf);
 
 #ifdef __cplusplus
 }

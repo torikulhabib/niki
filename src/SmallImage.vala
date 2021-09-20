@@ -64,7 +64,7 @@ namespace Niki {
                     if (NikiApp.settings.get_enum ("player-mode") == PlayerMode.AUDIO) {
                         if (file_exists (NikiApp.settings.get_string ("uri-video"))) {
                             if (taglist != null) {
-                                background = align_and_scale_pixbuf (pix_from_tag (taglist), 200);
+                                background = align_and_scale_pixbuf (pix_from_tag (taglist, Gst.Tag.ImageType.FRONT_COVER), 200);
                             }
                             size_alocate ();
                             playerpage.small_cover.content = this;

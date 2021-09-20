@@ -45,7 +45,7 @@ namespace Niki {
         }
         public bool volume_icon () {
             if (!NikiApp.settings.get_boolean ("dlna-muted")) {
-                if (NikiApp.settings.get_int ("dlna-volume") > 10 && NikiApp.settings.get_int ("dlna-volume") <= 35) {
+                if (NikiApp.settings.get_int ("dlna-volume") > 0 && NikiApp.settings.get_int ("dlna-volume") <= 35) {
                     ((Gtk.Image) volume_image).icon_name = "audio-volume-low-symbolic";
                 } else if (NikiApp.settings.get_int ("dlna-volume") > 35 && NikiApp.settings.get_int ("dlna-volume") <= 75) {
                     ((Gtk.Image) volume_image).icon_name = "audio-volume-medium-symbolic";

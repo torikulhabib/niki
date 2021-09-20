@@ -12,11 +12,8 @@ inytag_files = [
 ]
 
 install_headers(headers)
-
 add_languages('cpp')
-meson.get_compiler('cpp')
-
-inytag_dep = meson.get_compiler('vala').find_library('inytag', dirs: vaapi)
+inytag_dep = meson.get_compiler('vala').find_library('inytag', dirs: vapi)
 
 executable(
     meson.project_name(),

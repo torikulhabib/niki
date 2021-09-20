@@ -29,8 +29,8 @@ namespace Niki {
         public signal void updated ();
         public float[] m_magnitudes = new float[10];
         public dynamic Gst.Element pipeline;
-        public AudioMix? audiomix;
-        public VideoMix? videomix;
+        public dynamic AudioMix? audiomix;
+        public dynamic VideoMix? videomix;
         private double period = 0.0;
 
         public ClutterGst.VideoSink sink {
@@ -68,10 +68,10 @@ namespace Niki {
             }
             set {
                 _uri = value;
-                if (get_states () != Gst.State.READY) {
-                    pipeline.set_state (Gst.State.READY);
+                if (get_states () != Gst.State.NULL) {
+                    pipeline.set_state (Gst.State.NULL);
                 }
-                pipeline["uri"] = _uri;
+                pipeline["uri"] = _uri.dup ();
                 if (!subtitle_active) {
                     subtitle_active = true;
                 }
@@ -237,7 +237,7 @@ namespace Niki {
 
         public void set_subtittle (string subtitle) {
             insert_last_video (uri, seconds_to_time ((int) (progress * duration)), progress);
-            pipeline.set_state (Gst.State.READY);
+            pipeline.set_state (Gst.State.NULL);
             subtitle_uri = subtitle;
             playing = false;
             Idle.add (()=> {
@@ -248,7 +248,7 @@ namespace Niki {
         }
 
         public void stop () {
-            pipeline.set_state (Gst.State.READY);
+            pipeline.set_state (Gst.State.NULL);
         }
 
         private void playback_mute () {
@@ -326,7 +326,7 @@ namespace Niki {
                     buffer_fill = buffering;
                 }
             } else if (message.type == Gst.MessageType.EOS) {
-                pipeline.set_state (Gst.State.READY);
+                pipeline.set_state (Gst.State.NULL);
                 eos ();
             } else if (message.type == Gst.MessageType.ASYNC_DONE) {
                 idle ();
@@ -360,7 +360,7 @@ namespace Niki {
                 GLib.Error err;
                 string debug;
                 message.parse_error (out err, out debug);
-                warning ("Error: %s\n%s\n", err.message, debug);
+                warning (@"Error: $(err.message)", @"$(debug)");
             }
             return true;
         }

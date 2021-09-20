@@ -74,8 +74,6 @@ namespace Niki {
             show.connect (load_playback);
             hide.connect (()=> {
                 playback.stop ();
-                playback.uri = "";
-                playback.playing = false;
             });
         }
 

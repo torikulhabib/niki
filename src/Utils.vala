@@ -556,12 +556,12 @@ namespace Niki {
 
     private static string? normal_thumb (File thum_file) {
         string hash_file = GLib.Checksum.compute_for_string (ChecksumType.MD5, thum_file.get_uri (), thum_file.get_uri ().length);
-        return Path.build_filename (GLib.Environment.get_user_cache_dir (), "thumbnails", "normal", hash_file + ".png");
+        return Path.build_filename (GLib.Environment.get_home_dir (), ".cache", "thumbnails", "normal", hash_file + ".png");
     }
 
     private static string? large_thumb (File thum_file) {
         string hash_file = GLib.Checksum.compute_for_string (ChecksumType.MD5, thum_file.get_uri (), thum_file.get_uri ().length);
-        return Path.build_filename (GLib.Environment.get_user_cache_dir (), "thumbnails", "large", hash_file + ".png");
+        return Path.build_filename (GLib.Environment.get_home_dir (), ".cache", "thumbnails", "large", hash_file + ".png");
     }
 
     private string set_filename_media () {
@@ -614,8 +614,8 @@ namespace Niki {
         context.play_full (0, props, null);
     }
 
-    private Gdk.Pixbuf pix_from_tag (Gst.TagList tag_list) {
-        var sample = get_cover_sample (tag_list);
+    private Gdk.Pixbuf pix_from_tag (Gst.TagList tag_list, Gst.Tag.ImageType type) {
+        var sample = get_cover_sample (tag_list, type);
         if (sample == null) {
             tag_list.get_sample (Gst.Tags.IMAGE, out sample);
         }
@@ -628,18 +628,15 @@ namespace Niki {
         return unknown_cover ();
     }
 
-    private Gst.Sample? get_cover_sample (Gst.TagList tag_list) {
+    private Gst.Sample? get_cover_sample (Gst.TagList tag_list, Gst.Tag.ImageType type) {
         Gst.Sample sample;
         for (uint i = 0; tag_list.get_sample_index (Gst.Tags.IMAGE, i, out sample); i++) {
             unowned Gst.Structure caps_struct = sample.get_info ();
             int image_type = Gst.Tag.ImageType.UNDEFINED;
             caps_struct.get_enum ("image-type", typeof (Gst.Tag.ImageType), out image_type);
-            if (image_type == Gst.Tag.ImageType.FRONT_COVER) {
-                return sample;
-            } else if (image_type == Gst.Tag.ImageType.UNDEFINED) {
+            if (image_type == type) {
                 return sample;
             }
-            return sample;
         }
         return sample;
     }
@@ -1033,7 +1030,7 @@ namespace Niki {
                     });
                     label_duration.tooltip_text = label_duration.label = seconds_to_time ((int)(info.get_duration () / 1000000000));
                 } else if (get_mime_type (file_pre).has_prefix ("audio/")) {
-                    pixbuf = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (file_pre.get_uri ()).get_tags ()), 256);
+                    pixbuf = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (file_pre.get_uri ()).get_tags (), Gst.Tag.ImageType.FRONT_COVER), 256);
                     if (!file_pre.get_uri ().down ().has_suffix ("aac") || !file_pre.get_uri ().down ().has_suffix ("ac3")) {
                         var tagfile = new InyTag.File (file_pre.get_path ());
                         label_bitrate.tooltip_text = label_bitrate.label = tagfile.audioproperties.bitrate.to_string () + _(" kHz");
@@ -1457,7 +1454,7 @@ namespace Niki {
 
     private void insert_last_video (string uri, string progress, double lastplay) {
         Sqlite.Statement stmt;
-        string sql = @" UPDATE videos SET progress = '$(progress)', lastplay = $(lastplay)  WHERE uri = ?";
+        string sql = @" UPDATE videos SET progress = \"$(progress)\", lastplay = $(lastplay)  WHERE uri = ?";
         int res = NikiApp.db.prepare_v2 (sql, -1, out stmt);
         res = stmt.bind_text (1, uri);
         if ((res = stmt.step ()) != Sqlite.DONE) {
@@ -1560,7 +1557,7 @@ namespace Niki {
         var path = File.new_for_uri (uri);
         string sql = "";
         var tags = get_discoverer_info (path.get_uri ()).get_tags ();
-        sql = @" UPDATE musics SET title = '$(get_song_info (path))', artist = '$(get_string_tag (Gst.Tags.ARTIST, tags))', album = '$(get_string_tag (Gst.Tags.ALBUM, tags))', genre = '$(get_string_tag (Gst.Tags.GENRE, tags))', year = $(get_date_tag (tags)) WHERE uri = ?";
+        sql = @" UPDATE musics SET title = \"$(get_song_info (path))\", artist = \"$(get_string_tag (Gst.Tags.ARTIST, tags))\", album = \"$(get_string_tag (Gst.Tags.ALBUM, tags))\", genre = \"$(get_string_tag (Gst.Tags.GENRE, tags))\", year = $(get_date_tag (tags)) WHERE uri = ?";
         int res = NikiApp.db.prepare_v2 (sql, -1, out stmt);
         res = stmt.bind_text (1, uri);
         if ((res = stmt.step ()) != Sqlite.DONE) {
