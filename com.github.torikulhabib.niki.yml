@@ -7,10 +7,20 @@ sdk: io.elementary.Sdk
 command: com.github.torikulhabib.niki
 
 finish-args:
+  - '--socket=session-bus'
   - '--share=ipc'
   - '--socket=fallback-x11'
   - '--socket=wayland'
+  - '--socket=pulseaudio'
+  - '--socket=x11'
+  - '--device=all'
   - '--filesystem=home'
+
+cleanup:
+  - '*.a'
+  - '*.la'
+  - '*.o'
+  - '/include'
 
 modules:
   - name: libgssdp-1.2-0
