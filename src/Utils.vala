@@ -523,7 +523,7 @@ namespace Niki {
     }
 
     private static string cache_image (string name) {
-        return GLib.Path.build_filename (cache_folder (), name + ".jpg");
+        return GLib.Path.build_filename (cache_folder (), GLib.Checksum.compute_for_string (ChecksumType.MD5, name, name.length) + ".jpg");
     }
 
     private static string cache_folder () {

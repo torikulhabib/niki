@@ -415,6 +415,7 @@ namespace Niki {
             liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, input_title, PlaylistColumns.ARTISTTITLE, mediatype == 2? @"<b>$(Markup.escape_text (input_title))</b>\n$(Markup.escape_text (input_artist)) - <i>$(Markup.escape_text (input_album))</i>" : Markup.escape_text (input_title), PlaylistColumns.FILENAME, input_url, PlaylistColumns.FILESIZE, size_file, PlaylistColumns.MEDIATYPE, mediatype, PlaylistColumns.ALBUMMUSIC, input_album, PlaylistColumns.ARTISTMUSIC, input_artist, PlaylistColumns.PLAYNOW, playnow, PlaylistColumns.INPUTMODE, 2);
             update_playlist (50);
         }
+
         public void add_acd (string input_uri, string input_title, string input_album, string input_artist) {
             if (liststore_exist (PlaylistColumns.FILENAME, input_uri)) {
                 return;
@@ -425,6 +426,7 @@ namespace Niki {
             liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, input_title, PlaylistColumns.ARTISTTITLE, @"<b>$(Markup.escape_text (input_title))</b>\n$(Markup.escape_text (input_artist)) - <i>$(Markup.escape_text (input_album))</i>", PlaylistColumns.FILENAME, input_uri, PlaylistColumns.FILESIZE, "", PlaylistColumns.MEDIATYPE, 1, PlaylistColumns.ALBUMMUSIC, input_album, PlaylistColumns.ARTISTMUSIC, input_artist, PlaylistColumns.PLAYNOW, true, PlaylistColumns.INPUTMODE, 2);
             update_playlist (50);
         }
+
         public void add_item (File path) {
             if (!path.query_exists ()) {
                 return;
@@ -469,7 +471,28 @@ namespace Niki {
                 }
                 string nameimage = cache_image (@"$(info_songs) $(artist_music) $(path.get_basename ())");
                 if (!FileUtils.test (nameimage, FileTest.EXISTS)) {
-                    Gdk.Pixbuf pixbuf = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (path.get_uri ()).get_tags (), Gst.Tag.ImageType.FRONT_COVER), 48);
+                    Gdk.Pixbuf pixbuf = null;
+                    if (path.get_path ().down ().has_suffix ("mp3")) {
+                        var file_mpg = new InyTag.Mpeg_File (path.get_path ());
+                        InyTag.ID3v2_Attached_Picture_Frame picture = file_mpg.id3v2_tag.get_picture_frame (InyTag.Img_Type.FrontCover);
+                        InyTag.ByteVector vector = picture.get_picture ();
+                        var vpixbuf = vector.get_pixbuf ();
+                        pixbuf = align_and_scale_pixbuf (vpixbuf != null? vpixbuf : unknown_cover (), 48);
+                    } else if (path.get_path ().down ().has_suffix ("flac")) {
+                        var file_flac = new InyTag.Flac_File (path.get_path ());
+                        InyTag.Flac_Picture picflac = file_flac.get_picture (InyTag.Img_Type.FrontCover);
+                        InyTag.ByteVector vector = picflac.get_picture ();
+                        var vpixbuf = vector.get_pixbuf ();
+                        pixbuf = align_and_scale_pixbuf (vpixbuf != null? vpixbuf : unknown_cover (), 48);
+                    } else if (path.get_path ().down ().has_suffix ("m4a")) {
+                        var file_mp4 = new InyTag.Mp4_File (path.get_path ());
+                        InyTag.Mp4_Picture picture = file_mp4.tag_mp4.get_item_picture ();
+                        InyTag.ByteVector vector = picture.get_picture (InyTag.Format_Type.JPEG);
+                        var vpixbuf = vector.get_pixbuf ();
+                        pixbuf = align_and_scale_pixbuf (vpixbuf != null? vpixbuf : unknown_cover (), 48);
+                    } else {
+                        pixbuf = unknown_cover ();
+                    }
                     pix_to_file (pixbuf, nameimage);
                     preview = circle_pix (pixbuf);
                 } else {
@@ -480,6 +503,7 @@ namespace Niki {
             liststore.append (out iter);
             liststore.set (iter, PlaylistColumns.PLAYING, null, PlaylistColumns.PREVIEW, preview, PlaylistColumns.TITLE, info_songs, PlaylistColumns.ARTISTTITLE, file_type (path) == 0? @"$(Markup.escape_text (info_songs))\n $(progress) / $(duration)" : @"<b>$(Markup.escape_text (info_songs))</b>\n$(Markup.escape_text (artist_music)) - <i>$(Markup.escape_text (album_music))</i>", PlaylistColumns.FILENAME, path.get_uri (), PlaylistColumns.FILESIZE, get_info_size (path.get_uri ()), PlaylistColumns.MEDIATYPE, file_type (path), PlaylistColumns.ALBUMMUSIC, album_music, PlaylistColumns.ARTISTMUSIC, artist_music, PlaylistColumns.PLAYNOW, true, PlaylistColumns.INPUTMODE, 0);
         }
+
         private bool liststore_exist (PlaylistColumns column, string file_name) {
             bool exist = false;
             liststore.foreach ((model, path, iter) => {
@@ -492,6 +516,7 @@ namespace Niki {
             });
             return exist;
         }
+
         public void update_progress_video (string uri, string progress, string duration) {
             liststore.foreach ((model, path, iter) => {
                 string filename;

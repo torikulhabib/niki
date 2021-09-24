@@ -541,7 +541,7 @@ namespace Niki {
                     file_mpg.id3v2_tag.add_text_frame (InyTag.Frame_ID.YEARV2, date_spinbutton.value.to_string ());
                     if (FileUtils.test (nameimage, FileTest.EXISTS)) {
                         frampic.mime_type = get_mime_type (File.new_for_path (nameimage));
-                        frampic.type = InyTag.Img_Type.Artist;
+                        frampic.type = InyTag.Img_Type.FrontCover;
                         frampic.set_picture (nameimage);
                         file_mpg.id3v2_tag.add_picture_frame (frampic);
                     }
@@ -777,7 +777,7 @@ namespace Niki {
                 label_sample.label = file_mpg.audioproperties.samplerate.to_string () + _(" bps");
                 label_chanel.label = file_mpg.audioproperties.channels == 2? _("Stereo") : _("Mono");
                 label_duration.label = seconds_to_time (file_mpg.audioproperties.length);
-                InyTag.ID3v2_Attached_Picture_Frame picture = file_mpg.id3v2_tag.get_picture_frame (InyTag.Img_Type.Artist);
+                InyTag.ID3v2_Attached_Picture_Frame picture = file_mpg.id3v2_tag.get_picture_frame (InyTag.Img_Type.FrontCover);
                 InyTag.ByteVector vector = picture.get_picture ();
                 var pixbuf = vector.get_pixbuf ();
                 apply_cover_pixbuf (align_and_scale_pixbuf (pixbuf != null? pixbuf : unknown_cover (), 256));
@@ -812,9 +812,9 @@ namespace Niki {
                 label_chanel.label = file_mp4.audioproperties.channels == 2? _("Stereo") : _("Mono");
                 label_duration.label = seconds_to_time (file_mp4.audioproperties.length);
                 InyTag.Mp4_Picture picture = file_mp4.tag_mp4.get_item_picture ();
-                InyTag.ByteVector byte = picture.get_picture (InyTag.Format_Type.JPEG);
-                Gdk.Pixbuf pixbuf = byte.get_pixbuf ();
-                apply_cover_pixbuf (align_and_scale_pixbuf (pixbuf, 256));
+                InyTag.ByteVector vector = picture.get_picture (InyTag.Format_Type.JPEG);
+                Gdk.Pixbuf pixbuf = vector.get_pixbuf ();
+                apply_cover_pixbuf (align_and_scale_pixbuf (pixbuf != null? pixbuf : unknown_cover (), 256));
             } else {
                 var tagfile = new InyTag.File (File.new_for_uri (file_name).get_path ());
                 label_bitrate.label = tagfile.audioproperties.bitrate.to_string () + _(" kHz");

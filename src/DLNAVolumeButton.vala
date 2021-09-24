@@ -22,8 +22,10 @@
 namespace Niki {
     public class DLNAVolumeButton : Gtk.Button {
         private Gtk.Image volume_image;
+        private DLNAAction dlnaaction;
 
-        construct {
+        public DLNAVolumeButton (DLNAAction dlnaaction) {
+            this.dlnaaction = dlnaaction;
             get_style_context ().add_class ("transparantbg");
             get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             volume_image = new Gtk.Image.from_icon_name ("audio-volume-high-symbolic", Gtk.IconSize.BUTTON) {
@@ -33,23 +35,26 @@ namespace Niki {
             volume_image.get_style_context ().add_class (Gtk.STYLE_CLASS_FLAT);
             margin_top = 2;
             add (volume_image);
-            NikiApp.settings.changed["dlna-volume"].connect (() => {
+
+            dlnaaction.notify["volume"].connect (() => {
                 volume_icon ();
             });
-            NikiApp.settings.changed["dlna-muted"].connect (() => {
+
+            dlnaaction.notify["mute"].connect (() => {
                 Idle.add (volume_icon);
                 volume_mute ();
             });
             volume_mute ();
             volume_icon ();
         }
+
         public bool volume_icon () {
-            if (!NikiApp.settings.get_boolean ("dlna-muted")) {
-                if (NikiApp.settings.get_int ("dlna-volume") > 0 && NikiApp.settings.get_int ("dlna-volume") <= 35) {
+            if (!dlnaaction.mute) {
+                if (dlnaaction.volume > 0 && dlnaaction.volume <= 35) {
                     ((Gtk.Image) volume_image).icon_name = "audio-volume-low-symbolic";
-                } else if (NikiApp.settings.get_int ("dlna-volume") > 35 && NikiApp.settings.get_int ("dlna-volume") <= 75) {
+                } else if (dlnaaction.volume > 35 && dlnaaction.volume <= 75) {
                     ((Gtk.Image) volume_image).icon_name = "audio-volume-medium-symbolic";
-                } else if (NikiApp.settings.get_int ("dlna-volume") > 75) {
+                } else if (dlnaaction.volume > 75) {
                     ((Gtk.Image) volume_image).icon_name = "audio-volume-high-symbolic";
                 } else {
                     ((Gtk.Image) volume_image).icon_name = "audio-volume-muted-symbolic";
@@ -57,9 +62,10 @@ namespace Niki {
             }
             return false;
         }
+
         private void volume_mute () {
-            ((Gtk.Image) volume_image).icon_name = NikiApp.settings.get_boolean ("dlna-muted")? "audio-volume-muted-blocking-symbolic" : "audio-volume-high-symbolic";
-            volume_image.tooltip_text = NikiApp.settings.get_boolean ("dlna-muted")? _("Muted") : double_to_percent ((double)NikiApp.settings.get_int ("dlna-volume") / 100);
+            ((Gtk.Image) volume_image).icon_name = dlnaaction.mute? "audio-volume-muted-blocking-symbolic" : "audio-volume-high-symbolic";
+            volume_image.tooltip_text = dlnaaction.mute? _("Muted") : double_to_percent ((double)dlnaaction.volume / 100);
         }
     }
 }

@@ -51,7 +51,7 @@ namespace Niki {
             }
         }
 
-        public bool _playing = false;
+        private bool _playing = false;
         public bool playing {
             get {
                 return _playing;
@@ -63,13 +63,34 @@ namespace Niki {
             }
         }
 
+        private bool _mute;
+        public bool mute {
+            get {
+                return _mute;
+            }
+            set {
+                _mute = value;
+            }
+        }
+
+        private uint _volume;
+        public uint volume {
+            get {
+                return _volume;
+            }
+            set {
+                _volume = value;
+            }
+        }
+
         public DLNAAction (WelcomePage welcompage) {
             transition_type = Gtk.RevealerTransitionType.SLIDE_UP;
             transition_duration = 500;
             events |= Gdk.EventMask.POINTER_MOTION_MASK;
             events |= Gdk.EventMask.LEAVE_NOTIFY_MASK;
             events |= Gdk.EventMask.ENTER_NOTIFY_MASK;
-
+            welcompage.dlnarendercontrol.bind_property ("mute", this, "mute", BindingFlags.BIDIRECTIONAL);
+            welcompage.dlnarendercontrol.bind_property ("volume", this, "volume", BindingFlags.BIDIRECTIONAL);
             stop_revealer = new ButtonRevealer ("media-playback-stop-symbolic") {
                 tooltip_text = _("Stop"),
                 transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT,
@@ -96,9 +117,9 @@ namespace Niki {
             next_button.clicked.connect (() => {
                 welcompage.dlnarendercontrol.next_media ();
             });
-            volume_button = new DLNAVolumeButton ();
+            volume_button = new DLNAVolumeButton (this);
             volume_button.clicked.connect (() => {
-                NikiApp.settings.set_boolean ("dlna-muted", !NikiApp.settings.get_boolean ("dlna-muted"));
+                welcompage.dlnarendercontrol.muted_dlna ();
             });
             var clear_button = new Gtk.Button.from_icon_name ("view-refresh-symbolic", Gtk.IconSize.BUTTON) {
                 tooltip_text = _("Reload")
@@ -106,7 +127,7 @@ namespace Niki {
             clear_button.clicked.connect (() => {
                 welcompage.dlnarendercontrol.clear_selected_renderer_state ();
             });
-            dlnavolume = new DLNAVolume ();
+            dlnavolume = new DLNAVolume (this);
             dlnavolume.leave_scale.connect (reveal_volume);
             volume_button.enter_notify_event.connect (() => {
                 if (!dlnavolume.child_revealed) {

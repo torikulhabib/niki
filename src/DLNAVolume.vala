@@ -24,8 +24,10 @@ namespace Niki {
         public Gtk.Scale scale { get; construct set; }
         public bool hovering_grabing { get; construct set; }
         public signal void leave_scale ();
+        private DLNAAction dlnaaction;
 
-        construct {
+        public DLNAVolume (DLNAAction dlnaaction) {
+            this.dlnaaction = dlnaaction;
             get_style_context ().add_class ("dlna_volume");
             transition_type = Gtk.RevealerTransitionType.SLIDE_RIGHT;
             transition_duration = 500;
@@ -37,19 +39,19 @@ namespace Niki {
                 margin_end = 2,
                 width_request = 81
             };
-            scale.set_value (NikiApp.settings.get_int ("dlna-volume"));
+            scale.set_value (dlnaaction.volume);
             scale.get_style_context ().add_class ("dlna_volume");
 
             scale.events |= Gdk.EventMask.POINTER_MOTION_MASK;
             scale.events |= Gdk.EventMask.LEAVE_NOTIFY_MASK;
             scale.events |= Gdk.EventMask.ENTER_NOTIFY_MASK;
 
-            NikiApp.settings.changed["dlna-muted"].connect (() => {
-                scale.sensitive = NikiApp.settings.get_boolean ("dlna-muted")? false : true;
+            dlnaaction.notify["volume"].connect (() => {
+                scale.set_value (dlnaaction.volume);
             });
 
-            NikiApp.settings.changed["dlna-volume"].connect (() => {
-                scale.set_value (NikiApp.settings.get_int ("dlna-volume"));
+            dlnaaction.notify["mute"].connect (() => {
+                scale.sensitive = dlnaaction.mute? false : true;
             });
 
             scale.motion_notify_event.connect (() => {
@@ -67,7 +69,7 @@ namespace Niki {
                     if (new_value > 100) {
                         new_value = 100;
                     }
-                    NikiApp.settings.set_int ("dlna-volume", (int)new_value);
+                    dlnaaction.volume = (uint) new_value;
                 }
                 return false;
             });

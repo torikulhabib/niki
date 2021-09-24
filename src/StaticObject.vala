@@ -21,7 +21,6 @@
 
 namespace Niki {
     public class StateObject : GLib.Object {
-        public signal void update_state ();
         private int _state;
         public int state {
             get {
@@ -31,6 +30,27 @@ namespace Niki {
                 _state = value;
             }
         }
+
+        private bool _mute;
+        public bool mute {
+            get {
+                return _mute;
+            }
+            set {
+                _mute = value;
+            }
+        }
+
+        private uint _volume;
+        public uint volume {
+            get {
+                return _volume;
+            }
+            set {
+                _volume = value;
+            }
+        }
+
         construct {}
     }
 }

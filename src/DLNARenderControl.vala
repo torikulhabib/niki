@@ -26,7 +26,41 @@ namespace Niki {
         private static GUPnP.ServiceProxy connection_manager;
         private string separator_name = "<separator_item_unique_name>";
         private static string niki_mode = _("Niki Player");
-        private static StateObject state_obj;
+        public static StateObject state_obj;
+
+        private int _state;
+        public int state {
+            get {
+                return _state;
+            }
+            set {
+                _state = value;
+                set_state_playback (_state);
+            }
+        }
+
+        private bool _mute;
+        public bool mute {
+            get {
+                return _mute;
+            }
+            set {
+                _mute = value;
+                muted_control ();
+                volume_changed ();
+            }
+        }
+
+        private uint _volume;
+        public uint volume {
+            get {
+                return _volume;
+            }
+            set {
+                _volume = value;
+                volume_changed ();
+            }
+        }
 
         public DLNARenderControl (WelcomePage welcompage) {
             this.welcompage = welcompage;
@@ -56,22 +90,17 @@ namespace Niki {
                 set_active_iter (iter);
                 return false;
             });
-
-            NikiApp.settings.changed["dlna-muted"].connect (() => {
-                muted_control ();
-                volume_changed ();
-            });
-            NikiApp.settings.changed["dlna-volume"].connect (volume_changed);
-            state_obj.update_state.connect (()=> {
-                set_state_playback (state_obj.state);
-            });
-            state_obj.notify["state"].connect (()=> {
-                set_state_playback (state_obj.state);
-            });
+            state_obj.bind_property ("mute", this, "mute", BindingFlags.BIDIRECTIONAL);
+            state_obj.bind_property ("volume", this, "volume", BindingFlags.BIDIRECTIONAL);
+            state_obj.bind_property ("state", this, "state", BindingFlags.BIDIRECTIONAL);
 
             changed.connect (()=> {
-                set_state_playback (state_obj.state);
+                set_state_playback (state);
             });
+        }
+
+        public void muted_dlna () {
+            state_obj.mute = !state_obj.mute;
         }
 
         public bool get_selected_device () {
@@ -127,7 +156,6 @@ namespace Niki {
                     state_obj.state = PlaybackState.UNKNOWN;
                     break;
             }
-            state_obj.update_state ();
         }
 
         public void clear_selected_renderer_state () {
@@ -157,9 +185,9 @@ namespace Niki {
             var lc_parser = new GUPnP.LastChangeParser ();
             try {
                 if (lc_parser.parse_last_change (0, last_change_xml, "Volume", Type.UINT, out volume, "Mute", Type.BOOLEAN, out mute)) {
-                    NikiApp.settings.set_boolean ("dlna-muted", mute);
-                    if (!NikiApp.settings.get_boolean ("dlna-muted") && !mute) {
-                        NikiApp.settings.set_int ("dlna-volume", (int) volume);
+                    state_obj.mute = mute;
+                    if (!state_obj.mute && !mute) {
+                        state_obj.volume = volume;
                     }
                 }
             } catch (Error err) {
@@ -282,7 +310,6 @@ namespace Niki {
         }
 
         public void play (bool pause = true) {
-            state_obj.update_state ();
             GUPnP.ServiceProxy av_transport;
             Gtk.TreeIter iter;
             if (!get_active_iter (out iter)) {
@@ -316,7 +343,6 @@ namespace Niki {
             } else if (playback == "Stop") {
                 state_obj.state = PlaybackState.STOPPED;
             }
-            state_obj.update_state ();
             GUPnP.ServiceProxy av_transport;
             Gtk.TreeIter iter;
             if (!get_active_iter (out iter)) {
@@ -612,7 +638,7 @@ namespace Niki {
             valuecann.set_string ("Master");
             in_values.append (valuecann);
             Value valuedesired = Value (Type.BOOLEAN);
-            valuedesired.set_boolean (NikiApp.settings.get_boolean ("dlna-muted"));
+            valuedesired.set_boolean (state_obj.mute);
             in_values.append (valuedesired);
             rendering_control.begin_action_list ("SetMute", in_names, in_values, rendering_cb);
         }
@@ -639,7 +665,7 @@ namespace Niki {
             valuecann.set_string ("Master");
             in_values.append (valuecann);
             Value valuedesired = Value (Type.UINT);
-            valuedesired.set_uint ((uint)NikiApp.settings.get_int ("dlna-volume"));
+            valuedesired.set_uint (state_obj.volume);
             in_values.append (valuedesired);
             rendering_control.begin_action_list ("SetVolume", in_names, in_values, rendering_cb);
         }
