@@ -491,7 +491,7 @@ namespace Niki {
                         var vpixbuf = vector.get_pixbuf ();
                         pixbuf = align_and_scale_pixbuf (vpixbuf != null? vpixbuf : unknown_cover (), 48);
                     } else {
-                        pixbuf = unknown_cover ();
+                        pixbuf = align_and_scale_pixbuf (unknown_cover (), 48);
                     }
                     pix_to_file (pixbuf, nameimage);
                     preview = circle_pix (pixbuf);

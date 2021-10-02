@@ -132,8 +132,8 @@ namespace Niki {
             default_presets.add (new VideoPreset.with_value (_("Normal"), {0, 0, 0, 0, 0}));
             default_presets.add (new VideoPreset.with_value (_("Vivid"), {15, 5, 5, 35, 0}));
             default_presets.add (new VideoPreset.with_value (_("Bright"), {5, 10, 10, 10, 0}));
-            default_presets.add (new VideoPreset.with_value (_("Color Enchaned"), {0, -1, -1, 60, 0}));
-            default_presets.add (new VideoPreset.with_value (_("Color Max"), {0, -1, -1, 100, 0}));
+            default_presets.add (new VideoPreset.with_value (_("Color Enchaned"), {0, -1, -1, 100, 0}));
+            default_presets.add (new VideoPreset.with_value (_("Full Color"), {0, -1, -1, 60, 0}));
             default_presets.add (new VideoPreset.with_value (_("No Color"), {0, 0, 10, -100, 0}));
             default_presets.add (new VideoPreset.with_value (_("Soft"), {0, 0, -10, 0, 0}));
             return default_presets;
