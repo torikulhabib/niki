@@ -31,6 +31,7 @@ namespace Niki {
         public dynamic Gst.Element pipeline;
         public dynamic AudioMix? audiomix;
         public dynamic VideoMix? videomix;
+        public dynamic TextMix textmix;
         private double period = 0.0;
 
         public ClutterGst.VideoSink sink {
@@ -68,9 +69,7 @@ namespace Niki {
             }
             set {
                 _uri = value;
-                if (get_states () != Gst.State.NULL) {
-                    pipeline.set_state (Gst.State.NULL);
-                }
+                pipeline.set_state (Gst.State.READY);
                 pipeline["uri"] = _uri.dup ();
                 if (!subtitle_active) {
                     subtitle_active = true;
@@ -208,9 +207,9 @@ namespace Niki {
 
         construct {
             pipeline = Gst.ElementFactory.make ("playbin", "playbin");
-            pipeline.sync_state_with_parent ();
             videomix = new VideoMix ();
             audiomix = new AudioMix ();
+            textmix = new TextMix ();
             videomix.videosink.pipeline_ready.connect (()=> {
                 ready ();
                 unowned ClutterGst.Frame frame = videomix.videosink.get_frame ();
@@ -221,6 +220,7 @@ namespace Niki {
             });
             pipeline["video-sink"] = videomix;
             pipeline["audio-sink"] = audiomix;
+
             var bus = pipeline.get_bus ();
             bus.enable_sync_message_emission ();
             bus.add_watch (0, bus_callback);
@@ -233,6 +233,21 @@ namespace Niki {
             NikiApp.settings.changed["flip-options"].connect (flip_chage);
             flip_chage ();
             playback_mute ();
+            Gst.Registry registry = Gst.Registry.@get ();
+            if (registry == null) {
+                return;
+            }
+
+            Gst.ElementFactory factory = Gst.ElementFactory.find ("vaapidecode");
+            if (factory == null) {
+                Gst.Plugin plugin = registry.find_plugin ("vaapi");
+                if (plugin != null) {
+                    registry.remove_plugin (plugin);
+                }
+                return;
+            }
+            ((Gst.PluginFeature) factory).set_rank (Gst.Rank.PRIMARY + 1);
+            registry.add_feature ((Gst.PluginFeature) factory);
         }
 
         public void set_subtittle (string subtitle) {
@@ -248,7 +263,7 @@ namespace Niki {
         }
 
         public void stop () {
-            pipeline.set_state (Gst.State.NULL);
+            pipeline.set_state (Gst.State.READY);
         }
 
         private void playback_mute () {

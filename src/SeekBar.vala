@@ -136,7 +136,7 @@ namespace Niki {
                 return true;
             });
             foreach (string lyric_sc in list_lyric) {
-                playerpage.menu_actor.add_child (playerpage.text_clutter (@" $(lyric_sc) "));
+                playerpage.menu_actor.add_child (playerpage.text_clutter (@" $(lyric_sc.dup ()) "));
             }
         }
 

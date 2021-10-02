@@ -781,7 +781,7 @@ namespace Niki {
         }
 
         public void string_notify (string notify_string) {
-            notify_text.text = @"\n     $(notify_string)     \n";
+            notify_text.text = @"\n     $(notify_string.dup ())     \n";
             notify_control ();
         }
     }

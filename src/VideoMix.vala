@@ -30,7 +30,7 @@ namespace Niki {
         private dynamic Gst.Element coloreffects;
         private dynamic Gst.Element capsfilter;
         public dynamic Gst.Element videocrop;
-        private dynamic Gst.Element videoscale;
+        private int saturation;
 
         construct {
             videotee = Gst.ElementFactory.make ("tee", "tee");
@@ -40,15 +40,11 @@ namespace Niki {
             gamma = Gst.ElementFactory.make ("gamma", "gamma");
             color_balance = Gst.ElementFactory.make ("videobalance", "videobalance");
             coloreffects = Gst.ElementFactory.make ("coloreffects", "coloreffects");
-            videoscale = Gst.ElementFactory.make ("videoscale", "videoscale");
-            videoscale["gamma-decode"] = true;
-            videoscale["sharpen"] = 1.0;
-            videoscale["sharpness"] = 1.5;
             capsfilter = Gst.ElementFactory.make ("capsfilter", "capsfilter");
             videosink = new ClutterGst.VideoSink ();
-            add_many (videoqueue, videotee, capsfilter, videoscale, videocrop, coloreffects, flip_filter, color_balance, gamma, videosink);
+            add_many (videoqueue, videotee, capsfilter, videocrop, coloreffects, flip_filter, color_balance, gamma, videosink);
             add_pad (new Gst.GhostPad ("sink", videotee.get_static_pad ("sink")));
-            videoqueue.link_many (capsfilter, videoscale, videocrop, coloreffects, flip_filter, color_balance, gamma, videosink);
+            videoqueue.link_many (capsfilter, videocrop, coloreffects, flip_filter, color_balance, gamma, videosink);
             Gst.Pad sinkpad = videoqueue.get_static_pad ("sink");
             Gst.Pad pad = videotee.get_request_pad ("src_%u");
             pad.link (sinkpad);
@@ -56,6 +52,13 @@ namespace Niki {
             NikiApp.settings.changed["videorender-options"].connect (filetr_caps);
             filetr_caps ();
             coloreffect ();
+            videosink.pipeline_ready.connect (()=> {
+                videosink.list_channels ().foreach ((channel)=> {
+                    if (channel.label == "SATURATION") {
+                        videosink.set_value (channel, saturation);
+                    }
+                });
+            });
         }
 
         private void filetr_caps () {
@@ -99,6 +102,12 @@ namespace Niki {
                     break;
                 case 3 :
                     color_balance["saturation"] = (double) ((100.0 + valuescale) / 100.0);
+                    saturation = valuescale * 10;
+                    videosink.list_channels ().foreach ((channel)=> {
+                        if (channel.label == "SATURATION") {
+                            videosink.set_value (channel, saturation);
+                        }
+                    });
                     break;
                 case 4 :
                     color_balance["hue"] = (double) valuescale / 100.0;
@@ -123,7 +132,8 @@ namespace Niki {
             default_presets.add (new VideoPreset.with_value (_("Normal"), {0, 0, 0, 0, 0}));
             default_presets.add (new VideoPreset.with_value (_("Vivid"), {15, 5, 5, 35, 0}));
             default_presets.add (new VideoPreset.with_value (_("Bright"), {5, 10, 10, 10, 0}));
-            default_presets.add (new VideoPreset.with_value (_("Full Color"), {0, -1, -1, 100, 0}));
+            default_presets.add (new VideoPreset.with_value (_("Color Enchaned"), {0, -1, -1, 60, 0}));
+            default_presets.add (new VideoPreset.with_value (_("Color Max"), {0, -1, -1, 100, 0}));
             default_presets.add (new VideoPreset.with_value (_("No Color"), {0, 0, 10, -100, 0}));
             default_presets.add (new VideoPreset.with_value (_("Soft"), {0, 0, -10, 0, 0}));
             return default_presets;

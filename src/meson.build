@@ -13,7 +13,6 @@ inytag_files = [
 
 install_headers(headers)
 add_languages('cpp')
-inytag_dep = meson.get_compiler('vala').find_library('inytag', dirs: vapi)
 
 executable(
     meson.project_name(),
@@ -145,15 +144,16 @@ executable(
         dependency('gstreamer-base-1.0'),
         dependency('gstreamer-pbutils-1.0'),
         dependency('gstreamer-tag-1.0'),
+        dependency('gstreamer-controller-1.0'),
         dependency('gupnp-1.2'),
         dependency('gupnp-av-1.0'),
         dependency('gssdp-1.2'),
         dependency('libxml-2.0'),
         dependency('libcanberra'),
-        dependency('taglib_c'),
+        dependency('taglib'),
         dependency('sqlite3'),
-        inytag_dep,
 
+        meson.get_compiler('vala').find_library('inytag', dirs: vapi),
         meson.get_compiler('vala').find_library('posix'),
         meson.get_compiler('c').find_library('m', required : false),
         meson.get_compiler('cpp').find_library('inytag', required : false),

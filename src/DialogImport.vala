@@ -111,7 +111,14 @@ namespace Niki {
                         }
                         break;
                     case 1:
-
+                        Gtk.Clipboard clipboard = Gtk.Clipboard.get_for_display (get_display (), Gdk.SELECTION_CLIPBOARD);
+                        string text = clipboard.wait_for_text ().strip ();
+                        if (text == null) {
+                            return;
+                        }
+                        NikiApp.window.welcome_page.getlink.get_link_stream (text);
+                        welcome_left.sensitive = false;
+                        welcome_rigth.sensitive = false;
                         break;
                     case 2:
                         var file = run_open_folder (this);

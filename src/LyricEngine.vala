@@ -93,7 +93,7 @@ namespace Niki {
                 if (is_match (pattern, time_lyric) && only_lyric != "") {
                     Gtk.TreeIter iter;
                     lrc_store.append (out iter);
-                    lrc_store.set (iter, 0, int_from_time (time_lyric), 1, only_lyric, 2, "", 3, "");
+                    lrc_store.set (iter, 0, int_from_time (time_lyric), 1, only_lyric.dup (), 2, "", 3, "");
                 }
             }
         }

@@ -531,6 +531,7 @@ namespace Niki {
                 if (!child_revealed) {
                     hovered = child_revealed;
                 }
+                time_music.start_animated (child_revealed);
                 playerpage.right_bar.reveal_control (false);
             });
 

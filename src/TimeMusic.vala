@@ -138,7 +138,18 @@ namespace Niki {
             show_all ();
             NikiApp.settings.changed["make-lrc"].connect (seach_n_time);
             seach_n_time ();
-            Timeout.add (50, animation_timer);
+        }
+
+        public void start_animated (bool anim_now) {
+            if (remove_time > 0) {
+                Source.remove (remove_time);
+            }
+            remove_time = 0;
+            animstep = 0;
+            state = 0;
+            if (anim_now) {
+                remove_time = Timeout.add (50, animation_timer);
+            }
         }
 
         private void seach_n_time () {

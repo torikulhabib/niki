@@ -79,7 +79,7 @@ namespace Niki {
                         state = 0;
                         return false;
                 }
-                c_text.text = @" $(text) ";
+                c_text.text = @" $(text.dup ()) ";
             }
 
             if (animstep < 16) {

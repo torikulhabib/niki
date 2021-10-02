@@ -603,7 +603,7 @@ namespace Niki {
                     var file_mpg = new InyTag.Mpeg_File (file.get_path ());
                     file_mpg.id3v2_tag.remove_all ();
                     file_mpg.mpeg_tag.title = "";
-                    file_mpg.mpeg_tag.artist ="";
+                    file_mpg.mpeg_tag.artist = "";
                     file_mpg.mpeg_tag.album = "";
                     file_mpg.mpeg_tag.genre = "";
                     file_mpg.mpeg_tag.comment = "";
@@ -795,7 +795,7 @@ namespace Niki {
                 label_chanel.label = file_flac.audioproperties.channels == 2? _("Stereo") : _("Mono");
                 label_duration.label = seconds_to_time (file_flac.audioproperties.length);
                 InyTag.Flac_Picture picflac = file_flac.get_picture (InyTag.Img_Type.FrontCover);
-                InyTag.ByteVector vector = picflac.get_picture () ;
+                InyTag.ByteVector vector = picflac.get_picture ();
                 var pixbuf = vector.get_pixbuf ();
                 apply_cover_pixbuf (align_and_scale_pixbuf (pixbuf != null? pixbuf : unknown_cover (), 256));
             } else if (file_name.down ().has_suffix ("m4a")) {

@@ -924,9 +924,11 @@ namespace Niki {
         _("Cancel"), Gtk.ResponseType.CANCEL,
         _("Open"), Gtk.ResponseType.ACCEPT);
         file.select_multiple = multi;
-        var preview_area = new Gtk.Image ();
-        preview_area.pixel_size = 256;
-        preview_area.margin_end = 12;
+
+        var preview_area = new Gtk.Image () {
+            pixel_size = 256,
+            margin_end = 12
+        };
 
         var all_files_filter = new Gtk.FileFilter ();
         all_files_filter.set_filter_name (_("All Files"));
@@ -945,34 +947,45 @@ namespace Niki {
         text_filter.set_filter_name (_("Text"));
         text_filter.add_mime_type ("text/*");
 
-        var label = new Gtk.Label (null);
+        var label = new Gtk.Label (null) {
+            ellipsize = Pango.EllipsizeMode.END,
+            max_width_chars = 20,
+            margin_end = 10
+        };
         label.get_style_context ().add_class ("h3");
-        label.ellipsize = Pango.EllipsizeMode.END;
-        label.max_width_chars = 20;
-        label.margin_end = 10;
-        var label_bitrate = new Gtk.Label (null);
+
+        var label_bitrate = new Gtk.Label (null) {
+            ellipsize = Pango.EllipsizeMode.END,
+            max_width_chars = 20,
+            margin_end = 10
+        };
         label_bitrate.get_style_context ().add_class ("h3");
-        label_bitrate.ellipsize = Pango.EllipsizeMode.END;
-        label_bitrate.max_width_chars = 20;
-        label_bitrate.margin_end = 10;
-        var label_sample = new Gtk.Label (null);
+
+        var label_sample = new Gtk.Label (null) {
+            ellipsize = Pango.EllipsizeMode.END,
+            max_width_chars = 20,
+            margin_end = 10
+        };
         label_sample.get_style_context ().add_class ("h3");
-        label_sample.ellipsize = Pango.EllipsizeMode.END;
-        label_sample.max_width_chars = 20;
-        label_sample.margin_end = 10;
-        var label_chanel = new Gtk.Label (null);
+
+        var label_chanel = new Gtk.Label (null) {
+            ellipsize = Pango.EllipsizeMode.END,
+            max_width_chars = 20,
+            margin_end = 10
+        };
         label_chanel.get_style_context ().add_class ("h3");
-        label_chanel.ellipsize = Pango.EllipsizeMode.END;
-        label_chanel.max_width_chars = 20;
-        label_chanel.margin_end = 10;
-        var label_duration = new Gtk.Label (null);
+
+        var label_duration = new Gtk.Label (null) {
+            ellipsize = Pango.EllipsizeMode.END,
+            max_width_chars = 20,
+            margin_end = 10
+        };
         label_duration.get_style_context ().add_class ("h3");
-        label_duration.ellipsize = Pango.EllipsizeMode.END;
-        label_duration.max_width_chars = 20;
-        label_duration.margin_end = 10;
-        var grid = new Gtk.Grid ();
-        grid.orientation = Gtk.Orientation.VERTICAL;
-        grid.valign = Gtk.Align.CENTER;
+
+        var grid = new Gtk.Grid () {
+            orientation = Gtk.Orientation.VERTICAL,
+            valign = Gtk.Align.CENTER
+        };
         grid.add (preview_area);
         grid.add (label);
         grid.add (label_bitrate);
