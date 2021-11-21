@@ -52,7 +52,6 @@ namespace Niki {
             audioamplify = Gst.ElementFactory.make ("audioamplify", "audioamplify");
             audioamplify["amplification"] = 1.16;
             spectrum = Gst.ElementFactory.make ("spectrum", "spectrum");
-            spectrum["interval"] = (uint64)120000000;
             spectrum["bands"] = 10;
             audiosink = Gst.ElementFactory.make (AUDIORENDER [NikiApp.settings.get_int ("audiorender-options")], AUDIORENDER [NikiApp.settings.get_int ("audiorender-options")]);
             add_many (audioqueue, audiotee, capsfilter, equalizer, spectrum, audioamplify, scaletempo, audiosink);

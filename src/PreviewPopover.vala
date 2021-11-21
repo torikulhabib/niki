@@ -38,6 +38,7 @@ namespace Niki {
             playback.size_change.connect ((width, height) => {
                 clutter_height = height;
                 clutter_width = width;
+                clutter_resize ();
             });
             clutter = new GtkClutter.Embed () {
                 margin = 1
@@ -75,6 +76,8 @@ namespace Niki {
             hide.connect (()=> {
                 playback.stop ();
             });
+            var clear_content = new Clutter.Canvas ();
+            
         }
 
         private void load_label () {
@@ -109,7 +112,7 @@ namespace Niki {
             if (NikiApp.settings.get_boolean ("audio-video")) {
                 return;
             }
-            this.req_progress = p_progress;
+            this.req_progress = p_progress - 0.001;
             req_loop = loop;
             if (!visible || idle_id > 0) {
                 return;
@@ -155,11 +158,11 @@ namespace Niki {
                 return;
             }
             cancel_timer (ref hide_timer_id);
-            clutter_resize ();
             show_timer_id = Timeout.add (350, () => {
                 show_all ();
                 if (req_progress >= 0) {
                     set_preview_progress (req_progress, req_loop);
+                    clutter_resize ();
                 }
                 show_timer_id = 0;
                 return false;
@@ -174,9 +177,9 @@ namespace Niki {
                 return;
             }
             cancel_timer (ref show_timer_id);
-            clutter_resize ();
             hide_timer_id = Timeout.add (350, () => {
                 hide ();
+                clutter_resize ();
                 hide_timer_id = 0;
                 return false;
             });

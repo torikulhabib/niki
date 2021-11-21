@@ -99,7 +99,7 @@ namespace Niki {
             }
             set {
                 _seeked = value;
-                pipeline.seek_simple (Gst.Format.TIME, Gst.SeekFlags.FLUSH, (int64) ((seeked * duration) * 1000000000));
+                pipeline.seek_simple (Gst.Format.TIME, Gst.SeekFlags.FLUSH | Gst.SeekFlags.SKIP | Gst.SeekFlags.ACCURATE, (int64) ((seeked * duration) * 1000000000));
             }
         }
 
@@ -205,13 +205,70 @@ namespace Niki {
             }
         }
 
+        private int _gamma;
+        public int gamma {
+            get {
+                return _gamma;
+            }
+            set {
+                _gamma = value;
+            }
+        }
+
+        private int _saturation;
+        public int saturation {
+            get {
+                return _saturation;
+            }
+            set {
+                _saturation = value;
+                color_balance ();
+            }
+        }
+
+        private int _brightness;
+        public int brightness {
+            get {
+                return _brightness;
+            }
+            set {
+                _brightness = value;
+                color_balance ();
+            }
+        }
+
+        private int _contrast;
+        public int contrast {
+            get {
+                return _contrast;
+            }
+            set {
+                _contrast = value;
+                color_balance ();
+            }
+        }
+
+        private int _hue;
+        public int hue {
+            get {
+                return _hue;
+            }
+            set {
+                _hue = value;
+                color_balance ();
+            }
+        }
+
         construct {
             pipeline = Gst.ElementFactory.make ("playbin", "playbin");
             videomix = new VideoMix ();
             audiomix = new AudioMix ();
             textmix = new TextMix ();
+            bind_property ("gamma", videomix, "gamma", BindingFlags.BIDIRECTIONAL);
+            bind_property ("saturation", videomix, "saturation", BindingFlags.BIDIRECTIONAL);
             videomix.videosink.pipeline_ready.connect (()=> {
                 ready ();
+                color_balance ();
                 unowned ClutterGst.Frame frame = videomix.videosink.get_frame ();
                 size_change (frame.resolution.width, frame.resolution.height);
                 if (subtitle_active != NikiApp.settings.get_boolean ("activate-subtitle")) {
@@ -248,6 +305,40 @@ namespace Niki {
             }
             ((Gst.PluginFeature) factory).set_rank (Gst.Rank.PRIMARY + 1);
             registry.add_feature ((Gst.PluginFeature) factory);
+        }
+
+        public void setvalue (int index, int valuescale) {
+            switch (index) {
+                case 0 :
+                    gamma = valuescale * 10;
+                    break;
+                case 1 :
+                    brightness = valuescale * 10;
+                    break;
+                case 2 :
+                    contrast = valuescale * 10;
+                    break;
+                case 3 :
+                    saturation = valuescale * 10;
+                    break;
+                case 4 :
+                    hue = valuescale * 10;
+                    break;
+            }
+        }
+
+        private void color_balance () {
+            ((Gst.Video.ColorBalance) pipeline).list_channels ().foreach ((channel)=> {
+                if (channel.label == "SATURATION") {
+                    ((Gst.Video.ColorBalance) pipeline).set_value (channel, saturation);
+                } else if (channel.label == "BRIGHTNESS") {
+                    ((Gst.Video.ColorBalance) pipeline).set_value (channel, brightness);
+                } else if (channel.label == "CONTRAST") {
+                    ((Gst.Video.ColorBalance) pipeline).set_value (channel, contrast);
+                } else if (channel.label == "HUE") {
+                    ((Gst.Video.ColorBalance) pipeline).set_value (channel, hue);
+                }
+            });
         }
 
         public void set_subtittle (string subtitle) {
@@ -385,7 +476,7 @@ namespace Niki {
                 return;
             }
             double length = Math.sin (period);
-            period += Math.PI / 20;
+            period += Math.PI / 250;
             length += 1.1;
             length *= 100 * Gst.MSECOND;
 

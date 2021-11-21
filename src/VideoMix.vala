@@ -24,27 +24,48 @@ namespace Niki {
         private dynamic Gst.Element videoqueue;
         public ClutterGst.VideoSink videosink;
         private dynamic Gst.Element videotee;
-        private dynamic Gst.Element gamma;
+        private dynamic Gst.Element elemen_gamma;
         private dynamic Gst.Element color_balance;
         public dynamic Gst.Element flip_filter;
         private dynamic Gst.Element coloreffects;
         private dynamic Gst.Element capsfilter;
         public dynamic Gst.Element videocrop;
-        private int saturation;
+
+        private int _gamma;
+        public int gamma {
+            get {
+                return _gamma;
+            }
+            set {
+                _gamma = value;
+                elemen_gamma["gamma"] = (double) ((101.1 + (_gamma / 10)) / 100.0);
+            }
+        }
+
+        private int _saturation;
+        public int saturation {
+            get {
+                return _saturation;
+            }
+            set {
+                _saturation = value;
+                color_balance["saturation"] = (double) ((100.0 + (_saturation / 10)) / 100.0);
+            }
+        }
 
         construct {
             videotee = Gst.ElementFactory.make ("tee", "tee");
             videocrop = Gst.ElementFactory.make ("videocrop", "videocrop");
             videoqueue = Gst.ElementFactory.make ("queue", "queue");
             flip_filter = Gst.ElementFactory.make ("videoflip", "videoflip");
-            gamma = Gst.ElementFactory.make ("gamma", "gamma");
+            elemen_gamma = Gst.ElementFactory.make ("gamma", "gamma");
             color_balance = Gst.ElementFactory.make ("videobalance", "videobalance");
             coloreffects = Gst.ElementFactory.make ("coloreffects", "coloreffects");
             capsfilter = Gst.ElementFactory.make ("capsfilter", "capsfilter");
             videosink = new ClutterGst.VideoSink ();
-            add_many (videoqueue, videotee, capsfilter, videocrop, coloreffects, flip_filter, color_balance, gamma, videosink);
+            add_many (videoqueue, videotee, capsfilter, videocrop, coloreffects, flip_filter, color_balance, elemen_gamma, videosink);
             add_pad (new Gst.GhostPad ("sink", videotee.get_static_pad ("sink")));
-            videoqueue.link_many (capsfilter, videocrop, coloreffects, flip_filter, color_balance, gamma, videosink);
+            videoqueue.link_many (capsfilter, videocrop, coloreffects, flip_filter, color_balance, elemen_gamma, videosink);
             Gst.Pad sinkpad = videoqueue.get_static_pad ("sink");
             Gst.Pad pad = videotee.get_request_pad ("src_%u");
             pad.link (sinkpad);
@@ -52,13 +73,6 @@ namespace Niki {
             NikiApp.settings.changed["videorender-options"].connect (filetr_caps);
             filetr_caps ();
             coloreffect ();
-            videosink.pipeline_ready.connect (()=> {
-                videosink.list_channels ().foreach ((channel)=> {
-                    if (channel.label == "SATURATION") {
-                        videosink.set_value (channel, saturation);
-                    }
-                });
-            });
         }
 
         private void filetr_caps () {
@@ -87,32 +101,6 @@ namespace Niki {
 
         private void coloreffect () {
             coloreffects["preset"] = NikiApp.settings.get_int ("coloreffects-options");
-        }
-
-        public void setvalue (int index, int valuescale) {
-            switch (index) {
-                case 0 :
-                    gamma["gamma"] = (double) ((101.1 + valuescale) / 100.0);
-                    break;
-                case 1 :
-                    color_balance["brightness"] = (double) valuescale / 100.0;
-                    break;
-                case 2 :
-                    color_balance["contrast"] = (double) ((100.0 + valuescale) / 100.0);
-                    break;
-                case 3 :
-                    color_balance["saturation"] = (double) ((100.0 + valuescale) / 100.0);
-                    saturation = valuescale * 10;
-                    videosink.list_channels ().foreach ((channel)=> {
-                        if (channel.label == "SATURATION") {
-                            videosink.set_value (channel, saturation);
-                        }
-                    });
-                    break;
-                case 4 :
-                    color_balance["hue"] = (double) valuescale / 100.0;
-                    break;
-            }
         }
 
         public Gee.Collection<VideoPreset> get_presets () {

@@ -116,7 +116,7 @@ namespace Niki {
                         if (in_scale) {
                             label_name.label = ((int)scale.get_value ()).to_string ();
                         }
-                        playerpage.playback.videomix.setvalue (index, val);
+                        playerpage.playback.setvalue (index, val);
                         if (!in_transition) {
                             var selected_preset = videopresetlist.get_selected_preset ();
                             if (selected_preset.is_default) {
@@ -172,12 +172,12 @@ namespace Niki {
                 var selected_preset = videopresetlist.get_selected_preset ();
                 if (selected_preset != null) {
                     for (int i = 0; i < scales.size; ++i) {
-                        playerpage.playback.videomix.setvalue (i, selected_preset.getvalue (i));
+                        playerpage.playback.setvalue (i, selected_preset.getvalue (i));
                     }
                 }
             } else {
                 for (int i = 0; i < scales.size; ++i) {
-                    playerpage.playback.videomix.setvalue (i, 0);
+                    playerpage.playback.setvalue (i, 0);
                 }
             }
             notify_current_preset ();
@@ -242,7 +242,7 @@ namespace Niki {
                     scale.set_value (target_level);
                     notify_current_preset ();
                     if (target_level == 0) {
-                        playerpage.playback.videomix.setvalue (index, 0);
+                        playerpage.playback.setvalue (index, 0);
                     }
                 } else {
                     scale.set_value (scale.get_value () + (difference / 1.0));
