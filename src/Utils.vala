@@ -902,10 +902,7 @@ namespace Niki {
     }
 
     private File run_open_folder (Gtk.Widget widget) {
-        var folder_location = new Gtk.FileChooserDialog (
-        _("Open"), ((Gtk.Window) widget.get_toplevel ()), Gtk.FileChooserAction.SELECT_FOLDER,
-        _("Cancel"), Gtk.ResponseType.CANCEL,
-        _("Open"), Gtk.ResponseType.ACCEPT);
+        var folder_location = new Gtk.FileChooserNative (_("Open"), ((Gtk.Window) widget.get_toplevel ()), Gtk.FileChooserAction.SELECT_FOLDER, _("Open"), _("Cancel"));
 
         var filter_folder = new Gtk.FileFilter ();
         filter_folder.add_mime_type ("inode/directory");
@@ -919,10 +916,7 @@ namespace Niki {
     }
 
     public File[] run_open_file (Gtk.Widget widget, bool multi, int count) {
-        var file = new Gtk.FileChooserDialog (
-        _("Open"), ((Gtk.Window) widget.get_toplevel ()), Gtk.FileChooserAction.OPEN,
-        _("Cancel"), Gtk.ResponseType.CANCEL,
-        _("Open"), Gtk.ResponseType.ACCEPT);
+        var file = new Gtk.FileChooserNative (_("Open"), ((Gtk.Window) widget.get_toplevel ()), Gtk.FileChooserAction.OPEN, _("Open"), _("Cancel"));
         file.select_multiple = multi;
 
         var preview_area = new Gtk.Image () {

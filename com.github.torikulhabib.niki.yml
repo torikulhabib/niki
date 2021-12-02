@@ -7,6 +7,7 @@ sdk: io.elementary.Sdk
 command: com.github.torikulhabib.niki
 
 finish-args:
+  - '--share=network'
   - '--socket=session-bus'
   - '--share=ipc'
   - '--socket=fallback-x11'
@@ -14,7 +15,7 @@ finish-args:
   - '--socket=pulseaudio'
   - '--socket=x11'
   - '--device=all'
-  - '--filesystem=home'
+  - '--filesystem=xdg-videos'
 
 cleanup:
   - '*.a'
