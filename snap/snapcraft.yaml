@@ -144,6 +144,7 @@ apps:
   niki:
     command: usr/bin/com.github.torikulhabib.niki
     desktop: usr/share/applications/com.github.torikulhabib.niki.desktop
+    extensions: [gnome-3-38]
     plugs:
       - desktop
       - desktop-legacy
