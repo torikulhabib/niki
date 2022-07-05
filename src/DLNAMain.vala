@@ -26,8 +26,8 @@ namespace Niki {
         public GUPnP.ContextManager contextmanager_media_render;
         private GUPnP.ControlPoint controlpoint_dms_cp;
         private GUPnP.ControlPoint controlpoint_dmr_cp;
-        private GUPnP.WhiteList wihitelist_media_server;
-        private GUPnP.WhiteList wihitelist_media_render;
+        private GUPnP.ContextFilter wihitelist_media_server;
+        private GUPnP.ContextFilter wihitelist_media_render;
 
         public DLNAMain (WelcomePage welcompage) {
             this.welcompage = welcompage;
@@ -49,16 +49,14 @@ namespace Niki {
         }
 
         public void init_upnp_media_server () {
-            wihitelist_media_server = new GUPnP.WhiteList ();
             contextmanager_media_server = context_media_server ();
-            wihitelist_media_server = contextmanager_media_server.get_white_list ();
+            wihitelist_media_server = contextmanager_media_server.context_filter;
             wihitelist_media_server.set_enabled (true);
         }
 
         public void init_upnp_media_render () {
-            wihitelist_media_render = new GUPnP.WhiteList ();
             contextmanager_media_render = context_media_render ();
-            wihitelist_media_render = contextmanager_media_render.get_white_list ();
+            wihitelist_media_render = contextmanager_media_render.context_filter;
             wihitelist_media_render.set_enabled (true);
         }
 

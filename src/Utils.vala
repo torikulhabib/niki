@@ -1037,7 +1037,7 @@ namespace Niki {
                     });
                     label_duration.tooltip_text = label_duration.label = seconds_to_time ((int)(info.get_duration () / 1000000000));
                 } else if (get_mime_type (file_pre).has_prefix ("audio/")) {
-                    pixbuf = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (file_pre.get_uri ()).get_tags (), Gst.Tag.ImageType.FRONT_COVER), 256);
+                    pixbuf = align_and_scale_pixbuf (pix_from_tag (get_discoverer_info (file_pre.get_uri ()).get_toc ().get_tags (), Gst.Tag.ImageType.FRONT_COVER), 256);
                     if (!file_pre.get_uri ().down ().has_suffix ("aac") || !file_pre.get_uri ().down ().has_suffix ("ac3")) {
                         var tagfile = new InyTag.File (file_pre.get_path ());
                         label_bitrate.tooltip_text = label_bitrate.label = tagfile.audioproperties.bitrate.to_string () + _(" kHz");
@@ -1429,7 +1429,7 @@ namespace Niki {
         Sqlite.Statement stmt;
         string sql = "INSERT OR IGNORE INTO musics (uri, title, artist, album, genre, year, duration, lastplay) VALUES (?, ?, ?, ?, ?, ?, ?, ?);";
         var info = get_discoverer_info (path.get_uri ());
-        var tags = info.get_tags ();
+        var tags = info.get_toc ().get_tags ();
         int res = NikiApp.db.prepare_v2 (sql, -1, out stmt);
         res = stmt.bind_text (1, path.get_uri ());
         res = stmt.bind_text (2, get_song_info (path));
@@ -1563,7 +1563,7 @@ namespace Niki {
         Sqlite.Statement stmt;
         var path = File.new_for_uri (uri);
         string sql = "";
-        var tags = get_discoverer_info (path.get_uri ()).get_tags ();
+        var tags = get_discoverer_info (path.get_uri ()).get_toc ().get_tags ();
         sql = @" UPDATE musics SET title = \"$(get_song_info (path))\", artist = \"$(get_string_tag (Gst.Tags.ARTIST, tags))\", album = \"$(get_string_tag (Gst.Tags.ALBUM, tags))\", genre = \"$(get_string_tag (Gst.Tags.GENRE, tags))\", year = $(get_date_tag (tags)) WHERE uri = ?";
         int res = NikiApp.db.prepare_v2 (sql, -1, out stmt);
         res = stmt.bind_text (1, uri);

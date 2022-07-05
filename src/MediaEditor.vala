@@ -718,7 +718,7 @@ namespace Niki {
                 audio_depth.text = "%u".printf (stream_audio.get_depth ());
                 audio_chanel.text = "%u (%s )".printf (stream_audio.get_channels (), format_channel_mask (stream_audio));
             });
-            var tag_list = info.get_tags ();
+            var tag_list = info.get_toc ().get_tags ();
             container_format.text = get_string_tag (Gst.Tags.CONTAINER_FORMAT, tag_list);
             audio_codec.text = get_string_tag (Gst.Tags.AUDIO_CODEC, tag_list);
             video_codec.text = get_string_tag (Gst.Tags.VIDEO_CODEC, tag_list);
@@ -828,7 +828,7 @@ namespace Niki {
                 comment_textview.buffer.text = tagfile.tag.comment;
                 track_spinbutton.value = tagfile.tag.track;
                 date_spinbutton.value = tagfile.tag.year;
-                var tags = get_discoverer_info (file_name).get_tags ();
+                var tags = get_discoverer_info (file_name).get_toc ().get_tags ();
                 apply_cover_pixbuf (align_and_scale_pixbuf (pix_from_tag (tags, Gst.Tag.ImageType.ARTIST), 256));
             }
         }
